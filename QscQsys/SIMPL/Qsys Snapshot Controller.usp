@@ -1,0 +1,35 @@
+#SYMBOL_NAME "Qsys Snapshot Controller"
+
+#INCLUDEPATH "C:\\Users\\matklucznyk\\Documents\\Crestron Modules\\Modules\\SIMPLSharp Projects\\QscQsys\\QscQsys\\bin\\Debug"
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+Digital_Input Load, Save;
+Analog_Input Number;
+
+String_Parameter _skip_, _skip_, _skip_, ComponentName[100];
+
+QsysSnapshotSimpl snapshot;
+
+Threadsafe Change Number
+{
+    integer x;
+
+    while(x != Number)
+    {
+        x = Number;
+
+        if(Load)
+        {
+            snapshot.LoadSnapshot(x);
+        }
+        else if (Save)
+        {
+            snapshot.SaveSnapshot(x);
+        }
+    }
+}
+
+Function Main()
+{
+    snapshot.Initialize(ComponentName);
+}

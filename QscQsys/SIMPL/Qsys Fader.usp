@@ -1,0 +1,98 @@
+#SYMBOL_NAME "Qsys Fader"
+
+#INCLUDEPATH "C:\\Users\\matklucznyk\\Documents\\Crestron Modules\\Modules\\SIMPLSharp Projects\\QscQsys\\QscQsys\\bin\\Debug"
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+Digital_Input MuteOn, MuteOff, MuteToggle, VolumeUp, VolumeDown;
+Analog_Input Volume;
+
+Digital_Output MuteIsOn, MuteIsOff;
+Analog_Output _skip_,_skip_,_skip_, VolumeValue;
+                          
+QsysProcessorSimplInterface processor;                          
+QsysFaderSimpl fader;
+
+String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, ComponentName[100];
+Integer_Parameter VolumeStep;
+
+integer currentVolume;
+
+
+Push MuteOn
+{
+    fader.Mute(1);
+}
+
+Push MuteOff
+{
+    fader.Mute(0);
+}
+
+Push MuteToggle
+{
+    if(!MuteIsOn && MuteIsOff)
+    {
+        fader.Mute(1);
+    }
+    else if (MuteIsOn && !MuteIsOff)
+    {
+        fader.Mute(0);
+    }
+}
+
+Push VolumeUp
+{
+    fader.Volume(currentVolume + VolumeStep);
+}
+
+Push VolumeDown
+{
+    fader.Volume(currentVolume - VolumeStep);
+}
+
+Threadsafe Change Volume
+{
+    integer x;
+
+    While(x != volume)
+    {
+        x = Volume;
+        fader.Volume(x);
+    }
+}
+
+Callback Function onInitializationComplete(integer value)
+{        
+}
+
+Callback Function onVolumeChange(integer value)
+{
+    currentVolume = value;
+    VolumeValue = currentVolume;
+}
+
+Callback Function onMuteChange(integer value)
+{
+    switch(value)
+    {
+       case (1):
+       {
+           MuteIsOff = OFF;
+           MuteIsOn = ON;
+       }
+       case (0):
+       {
+           MuteIsOff = ON;
+           MuteIsOn = OFF;
+       }
+    }
+}
+
+Function Main()
+{              
+    RegisterDelegate(processor, onIsRegistered, onInitializationComplete);
+    RegisterDelegate(fader, newVolumeChange, onVolumeChange);
+    REgisterDelegate(fader, newMuteChange, onMuteChange); 
+    fader.Initialize(ComponentName);                                  
+
+}

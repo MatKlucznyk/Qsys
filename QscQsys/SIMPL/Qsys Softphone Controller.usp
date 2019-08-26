@@ -1,0 +1,111 @@
+#SYMBOL_NAME "Qsys Softphone Controller"
+
+#INCLUDEPATH "C:\\Users\\matklucznyk\\Documents\\Crestron Modules\\Modules\\SIMPLSharp Projects\\QscQsys\\QscQsys\\bin\\Debug"
+#USER_SIMPLSHARP_LIBRARY "QscQsys" 
+
+#DEFINE_CONSTANT true 1
+#DEFINE_CONSTANT false 0
+
+Digital_Input Dial, Redial, Disconnect, AutoAnswerToggle, DndToggle, _skip_, KeyPad[10,10];
+String_Input DialString[1000];
+
+Digital_Output Connected, Ringing, _skip_, AutoAnswerStatus, DndStatus;
+String_Output _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_,_skip_,  DialStringOut, CurrentlyCalling;
+
+QsysSoftphoneControllerSimpl softphone;
+
+String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_,_skip_,_skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, ComponentName[100];
+
+Push Dial
+{
+    if(len(DialString))
+    {
+        softphone.Dial(DialString);
+    }
+    else
+    {
+        softphone.DialWithoutString();
+    }
+}
+
+Push Redial
+{
+    softphone.Redial();
+}
+
+Push Disconnect
+{
+    softphone.Disconnect();
+}
+
+Push AutoAnswerToggle
+{
+    softphone.AutoAnswerToggle();
+}
+
+Push DndToggle
+{
+    softphone.DndToggle();
+}
+
+Threadsafe Push KeyPad
+{
+    integer x;
+
+    x = GetLastModifiedArrayIndex();
+
+    softphone.NumPad(ItoA(x - 1));
+}
+
+Callback Function NewOffHookEvent(integer value)
+{
+    if(value)
+        Connected = true;
+    else
+        Connected = false;
+}
+
+Callback Function NewRingingEvent(integer value)
+{
+    if(value)
+        Ringing = true;
+    else
+        Ringing = false;
+}
+
+Callback Function NewAutoAnswerEvent(integer value)
+{
+    if(value)
+        AutoAnswerStatus = true;
+    else
+        AutoAnswerStatus = false;
+}
+
+Callback Function NewDndEvent(integer value)
+{
+    if(value)
+        DndStatus = true;
+    else
+        DndStatus = false;
+}
+
+Callback Function NewDialStringEvent(string newDialString)
+{
+    DialStringOut = newDialString;
+}
+
+Callback Function NewCurrentlyCallingEvent(string newCurrentlyCalling)
+{
+    CurrentlyCalling = newCurrentlyCalling;
+}
+
+Function Main()
+{
+    RegisterDelegate(softphone, onOffHookEvent, NewOffHookEvent);
+    RegisterDelegate(softphone, onRingingEvent, NewRingingEvent);
+    RegisterDelegate(softphone, onAutoAnswerEvent, NewAutoAnswerEvent);
+    RegisterDelegate(softphone, onDndEvent, NewDndEvent);
+    RegisterDelegate(softphone, onDialStringEvent, NewDialStringEvent);
+    RegisterDelegate(softphone, onCurrentlyCallingEvent, NewCurrentlyCallingEvent);
+    softphone.Initialize(ComponentName);
+}

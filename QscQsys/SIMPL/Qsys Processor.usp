@@ -1,0 +1,50 @@
+#SYMBOL_NAME "Qsys Processor"
+
+#INCLUDEPATH "C:\\Users\\matklucznyk\\Documents\\Crestron Modules\\Modules\\SIMPLSharp Projects\\QscQsys\\QscQsys\\bin\\Debug"
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+Digital_Input Initialize;
+
+Digital_Output IsInitialized, IsConnected;
+
+String_Parameter _skip_, _skip_, ID[100], Host[100];
+Integer_Parameter Port, DebugMode;
+
+integer waitTillStart;
+
+QsysProcessorSimplInterface processor;
+
+Push Initialize
+{                
+	while(!waitTillStart)
+	{}
+	processor.Debug(DebugMode);
+    processor.Register(ID);
+    QsysProcessor.Initialize(host, port);
+}
+
+Callback Function NewIsRegistered(integer value)
+{
+	if(value = 1)
+		IsInitialized = ON;
+	else
+		IsInitialized = OFF;
+}     
+
+Callback Function NewIsConnected(integer value)
+{
+	if(value = 1)
+		IsConnected = ON;
+	else
+		IsConnected = OFF;
+}
+
+Function Main()
+{
+	RegisterDelegate(processor, onIsRegistered, NewIsRegistered);  
+	RegisterDelegate(processor, onIsConnected, NewIsConnected); 
+	
+	WaitForInitializationComplete();
+	
+	waitTillStart = 1;
+}

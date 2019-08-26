@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>QscQsys</name>
+    </assembly>
+    <members>
+        <member name="M:QscQsys.QsysMatrixMixer.SetCrossPointMute(System.String,System.String,System.Boolean)">
+            <summary>
+            Sets a crosspoint mute ex. *=everything, 1 2 3=channels 1, 2, 3,  1-6=channels 1 through 6, 1-8 !3=channels 1 through 8 except 3, * !3-5=everything but 3 through 5
+            </summary>
+            <param name="inputs">The input channels.</param>
+            <param name="outputs">The output channels.</param>
+            <param name="value">The value of the crosspoint mute.</param>
+        </member>
+        <member name="M:QscQsys.QsysFader.#ctor(System.String)">
+            <summary>
+            Default constructor for a QsysFader
+            </summary>
+            <param name="Name">The component name of the gain.</param>
+        </member>
+        <member name="M:QscQsys.QsysFader.Volume(System.Int32)">
+            <summary>
+            Sets the current volume.
+            </summary>
+            <param name="value">The volume level to set to.</param>
+        </member>
+        <member name="M:QscQsys.QsysFader.Mute(System.Boolean)">
+            <summary>
+            Sets the current mute state.
+            </summary>
+            <param name="value">The state to set the mute.</param>
+        </member>
+        <member name="T:QscQsys.QsysEventsArgs">
+            <summary>
+            Event args for Q-Sys events.
+            </summary>
+        </member>
+        <member name="M:QscQsys.QsysEventsArgs.#ctor(QscQsys.eQscEventIds,System.String,System.Boolean,System.Int32,System.String)">
+            <summary>
+            Default constructor for QsysEventArgs.
+            </summary>
+            <param name="eventID">The event ID that is associated with the event.</param>
+            <param name="controlName">The control that has triggered the event.</param>
+            <param name="booleanValue">Boolean value of the event.</param>
+            <param name="integerValue">Integer value of the event.</param>
+            <param name="stringValue">String value of the event.</param>
+        </member>
+        <member name="T:QscQsys.QsysInternalEventsArgs">
+            <summary>
+            Used only for internal methods.
+            </summary>
+        </member>
+        <member name="T:QscQsys.InternalEvents">
+            <summary>
+            Used only for internal methods.
+            </summary>
+        </member>
+        <member name="T:QscQsys.eQscEventIds">
+            <summary>
+            Event IDs.
+            </summary>
+        </member>
+        <member name="F:QscQsys.eQscEventIds.NewCommand">
+            <summary>
+            New command event ID.
+            </summary>
+        </member>
+        <member name="F:QscQsys.eQscEventIds.GainChange">
+            <summary>
+            New gain change event ID.
+            </summary>
+        </member>
+        <member name="F:QscQsys.eQscEventIds.MuteChange">
+            <summary>
+            New mute change event ID.
+            </summary>
+        </member>
+        <member name="T:QscQsys.QsysProcessor">
+            <summary>
+            Static processor for Q-Sys Cores.
+            </summary>
+        </member>
+        <member name="M:QscQsys.QsysProcessor.Initialize(System.String,System.UInt16)">
+            <summary>
+            Initialzes all methods that are required to setup the class. Connection is established on port 1702.
+            </summary>
+        </member>
+        <member name="M:QscQsys.QsysProcessor.Dispose">
+            <summary>
+            Cleans up all resources.
+            </summary>
+        </member>
+        <member name="M:QscQsys.QsysProcessor.ParseResponse(System.String)">
+            <summary>
+            Parse response from Q-Sys Core.
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="P:QscQsys.QsysProcessor.IsInitialized">
+            <summary>
+            Processor initialzation state.
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysProcessor.IsDisposed">
+            <summary>
+            Processor disposed state.
+            </summary>
+        </member>
+    </members>
+</doc>

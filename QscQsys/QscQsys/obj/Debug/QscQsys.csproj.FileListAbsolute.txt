@@ -1,0 +1,43 @@
+C:\Users\mklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\mklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\QscQsys.dll
+C:\Users\mklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\QscQsys.pdb
+C:\Users\mklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\ExtensionMethods.dll
+C:\Users\mklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\SimplSharpCustomAttributesInterface.dll
+C:\Users\mklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\SimplSharpHelperInterface.dll
+C:\Users\mklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\obj\Debug\QscQsys.dll
+C:\Users\mklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\obj\Debug\QscQsys.pdb
+C:\Users\mklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\Newtonsoft.Json.Compact.dll
+C:\Users\mklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\QscQsys.xml
+C:\Users\mklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\SimplSharpReflectionInterface.dll
+C:\Users\matklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\QscQsys.xml
+C:\Users\matklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\QscQsys.dll
+C:\Users\matklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\QscQsys.pdb
+C:\Users\matklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\ExtensionMethods.dll
+C:\Users\matklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\Newtonsoft.Json.Compact.dll
+C:\Users\matklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\SimplSharpCustomAttributesInterface.dll
+C:\Users\matklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\SimplSharpHelperInterface.dll
+C:\Users\matklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\SimplSharpReflectionInterface.dll
+C:\Users\matklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\matklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\obj\Debug\QscQsys.dll
+C:\Users\matklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\obj\Debug\QscQsys.pdb
+C:\Users\matklucznyk\OneDrive - RAVE AUDIO VISUAL\Modules\RAVE Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\TCPClient.dll
+\\Mac\Home\Documents\CrestronDump\Modules\SIMPLSharp Projects\QscQsys\QscQsys\obj\Debug\ResolveAssemblyReference.cache
+\\Mac\Home\Documents\CrestronDump\Modules\SIMPLSharp Projects\QscQsys\QscQsys\obj\Debug\QscQsys.dll
+\\Mac\Home\Documents\CrestronDump\Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\QscQsys.xml
+\\Mac\Home\Documents\CrestronDump\Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\QscQsys.dll
+\\Mac\Home\Documents\CrestronDump\Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\QscQsys.pdb
+\\Mac\Home\Documents\CrestronDump\Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\ExtensionMethods.dll
+\\Mac\Home\Documents\CrestronDump\Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\TCPClient.dll
+\\Mac\Home\Documents\CrestronDump\Modules\SIMPLSharp Projects\QscQsys\QscQsys\obj\Debug\QscQsys.pdb
+C:\Users\matklucznyk\Documents\Crestron Modules\Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\QscQsys.xml
+C:\Users\matklucznyk\Documents\Crestron Modules\Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\QscQsys.dll
+C:\Users\matklucznyk\Documents\Crestron Modules\Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\QscQsys.pdb
+C:\Users\matklucznyk\Documents\Crestron Modules\Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\ExtensionMethods.dll
+C:\Users\matklucznyk\Documents\Crestron Modules\Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\Newtonsoft.Json.Compact.dll
+C:\Users\matklucznyk\Documents\Crestron Modules\Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\SimplSharpCustomAttributesInterface.dll
+C:\Users\matklucznyk\Documents\Crestron Modules\Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\SimplSharpHelperInterface.dll
+C:\Users\matklucznyk\Documents\Crestron Modules\Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\SimplSharpReflectionInterface.dll
+C:\Users\matklucznyk\Documents\Crestron Modules\Modules\SIMPLSharp Projects\QscQsys\QscQsys\bin\Debug\TCPClient.dll
+C:\Users\matklucznyk\Documents\Crestron Modules\Modules\SIMPLSharp Projects\QscQsys\QscQsys\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\matklucznyk\Documents\Crestron Modules\Modules\SIMPLSharp Projects\QscQsys\QscQsys\obj\Debug\QscQsys.dll
+C:\Users\matklucznyk\Documents\Crestron Modules\Modules\SIMPLSharp Projects\QscQsys\QscQsys\obj\Debug\QscQsys.pdb

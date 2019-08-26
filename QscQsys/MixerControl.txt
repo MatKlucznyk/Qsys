@@ -1,0 +1,1 @@
+{ "jsonrpc": "2.0", "id" : "1234", "method": "Mixer.SetCrossPointMute", "params": {"Name": "MixerTest", "Inputs": "1", "Outputs": "1",  "Value": true, "Ramp": 0.0}}$00

@@ -1,0 +1,42 @@
+#SYMBOL_NAME "Qsys Matrix Mixer"
+
+//#INCLUDEPATH "C:\\Users\\matklucznyk\\Documents\\Crestron Modules\\Modules\\SIMPLSharp Projects\\QscQsys\\QscQsys\\bin\\Debug"
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+Digital_Input MuteOn, MuteOff;
+Digital_Output MuteIsOn, MuteIsOff;
+
+String_Parameter _skip_,_skip_, ComponentName[100];
+Integer_Parameter Input, Output;
+                                                     
+QsysMatrixMixerSimpl mixer;
+
+Push MuteOn
+{
+    mixer.SetCrossPoint(1);
+}
+
+Push MuteOff
+{
+    mixer.SetCrossPoint(0);
+}
+
+Callback Function onCrossPointValueChange(integer value)
+{
+    if(value = 1)
+    {
+        MuteIsOn = ON;
+        MuteIsOff = OFF;
+    }
+    else
+    {
+        MuteIsOn = OFF;
+        MuteIsOff = ON;
+    }
+}
+
+Function Main()
+{      
+    RegisterDelegate(mixer, newCrossPointValueChange, onCrossPointValueChange);             
+	mixer.Initialize(ComponentName, Input, Output);
+}
