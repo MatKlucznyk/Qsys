@@ -11,6 +11,7 @@ namespace QscQsys
     {
         private string cName;
         private bool registered;
+        private int myOutput;
 
         public event EventHandler<QsysEventsArgs> QsysRouterEvent;
 
@@ -18,17 +19,15 @@ namespace QscQsys
         public bool IsRegistered { get { return registered; } }
         public int CurrentSelectedInput { set; get; }
 
-        public QsysRouter(string Name, int size)
+        public QsysRouter(string Name, int output)
         {
             cName = Name;
-
+            myOutput = output;
             Component component = new Component();
             component.Name = Name;
             List<ControlName> names = new List<ControlName>();
-            for (int i = 0; i < size; i++)
-            {
-                names.Add(new ControlName() {Name = string.Format("output_1_input_{0}_select", i + 1) });
-            }
+            names.Add(new ControlName());
+            names[0].Name = string.Format("select_{0}", output);
 
             component.Controls = names;
 
@@ -48,9 +47,9 @@ namespace QscQsys
             newInputSelectedChange.Params.Name = cName;
 
             ComponentSetValue inputSelected = new ComponentSetValue();
-            inputSelected.Name = string.Format("output_1_input_{0}_select", input);
+            inputSelected.Name = string.Format("select_{0}", myOutput);
 
-            inputSelected.Value = 1;
+            inputSelected.Value = input;
 
             newInputSelectedChange.Params.Controls = new List<ComponentSetValue>();
             newInputSelectedChange.Params.Controls.Add(inputSelected);
@@ -60,13 +59,11 @@ namespace QscQsys
 
         private void QsysRouter_OnNewEvent(object sender, QsysInternalEventsArgs e)
         {
-            if (e.Name.Contains("output") && e.Name.Contains("input") && e.Name.Contains("select") && e.Data == 1)
+            if (e.Name.Contains(string.Format("select_{0}", myOutput)))
             {
-                var split = e.Name.Split('_');
+                CurrentSelectedInput = Convert.ToInt16(e.Data);
 
-                CurrentSelectedInput = Convert.ToInt16(split[3]);
-
-                QsysRouterEvent(this, new QsysEventsArgs(eQscEventIds.RouterInputSelected, cName, true, Convert.ToInt16(split[3]), "true"));
+                QsysRouterEvent(this, new QsysEventsArgs(eQscEventIds.RouterInputSelected, cName, Convert.ToBoolean(e.Data), Convert.ToInt16(e.Data), e.Data.ToString()));
             }
         }
     }

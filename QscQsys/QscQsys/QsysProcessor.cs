@@ -281,7 +281,7 @@ namespace QscQsys
                                 foreach (var item in Components)
                                 {
                                     if (item.Key.Name == changeResult.Component)
-                                        item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value));
+                                        item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.String));
                                 }
                             }
                             /*else
@@ -317,11 +317,11 @@ namespace QscQsys
                                         ComponentProperties prop;
                                         if ((prop = props.Find(x => x.Name == "max_gain")) != null)
                                         {
-                                            item.Value.Fire(new QsysInternalEventsArgs("max_gain", Convert.ToDouble(prop.Value)));
+                                            item.Value.Fire(new QsysInternalEventsArgs("max_gain", Convert.ToDouble(prop.Value), string.Empty));
                                         }
                                         if ((prop = props.Find(x => x.Name == "min_gain")) != null)
                                         {
-                                            item.Value.Fire(new QsysInternalEventsArgs("min_gain", Convert.ToDouble(prop.Value)));
+                                            item.Value.Fire(new QsysInternalEventsArgs("min_gain", Convert.ToDouble(prop.Value), string.Empty));
                                         }
                                     }
                                 }

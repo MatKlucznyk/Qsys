@@ -31,7 +31,7 @@
   ParamSigType2=Constant
   ParamCue3=ComponentName
   ParamSigType3=String
-  ParamCue4=TotalInputs
+  ParamCue4=OutputNumber
   ParamSigType4=Constant
   MinVariableInputs=0
   MaxVariableInputs=0

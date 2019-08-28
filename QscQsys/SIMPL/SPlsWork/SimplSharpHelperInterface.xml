@@ -6233,6 +6233,8 @@
             URL parser constructor with URL parameter that parses the input URL.
             </summary>
             <param name="aUrl">String containing the URL to parse</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="aUrl"/> is null.</exception>
+            <exception cref="T:System.UriFormatException"><paramref name="aUrl"/> is incorrectly formed or contains invalid credentials.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.Net.Http.UrlParser.#ctor(Crestron.SimplSharp.Net.Http.UrlParser,System.String)">
             <summary>
@@ -6240,6 +6242,8 @@
             </summary>
             <param name="baseUrl">The base URL.</param>
             <param name="relativeUrl">The relative URL to add to the base URL.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="baseUrl"/> is null.</exception>
+            <exception cref="T:System.UriFormatException"><paramref name="baseUrl"/> is incorrectly formed or contains invalid credentials.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.Net.Http.UrlParser.ToString">
             <summary>
@@ -6252,6 +6256,8 @@
             Parses the URL and sets the proper definitions for all aspects of the URL
             </summary>
             <param name="aUrl">String containing the URL to parse</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="aUrl"/> is null.</exception>
+            <exception cref="T:System.UriFormatException"><paramref name="aUrl"/> is incorrectly formed or contains invalid credentials.</exception>
         </member>
         <member name="P:Crestron.SimplSharp.Net.Http.UrlParser.Url">
             <summary>
@@ -24168,7 +24174,7 @@
             <param name="addressToAcceptConnectionFrom"></param>
             <param name="portOnWanSide"></param>
             <param name="addressToConnectTo">Target IP address to connect to.</param>
-            <param name="isHostName">Indicating whether <see cref="!:AddressClientConnectedTo"/> is a host name, not IP address.</param>
+            <param name="isHostName">Indicating whether <see cref="!:addressToAcceptConnectionFrom"/> is a host name, not IP address.</param>
             <returns></returns>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronSockets.SecureTCPServer.SSLHandshakeNegotiationTimer(System.Object)">
@@ -25057,6 +25063,11 @@
             <remarks>
             This method requires firmware version 1.502.xxxx or later
             </remarks>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronSockets.SecureTCPClient.DisconnectFromServerInternal">
+            <summary>
+            Internal method - will not check for the state at all.
+            </summary>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronSockets.SecureTCPClient.DisconnectFromServer">
             <summary>
@@ -32471,6 +32482,26 @@
             <exception cref="T:System.InvalidOperationException">Authentication is not currently enabled on the controller.</exception>
             <exception cref="T:Crestron.SimplSharp.CrestronAuthentication.Authentication.PrivilegeException">Higher privileges are required to use this method.</exception>
             <exception cref="T:System.NotSupportedException">This method requires minimum firmware version 1.502.0009 or higher</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronAuthentication.Authentication.GetAccessLevelInternal(System.String)">
+            <summary>
+             Internal method to get the access level. Not currerntly supported for Linux
+            </summary>
+            <param name="userName"> User name</param>
+            <returns> Access lebel</returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronAuthentication.Authentication.GetAccessLevelForSpecifiedUser(Crestron.SimplSharp.CrestronAuthentication.Authentication.UserToken,System.String)">
+            <summary>
+            Method to return the access level of the specified user. This returns <see cref="T:Crestron.SimplSharp.CrestronAuthentication.Authentication.UserAuthenticationLevelEnum"/> indicating the access level.
+            </summary>
+            <param name="utoken">Token of an Administrator level user.</param>
+            <param name="userName">Specified user to return access level</param>
+            <returns> Enum indicating user access level. A user could belong to multiple groups so the return value could specify multiple access levels.</returns>
+            <exception cref="T:System.InvalidOperationException">Authentication is not currently enabled on the controller.</exception>
+            <exception cref="T:Crestron.SimplSharp.CrestronAuthentication.Authentication.PrivilegeException">Higher privileges are required to use this method.</exception>
+            <exception cref="T:System.NotSupportedException">This method requires minimum firmware version 1.502.0009 or higher</exception>
+            <exception cref="T:System.ArgumentNullException">Arguments provided to the method are not valid</exception>
+            <exception cref="T:System.NotSupportedException">The method is not currently supported</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronAuthentication.Authentication.GetAuthenticationToken(System.String,System.String)">
             <summary> Get authentication token for this user.  For use for administering local groups and users or once a domain has been added.</summary>    
@@ -44462,6 +44493,11 @@
             <summary>
             Time/Timezone Changed event
             Use <see cref="M:Crestron.SimplSharp.CrestronEnvironment.GetLocalTime"/> to get the updated time and <see cref="O:Crestron.SimplSharp.CrestronEnvironment.GetTimeZone"/> to get the updated timezone.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eSystemEventType.AuthenticationStateChange">
+            <summary>
+            Event to indicate that the Authentication State has changed. Please use the <see cref="P:Crestron.SimplSharp.CrestronAuthentication.Authentication.Enabled"/> to get the current state.
             </summary>
         </member>
         <member name="T:Crestron.SimplSharp.SystemEventHandler">

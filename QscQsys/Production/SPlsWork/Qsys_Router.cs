@@ -21,7 +21,7 @@ namespace UserModule_QSYS_ROUTER
         Crestron.Logos.SplusObjects.AnalogInput INPUT;
         Crestron.Logos.SplusObjects.AnalogOutput INPUTVALUE;
         StringParameter COMPONENTNAME;
-        UShortParameter TOTALINPUTS;
+        UShortParameter OUTPUTNUMBER;
         QscQsys.QsysProcessorSimplInterface PROCESSOR;
         QscQsys.QsysRouterSimpl ROUTER;
         object INPUT_OnChange_0 ( Object __EventInfo__ )
@@ -92,7 +92,7 @@ namespace UserModule_QSYS_ROUTER
             // RegisterDelegate( ROUTER , NEWROUTERINPUTCHANGE , ONROUTERINPUTCHANGE ) 
             ROUTER .newRouterInputChange  = ONROUTERINPUTCHANGE; ; 
             __context__.SourceCodeLine = 39;
-            ROUTER . Initialize ( COMPONENTNAME  .ToString(), (ushort)( TOTALINPUTS  .Value )) ; 
+            ROUTER . Initialize ( COMPONENTNAME  .ToString(), (ushort)( OUTPUTNUMBER  .Value )) ; 
             
             
         }
@@ -114,8 +114,8 @@ namespace UserModule_QSYS_ROUTER
         INPUTVALUE = new Crestron.Logos.SplusObjects.AnalogOutput( INPUTVALUE__AnalogSerialOutput__, this );
         m_AnalogOutputList.Add( INPUTVALUE__AnalogSerialOutput__, INPUTVALUE );
         
-        TOTALINPUTS = new UShortParameter( TOTALINPUTS__Parameter__, this );
-        m_ParameterList.Add( TOTALINPUTS__Parameter__, TOTALINPUTS );
+        OUTPUTNUMBER = new UShortParameter( OUTPUTNUMBER__Parameter__, this );
+        m_ParameterList.Add( OUTPUTNUMBER__Parameter__, OUTPUTNUMBER );
         
         COMPONENTNAME = new StringParameter( COMPONENTNAME__Parameter__, this );
         m_ParameterList.Add( COMPONENTNAME__Parameter__, COMPONENTNAME );
@@ -145,7 +145,7 @@ namespace UserModule_QSYS_ROUTER
     const uint INPUT__AnalogSerialInput__ = 0;
     const uint INPUTVALUE__AnalogSerialOutput__ = 0;
     const uint COMPONENTNAME__Parameter__ = 10;
-    const uint TOTALINPUTS__Parameter__ = 11;
+    const uint OUTPUTNUMBER__Parameter__ = 11;
     
     [SplusStructAttribute(-1, true, false)]
     public class SplusNVRAM : SplusStructureBase

@@ -13,9 +13,9 @@ namespace QscQsys
         public delegate void RouterInputChange(ushort input);
         public RouterInputChange newRouterInputChange { get; set; }
 
-        public void Initialize(string name, ushort size)
+        public void Initialize(string name, ushort output)
         {
-            router = new QsysRouter(name, size);
+            router = new QsysRouter(name, output);
             router.QsysRouterEvent += new EventHandler<QsysEventsArgs>(router_QsysRouterEvent);
         }
 

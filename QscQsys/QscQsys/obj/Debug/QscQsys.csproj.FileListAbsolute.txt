@@ -41,3 +41,9 @@ C:\Users\matklucznyk\Documents\Crestron Modules\Modules\SIMPLSharp Projects\QscQ
 C:\Users\matklucznyk\Documents\Crestron Modules\Modules\SIMPLSharp Projects\QscQsys\QscQsys\obj\Debug\ResolveAssemblyReference.cache
 C:\Users\matklucznyk\Documents\Crestron Modules\Modules\SIMPLSharp Projects\QscQsys\QscQsys\obj\Debug\QscQsys.dll
 C:\Users\matklucznyk\Documents\Crestron Modules\Modules\SIMPLSharp Projects\QscQsys\QscQsys\obj\Debug\QscQsys.pdb
+D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.xml
+D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.dll
+D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.pdb
+D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\ResolveAssemblyReference.cache
+D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.dll
+D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.pdb

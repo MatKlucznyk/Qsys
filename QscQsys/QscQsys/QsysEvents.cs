@@ -41,11 +41,14 @@ namespace QscQsys
     {
         public string Name;
         public double Data;
+        public string SData;
 
-        public QsysInternalEventsArgs(string name, double data)
+        public QsysInternalEventsArgs(string name, double data, string sData)
         {
             this.Name = name;
             this.Data = data;
+            this.SData = sData;
+
         }
     }
 
@@ -154,7 +157,9 @@ namespace QscQsys
 
         PotsControllerAutoAnswerChange = 12,
 
-        PotsControllerDND_Change = 13
+        PotsControllerDND_Change = 13,
+
+        Nv32hDecoderInputChange = 14
     }
 
     public enum eQscSimplEventIds

@@ -1,13 +1,13 @@
 #SYMBOL_NAME "Qsys Router"
 
-//#INCLUDEPATH "C:\\Users\\matklucznyk\\Documents\\Crestron Modules\\Modules\\SIMPLSharp Projects\\QscQsys\\QscQsys\\bin\\Debug"
+//#INCLUDEPATH "D:\\Programming\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 Analog_Input Input;
 Analog_Output InputValue;
 
 String_Parameter _skip_, ComponentName[100];
-Integer_Parameter TotalInputs;
+Integer_Parameter OutputNumber;
                              
 QsysProcessorSimplInterface processor;                             
 QsysRouterSimpl router;
@@ -36,6 +36,6 @@ Function Main()
 {
     RegisterDelegate(processor, onIsRegistered, onInitializationComplete);
     RegisterDelegate(router, newRouterInputChange, onRouterInputChange);  
-    router.Initialize(ComponentName, TotalInputs);
+    router.Initialize(ComponentName, OutputNumber);
 
 }
