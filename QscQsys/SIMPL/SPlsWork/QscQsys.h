@@ -1,6 +1,7 @@
 namespace QscQsys;
         // class declarations
          class QsysPotsControllerSimpl;
+         class QsysNv32hDecoder;
          class QsysRouter;
          class QsysPotsController;
          class QsysSoftphoneController;
@@ -30,6 +31,7 @@ namespace QscQsys;
          class QsysSoftphoneControllerSimpl;
          class QsysCamera;
          class PtzTypes;
+         class QsysNv32hDecoderSimpl;
          class QsysSnapshotSimpl;
          class QsysSnapshot;
          class QsysFader;
@@ -41,8 +43,8 @@ namespace QscQsys;
          class QsysMatrixMixerSimpl;
          class QsysProcessor;
          class QsysMatrixMixer;
-         class QsysNv32hDecoder;
-         class QsysNv32hDecoderSimpl;
+         class QsysMeter;
+         class QsysMeterSimpl;
      class QsysPotsControllerSimpl 
     {
         // class delegates
@@ -534,6 +536,26 @@ namespace QscQsys;
         static SIGNED_LONG_INTEGER ZoomOut;
     };
 
+     class QsysNv32hDecoderSimpl 
+    {
+        // class delegates
+        delegate FUNCTION Nv32hDecoderInputChange ( INTEGER input );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING name );
+        FUNCTION ChangeSource ( INTEGER input );
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty Nv32hDecoderInputChange newNv32hDecoderInputChange;
+    };
+
      class QsysSnapshotSimpl 
     {
         // class delegates
@@ -586,6 +608,7 @@ namespace QscQsys;
         static SIGNED_LONG_INTEGER PotsControllerAutoAnswerChange;
         static SIGNED_LONG_INTEGER PotsControllerDND_Change;
         static SIGNED_LONG_INTEGER Nv32hDecoderInputChange;
+        static SIGNED_LONG_INTEGER MeterUpdate;
     };
 
     static class eQscSimplEventIds // enum
@@ -635,16 +658,15 @@ namespace QscQsys;
         // class properties
     };
 
-     class QsysNv32hDecoderSimpl 
+     class QsysMeterSimpl 
     {
         // class delegates
-        delegate FUNCTION Nv32hDecoderInputChange ( INTEGER input );
+        delegate FUNCTION MeterChange ( INTEGER meterValue );
 
         // class events
 
         // class functions
-        FUNCTION Initialize ( STRING name );
-        FUNCTION ChangeSource ( INTEGER input );
+        FUNCTION Initialize ( STRING name , INTEGER index );
         STRING_FUNCTION ToString ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
 
@@ -652,6 +674,6 @@ namespace QscQsys;
         INTEGER __class_id__;
 
         // class properties
-        DelegateProperty Nv32hDecoderInputChange newNv32hDecoderInputChange;
+        DelegateProperty MeterChange onMeterChange;
     };
 

@@ -1,0 +1,22 @@
+#SYMBOL_NAME "Qsys Meter"
+
+#INCLUDEPATH "D:\\Programming\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+Analog_output MeterValue;
+
+string_parameter _skip_, ComponentName[100];
+integer_parameter Index;
+
+QsysMeterSimpl meter;
+
+callback function NewMeterUpdate(integer value)
+{
+    MeterValue = value;
+}
+
+function Main()
+{
+    RegisterDelegate(meter, onMeterChange, NewMeterUpdate);
+    meter.Initialize(ComponentName, Index);
+}

@@ -159,7 +159,9 @@ namespace QscQsys
 
         PotsControllerDND_Change = 13,
 
-        Nv32hDecoderInputChange = 14
+        Nv32hDecoderInputChange = 14,
+        
+        MeterUpdate = 15
     }
 
     public enum eQscSimplEventIds

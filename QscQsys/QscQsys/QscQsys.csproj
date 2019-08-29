@@ -82,6 +82,8 @@
     <Compile Include="QsysFaderSimpl.cs" />
     <Compile Include="QsysMatrixMixer.cs" />
     <Compile Include="QsysMatrixMixerSimpl.cs" />
+    <Compile Include="QsysMeter.cs" />
+    <Compile Include="QsysMeterSimpl.cs" />
     <Compile Include="QsysNv32hDecoder.cs" />
     <Compile Include="QsysNv32hDecoderSimpl.cs" />
     <Compile Include="QsysPotsController.cs" />
