@@ -21,7 +21,7 @@
   Name=Qsys Matrix Mixer
   SmplCName=Qsys Matrix Mixer.usp
   Code=1
-  SysRev5=4.000
+  SysRev5=4.006
   SMWRev=3.00.00
   InputCue1=MuteOn
   InputSigType1=Digital
