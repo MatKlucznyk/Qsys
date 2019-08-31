@@ -1,6 +1,6 @@
 #SYMBOL_NAME "Qsys Softphone Controller"
 
-#INCLUDEPATH "D:\\Programming\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
+#INCLUDEPATH "..\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys" 
 
 #DEFINE_CONSTANT true 1

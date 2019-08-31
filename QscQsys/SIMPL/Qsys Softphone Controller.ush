@@ -11,7 +11,7 @@
 [END]
 [BEGIN]
   ObjTp=Hd
-  IncludePath1=D:\\Programming\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug
+  IncludePath1=..\\QscQsys\\bin\\Debug
 [END]
 [BEGIN]
   ObjTp=Symbol
