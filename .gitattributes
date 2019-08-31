@@ -1,2 +1,11 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+*.adr text eol=crlf
+*.usp text eol=crlf
+*.ush text eol=crlf
+*.sgd_ -diff -merge eol=crlf
+*.sgd2 -diff -merge eol=crlf
+*.smw  -diff -merge eol=crlf
+*.umc  -diff -merge eol=crlf
+*.um2  -diff -merge eol=crlf
+

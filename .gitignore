@@ -1,0 +1,17 @@
+SPlsWork
+.DS_Store
+*.[aA][sS][vV]
+*.ced
+*.err
+*.hash
+*.sgd2
+*.sm2
+*.zip
+!graphics/*.Core3/*.zip
+*CrosspointList.txt
+*.[cC]3[rR][jJ]
+*.[cC]3[pP][rR]*
+*.[lL][pP][zZ]
+*.[vV][tT][zZ]
+*.[vV][tT][zZ].*
+!release
