@@ -3,18 +3,18 @@
 #INCLUDEPATH "..\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
-Digital_Input MuteOn, MuteOff, MuteToggle;
-Analog_Input Volume;
+Digital_Input MuteOn, MuteOff, MuteToggle, _skip_, _skip_;
+Analog_Input Volume, Volume_db, RampTimeMS;
 
 Digital_Output MuteIsOn, MuteIsOff;
-Analog_Output _skip_,_skip_,_skip_, VolumeValue;
+Analog_Output _skip_,_skip_,_skip_, VolumeValue, VolumeValue_db;
                           
 QsysProcessorSimplInterface processor;                          
 QsysFaderSimpl fader;
 
-String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, ComponentName[100];
-
-integer currentVolume;
+String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_, _skip_, ComponentName[100];
+integer_parameter DefaultQsysRampTimeMS;
+integer currentVolume, currentVolume_db;
 
 Push MuteOn
 {
@@ -43,10 +43,31 @@ Threadsafe Change Volume
 {
     integer x;
 
-    While(x != volume)
+    While(x != Volume)
     {
        x = Volume;
         fader.Volume(Volume);
+    }
+}
+
+Threadsafe Change Volume_db
+{
+    integer x;
+
+    While(x != Volume_db)
+    {
+       x = Volume_db;
+        //fader.VolumeDb(Volume_db);
+    }
+}
+
+Threadsafe Change RampTimeMS
+{
+    integer x;
+    While (x != RampTimeMS)
+    {
+        x = RampTimeMS;
+        fader.RampTimeMS(RampTimeMS);
     }
 }
 
@@ -83,5 +104,5 @@ Function Main()
     RegisterDelegate(fader, newVolumeChange, onVolumeChange);
     REgisterDelegate(fader, newMuteChange, onMuteChange); 
     fader.Initialize(ComponentName);                                  
-
+    fader.RampTimeMS(DefaultQsysRampTimeMS);
 }

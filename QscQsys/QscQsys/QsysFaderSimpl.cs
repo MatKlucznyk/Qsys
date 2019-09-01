@@ -41,6 +41,11 @@ namespace QscQsys
             }
         }
 
+        public void RampTimeMS(ushort time)
+        {
+            fader.RampTimeMS(time);
+        }
+
         private void fader_QsysFaderEvent(object sender, QsysEventsArgs e)
         {
             switch (e.EventID)
