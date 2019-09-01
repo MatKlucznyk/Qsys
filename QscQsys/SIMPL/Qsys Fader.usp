@@ -15,7 +15,7 @@ QsysFaderSimpl fader;
 String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, ComponentName[100];
 
 integer currentVolume;
-integer_parameter QsysRampTime;
+integer_parameter Name;
 
 Push MuteOn
 {
@@ -84,5 +84,5 @@ Function Main()
     RegisterDelegate(fader, newVolumeChange, onVolumeChange);
     REgisterDelegate(fader, newMuteChange, onMuteChange); 
     fader.Initialize(ComponentName);                                  
-    fader.RampTime = QscQsys;
+
 }
