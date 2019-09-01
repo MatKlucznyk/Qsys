@@ -47,3 +47,12 @@ D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin
 D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\ResolveAssemblyReference.cache
 D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.dll
 D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.pdb
+C:\Users\WMS\Desktop\Git Projects\Qsys\QscQsys\QscQsys\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\WMS\Desktop\Git Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.dll
+C:\Users\WMS\Desktop\Git Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.pdb
+C:\Users\WMS\Desktop\Git Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.dll
+C:\Users\WMS\Desktop\Git Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.pdb
+C:\Users\WMS\Desktop\Git Projects\Qsys\QscQsys\QscQsys\bin\Debug\Newtonsoft.Json.Compact.dll
+C:\Users\WMS\Desktop\Git Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpCustomAttributesInterface.dll
+C:\Users\WMS\Desktop\Git Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpHelperInterface.dll
+C:\Users\WMS\Desktop\Git Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpReflectionInterface.dll

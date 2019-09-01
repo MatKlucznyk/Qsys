@@ -3,7 +3,7 @@
 #INCLUDEPATH "..\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
-Digital_Input MuteOn, MuteOff, MuteToggle, VolumeUp, VolumeDown;
+Digital_Input MuteOn, MuteOff, MuteToggle;
 Analog_Input Volume;
 
 Digital_Output MuteIsOn, MuteIsOff;
@@ -13,10 +13,9 @@ QsysProcessorSimplInterface processor;
 QsysFaderSimpl fader;
 
 String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, ComponentName[100];
-Integer_Parameter VolumeStep;
 
 integer currentVolume;
-
+integer_parameter QsysRampTime;
 
 Push MuteOn
 {
@@ -40,15 +39,6 @@ Push MuteToggle
     }
 }
 
-Push VolumeUp
-{
-    fader.Volume(currentVolume + VolumeStep);
-}
-
-Push VolumeDown
-{
-    fader.Volume(currentVolume - VolumeStep);
-}
 
 Threadsafe Change Volume
 {
@@ -56,8 +46,8 @@ Threadsafe Change Volume
 
     While(x != volume)
     {
-        x = Volume;
-        fader.Volume(x);
+       x = Volume;
+        fader.Volume(Volume);
     }
 }
 
@@ -94,5 +84,5 @@ Function Main()
     RegisterDelegate(fader, newVolumeChange, onVolumeChange);
     REgisterDelegate(fader, newMuteChange, onMuteChange); 
     fader.Initialize(ComponentName);                                  
-
+    fader.RampTime = QscQsys;
 }

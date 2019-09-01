@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Crestron.SimplSharp;
 using Newtonsoft.Json;
 
 namespace QscQsys
@@ -10,6 +11,7 @@ namespace QscQsys
         private bool registered;
         private bool currentMute;
         private int currentLvl;
+        private int lastSentLvl;
         private bool isComponent;
         private double max;
         private double min;
@@ -20,6 +22,7 @@ namespace QscQsys
         public bool IsRegistered { get { return registered; } }
         public bool CurrentMute { get { return currentMute; } }
         public int CurrentVolume { get { return currentLvl; } }
+        public ushort RampTime { get; set; }
 
         /// <summary>
         /// Default constructor for a QsysFader
@@ -56,6 +59,7 @@ namespace QscQsys
                 if (e.Data >= min && e.Data <= max)
                 {
                     currentLvl = (int)Math.Round((65535 / (max - min)) * (e.Data + (min * (-1))));
+                    lastSentLvl = -1;
                     QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.GainChange, cName, true, currentLvl, currentLvl.ToString()));
                 }
             }
@@ -82,33 +86,32 @@ namespace QscQsys
             }
         }
 
-        private double newValue = -1;
-
         /// <summary>
         /// Sets the current volume.
         /// </summary>
         /// <param name="value">The volume level to set to.</param>
         public void Volume(int value)
         {
-            while (newValue != value)
-            {
-                ComponentChange newVolumeChange = new ComponentChange();
-                newVolumeChange.Params = new ComponentChangeParams();
-                newValue = value;
+            double newVal = Math.Round((value / (65535 / (max - min))) + min);
+            if (lastSentLvl == newVal || newVal == currentLvl) //avoid repeats
+                return;
+            lastSentLvl = (int)newVal;
 
-                newVolumeChange.Params.Name = cName;
-                
+            ComponentChange newVolumeChange = new ComponentChange();
+            newVolumeChange.Params = new ComponentChangeParams();
+            newVolumeChange.Params.Name = cName;
+            
+            ComponentSetValue volume = new ComponentSetValue();
 
-                ComponentSetValue volume = new ComponentSetValue();
+            volume.Name = "gain";
+            volume.Value = newVal;
+            volume.Ramp = RampTime;
 
-                volume.Name = "gain";
-                volume.Value = Math.Round((newValue / (65535 / (max - min))) + min);
+            newVolumeChange.Params.Controls = new List<ComponentSetValue>();
+            newVolumeChange.Params.Controls.Add(volume);
 
-                newVolumeChange.Params.Controls = new List<ComponentSetValue>();
-                newVolumeChange.Params.Controls.Add(volume);
-
-                QsysProcessor.Enqueue(JsonConvert.SerializeObject(newVolumeChange));
-            }
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(newVolumeChange));
+            CrestronConsole.PrintLine("Setting new level to: {0}", volume.Value);
         }
 
         /// <summary>

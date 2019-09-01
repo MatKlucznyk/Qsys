@@ -29,10 +29,6 @@
   InputSigType2=Digital
   InputCue3=MuteToggle
   InputSigType3=Digital
-  InputCue4=VolumeUp
-  InputSigType4=Digital
-  InputCue5=VolumeDown
-  InputSigType5=Digital
   OutputCue1=MuteIsOn
   OutputSigType1=Digital
   OutputCue2=MuteIsOff
@@ -62,18 +58,16 @@
   ParamSigType7=Constant
   ParamCue8=ComponentName
   ParamSigType8=String
-  ParamCue9=VolumeStep
-  ParamSigType9=Constant
-  MinVariableInputs=5
-  MaxVariableInputs=5
+  MinVariableInputs=3
+  MaxVariableInputs=3
   MinVariableInputsList2=1
   MaxVariableInputsList2=1
   MinVariableOutputs=2
   MaxVariableOutputs=2
   MinVariableOutputsList2=4
   MaxVariableOutputsList2=4
-  MinVariableParams=8
-  MaxVariableParams=8
+  MinVariableParams=7
+  MaxVariableParams=7
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
@@ -89,8 +83,7 @@
   NumFixedParams=1
   Pp1=1
   Pp8=8
-  Pp9=9
-  MPp=9
+  MPp=8
   NVStorage=10
   ParamSigType1=String
   SmplCInputCue1=o#
@@ -118,14 +111,6 @@
   VVS=0
 [END]
 [BEGIN]
-  ObjTp=Dp
-  H=9
-  Tp=1
-  HD=False
-  Sgn=0
-  Lng=False
-  NF=63
-  NoS=True
-  DNF=1
-  VVS=0
+ObjTp=Status
+HeaderCompatible=False
 [END]
