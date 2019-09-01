@@ -8,7 +8,7 @@ namespace QscQsys
 {
     public class QsysFaderSimpl
     {
-        public delegate void VolumeChange(ushort value);
+        public delegate void VolumeChange(ushort value, short valueDb);
         public delegate void MuteChange(ushort value);
         public VolumeChange newVolumeChange { get; set; }
         public MuteChange newMuteChange { get; set; }
@@ -24,6 +24,11 @@ namespace QscQsys
         public void Volume(ushort value)
         {
             fader.Volume(value);
+        }
+
+        public void VolumeDb(short value)
+        {
+            fader.VolumeDb(value);
         }
 
         public void Mute(ushort value)
@@ -54,7 +59,7 @@ namespace QscQsys
                     break;
                 case eQscEventIds.GainChange:
                     if (newVolumeChange != null)
-                        newVolumeChange((ushort)e.IntegerValue);
+                        newVolumeChange((ushort)e.IntegerValue, (short)fader.CurrentVolumeDb);
                     break;
                 case eQscEventIds.MuteChange:
                     if (newMuteChange != null)

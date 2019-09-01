@@ -57,28 +57,25 @@ Threadsafe Change Volume_db
     While(x != Volume_db)
     {
        x = Volume_db;
-        //fader.VolumeDb(Volume_db);
+        fader.VolumeDb(Volume_db);
     }
 }
 
-Threadsafe Change RampTimeMS
+Change RampTimeMS
 {
-    integer x;
-    While (x != RampTimeMS)
-    {
-        x = RampTimeMS;
-        fader.RampTimeMS(RampTimeMS);
-    }
+    fader.RampTimeMS(RampTimeMS);
 }
 
 Callback Function onInitializationComplete(integer value)
 {        
 }
 
-Callback Function onVolumeChange(integer value)
+Callback Function onVolumeChange(integer value, signed_integer valueDb)
 {
     currentVolume = value;
+    currentVolume_db = valueDb;
     VolumeValue = currentVolume;
+    VolumeValue_db = currentVolume_db;
 }
 
 Callback Function onMuteChange(integer value)
