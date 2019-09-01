@@ -1,4 +1,4 @@
-#SYMBOL_NAME "Qsys Fader"
+#SYMBOL_NAME "Qsys Fader Driver"
 
 #INCLUDEPATH "..\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
@@ -15,7 +15,6 @@ QsysFaderSimpl fader;
 String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, ComponentName[100];
 
 integer currentVolume;
-integer_parameter Name;
 
 Push MuteOn
 {
