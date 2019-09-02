@@ -211,45 +211,11 @@ namespace QscQsys
                 //Send login if needed
                 if (loginUser.Length > 0 || loginPass.Length > 0)
                 {
-                    try
-                    { SendLogin(); }
-                    catch (Exception e)
-                    {
-                        CrestronConsole.PrintLine("Login error: {0}:\r\n{1}", e.Message);
-                        ErrorLog.Error("login: {0}:\r\n{1}", e.Message);
-                    }
+                    SendLogin();
                 }
 
-                commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
-
-                if (Controls.Count()>0)
-                {
-                    AddControlToChangeGroup addControls;
-                    addControls = new AddControlToChangeGroup();
-                    addControls.method = "ChangeGroup.AddControl";
-                    addControls.ControlParams = new AddControlToChangeGroupParams();
-                    addControls.ControlParams.Controls = new List<string>();
-                    foreach (var item in Controls)
-                    {
-                        addControls.ControlParams.Controls.Add(item.Key);
-                        if (debug)
-                            CrestronConsole.PrintLine("Adding named control: {0} to change group", item.Key);
-                    }
-                    commandQueue.Enqueue(JsonConvert.SerializeObject(addControls));
-                }
-
-                AddComponentToChangeGroup addComponents;
-                foreach (var item in Components)
-                {
-                    addComponents = new AddComponentToChangeGroup();
-                    addComponents.method = "ChangeGroup.AddComponentControl";
-                    addComponents.ComponentParams = new AddComponentToChangeGroupParams();
-                    addComponents.ComponentParams.Component = item.Key;
-                    commandQueue.Enqueue(JsonConvert.SerializeObject(addComponents));
-                }
-
-                commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
-
+                CoreModuleInit();
+                
                 heartbeatTimer = new CTimer(SendHeartbeat, null, 0, 15000);
 
                 ErrorLog.Notice("QsysProcessor is initialized.");
@@ -283,6 +249,39 @@ namespace QscQsys
             logon.Params.Password = loginPass;
             commandQueue.Enqueue(JsonConvert.SerializeObject(logon));
             CrestronConsole.PrintLine("Qsys - sending {0}", JsonConvert.SerializeObject(logon));
+        }
+
+        private static void CoreModuleInit()
+        {
+            commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
+
+            if (Controls.Count() > 0)
+            {
+                AddControlToChangeGroup addControls;
+                addControls = new AddControlToChangeGroup();
+                addControls.method = "ChangeGroup.AddControl";
+                addControls.ControlParams = new AddControlToChangeGroupParams();
+                addControls.ControlParams.Controls = new List<string>();
+                foreach (var item in Controls)
+                {
+                    addControls.ControlParams.Controls.Add(item.Key);
+                    if (debug)
+                        CrestronConsole.PrintLine("Adding named control: {0} to change group", item.Key);
+                }
+                commandQueue.Enqueue(JsonConvert.SerializeObject(addControls));
+            }
+
+            AddComponentToChangeGroup addComponents;
+            foreach (var item in Components)
+            {
+                addComponents = new AddComponentToChangeGroup();
+                addComponents.method = "ChangeGroup.AddComponentControl";
+                addComponents.ComponentParams = new AddComponentToChangeGroupParams();
+                addComponents.ComponentParams.Component = item.Key;
+                commandQueue.Enqueue(JsonConvert.SerializeObject(addComponents));
+            }
+
+            commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
         }
 
         private static void SendHeartbeat(object o)
@@ -462,8 +461,8 @@ namespace QscQsys
                 }
                 catch (Exception e)
                 {
-                    CrestronConsole.PrintLine("Error is QsysProcessor: {0}:\r\n{1}", e.Message, returnString);
-                    ErrorLog.Error("Error is QsysProcessor: {0}:\r\n{1}", e.Message, returnString);
+
+                    SendDebug(String.Format("Error is QsysProcessor: {0}:\r\n{1}", e.Message, returnString));
                 }
             }
         }
@@ -494,6 +493,7 @@ namespace QscQsys
         {
             if (debug)
                 CrestronConsole.PrintLine("Qsys Debug: {0}", msg);
+            //ErrorLog.Error("Error is QsysProcessor: {0}:\r\n{1}", e.Message, returnString);
         }
 
 

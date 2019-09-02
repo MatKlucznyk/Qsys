@@ -25,6 +25,8 @@
   SMWRev=3.00.00
   InputCue1=Initialize
   InputSigType1=Digital
+  InputCue2=testLogin
+  InputSigType2=Digital
   OutputCue1=IsInitialized
   OutputSigType1=Digital
   OutputCue2=IsConnected
@@ -78,8 +80,8 @@
   ParamSigType16=Constant
   ParamCue17=DebugMode
   ParamSigType17=Constant
-  MinVariableInputs=1
-  MaxVariableInputs=1
+  MinVariableInputs=2
+  MaxVariableInputs=2
   MinVariableInputsList2=0
   MaxVariableInputsList2=0
   MinVariableOutputs=4

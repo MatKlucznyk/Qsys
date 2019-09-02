@@ -3,7 +3,7 @@
 #INCLUDEPATH "..\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
-Digital_Input Initialize;
+Digital_Input Initialize, testLogin;
 
 Digital_Output IsInitialized, IsConnected, IsRedundant, IsEmulator;
 String_Output DesignName, DesignCode, CoreState, Platform, StatusString;
@@ -94,8 +94,6 @@ Callback Function NewStatusString(string value)
 {
 	StatusString = value;
 }
-
-
 Function Main()
 {
 	RegisterDelegate(processor, onIsRegistered, NewIsRegistered);  
