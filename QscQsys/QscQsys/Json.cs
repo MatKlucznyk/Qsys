@@ -29,6 +29,7 @@ namespace QscQsys
         public string Name { get; set; }
         public string Value { get; set; }
     }
+
     public class CreateChangeGroup
     {
         [JsonProperty]
@@ -60,7 +61,6 @@ namespace QscQsys
         [JsonProperty("params")]
         public AddControlToChangeGroupParams ControlParams { get; set; }
     }
-    
     public class AddControlToChangeGroupParams
     {
         [JsonProperty]
@@ -113,7 +113,7 @@ namespace QscQsys
     {
     }
 
-    public class ChangeResult
+    public class ComponentChangeResult
     {
         public string Component { get; set; }
         public string Name { get; set; }
@@ -188,5 +188,13 @@ namespace QscQsys
     {
         public string Name { get; set; }
         public string Value { get; set; }
+    }
+
+    public class ControlSetValue
+    {
+        public string Name { get; set; }
+        public double Value { get; set; }
+        public double Position { get; set; }
+        public double Ramp { get; set; }
     }
 }

@@ -321,17 +321,15 @@ namespace QscQsys
 
                     if (returnString.Contains("Changes"))
                     {
-                        //CrestronConsole.PrintLine("rx: {0}", returnString);
-
                         IList<JToken> changes = response["params"]["Changes"].Children().ToList();
 
-                        IList<ChangeResult> changeResults = new List<ChangeResult>();
+                        IList<ComponentChangeResult> changeResults = new List<ComponentChangeResult>();
 
                         foreach (JToken change in changes)
                         {
                             //ChangeResult changeResult = (ChangeResult)change.Cast<ChangeResult>();
 
-                            ChangeResult changeResult = JsonConvert.DeserializeObject<ChangeResult>(change.ToString());
+                            ComponentChangeResult changeResult = JsonConvert.DeserializeObject<ComponentChangeResult>(change.ToString());
 
                             if (changeResult.Component != null)
                             {

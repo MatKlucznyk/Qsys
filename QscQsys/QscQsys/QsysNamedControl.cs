@@ -5,10 +5,20 @@ using Newtonsoft.Json;
 
 namespace QscQsys
 {
+    public enum eControlType
+    {
+        isFloat = 0,
+        isInteger = 1,
+        isMomentary = 2,
+        isToggle = 3,
+        isTrigger = 4,
+        isString = 5
+    }
     public class QsysNamedControl
     {
         private string cName;
         private bool registered;
+        private eControlType ctrlType;
         //private bool currentMute;
         //private int currentLvl;
         //private double currentLvlDb;
@@ -21,20 +31,12 @@ namespace QscQsys
 
         public string ControlName { get { return cName; } }
         public bool IsRegistered { get { return registered; } }
-        public int ControlType { get; set; }
+        public eControlType ControlType { get { return ctrlType; } }
         //public bool CurrentMute { get { return currentMute; } }
         //public int CurrentVolume { get { return currentLvl; } }
         //public double CurrentVolumeDb { get { return currentLvlDb; } }
 
-        public enum eControlType
-        {
-            isFloat     = 0,
-            isInteger   = 1,
-            isMomentary = 2,
-            isToggle    = 3,
-            isTrigger   = 4,
-            isString    = 5
-        }
+        
 
         /// <summary>
         /// Default constructor for a QsysNamedControl
@@ -59,25 +61,31 @@ namespace QscQsys
         void Control_OnNewEvent(object sender, QsysInternalEventsArgs e)
         {
             CrestronConsole.PrintLine("control name: {0}, value: {1}, string: {2}", e.Name, e.Data, e.SData);
+            switch (ctrlType)
+            {
+                case eControlType.isFloat:
+                    //control name: CustomTest:CustomControlsFloat1, value: 0.19999997, string: .200
+                    break;
+                case eControlType.isInteger:
+                    //control name: CustomTest:CustomControlsInteger1, value: 1, string: 1
+                    //control name: CustomTest:CustomControlsInteger1, value: 0, string: 0
+                    break;
+                case eControlType.isMomentary:
+                    //control name: CustomTest:CustomControlsMomentary1, value: 1, string: true
+                    //control name: CustomTest:CustomControlsMomentary1, value: 0, string: false
+                    break;
+                case eControlType.isToggle:
+                    //control name: CustomTest:CustomControlsToggle1, value: 1, string: true
+                    //control name: CustomTest:CustomControlsToggle1, value: 0, string: false
+                    break;
+                case eControlType.isTrigger:
+                    //control name: CustomTest:CustomControlsTrigger1, value: 0, string:
+                    break;
+                case eControlType.isString:
+                    //control name: CustomTest:CustomControlsText1, value: 0, string: ss
+                    break;
 
-            //float
-            //control name: CustomTest:CustomControlsFloat1, value: 0.19999997, string: .200
-
-            //integer
-            //control name: CustomTest:CustomControlsInteger1, value: 1, string: 1            //control name: CustomTest:CustomControlsInteger1, value: 0, string: 0
-
-            //momentary
-            //control name: CustomTest:CustomControlsMomentary1, value: 1, string: true            //control name: CustomTest:CustomControlsMomentary1, value: 0, string: false
-
-            //toggle
-            //control name: CustomTest:CustomControlsToggle1, value: 1, string: true            //control name: CustomTest:CustomControlsToggle1, value: 0, string: false
-
-            //trigger
-            //control name: CustomTest:CustomControlsTrigger1, value: 0, string:
-
-            //string
-            //control name: CustomTest:CustomControlsText1, value: 0, string: ss
-
+            }
 
             //if (e.Name == "gain")
             //{
