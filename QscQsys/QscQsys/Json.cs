@@ -49,7 +49,7 @@ namespace QscQsys
         static double Rate = 0.15;
     }
 
-    public class AddControlToChangeGroup
+    public class AddComponentToChangeGroup
     {
         [JsonProperty]
         static string jsonrpc = "2.0";
