@@ -77,6 +77,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="QsysNamedControlSimpl.cs" />
+    <Compile Include="QsysNamedControl.cs" />
     <Compile Include="Json.cs" />
     <Compile Include="QsysCamera.cs" />
     <Compile Include="QsysFaderSimpl.cs" />

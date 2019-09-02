@@ -1,0 +1,106 @@
+#SYMBOL_NAME "Qsys Named Control Driver"
+
+#INCLUDEPATH "..\\QscQsys\\bin\\Debug"
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+Digital_Input MuteOn, MuteOff, MuteToggle, _skip_, _skip_;
+Analog_Input Volume, Volume_db, RampTimeMS;
+
+Digital_Output MuteIsOn, MuteIsOff;
+Analog_Output _skip_,_skip_,_skip_, VolumeValue, VolumeValue_db;
+                          
+QsysProcessorSimplInterface processor;                          
+QsysNamedControlSimpl ctrl;
+
+String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_, _skip_, Control_Name[100];
+integer_parameter DefaultQsysRampTimeMS;
+integer currentVolume, currentVolume_db;
+
+Push MuteOn
+{
+    
+}
+
+Push MuteOff
+{
+    
+}
+
+// Push MuteToggle
+// {
+//     if(!MuteIsOn && MuteIsOff)
+//     {
+//         fader.Mute(1);
+//     }
+//     else if (MuteIsOn && !MuteIsOff)
+//     {
+//         fader.Mute(0);
+//     }
+// }
+
+
+// Threadsafe Change Volume
+// {
+//     integer x;
+
+//     While(x != Volume)
+//     {
+//        x = Volume;
+//         fader.Volume(Volume);
+//     }
+// }
+
+// Threadsafe Change Volume_db
+// {
+//     integer x;
+
+//     While(x != Volume_db)
+//     {
+//        x = Volume_db;
+//         fader.VolumeDb(Volume_db);
+//     }
+// }
+
+// Change RampTimeMS
+// {
+//     fader.RampTimeMS(RampTimeMS);
+// }
+
+Callback Function onInitializationComplete(integer value)
+{        
+}
+
+// Callback Function onVolumeChange(integer value, signed_integer valueDb)
+// {
+//     currentVolume = value;
+//     currentVolume_db = valueDb;
+//     VolumeValue = currentVolume;
+//     VolumeValue_db = currentVolume_db;
+// }
+
+// Callback Function onMuteChange(integer value)
+// {
+//     switch(value)
+//     {
+//        case (1):
+//        {
+//            MuteIsOff = OFF;
+//            MuteIsOn = ON;
+//        }
+//        case (0):
+//        {
+//            MuteIsOff = ON;
+//            MuteIsOn = OFF;
+//        }
+//     }
+// }
+
+
+Function Main()
+{              
+    RegisterDelegate(processor, onIsRegistered, onInitializationComplete);
+    // RegisterDelegate(fader, newVolumeChange, onVolumeChange);
+    // RegisterDelegate(fader, newMuteChange, onMuteChange); 
+    ctrl.Initialize(Control_Name);                                 
+    //fader.RampTimeMS(DefaultQsysRampTimeMS);
+}

@@ -49,6 +49,25 @@ namespace QscQsys
         static double Rate = 0.15;
     }
 
+    public class AddControlToChangeGroup
+    {
+        [JsonProperty]
+        static string jsonrpc = "2.0";
+        [JsonProperty]
+        static string id = "crestron";
+        [JsonProperty]
+        public string method { get; set; }
+        [JsonProperty("params")]
+        public AddControlToChangeGroupParams ControlParams { get; set; }
+    }
+    
+    public class AddControlToChangeGroupParams
+    {
+        [JsonProperty]
+        static string Id = "1";
+        public IList<string> Controls { get; set; }
+    }
+
     public class AddComponentToChangeGroup
     {
         [JsonProperty]

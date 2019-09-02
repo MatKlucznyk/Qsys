@@ -61,12 +61,20 @@ namespace QscQsys
 
                             addControl = new AddControlToChangeGroup();
                             addControl.method = "ChangeGroup.AddControl";
-                            addControl.Controls.Add(control);
+                            addControl.ControlParams = new AddControlToChangeGroupParams();
+                            addControl.ControlParams.Controls = new List<string>();
+                            addControl.ControlParams.Controls.Add(control);
                             commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
+                            
+                            if (debug)
+                                CrestronConsole.PrintLine("Adding named control: {0} to change group", control);
+                        }
+                        else
+                        {
+                            CrestronConsole.PrintLine("reg: {0}, con: {1}", isInitialized, IsConnected);
                         }
                     }
                 }
-
                 return true;
             }
             catch (Exception e)
@@ -75,6 +83,7 @@ namespace QscQsys
                 return false;
             }
         }
+
 
         static internal bool RegisterComponent(Component component)
         {
@@ -173,16 +182,30 @@ namespace QscQsys
 
                 commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
 
-                AddComponentToChangeGroup addControl;
+                if (Controls.Count()>0)
+                {
+                    AddControlToChangeGroup addControls;
+                    addControls = new AddControlToChangeGroup();
+                    addControls.method = "ChangeGroup.AddControl";
+                    addControls.ControlParams = new AddControlToChangeGroupParams();
+                    addControls.ControlParams.Controls = new List<string>();
+                    foreach (var item in Controls)
+                    {
+                        addControls.ControlParams.Controls.Add(item.Key);
+                        if (debug)
+                            CrestronConsole.PrintLine("Adding named control: {0} to change group", item.Key);
+                    }
+                    commandQueue.Enqueue(JsonConvert.SerializeObject(addControls));
+                }
 
-
+                AddComponentToChangeGroup addComponents;
                 foreach (var item in Components)
                 {
-                    addControl = new AddComponentToChangeGroup();
-                    addControl.method = "ChangeGroup.AddComponentControl";
-                    addControl.ComponentParams = new AddComponentToChangeGroupParams();
-                    addControl.ComponentParams.Component = item.Key;
-                    commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
+                    addComponents = new AddComponentToChangeGroup();
+                    addComponents.method = "ChangeGroup.AddComponentControl";
+                    addComponents.ComponentParams = new AddComponentToChangeGroupParams();
+                    addComponents.ComponentParams.Component = item.Key;
+                    commandQueue.Enqueue(JsonConvert.SerializeObject(addComponents));
                 }
 
                 commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
@@ -245,6 +268,7 @@ namespace QscQsys
                 var data = commandQueue.Dequeue();
 
                 client.SendCommand(data + "\x00");
+                CrestronConsole.PrintLine("Sending: {0}",data);
             }
         }
 
@@ -297,6 +321,8 @@ namespace QscQsys
 
                     if (returnString.Contains("Changes"))
                     {
+                        //CrestronConsole.PrintLine("rx: {0}", returnString);
+
                         IList<JToken> changes = response["params"]["Changes"].Children().ToList();
 
                         IList<ChangeResult> changeResults = new List<ChangeResult>();
@@ -315,14 +341,14 @@ namespace QscQsys
                                         item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.String));
                                 }
                             }
-                            /*else
+                            else
                             {
                                 foreach (var item in Controls)
                                 {
                                     if (item.Key == changeResult.Name)
-                                        item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value));
+                                        item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.String));
                                 }
-                            }*/
+                            }
                         }
                     }
                     else if (returnString.Contains("EngineStatus"))
