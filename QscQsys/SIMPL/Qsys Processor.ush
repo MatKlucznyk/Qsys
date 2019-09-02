@@ -29,29 +29,65 @@
   OutputSigType1=Digital
   OutputCue2=IsConnected
   OutputSigType2=Digital
+  OutputCue3=IsRedundant
+  OutputSigType3=Digital
+  OutputCue4=IsEmulator
+  OutputSigType4=Digital
+  OutputList2Cue1=DesignName
+  OutputList2SigType1=Serial
+  OutputList2Cue2=DesignCode
+  OutputList2SigType2=Serial
+  OutputList2Cue3=CoreState
+  OutputList2SigType3=Serial
+  OutputList2Cue4=Platform
+  OutputList2SigType4=Serial
+  OutputList2Cue5=StatusString
+  OutputList2SigType5=Serial
+  OutputList2Cue6=StatusCode
+  OutputList2SigType6=Analog
   ParamCue1=[Reference Name]
   ParamCue2=[~UNUSED~]
   ParamSigType2=Constant
   ParamCue3=[~UNUSED~]
   ParamSigType3=Constant
-  ParamCue4=ID
-  ParamSigType4=String
-  ParamCue5=Host
-  ParamSigType5=String
-  ParamCue6=Port
+  ParamCue4=[~UNUSED~]
+  ParamSigType4=Constant
+  ParamCue5=[~UNUSED~]
+  ParamSigType5=Constant
+  ParamCue6=[~UNUSED~]
   ParamSigType6=Constant
-  ParamCue7=DebugMode
+  ParamCue7=[~UNUSED~]
   ParamSigType7=Constant
+  ParamCue8=[~UNUSED~]
+  ParamSigType8=Constant
+  ParamCue9=[~UNUSED~]
+  ParamSigType9=Constant
+  ParamCue10=[~UNUSED~]
+  ParamSigType10=Constant
+  ParamCue11=[~UNUSED~]
+  ParamSigType11=Constant
+  ParamCue12=ID
+  ParamSigType12=String
+  ParamCue13=Host
+  ParamSigType13=String
+  ParamCue14=Username
+  ParamSigType14=String
+  ParamCue15=Password
+  ParamSigType15=String
+  ParamCue16=Port
+  ParamSigType16=Constant
+  ParamCue17=DebugMode
+  ParamSigType17=Constant
   MinVariableInputs=1
   MaxVariableInputs=1
   MinVariableInputsList2=0
   MaxVariableInputsList2=0
-  MinVariableOutputs=2
-  MaxVariableOutputs=2
-  MinVariableOutputsList2=0
-  MaxVariableOutputsList2=0
-  MinVariableParams=6
-  MaxVariableParams=6
+  MinVariableOutputs=4
+  MaxVariableOutputs=4
+  MinVariableOutputsList2=6
+  MaxVariableOutputsList2=6
+  MinVariableParams=16
+  MaxVariableParams=16
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
@@ -66,11 +102,13 @@
   CompilerParamCode5=14
   NumFixedParams=1
   Pp1=1
-  Pp4=4
-  Pp5=5
-  Pp6=6
-  Pp7=7
-  MPp=7
+  Pp12=12
+  Pp13=13
+  Pp14=14
+  Pp15=15
+  Pp16=16
+  Pp17=17
+  MPp=17
   NVStorage=10
   ParamSigType1=String
   SmplCInputCue1=o#
@@ -91,7 +129,7 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=4
+  H=12
   Tp=1
   HD=False
   NoS=False
@@ -99,7 +137,7 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=5
+  H=13
   Tp=1
   HD=False
   NoS=False
@@ -107,7 +145,23 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=6
+  H=14
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=15
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=16
   Tp=1
   HD=False
   Sgn=0
@@ -119,7 +173,7 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=7
+  H=17
   Tp=1
   HD=False
   Sgn=0

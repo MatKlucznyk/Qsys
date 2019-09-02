@@ -197,4 +197,35 @@ namespace QscQsys
         public double Position { get; set; }
         public double Ramp { get; set; }
     }
+
+
+
+
+    public class EngineStatusResult
+    {
+        [JsonProperty]
+        public string jsonrpc { get; set; }
+        [JsonProperty]
+        public string method { get; set; }
+        [JsonProperty("params")]
+        public EngineStatusPropertiesResult Properties { get; set; }
+    }
+    public class EngineStatusPropertiesResult
+    {
+        public string Platform { get; set; }
+        public string State { get; set; }
+        public string DesignName { get; set; }
+        public string DesignCode { get; set; }
+        public string IsRedundant { get; set; }
+        public string IsEmulator { get; set; }
+        public EngineStatusParameterStateResult Status { get; set; }
+    }
+    public class EngineStatusParameterStateResult
+    {
+        public int Code { get; set; }
+        public string String { get; set; }
+    }
+
+
+
 }

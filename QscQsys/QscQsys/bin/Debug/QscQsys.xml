@@ -72,12 +72,17 @@
         </member>
         <member name="P:QscQsys.QsysProcessor.IsInitialized">
             <summary>
-            Processor initialzation state.
+            Processor Status
             </summary>
         </member>
         <member name="P:QscQsys.QsysProcessor.IsDisposed">
             <summary>
             Processor disposed state.
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysProcessor.IsDebugMode">
+            <summary>
+            Debug Mode
             </summary>
         </member>
         <member name="M:QscQsys.QsysNamedControl.#ctor(System.String)">

@@ -26,23 +26,41 @@ namespace QscQsys
         private static bool isInitialized;
         private static bool isDisposed;
         private static bool debug;
+        private static eCoreState coreState;
+        private static string platform;
+        private static string designName;
+        private static string designCode;
+        private static bool isRedundant;
+        private static bool isEmulator;
+        private static int statusCode;
+        private static string statusString;
 
         internal static Dictionary<string, InternalEvents> Controls = new Dictionary<string, InternalEvents>();
         internal static Dictionary<Component, InternalEvents> Components = new Dictionary<Component, InternalEvents>();
         internal static Dictionary<string, SimplEvents> SimplClients = new Dictionary<string, SimplEvents>();
 
         /// <summary>
-        /// Processor initialzation state.
+        /// Processor Status
         /// </summary>
         public static bool IsInitialized { get { return isInitialized; } }
+        public static bool IsConnected { get; set; }
+        public static eCoreState CoreState { get { return coreState; } }
+        public static string Platform { get { return platform; } }
+        public static string DesignName { get { return designName; } }
+        public static string DesignCode { get { return designCode; } }
+        public static bool IsRedundant { get { return isRedundant; } }
+        public static bool IsEmulator { get { return isEmulator; } }
+        public static int StatusCode { get { return statusCode; } }
+        public static string StatusString { get { return statusString; } }
 
         /// <summary>
         /// Processor disposed state.
         /// </summary>
         public static bool IsDisposed { get { return isDisposed; } }
 
-        public static bool IsConnected { get; set; }
-
+        /// <summary>
+        /// Debug Mode
+        /// </summary>
         public static bool IsDebugMode { get { return debug; } }
 
         static internal bool RegisterControl(string control)
@@ -349,9 +367,6 @@ namespace QscQsys
                             }
                         }
                     }
-                    else if (returnString.Contains("EngineStatus"))
-                    {
-                    }
                     else if (returnString.Contains("Properties"))
                     {
                         IList<JToken> components = response["result"].Children().ToList();
@@ -383,10 +398,34 @@ namespace QscQsys
                             }
                         }
                     }
+                    else if (returnString.Contains("EngineStatus") || returnString.Contains("StatusGet"))
+                    {
+                        EngineStatusResult statusResult = JsonConvert.DeserializeObject<EngineStatusResult>(returnString);
+                        coreState = (eCoreState)Enum.Parse(typeof(eCoreState), statusResult.Properties.State, true);
+                        platform = statusResult.Properties.Platform;
+                        designName = statusResult.Properties.DesignName;
+                        designCode = statusResult.Properties.DesignCode;
+                        isRedundant = Convert.ToBoolean(statusResult.Properties.IsRedundant);
+                        isEmulator = Convert.ToBoolean(statusResult.Properties.IsEmulator);
+                        statusCode = statusResult.Properties.Status.Code;
+                        statusString = statusResult.Properties.Status.String;
+                        foreach (var item in SimplClients)
+                        {
+                            item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.CoreState, "", (ushort)coreState));
+                            item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.Platform, "", (ushort)coreState));
+                            item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.DesignName, designName, 0));
+                            item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.DesignCode, designCode, 0));
+                            item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsRedundant, Convert.ToString(isRedundant), (ushort)Convert.ToInt16(isRedundant)));
+                            item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsEmulator, Convert.ToString(isEmulator), (ushort)Convert.ToInt16(isEmulator)));
+                            item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.StatusCode, Convert.ToString(statusCode), (ushort)statusCode));
+                            item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.StatusString, statusString, 0));
+                        }
+                    }
                 }
                 catch (Exception e)
                 {
-                    //ErrorLog.Error("Error is QsysProcessor: {0}:\r\n{1}", e.Message, returnString);
+                    CrestronConsole.PrintLine("Error is QsysProcessor: {0}:\r\n{1}", e.Message, returnString);
+                    ErrorLog.Error("Error is QsysProcessor: {0}:\r\n{1}", e.Message, returnString);
                 }
             }
         }
@@ -413,6 +452,12 @@ namespace QscQsys
             {
             }
         }
+    }
+    public enum eCoreState
+    {
+        Idle = 0,
+        Active = 1,
+        Standby = 2
     }
 }
 

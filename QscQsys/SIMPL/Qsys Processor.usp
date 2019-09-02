@@ -5,9 +5,10 @@
 
 Digital_Input Initialize;
 
-Digital_Output IsInitialized, IsConnected;
-
-String_Parameter _skip_, _skip_, ID[100], Host[100];
+Digital_Output IsInitialized, IsConnected, IsRedundant, IsEmulator;
+String_Output DesignName, DesignCode, CoreState, Platform, StatusString;
+Analog_Output StatusCode;
+String_Parameter _skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_, ID[100], Host[100], Username[100], Password[100];
 Integer_Parameter Port, DebugMode;
 
 integer waitTillStart;
@@ -38,12 +39,75 @@ Callback Function NewIsConnected(integer value)
 	else
 		IsConnected = OFF;
 }
+Callback Function NewCoreState(integer value)
+{
+	CSwitch(value)
+	{
+		case (0):
+		{
+			CoreState = "Idle";
+			break;
+		}
+		case (1):
+		{
+			CoreState = "Active";
+			break;
+		}
+		case (2):
+		{
+			CoreState = "Standby";
+			break;
+		}
+	}
+}
+Callback Function NewPlatform(string value)
+{
+	Platform = value;
+}
+Callback Function NewDesignName(string value)
+{
+	DesignName = value;
+}
+Callback Function NewDesignCode(string value)
+{
+	DesignCode = value;
+}
+Callback Function NewIsRedundant(integer value)
+{
+	if(value = 1)
+		IsRedundant = ON;
+	else
+		IsRedundant = OFF;
+}
+Callback Function NewIsEmulator(integer value)
+{
+	if(value = 1)
+		IsEmulator = ON;
+	else
+		IsEmulator = OFF;
+}
+Callback Function NewStatusCode(integer value)
+{
+	StatusCode = value;
+}
+Callback Function NewStatusString(string value)
+{
+	StatusString = value;
+}
+
 
 Function Main()
 {
 	RegisterDelegate(processor, onIsRegistered, NewIsRegistered);  
-	RegisterDelegate(processor, onIsConnected, NewIsConnected); 
-	
+	RegisterDelegate(processor, onIsConnected, NewIsConnected);
+	RegisterDelegate(processor, onCoreState, NewCoreState);
+	RegisterDelegate(processor, onPlatform, NewPlatform); 
+	RegisterDelegate(processor, onDesignName, NewDesignName); 
+	RegisterDelegate(processor, onDesignCode, NewDesignCode); 
+	RegisterDelegate(processor, onIsRedundant, NewIsRedundant); 
+	RegisterDelegate(processor, onIsEmulator, NewIsEmulator); 
+	RegisterDelegate(processor, onStatusCode, NewStatusCode);
+	RegisterDelegate(processor, onStatusString, NewStatusString);
 	WaitForInitializationComplete();
 	
 	waitTillStart = 1;

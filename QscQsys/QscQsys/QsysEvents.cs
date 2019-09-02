@@ -168,6 +168,14 @@ namespace QscQsys
     {
         IsRegistered = 1,
         NewCommand = 2,
-        IsConnected = 3
+        IsConnected = 3,
+        CoreState = 4,
+        Platform = 5,
+        DesignName = 6,
+        DesignCode = 7,
+        IsRedundant = 8,
+        IsEmulator = 9,
+        StatusCode = 10,
+        StatusString = 11
     }
 }
