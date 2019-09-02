@@ -22,10 +22,14 @@ namespace QscQsys
         private static CTimer responseQueueTimer;
         private static CTimer heartbeatTimer;
         private static TCPClientDevice client;
+        private static bool debug;
 
         private static bool isInitialized;
         private static bool isDisposed;
-        private static bool debug;
+
+        private static bool loggedIn;
+        private static string loginUser;
+        private static string loginPass;
         private static eCoreState coreState;
         private static string platform;
         private static string designName;
@@ -157,7 +161,7 @@ namespace QscQsys
         /// <summary>
         /// Initialzes all methods that are required to setup the class. Connection is established on port 1702.
         /// </summary>
-        public static void Initialize(string host, ushort port)
+        public static void Initialize(string host, ushort port, string user, string pass)
         {
             if (!isInitialized)
             {
@@ -166,6 +170,9 @@ namespace QscQsys
                 responseQueue = new CrestronQueue<string>();
                 commandQueueTimer = new CTimer(CommandQueueDequeue, null, 0, 50);
                 responseQueueTimer = new CTimer(ResponseQueueDequeue, null, 0, 50);
+
+                loginUser = user;
+                loginPass = pass;
 
                 client = new TCPClientDevice();
                 client.ID = 1;
@@ -182,6 +189,8 @@ namespace QscQsys
 
         static void client_ResponseString(string response, int id)
         {
+            if (debug)
+                CrestronConsole.PrintLine("RX ID:{0} - {1}", id, response);
             ParseResponse(response);
         }
 
@@ -191,12 +200,25 @@ namespace QscQsys
             {
                 ErrorLog.Notice("QsysProcessor is connected.");
                 IsConnected = true;
+
                 foreach (var item in SimplClients)
                 {
                     item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsConnected, "true", 1));
                 }
 
                 CrestronEnvironment.Sleep(1500);
+
+                //Send login if needed
+                if (loginUser.Length > 0 || loginPass.Length > 0)
+                {
+                    try
+                    { SendLogin(); }
+                    catch (Exception e)
+                    {
+                        CrestronConsole.PrintLine("Login error: {0}:\r\n{1}", e.Message);
+                        ErrorLog.Error("login: {0}:\r\n{1}", e.Message);
+                    }
+                }
 
                 commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
 
@@ -250,6 +272,17 @@ namespace QscQsys
                     item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsConnected, "false", 0));
                 }
             }
+        }
+
+        private static void SendLogin()
+        {
+            CrestronConsole.PrintLine("Qsys - Sending login: {0}:{1}", loginUser, loginPass);
+            CoreLogon logon = new CoreLogon();
+            logon.Params = new CoreLogonParams();
+            logon.Params.User = loginUser;
+            logon.Params.Password = loginPass;
+            commandQueue.Enqueue(JsonConvert.SerializeObject(logon));
+            CrestronConsole.PrintLine("Qsys - sending {0}", JsonConvert.SerializeObject(logon));
         }
 
         private static void SendHeartbeat(object o)
@@ -412,7 +445,7 @@ namespace QscQsys
                         foreach (var item in SimplClients)
                         {
                             item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.CoreState, "", (ushort)coreState));
-                            item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.Platform, "", (ushort)coreState));
+                            item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.Platform, "", (ushort)coreState));     
                             item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.DesignName, designName, 0));
                             item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.DesignCode, designCode, 0));
                             item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsRedundant, Convert.ToString(isRedundant), (ushort)Convert.ToInt16(isRedundant)));
@@ -420,6 +453,11 @@ namespace QscQsys
                             item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.StatusCode, Convert.ToString(statusCode), (ushort)statusCode));
                             item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.StatusString, statusString, 0));
                         }
+                    }
+                    else if (returnString.Contains("error"))
+                    {
+                        CoreError err = JsonConvert.DeserializeObject<CoreError>(returnString);
+                        CrestronConsole.PrintLine("Qsys Processor error message - {0}-{1}", err.error.code, err.error.message);
                     }
                 }
                 catch (Exception e)
@@ -445,13 +483,20 @@ namespace QscQsys
             //gather.Gather(data);
             try
             {
-                //CrestronConsole.PrintLine(data);
                 responseQueue.Enqueue(data);
             }
             catch (Exception e)
             {
             }
         }
+
+        public static void SendDebug(string msg)
+        {
+            if (debug)
+                CrestronConsole.PrintLine("Qsys Debug: {0}", msg);
+        }
+
+
     }
     public enum eCoreState
     {

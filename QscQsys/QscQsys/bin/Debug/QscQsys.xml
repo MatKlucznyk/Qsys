@@ -54,7 +54,7 @@
             Static processor for Q-Sys Cores.
             </summary>
         </member>
-        <member name="M:QscQsys.QsysProcessor.Initialize(System.String,System.UInt16)">
+        <member name="M:QscQsys.QsysProcessor.Initialize(System.String,System.UInt16,System.String,System.String)">
             <summary>
             Initialzes all methods that are required to setup the class. Connection is established on port 1702.
             </summary>
@@ -114,6 +114,16 @@
             Sets the QSys ramp time for the gain
             </summary>
             <param name="time"></param>
+        </member>
+        <member name="T:QscQsys.EngineStatusResult">
+            <summary>
+            Engine Status
+            </summary>
+        </member>
+        <member name="T:QscQsys.Heartbeat">
+            <summary>
+            Heartbeat
+            </summary>
         </member>
         <member name="M:QscQsys.QsysFader.#ctor(System.String)">
             <summary>

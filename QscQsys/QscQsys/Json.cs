@@ -99,20 +99,6 @@ namespace QscQsys
         public string Name { get; set; }
     }
 
-    public class Heartbeat
-    {
-        [JsonProperty]
-        static public string jsonrpc = "2.0";
-        [JsonProperty]
-        static public string method = "NoOp";
-        [JsonProperty("params")]
-        HeartbeatParams Params = new HeartbeatParams();
-    }
-
-    public class HeartbeatParams
-    {
-    }
-
     public class ComponentChangeResult
     {
         public string Component { get; set; }
@@ -200,7 +186,9 @@ namespace QscQsys
 
 
 
-
+    /// <summary>
+    /// Engine Status
+    /// </summary>
     public class EngineStatusResult
     {
         [JsonProperty]
@@ -226,6 +214,52 @@ namespace QscQsys
         public string String { get; set; }
     }
 
+    /// <summary>
+    /// Heartbeat
+    /// </summary>
+    public class Heartbeat
+    {
+        [JsonProperty]
+        static public string jsonrpc = "2.0";
+        [JsonProperty]
+        static public string method = "NoOp";
+        [JsonProperty("params")]
+        HeartbeatParams Params = new HeartbeatParams();
+    }
+    public class HeartbeatParams
+    {
+    }
 
 
-}
+    public class CoreLogon
+    {
+        [JsonProperty]
+        public string jsonrpc = "2.0";
+        [JsonProperty]
+        public string method = "Logon";
+        [JsonProperty("params")]
+        public CoreLogonParams Params { get; set; }
+    }
+    public class CoreLogonParams
+    {
+        [JsonProperty]
+        public string User { get; set; }
+        [JsonProperty]
+        public string Password { get; set; }
+    }
+
+
+    public class CoreError
+    {
+        [JsonProperty]
+        public string jsonrpc { get; set; }
+        public string id { get; set; }
+        public CoreErrorCode error { get; set; }
+    }
+    public class CoreErrorCode
+    {
+        public int code { get; set; }
+        public string message { get; set; }
+    }
+
+}   

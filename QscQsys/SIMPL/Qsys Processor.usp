@@ -21,7 +21,7 @@ Push Initialize
 	{}
 	processor.Debug(DebugMode);
     processor.Register(ID);
-    QsysProcessor.Initialize(host, port);
+    QsysProcessor.Initialize(host, port, Username, Password);
 }
 
 Callback Function NewIsRegistered(integer value)
