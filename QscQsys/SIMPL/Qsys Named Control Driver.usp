@@ -22,12 +22,12 @@ signed_integer currentValS;
 
 Push ButtonOn
 {
-    
+
 }
 
 push ButtonOff
 {
-
+    
 }
 
 push ButtonToggle
@@ -86,18 +86,25 @@ Callback Function onValueChange(integer value, signed_integer valueDb)
 }
 Callback Function onStateChange(integer value)
 {
-    switch(value)
+    if (NamedControlType = 4)
     {
-       case (1):
-       {
-           ButtonIsOff = OFF;
-           ButtonIsOn = ON;
-       }
-       case (0):
-       {
-           ButtonIsOff = ON;
-           ButtonIsOn = OFF;
-       }
+        pulse(20, Triggered);
+    }
+    else
+    {
+        switch(value)
+            {
+                case (1):
+                {
+                    ButtonIsOff = OFF;
+                    ButtonIsOn = ON;
+                }
+                case (0):
+                {
+                    ButtonIsOff = ON;
+                    ButtonIsOn = OFF;
+                }
+            }
     }
 }
 Callback Function onStringChange(string value)
@@ -111,6 +118,7 @@ Function Main()
     RegisterDelegate(ctrl, newValueChange, onValueChange);
     RegisterDelegate(ctrl, newStateChange, onStateChange);
     RegisterDelegate(ctrl, newStringChange, onStringChange);
-    ctrl.Initialize(Control_Name, NamedControlType);                                 
+    ctrl.Initialize(Control_Name);       
+    ctrl.SetControlType(NamedControlType);                          
     ctrl.RampTimeMS(DefaultQsysRampTimeMS);
 }

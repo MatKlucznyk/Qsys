@@ -85,7 +85,7 @@
             Debug Mode
             </summary>
         </member>
-        <member name="M:QscQsys.QsysNamedControl.#ctor(System.String,QscQsys.eControlType)">
+        <member name="M:QscQsys.QsysNamedControl.#ctor(System.String)">
             <summary>
             Default constructor for a QsysNamedControl
             </summary>

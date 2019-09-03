@@ -53,12 +53,12 @@ namespace QscQsys
         /// Default constructor for a QsysNamedControl
         /// </summary>
         /// <param name="Name">The component name of the gain.</param>
-        public QsysNamedControl(string Name, eControlType Type)
+        public QsysNamedControl(string Name)
         {
             cName = Name;
             if (QsysProcessor.RegisterControl(cName))
             {
-                CrestronConsole.PrintLine("adding control with name: {0}", cName);
+                CrestronConsole.PrintLine("adding named control with name: {0}", cName);
                 QsysProcessor.Controls[cName].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Control_OnNewEvent);
 
                 registered = true;
@@ -69,9 +69,14 @@ namespace QscQsys
             }
         }
 
+        public void SetControlType(eControlType type)
+        {
+            ctrlType = type;
+        }
+
         void Control_OnNewEvent(object sender, QsysInternalEventsArgs e)
         {
-            CrestronConsole.PrintLine("control name: {0}, value: {1}, string: {2}", e.Name, e.Data, e.SData);
+            CrestronConsole.PrintLine("control name: {0}, type: {1}, value: {2}, string: {3}", e.Name, ControlType, e.Data, e.SData);
             switch (ctrlType)
             {
                 case eControlType.isFloat:

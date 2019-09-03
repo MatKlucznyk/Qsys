@@ -17,10 +17,16 @@ namespace QscQsys
 
         private QsysNamedControl cntrl;
 
-        public void Initialize(string name, ushort type)
+        public void Initialize(string name)
         {
-            cntrl = new QsysNamedControl(name, (eControlType)type);
+            cntrl = new QsysNamedControl(name);
             cntrl.QsysNamedControlEvent += new EventHandler<QsysEventsArgs>(namedControl_QsysNamedControlEvent);
+        }
+
+        public void SetControlType(uint type)
+        {
+            eControlType t = (eControlType)Enum.Parse(typeof(eControlType), Convert.ToString(type), true);
+            cntrl.SetControlType(t);
         }
 
         private void namedControl_QsysNamedControlEvent(object sender, QsysEventsArgs e)
@@ -93,6 +99,11 @@ namespace QscQsys
         public void RampTimeMS(ushort time)
         {
             //fader.RampTimeMS(time);
+        }
+
+        public void test()
+        {
+            CrestronConsole.PrintLine("module name: {0} type: {1}", cntrl.ControlName, cntrl.ControlType); 
         }
 
         

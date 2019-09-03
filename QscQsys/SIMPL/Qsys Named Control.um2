@@ -15,14 +15,14 @@ ObjTp=Hd
 S0Nd=1
 S1Nd=2
 SLNd=3
-PrNm=Qsys Fader.umc
+PrNm=Qsys Named Control.umc
 DbVr=81.00.002.00
 DvcDbVr=107.00.001.00
 PgmNm=Ryan Wilkinson
 DlrNm=WMS
-CltNm=Qsys Fader
+CltNm=Qsys Named Control
 Incl=1766,2574,2651,2817,2886,2938,2947,3181,3197,3233,3710,3735,3736,3816,3888,4176,4308,4476,4591,4769,5360,5388,5420,5455,5497,5699,5813,5919,6150,6161,
-McNm=Qsys Fader
+McNm=Qsys Named Control
 SmVr=1091
 DvVr=1091
 TpN1=1
@@ -48,39 +48,39 @@ Mx1=0
 ObjTp=Bw
 H=1
 Lx=0
-Ly=389
-Rx=1032
-Ry=778
-Xm=-1
-Ym=-1
-SH=8
-Z=100
-Ht=1
-Hi=7
-]
-[
-ObjTp=Bw
-H=1
-Lx=0
 Ly=0
-Rx=1032
-Ry=389
+Rx=1766
+Ry=564
 Xm=-1
 Ym=-1
 SH=6
 Z=100
 Ht=3
-Hi=3
+Hi=1
+]
+[
+ObjTp=Bw
+H=1
+Lx=0
+Ly=564
+Rx=1766
+Ry=1128
+Xm=-1
+Ym=-1
+SH=7
+Z=100
+Ht=4
+Hi=5
 ]
 [
 ObjTp=Symbol
-Name=Qsys Fader
+Name=Qsys Named Control
 Code=1
-SmplCName=Qsys Fader.umc
+SmplCName=Qsys Named Control.umc
 Smpl-C=3
 CompilerTimePrecision=Single_Or_Double_Precision
-Exclusions=1,19,20,21,88,89,167,168,179,213,214,215,216,217,225,226,248,249,266,267,310,362,378,380,405,407,408,409,478,522,537,554,586,590,611,624,718,756,767,830,841,842,854,883,955,1032,1062,1079,1128,1129,1134,1140,1157,1158,1195,1199,1220,1221,1222,1223,1299,1348,1349,1439,1472,1473,1499,1746,1803,1975,2229,2354,2514,2523,2532,2706,2707,3235,3236,3427,3454,3567,3568,3601,3602,3708,3902,3903,3912,3918,3925,3926,4206,4207,302,305,
-Hint=Qsys Fader
+Exclusions=1,19,20,21,88,89,167,168,179,213,214,215,216,217,225,226,248,249,266,267,310,362,378,380,405,407,408,409,478,522,537,554,586,590,611,624,718,756,767,830,841,842,854,883,955,1032,1062,1079,1128,1129,1134,1140,1157,1158,1195,1199,1220,1221,1222,1223,1299,1348,1349,1439,1472,1473,1499,1746,1803,1975,2229,2354,2514,2523,2532,2706,2707,3235,3236,3427,3454,3567,3568,3601,3602,3708,3902,3903,3912,3918,3925,3926,4206,4207,
+Hint=Qsys Named Control
 SMWRev=3.00.00
 TIORev=0
 S+=1
@@ -89,9 +89,9 @@ APg=1
 StdCmd=0
 FltTmp=1
 FpCS=0
-NumFixedInputs=11
-NumFixedOutputs=11
-NumFixedParams=3
+NumFixedInputs=9
+NumFixedOutputs=9
+NumFixedParams=4
 MinVariableInputs=0
 MinVariableInputsList2=0
 MinVariableInputsList3=0
@@ -103,56 +103,52 @@ SymbolTree=32
 InputSigType1=Digital
 InputSigType2=Digital
 InputSigType3=Digital
-InputSigType4=Digital|Analog|Serial|String
+InputSigType4=Digital
 InputSigType5=Digital
-InputSigType6=Digital
-InputSigType7=Digital|Analog|Serial|String
+InputSigType6=Analog
+InputSigType7=Analog
 InputSigType8=Analog
-InputSigType9=Analog
-InputSigType10=Digital|Analog|Serial|String
-InputSigType11=Analog
+InputSigType9=Serial
 OutputSigType1=Digital
 OutputSigType2=Digital
 OutputSigType3=Digital|Analog|Serial|String
 OutputSigType4=Digital|Analog|Serial|String
-OutputSigType5=Digital|Analog|Serial|String
-OutputSigType6=Digital|Analog|Serial|String
-OutputSigType7=Digital|Analog|Serial|String
-OutputSigType8=Analog
-OutputSigType9=Analog
-OutputSigType10=Digital|Analog|Serial|String
+OutputSigType5=Digital
+OutputSigType6=Analog
+OutputSigType7=Analog
+OutputSigType8=Digital|Analog|Serial|String
+OutputSigType9=Serial
 ParamSigType1=String
-ParamSigType2=Time
-ParamSigType3=Constant
-InputCue1=[Mute_On]
-InputCue2=[Mute_Off]
-InputCue3=[Mute_Toggle]
-InputCue4=[~UNUSED~]
-InputCue5=[Volume_Up]
-InputCue6=[Volume_Down]
-InputCue7=[~UNUSED~]
-InputCue8=[Volume_Set]
-InputCue9=[Volume_db_Set]
-InputCue10=[~UNUSED~]
-InputCue11=[QSys_Ramp_Time_MS]
-OutputCue1=[Mute_Is_On]
-OutputCue2=[Mute_Is_Off]
+ParamSigType2=List
+ParamSigType3=Time
+ParamSigType4=Constant
+InputCue1=[Button_On]
+InputCue2=[Button_Off]
+InputCue3=[Button_Momentary]
+InputCue4=[Button_Toggle]
+InputCue5=[Trigger]
+InputCue6=[Value_Unsigned]
+InputCue7=[Value_Signed]
+InputCue8=[QSys_Ramp_Time_MS]
+InputCue9=[String_Set]
+OutputCue1=[Button_Is_On]
+OutputCue2=[Button_Is_Off]
 OutputCue3=[~UNUSED~]
 OutputCue4=[~UNUSED~]
-OutputCue5=[~UNUSED~]
-OutputCue6=[~UNUSED~]
-OutputCue7=[~UNUSED~]
-OutputCue8=[Volume_Is]
-OutputCue9=[Volume_db_Is]
-OutputCue10=[~UNUSED~]
-OutputCue11=[~UNUSED~]
-ParamCue1=Component Name
-ParamCue2=Ramp Time
-ParamCue3=QSys Default Ramp Time MS
-MPp=3
-Pp2=1
-Pp3=2
-FileName=Qsys Fader.umc
+OutputCue5=[Triggered]
+OutputCue6=[Value_Unsigned_Is]
+OutputCue7=[Value_Signed_Is]
+OutputCue8=[~UNUSED~]
+OutputCue9=[String_Out]
+ParamCue1=Control Name
+ParamCue2=Control Type,0d,1d,2d,3d,4d,5d
+ParamCue3=Ramp Time
+ParamCue4=QSys Default Ramp Time MS
+MPp=4
+Pp2=3
+Pp3=1
+Pp4=2
+FileName=Qsys Named Control.umc
 EncodingType=0
 ZeroOnIoOk=0
 ]
@@ -209,7 +205,7 @@ Nm=Logic
 ObjVer=1
 CF=2
 mC=2
-C1=8
+C1=7
 C2=9
 ]
 [
@@ -237,66 +233,69 @@ Nm=Argument Definition
 ObjVer=1
 PrH=5
 CF=2
-n1I=11
-n1O=11
-mI=11
-I1=6
-I2=8
-I3=7
-I4=9
-I5=11
-I6=12
-I7=9
-I8=13
-I9=19
-I10=9
-I11=21
-mO=11
-tO=11
-O1=4
-O2=5
-O3=9
-O4=9
-O5=9
-O6=9
-O7=9
-O8=14
-O9=20
-O10=9
-O11=9
-mP=3
-P1=Component Name
-P2=Ramp Time
-P3=QSys Default Ramp Time MS
-MPp=3
-Pp2=1
-Pp3=2
+n1I=9
+n1O=9
+mI=9
+I1=22
+I2=23
+I3=24
+I4=25
+I5=26
+I6=27
+I7=28
+I8=21
+I9=32
+mO=9
+tO=9
+O1=33
+O2=34
+O3=4
+O4=4
+O5=35
+O6=29
+O7=30
+O8=4
+O9=31
+mP=4
+P1=Control Name
+P2=Control Type
+P3=Ramp Time
+P4=QSys Default Ramp Time MS
+MPp=4
+Pp2=3
+Pp3=1
+Pp4=2
 ]
 [
 ObjTp=Sm
-H=8
+H=7
 SmC=103
-Nm=Qsys Fader Driver.usp
+Nm=Qsys Named Control Driver.usp
 ObjVer=1
 PrH=4
 CF=2
 n1I=5
-n2I=3
-n1O=2
-mI=8
-I1=6
-I2=8
-I3=7
-I6=13
-I7=19
+n2I=4
+n1O=5
+mI=9
+I1=22
+I2=23
+I3=24
+I4=25
+I5=26
+I6=27
+I7=28
 I8=21
-mO=7
-tO=7
-O1=4
-O2=5
-O6=14
-O7=20
-mP=12
+I9=32
+mO=9
+tO=9
+O1=33
+O2=34
+O5=35
+O6=29
+O7=30
+O9=31
+mP=16
 P1=
 P2=
 P3=
@@ -307,8 +306,12 @@ P7=
 P8=
 P9=
 P10=
-P11=#Component Name
-P12=#QSys Default Ramp Time MS
+P11=
+P12=#Control Name
+P13=#Control Type
+P14=#QSys Default Ramp Time MS
+P15=0d
+P16=65535d
 ]
 [
 ObjTp=Sm
@@ -318,6 +321,8 @@ Nm=SUBSYSTEM
 ObjVer=1
 PrH=4
 CF=2
+OpF=0
+HandF=1
 Cmn1=ramp
 mC=7
 C1=10
@@ -338,6 +343,8 @@ PrH=9
 CF=2
 n1I=3
 n1O=1
+OpF=0
+PropF=1
 mI=3
 I1=11
 I2=12
@@ -360,6 +367,8 @@ PrH=9
 CF=2
 n1I=2
 n1O=1
+OpF=0
+PropF=1
 Cmn1=ramp active\\
 mI=2
 I1=11
@@ -378,6 +387,8 @@ PrH=9
 CF=2
 n1I=1
 n1O=1
+OpF=0
+PropF=1
 Cmn1=scale to 16b\\
 mI=1
 I1=10
@@ -401,6 +412,8 @@ PrH=9
 CF=2
 n1I=1
 n1O=1
+OpF=0
+PropF=1
 Cmn1=ramp not active\\
 mI=1
 I1=16
@@ -418,6 +431,8 @@ PrH=9
 CF=2
 n1I=2
 n1O=1
+OpF=0
+PropF=1
 Cmn1=ramp active - set\\
 mI=2
 I1=16
@@ -436,6 +451,8 @@ PrH=9
 CF=2
 n1I=2
 n1O=1
+OpF=0
+PropF=1
 Cmn1=ramp not active - set internal\\
 mI=2
 I1=17
@@ -454,6 +471,8 @@ PrH=9
 CF=2
 n1I=1
 n1O=1
+OpF=0
+PropF=1
 Cmn1=scale to 0-100\\
 mI=1
 I1=14
@@ -470,31 +489,6 @@ P5=0d
 [
 ObjTp=Sg
 H=4
-Nm=[Mute_Is_On]
-]
-[
-ObjTp=Sg
-H=5
-Nm=[Mute_Is_Off]
-]
-[
-ObjTp=Sg
-H=6
-Nm=[Mute_On]
-]
-[
-ObjTp=Sg
-H=7
-Nm=[Mute_Toggle]
-]
-[
-ObjTp=Sg
-H=8
-Nm=[Mute_Off]
-]
-[
-ObjTp=Sg
-H=9
 Nm=[~UNUSED~]
 SgTp=31
 ]
@@ -550,21 +544,85 @@ SgTp=2
 ]
 [
 ObjTp=Sg
-H=19
-Nm=[Volume_db_Set]
-SgTp=2
-]
-[
-ObjTp=Sg
-H=20
-Nm=[Volume_db_Is]
-SgTp=2
-]
-[
-ObjTp=Sg
 H=21
 Nm=[QSys_Ramp_Time_MS]
 SgTp=2
+]
+[
+ObjTp=Sg
+H=22
+Nm=[Button_On]
+]
+[
+ObjTp=Sg
+H=23
+Nm=[Button_Off]
+]
+[
+ObjTp=Sg
+H=24
+Nm=[Button_Momentary]
+]
+[
+ObjTp=Sg
+H=25
+Nm=[Button_Toggle]
+]
+[
+ObjTp=Sg
+H=26
+Nm=[Trigger]
+]
+[
+ObjTp=Sg
+H=27
+Nm=[Value_Unsigned]
+SgTp=2
+]
+[
+ObjTp=Sg
+H=28
+Nm=[Value_Signed]
+SgTp=2
+]
+[
+ObjTp=Sg
+H=29
+Nm=[Value_Unsigned_Is]
+SgTp=2
+]
+[
+ObjTp=Sg
+H=30
+Nm=[Value_Signed_Is]
+SgTp=2
+]
+[
+ObjTp=Sg
+H=31
+Nm=[String_Out]
+SgTp=4
+]
+[
+ObjTp=Sg
+H=32
+Nm=[String_Set]
+SgTp=4
+]
+[
+ObjTp=Sg
+H=33
+Nm=[Button_Is_On]
+]
+[
+ObjTp=Sg
+H=34
+Nm=[Button_Is_Off]
+]
+[
+ObjTp=Sg
+H=35
+Nm=[Triggered]
 ]
 [
 ObjTp=Dp
@@ -588,5 +646,29 @@ NF=1
 DNF=1
 EncFmt=0
 DVLF=1
+Sgn=0
+]
+[
+ObjTp=Dp
+H=3
+Tp=1
+NF=1
+DNF=1
+EncFmt=0
+DVLF=1
+VVS=2
+VN=6
+Val1=0d
+Lbl1=Float
+Val2=1d
+Lbl2=Integer
+Val3=2d
+Lbl3=Momentary
+Val4=3d
+Lbl4=Toggle
+Val5=4d
+Lbl5=Trigger
+Val6=5d
+Lbl6=String
 Sgn=0
 ]

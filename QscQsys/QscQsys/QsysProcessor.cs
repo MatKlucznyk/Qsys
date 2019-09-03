@@ -190,7 +190,7 @@ namespace QscQsys
         static void client_ResponseString(string response, int id)
         {
             if (debug)
-                CrestronConsole.PrintLine("RX ID:{0} - {1}", id, response);
+                //CrestronConsole.PrintLine("RX ID:{0} - {1}", id, response);
             ParseResponse(response);
         }
 
