@@ -8,18 +8,62 @@ namespace QscQsys
 {
     public class QsysNamedControlSimpl
     {
-        //public delegate void VolumeChange(ushort value, short valueDb);
-        //public delegate void MuteChange(ushort value);
-        //public VolumeChange newVolumeChange { get; set; }
-        //public MuteChange newMuteChange { get; set; }
+        public delegate void ValueChange(ushort value, short valueDb);
+        public ValueChange newValueChange { get; set; }
+        public delegate void StateChange(ushort value);
+        public StateChange newStateChange { get; set; }
+        public delegate void StringChange(SimplSharpString value);
+        public StringChange newStringChange { get; set; }
 
         private QsysNamedControl cntrl;
 
-        public void Initialize(string name)
+        public void Initialize(string name, ushort type)
         {
-            cntrl = new QsysNamedControl(name);
+            cntrl = new QsysNamedControl(name, (eControlType)type);
             cntrl.QsysNamedControlEvent += new EventHandler<QsysEventsArgs>(namedControl_QsysNamedControlEvent);
         }
+
+        private void namedControl_QsysNamedControlEvent(object sender, QsysEventsArgs e)
+        {
+            switch (e.EventID)
+            {
+                case eQscEventIds.NamedControl:
+                    switch (cntrl.ControlType)
+                    {
+                        case eControlType.isFloat:
+                        case eControlType.isInteger:
+                            if (newValueChange != null && newStringChange != null)
+                            {
+                                newValueChange((ushort)e.IntegerValue, (short)e.IntegerValue);
+                                newStringChange(e.StringValue);
+                            }
+                            break;
+                        case eControlType.isMomentary:
+                        case eControlType.isToggle:
+                            if (newStateChange != null && newStringChange != null && newValueChange != null)
+                            {
+                                newValueChange((ushort)e.IntegerValue, (short)e.IntegerValue);
+                                newStateChange(Convert.ToUInt16(e.BooleanValue));
+                                newStringChange(e.StringValue);
+                            }
+                            break;
+                        case eControlType.isTrigger:
+                            if (newStateChange != null)
+                                newStateChange(Convert.ToUInt16(e.BooleanValue));
+                            break;
+                        case eControlType.isString:
+                            if (newStringChange != null)
+                                newStringChange(e.StringValue);
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
 
         //public void Volume(ushort value)
         //{
@@ -46,42 +90,11 @@ namespace QscQsys
         //    }
         //}
 
-        //public void RampTimeMS(ushort time)
-        //{
-        //    fader.RampTimeMS(time);
-        //}
-
-        private void namedControl_QsysNamedControlEvent(object sender, QsysEventsArgs e)
+        public void RampTimeMS(ushort time)
         {
-            switch (e.EventID)
-            {
-                case eQscEventIds.NewCommand:
-                    break;
-                case eQscEventIds.GainChange:
-                    //if (newVolumeChange != null)
-                    //    newVolumeChange((ushort)e.IntegerValue, (short)fader.CurrentVolumeDb);
-                    break;
-                case eQscEventIds.MuteChange:
-                    //if (newMuteChange != null)
-                    //    newMuteChange((ushort)e.IntegerValue);
-                    break;
-                case eQscEventIds.NewMaxGain:
-                    break;
-                case eQscEventIds.NewMinGain:
-                    break;
-                case eQscEventIds.CameraStreamChange:
-                    break;
-                case eQscEventIds.PotsControllerOffHook:
-                    break;
-                case eQscEventIds.PotsControllerIsRinging:
-                    break;
-                case eQscEventIds.PotsControllerDialString:
-                    break;
-                case eQscEventIds.PotsControllerCurrentlyCalling:
-                    break;
-                default:
-                    break;
-            }
+            //fader.RampTimeMS(time);
         }
+
+        
     }
 }

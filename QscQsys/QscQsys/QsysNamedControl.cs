@@ -19,6 +19,11 @@ namespace QscQsys
         private string cName;
         private bool registered;
         private eControlType ctrlType;
+
+        private double dVal = 0;
+        private string sVal = "";
+        private bool bVal = false;
+
         //private bool currentMute;
         //private int currentLvl;
         //private double currentLvlDb;
@@ -32,6 +37,12 @@ namespace QscQsys
         public string ControlName { get { return cName; } }
         public bool IsRegistered { get { return registered; } }
         public eControlType ControlType { get { return ctrlType; } }
+
+        public double D_Val { get { return dVal; } }
+        public string S_Val { get { return sVal; } }
+        public bool b_Val { get { return bVal; } }
+
+
         //public bool CurrentMute { get { return currentMute; } }
         //public int CurrentVolume { get { return currentLvl; } }
         //public double CurrentVolumeDb { get { return currentLvlDb; } }
@@ -42,7 +53,7 @@ namespace QscQsys
         /// Default constructor for a QsysNamedControl
         /// </summary>
         /// <param name="Name">The component name of the gain.</param>
-        public QsysNamedControl(string Name)
+        public QsysNamedControl(string Name, eControlType Type)
         {
             cName = Name;
             if (QsysProcessor.RegisterControl(cName))
@@ -64,27 +75,41 @@ namespace QscQsys
             switch (ctrlType)
             {
                 case eControlType.isFloat:
-                    //control name: CustomTest:CustomControlsFloat1, value: 0.19999997, string: .200
+                    dVal = e.Data * 10;
+                    sVal = e.SData;
+                    bVal = false;
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, cName, bVal, (int)dVal, sVal));
                     break;
                 case eControlType.isInteger:
-                    //control name: CustomTest:CustomControlsInteger1, value: 1, string: 1
-                    //control name: CustomTest:CustomControlsInteger1, value: 0, string: 0
+                    dVal = e.Data;
+                    sVal = e.SData;
+                    bVal = false;
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, cName, bVal, (int)dVal, sVal));
                     break;
                 case eControlType.isMomentary:
-                    //control name: CustomTest:CustomControlsMomentary1, value: 1, string: true
-                    //control name: CustomTest:CustomControlsMomentary1, value: 0, string: false
+                    dVal = e.Data;
+                    sVal = e.SData;
+                    bVal = Convert.ToBoolean(e.Data);
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, cName, bVal, (int)dVal, sVal));
                     break;
                 case eControlType.isToggle:
-                    //control name: CustomTest:CustomControlsToggle1, value: 1, string: true
-                    //control name: CustomTest:CustomControlsToggle1, value: 0, string: false
+                    dVal = e.Data;
+                    sVal = e.SData;
+                    bVal = Convert.ToBoolean(e.Data);
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, cName, bVal, (int)dVal, sVal));
                     break;
                 case eControlType.isTrigger:
-                    //control name: CustomTest:CustomControlsTrigger1, value: 0, string:
+                    dVal = e.Data;
+                    sVal = e.SData;
+                    bVal = false;
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, cName, bVal, (int)dVal, sVal));
                     break;
                 case eControlType.isString:
-                    //control name: CustomTest:CustomControlsText1, value: 0, string: ss
+                    dVal = 0;
+                    sVal = e.SData;
+                    bVal = false;
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, cName, bVal, (int)dVal, sVal));
                     break;
-
             }
 
             //if (e.Name == "gain")
@@ -99,6 +124,40 @@ namespace QscQsys
             //}
 
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         /// <summary>
         /// Sets the current volume.

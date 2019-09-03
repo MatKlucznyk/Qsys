@@ -99,7 +99,7 @@ Function Main()
 {              
     RegisterDelegate(processor, onIsRegistered, onInitializationComplete);
     RegisterDelegate(fader, newVolumeChange, onVolumeChange);
-    REgisterDelegate(fader, newMuteChange, onMuteChange); 
+    RegisterDelegate(fader, newMuteChange, onMuteChange); 
     fader.Initialize(ComponentName);                                  
     fader.RampTimeMS(DefaultQsysRampTimeMS);
 }
