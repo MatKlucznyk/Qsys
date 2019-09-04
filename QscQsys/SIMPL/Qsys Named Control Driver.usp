@@ -118,7 +118,6 @@ Function Main()
     RegisterDelegate(ctrl, newValueChange, onValueChange);
     RegisterDelegate(ctrl, newStateChange, onStateChange);
     RegisterDelegate(ctrl, newStringChange, onStringChange);
-    ctrl.Initialize(Control_Name);       
-    ctrl.SetControlType(NamedControlType);                          
+    ctrl.Initialize(Control_Name, NamedControlType);                            
     ctrl.RampTimeMS(DefaultQsysRampTimeMS);
 }

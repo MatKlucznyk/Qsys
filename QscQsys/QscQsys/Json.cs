@@ -184,6 +184,16 @@ namespace QscQsys
         public double Ramp { get; set; }
     }
 
+    public class ControlSet
+    {
+        [JsonProperty]
+        public string jsonrpc = "2.0";
+        [JsonProperty]
+        public string method { get; set; }
+        [JsonProperty("params")]
+        public EngineStatusPropertiesResult Properties { get; set; }
+    }
+
 
 
     /// <summary>

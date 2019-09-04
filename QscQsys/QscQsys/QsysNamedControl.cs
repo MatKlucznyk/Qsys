@@ -28,9 +28,9 @@ namespace QscQsys
         //private int currentLvl;
         //private double currentLvlDb;
         //private int lastSentLvl;
-        //private double max;
-        //private double min;
-        //private double rampTime;
+        private double max;
+        private double min;
+        private double rampTime;
 
         public event EventHandler<QsysEventsArgs> QsysNamedControlEvent;
 
@@ -53,9 +53,10 @@ namespace QscQsys
         /// Default constructor for a QsysNamedControl
         /// </summary>
         /// <param name="Name">The component name of the gain.</param>
-        public QsysNamedControl(string Name)
+        public QsysNamedControl(string Name, eControlType Type)
         {
             cName = Name;
+            ctrlType = Type;
             if (QsysProcessor.RegisterControl(cName))
             {
                 CrestronConsole.PrintLine("adding named control with name: {0}", cName);
@@ -67,11 +68,6 @@ namespace QscQsys
             {
                 CrestronConsole.PrintLine("adding new control {0} failed..", Name);
             }
-        }
-
-        public void SetControlType(eControlType type)
-        {
-            ctrlType = type;
         }
 
         void Control_OnNewEvent(object sender, QsysInternalEventsArgs e)
