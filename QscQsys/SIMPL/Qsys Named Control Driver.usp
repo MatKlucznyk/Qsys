@@ -4,69 +4,75 @@
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 Digital_Input ButtonOn, ButtonOff, ButtonMomentary, ButtonToggle, Trigger;
-Analog_Input ValueUnsigned, ValueSigned, RampTimeMS;
+Analog_Input ValueScaled, ValueRaw, RampTimeMS;
 String_Input StringSet[255];
 
 Digital_Output ButtonIsOn, ButtonIsOff, _skip_, _skip_, Triggered;
-Analog_Output ValueUnsignedOut, ValueSignedOut, _skip_;
+Analog_Output ValueScaledOut, ValueRawOut, _skip_;
 String_Output StringOut;
                           
 QsysProcessorSimplInterface processor;                          
 QsysNamedControlSimpl ctrl;
 
 String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_, _skip_, _skip_, Control_Name[100];
-integer_parameter NamedControlType, DefaultQsysRampTimeMS, Val_Minimum, Val_Maximum;
+integer_parameter NamedControlType, DefaultQsysRampTimeMS;
+string_parameter Val_Minimum[10], Val_Maximum[10];
 
-integer currentValUS;
-signed_integer currentValS;
+integer currentValScaled;
+signed_integer currentValRaw;
 
 Push ButtonOn
 {
-
+    ctrl.SetState(1);
 }
 
 push ButtonOff
 {
-    
+    ctrl.SetState(0);
 }
 
 push ButtonToggle
 {
-
+    ctrl.SetStateToggle();
 }
 
 push ButtonMomentary
 {
-
+    ctrl.SetState(1);
 }
 release ButtonMomentary
 {
-   
+   ctrl.SetState(0);
 }
 
 push Trigger
 {
-
+    ctrl.Trigger();
 }
 
-Threadsafe Change ValueUnsigned
+Threadsafe change StringSet
+{
+   ctrl.SetString(StringSet);
+}
+
+Threadsafe Change ValueScaled
 {
     integer x;
-    // While(x != Volume)
-    // {
-    //    x = Volume;
-    //     fader.Volume(Volume);
-    // }
+    While(x != ValueScaled)
+    {
+       x = ValueScaled;
+        ctrl.SetValueScaled(ValueScaled);
+    }
 }
 
-Threadsafe Change ValueSigned
+Threadsafe Change ValueRaw
 {
-    // integer x;
-    // While(x != Volume_db)
-    // {
-    //    x = Volume_db;
-    //     fader.VolumeDb(Volume_db);
-    // }
+    signed_integer x;
+    While(x != ValueRaw)
+    {
+       x = ValueRaw;
+        ctrl.SetValueRaw(ValueRaw);
+    }
 }
 
 Change RampTimeMS
@@ -77,16 +83,17 @@ Change RampTimeMS
 Callback Function onInitializationComplete(integer value)
 {        
 }
-Callback Function onValueChange(integer value, signed_integer valueDb)
+Callback Function onValueChange(integer valScaled, signed_integer valRaw, string valString)
 {
-    currentValUS = value;
-    currentValS = valueDb;
-    ValueUnsignedOut = currentValUS;
-    ValueSignedOut = currentValS;
+    currentValScaled = valScaled;
+    currentValRaw = valRaw;
+    StringOut = valString;
+    ValueScaledOut = currentValScaled;
+    ValueRawOut = currentValRaw;
 }
 Callback Function onStateChange(integer value)
 {
-    if (NamedControlType = 4)
+    if (NamedControlType = 2)
     {
         pulse(20, Triggered);
     }
@@ -120,4 +127,5 @@ Function Main()
     RegisterDelegate(ctrl, newStringChange, onStringChange);
     ctrl.Initialize(Control_Name, NamedControlType);                            
     ctrl.RampTimeMS(DefaultQsysRampTimeMS);
+    ctrl.SetMinMax(Val_Minimum, Val_Maximum);
 }

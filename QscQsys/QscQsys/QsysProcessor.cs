@@ -242,13 +242,12 @@ namespace QscQsys
 
         private static void SendLogin()
         {
-            CrestronConsole.PrintLine("Qsys - Sending login: {0}:{1}", loginUser, loginPass);
+            SendDebug(string.Format("Qsys - Sending login: {0}:{1}", loginUser, loginPass));
             CoreLogon logon = new CoreLogon();
             logon.Params = new CoreLogonParams();
             logon.Params.User = loginUser;
             logon.Params.Password = loginPass;
             commandQueue.Enqueue(JsonConvert.SerializeObject(logon));
-            CrestronConsole.PrintLine("Qsys - sending {0}", JsonConvert.SerializeObject(logon));
         }
 
         private static void CoreModuleInit()
@@ -266,7 +265,7 @@ namespace QscQsys
                 {
                     addControls.ControlParams.Controls.Add(item.Key);
                     if (debug)
-                        CrestronConsole.PrintLine("Adding named control: {0} to change group", item.Key);
+                        SendDebug(string.Format("Adding named control: {0} to change group", item.Key));
                 }
                 commandQueue.Enqueue(JsonConvert.SerializeObject(addControls));
             }
@@ -318,7 +317,6 @@ namespace QscQsys
                 var data = commandQueue.Dequeue();
 
                 client.SendCommand(data + "\x00");
-                CrestronConsole.PrintLine("Sending: {0}",data);
             }
         }
 

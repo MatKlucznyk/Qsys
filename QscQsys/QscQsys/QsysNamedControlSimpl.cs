@@ -8,7 +8,7 @@ namespace QscQsys
 {
     public class QsysNamedControlSimpl
     {
-        public delegate void ValueChange(ushort value, short valueDb);
+        public delegate void ValueChange(ushort valScaled, short valRaw, SimplSharpString valString);
         public ValueChange newValueChange { get; set; }
         public delegate void StateChange(ushort value);
         public StateChange newStateChange { get; set; }
@@ -31,21 +31,19 @@ namespace QscQsys
                 case eQscEventIds.NamedControl:
                     switch (cntrl.ControlType)
                     {
-                        case eControlType.isFloat:
-                        case eControlType.isInteger:
+                        case eControlType.isValue:
                             if (newValueChange != null && newStringChange != null)
                             {
-                                newValueChange((ushort)e.IntegerValue, (short)e.IntegerValue);
-                                newStringChange(e.StringValue);
+                                if (e.StringValue == "[[VAL]]")
+                                {
+                                    newValueChange((ushort)cntrl.ValScaled, (short)cntrl.Val, cntrl.S_Val);
+                                }
                             }
                             break;
-                        case eControlType.isMomentary:
-                        case eControlType.isToggle:
+                        case eControlType.isButton:
                             if (newStateChange != null && newStringChange != null && newValueChange != null)
                             {
-                                newValueChange((ushort)e.IntegerValue, (short)e.IntegerValue);
                                 newStateChange(Convert.ToUInt16(e.BooleanValue));
-                                newStringChange(e.StringValue);
                             }
                             break;
                         case eControlType.isTrigger:
@@ -65,44 +63,45 @@ namespace QscQsys
             }
         }
 
-        public void SetValue(ushort value)
+        public void SetValueScaled(ushort value)
         {
-            //fader.volume(value);
+            cntrl.SetValueScaled(value);
         }
 
-        public void SetValueDB(short value)
+        public void SetValueRaw(short value)
         {
-            //fader.VolumeDb(value);
+            cntrl.SetValueRaw(value);
         }
 
-        public void SetState(ushort state)
+        public void SetState(ushort value)
         {
-            
+            cntrl.SetState(Convert.ToBoolean(value));
+        }
+        
+        public void SetStateToggle()
+        {
+            cntrl.SetStateToggle();
+        }
+        
+        public void Trigger()
+        {
+            cntrl.Trigger();
         }
 
-
-
-        //public void Mute(ushort value)
-        //{
-        //    switch (value)
-        //    {
-        //        case(0):
-        //            fader.Mute(false);
-        //            break;
-        //        case(1):
-        //            fader.Mute(true);
-        //            break;
-        //        default:
-        //            break;
-        //    }
-        //}
+        public void SetString(SimplSharpString value)
+        {
+            cntrl.SetString(value.ToString());
+        }
 
         public void RampTimeMS(ushort time)
         {
             cntrl.RampTimeMS(time);
         }
 
-
+        public void SetMinMax(SimplSharpString newMin, SimplSharpString newMax)
+        {
+            cntrl.SetMinMaxViaString(newMin.ToString(), newMax.ToString());
+        }
         
     }
 }

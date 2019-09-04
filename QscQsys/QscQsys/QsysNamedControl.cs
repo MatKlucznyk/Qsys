@@ -7,12 +7,10 @@ namespace QscQsys
 {
     public enum eControlType
     {
-        isFloat = 0,
-        isInteger = 1,
-        isMomentary = 2,
-        isToggle = 3,
-        isTrigger = 4,
-        isString = 5
+        isValue = 0,
+        isButton = 1,
+        isTrigger = 2,
+        isString = 3
     }
     public class QsysNamedControl
     {
@@ -20,14 +18,12 @@ namespace QscQsys
         private bool registered;
         private eControlType ctrlType;
 
-        private double dVal = 0;
+        private double val = 0;
+        private double valScaled = 0;
+        private double lastSentVal = 0;
         private string sVal = "";
         private bool bVal = false;
 
-        //private bool currentMute;
-        //private int currentLvl;
-        //private double currentLvlDb;
-        //private int lastSentLvl;
         private double max;
         private double min;
         private double rampTime;
@@ -38,16 +34,11 @@ namespace QscQsys
         public bool IsRegistered { get { return registered; } }
         public eControlType ControlType { get { return ctrlType; } }
 
-        public double D_Val { get { return dVal; } }
+        public double Val { get { return val; } }
+        public double ValScaled { get { return valScaled; } }
         public string S_Val { get { return sVal; } }
         public bool b_Val { get { return bVal; } }
 
-
-        //public bool CurrentMute { get { return currentMute; } }
-        //public int CurrentVolume { get { return currentLvl; } }
-        //public double CurrentVolumeDb { get { return currentLvlDb; } }
-
-        
 
         /// <summary>
         /// Default constructor for a QsysNamedControl
@@ -59,7 +50,6 @@ namespace QscQsys
             ctrlType = Type;
             if (QsysProcessor.RegisterControl(cName))
             {
-                CrestronConsole.PrintLine("adding named control with name: {0}", cName);
                 QsysProcessor.Controls[cName].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Control_OnNewEvent);
 
                 registered = true;
@@ -72,176 +62,123 @@ namespace QscQsys
 
         void Control_OnNewEvent(object sender, QsysInternalEventsArgs e)
         {
-            CrestronConsole.PrintLine("control name: {0}, type: {1}, value: {2}, string: {3}", e.Name, ControlType, e.Data, e.SData);
             switch (ctrlType)
             {
-                case eControlType.isFloat:
-                    dVal = e.Data * 10;
+                case eControlType.isValue:
+                    val = e.Data;
+                    valScaled = Math.Round(scale(val, min, max, 0, 65535));
                     sVal = e.SData;
-                    bVal = false;
-                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, cName, bVal, (int)dVal, sVal));
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, cName, false, (int)val, "[[VAL]]"));
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, cName, false, (int)valScaled, "[[VAL-SCALED]]"));
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, cName, false, 0, sVal));
                     break;
-                case eControlType.isInteger:
-                    dVal = e.Data;
-                    sVal = e.SData;
-                    bVal = false;
-                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, cName, bVal, (int)dVal, sVal));
-                    break;
-                case eControlType.isMomentary:
-                    dVal = e.Data;
-                    sVal = e.SData;
+                case eControlType.isButton:
                     bVal = Convert.ToBoolean(e.Data);
-                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, cName, bVal, (int)dVal, sVal));
-                    break;
-                case eControlType.isToggle:
-                    dVal = e.Data;
-                    sVal = e.SData;
-                    bVal = Convert.ToBoolean(e.Data);
-                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, cName, bVal, (int)dVal, sVal));
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, cName, bVal, 0, ""));
                     break;
                 case eControlType.isTrigger:
-                    dVal = e.Data;
-                    sVal = e.SData;
                     bVal = false;
-                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, cName, bVal, (int)dVal, sVal));
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, cName, false, 0, ""));
                     break;
                 case eControlType.isString:
-                    dVal = 0;
                     sVal = e.SData;
-                    bVal = false;
-                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, cName, bVal, (int)dVal, sVal));
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, cName, false, 0, sVal));
                     break;
             }
-
-            //if (e.Name == "gain")
-            //{
-            //    if (e.Data >= min && e.Data <= max)
-            //    {
-            //        currentLvl = (int)Math.Round((65535 / (max - min)) * (e.Data + (min * (-1))));
-            //        currentLvlDb = e.Data;
-            //        lastSentLvl = -1;
-            //        QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.GainChange, cName, true, currentLvl, currentLvl.ToString()));
-            //    }
-            //}
-
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        /// <summary>
-        /// Sets the current volume.
-        /// </summary>
-        /// <param name="value">The volume level to set to.</param>
-        public void Volume(int value)
+        public void SetValueScaled(double value)
         {
-            //double newVal = Math.Round((value / (65535 / (max - min))) + min);
-            //if (lastSentLvl == newVal || newVal == currentLvl) //avoid repeats
-            //    return;
-            //lastSentLvl = (int)newVal;
+            if (ControlType != eControlType.isValue)
+                return;
+            double newRawVal = Math.Round(scale(value, 0, 65535, min, max), 2);
+            if (newRawVal == lastSentVal) //avoid repeats
+                return;
+            lastSentVal = newRawVal;
 
-            //ComponentChange newVolumeChange = new ComponentChange();
-            //newVolumeChange.Params = new ComponentChangeParams();
-            //newVolumeChange.Params.Name = cName;
+            ControlSetDouble newValChange = new ControlSetDouble();
+            newValChange.Params = new ControlSetValueDouble();
+            newValChange.method = "Control.Set";
+            newValChange.Params.Name = cName;
+            newValChange.Params.Value = newRawVal;
+            newValChange.Params.Ramp = rampTime;
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(newValChange));
+        }
+        
 
-            //ComponentSetValue volume = new ComponentSetValue();
+        public void SetValueRaw(double value)
+        {
+            if (ControlType != eControlType.isValue)
+                return;
 
-            //volume.Name = "gain";
-            //volume.Value = newVal;
-            //volume.Ramp = rampTime;
+            double newRawVal = value;
+            if (newRawVal > max && value < min) //ensure within range
+                return;
+            if (lastSentVal == newRawVal) //avoid repeats
+                return;
+            lastSentVal = newRawVal;
 
-            //newVolumeChange.Params.Controls = new List<ComponentSetValue>();
-            //newVolumeChange.Params.Controls.Add(volume);
-
-            //QsysProcessor.Enqueue(JsonConvert.SerializeObject(newVolumeChange));
+            ControlSetDouble newValChange = new ControlSetDouble();
+            newValChange.Params = new ControlSetValueDouble();
+            newValChange.method = "Control.Set";
+            newValChange.Params.Name = cName;
+            newValChange.Params.Value = newRawVal;
+            newValChange.Params.Ramp = rampTime;
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(newValChange));
         }
 
-        /// <summary>
-        /// Sets the current volume in DB.
-        /// </summary>
-        /// <param name="value">The volume level to set to.</param>
-        public void VolumeDb(int value)
+        public void SetState(bool value)
         {
-            //double newVal = value;
-            //if (newVal > max && value < min) //ensure within range
-            //    return;
-            //if (lastSentLvl == newVal || newVal == currentLvl) //avoid repeats
-            //    return;
-            //lastSentLvl = (int)newVal;
+            if (ControlType != eControlType.isButton)
+                return;
 
-            //ComponentChange newVolumeChange = new ComponentChange();
-            //newVolumeChange.Params = new ComponentChangeParams();
-            //newVolumeChange.Params.Name = cName;
+            ControlSetBool newStateChange = new ControlSetBool();
+            newStateChange.Params = new ControlSetValueBool();
+            newStateChange.method = "Control.Set";
+            newStateChange.Params.Name = cName;
+            newStateChange.Params.Value = value;
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(newStateChange));
+        }
+        
+        public void SetStateToggle()
+        {
+            if (ControlType != eControlType.isButton)
+                return;
 
-            //ComponentSetValue volume = new ComponentSetValue();
-
-            //volume.Name = "gain";
-            //volume.Value = newVal;
-            //volume.Ramp = rampTime;
-
-            //newVolumeChange.Params.Controls = new List<ComponentSetValue>();
-            //newVolumeChange.Params.Controls.Add(volume);
-
-            //QsysProcessor.Enqueue(JsonConvert.SerializeObject(newVolumeChange));
+            bVal = !bVal;
+            ControlSetBool newStateChange = new ControlSetBool();
+            newStateChange.Params = new ControlSetValueBool();
+            newStateChange.method = "Control.Set";
+            newStateChange.Params.Name = cName;
+            newStateChange.Params.Value = bVal;
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(newStateChange));
         }
 
-        /// <summary>
-        /// Sets the current mute state.
-        /// </summary>
-        /// <param name="value">The state to set the mute.</param>
-        public void Mute(bool value)
+        public void Trigger()
         {
-            //if (currentMute != value)
-            //{
-            //    ComponentChange newMuteChange = new ComponentChange();
-            //    newMuteChange.Params = new ComponentChangeParams();
+            if (ControlType != eControlType.isTrigger)
+                return;
 
-            //    newMuteChange.Params.Name = cName;
+            ControlSetBool newTriggerChange = new ControlSetBool();
+            newTriggerChange.Params = new ControlSetValueBool();
+            newTriggerChange.method = "Control.Set";
+            newTriggerChange.Params.Name = cName;
+            newTriggerChange.Params.Value = true;
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(newTriggerChange));
+        }
 
-            //    ComponentSetValue mute = new ComponentSetValue();
-            //    mute.Name = "mute";
+        public void SetString(string value)
+        {
+            if (ControlType != eControlType.isString)
+                return;
 
-            //    if (value)
-            //        mute.Value = 1;
-            //    else
-            //        mute.Value = 0;
-
-            //    newMuteChange.Params.Controls = new List<ComponentSetValue>();
-            //    newMuteChange.Params.Controls.Add(mute);
-
-            //    QsysProcessor.Enqueue(JsonConvert.SerializeObject(newMuteChange));
-            //}
+            ControlSetString newStringChange = new ControlSetString();
+            newStringChange.Params = new ControlSetValueString();
+            newStringChange.method = "Control.Set";
+            newStringChange.Params.Name = cName;
+            newStringChange.Params.Value = value;
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(newStringChange));
         }
 
         /// <summary>
@@ -250,7 +187,26 @@ namespace QscQsys
         /// <param name="time"></param>
         public void RampTimeMS(double time)
         {
-            //rampTime = time / 1000; //ms to sec
+            rampTime = time / 1000; //ms to sec
+        }
+
+        public void SetMinMax(double newMin, double newMax)
+        {
+            min = newMin;
+            max = newMax;
+        }
+        public void SetMinMaxViaString(string newMin, string newMax)
+        {
+            if (ControlType != eControlType.isValue)
+                return;
+            min = Convert.ToDouble(newMin);
+            max = Convert.ToDouble(newMax);
+        }
+
+        private double scale(double A, double A1, double A2, double Min, double Max)
+        {
+            double percentage = (A - A1) / (A1 - A2);
+            return (percentage) * (Min - Max) + Min;
         }
 
     }

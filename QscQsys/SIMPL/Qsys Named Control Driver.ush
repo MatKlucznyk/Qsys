@@ -43,17 +43,17 @@
   OutputSigType4=Digital
   OutputCue5=Triggered
   OutputSigType5=Digital
-  InputList2Cue1=ValueUnsigned
+  InputList2Cue1=ValueScaled
   InputList2SigType1=Analog
-  InputList2Cue2=ValueSigned
+  InputList2Cue2=ValueRaw
   InputList2SigType2=Analog
   InputList2Cue3=RampTimeMS
   InputList2SigType3=Analog
   InputList2Cue4=StringSet
   InputList2SigType4=Serial
-  OutputList2Cue1=ValueUnsignedOut
+  OutputList2Cue1=ValueScaledOut
   OutputList2SigType1=Analog
-  OutputList2Cue2=ValueSignedOut
+  OutputList2Cue2=ValueRawOut
   OutputList2SigType2=Analog
   OutputList2Cue3=[~UNUSED~]
   OutputList2SigType3=Analog
@@ -87,9 +87,9 @@
   ParamCue14=DefaultQsysRampTimeMS
   ParamSigType14=Constant
   ParamCue15=Val_Minimum
-  ParamSigType15=Constant
+  ParamSigType15=String
   ParamCue16=Val_Maximum
-  ParamSigType16=Constant
+  ParamSigType16=String
   MinVariableInputs=5
   MaxVariableInputs=5
   MinVariableInputsList2=4
@@ -175,11 +175,7 @@
   H=15
   Tp=1
   HD=False
-  Sgn=0
-  Lng=False
-  NF=63
-  NoS=True
-  DNF=1
+  NoS=False
   VVS=0
 [END]
 [BEGIN]
@@ -187,10 +183,6 @@
   H=16
   Tp=1
   HD=False
-  Sgn=0
-  Lng=False
-  NF=63
-  NoS=True
-  DNF=1
+  NoS=False
   VVS=0
 [END]

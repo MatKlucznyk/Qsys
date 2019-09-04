@@ -176,25 +176,56 @@ namespace QscQsys
         public string Value { get; set; }
     }
 
-    public class ControlSetValue
-    {
-        public string Name { get; set; }
-        public double Value { get; set; }
-        public double Position { get; set; }
-        public double Ramp { get; set; }
-    }
-
-    public class ControlSet
+    public class ControlSetString
     {
         [JsonProperty]
         public string jsonrpc = "2.0";
         [JsonProperty]
         public string method { get; set; }
         [JsonProperty("params")]
-        public EngineStatusPropertiesResult Properties { get; set; }
+        public ControlSetValueString Params { get; set; }
+    }
+    public class ControlSetValueString
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
+        public double Position { get; set; }
+        public double Ramp { get; set; }
     }
 
+    public class ControlSetBool
+    {
+        [JsonProperty]
+        public string jsonrpc = "2.0";
+        [JsonProperty]
+        public string method { get; set; }
+        [JsonProperty("params")]
+        public ControlSetValueBool Params { get; set; }
+    }
+    public class ControlSetValueBool
+    {
+        public string Name { get; set; }
+        public bool Value { get; set; }
+        public double Position { get; set; }
+        public double Ramp { get; set; }
+    }
 
+    public class ControlSetDouble
+    {
+        [JsonProperty]
+        public string jsonrpc = "2.0";
+        [JsonProperty]
+        public string method { get; set; }
+        [JsonProperty("params")]
+        public ControlSetValueDouble Params { get; set; }
+    }
+    public class ControlSetValueDouble
+    {
+        public string Name { get; set; }
+        public double Value { get; set; }
+        public double Position { get; set; }
+        public double Ramp { get; set; }
+    }
 
     /// <summary>
     /// Engine Status
