@@ -1,7 +1,9 @@
 namespace QscQsys;
         // class declarations
+         class QsysNamedControlSimpl;
          class QsysPotsControllerSimpl;
          class QsysNv32hDecoder;
+         class QsysNamedControl;
          class QsysRouter;
          class QsysPotsController;
          class QsysSoftphoneController;
@@ -52,8 +54,28 @@ namespace QscQsys;
          class QsysMatrixMixerSimpl;
          class QsysProcessor;
          class QsysMatrixMixer;
-         class QsysNamedControlSimpl;
-         class QsysNamedControl;
+     class QsysNamedControlSimpl 
+    {
+        // class delegates
+        delegate FUNCTION NamedControlChange ( INTEGER intData , SIMPLSHARPSTRING stringData );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING name , SIGNED_INTEGER max , SIGNED_INTEGER min );
+        FUNCTION SetInteger ( INTEGER value );
+        FUNCTION SetString ( STRING value );
+        FUNCTION SetBoolean ( INTEGER value );
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty NamedControlChange newNamedControlChange;
+    };
+
      class QsysPotsControllerSimpl 
     {
         // class delegates
@@ -806,27 +828,5 @@ namespace QscQsys;
         INTEGER __class_id__;
 
         // class properties
-    };
-
-     class QsysNamedControlSimpl 
-    {
-        // class delegates
-        delegate FUNCTION NamedControlChange ( INTEGER intData , SIMPLSHARPSTRING stringData );
-
-        // class events
-
-        // class functions
-        FUNCTION Initialize ( STRING name , SIGNED_INTEGER max , SIGNED_INTEGER min );
-        FUNCTION SetInteger ( INTEGER value );
-        FUNCTION SetString ( STRING value );
-        FUNCTION SetBoolean ( INTEGER value );
-        STRING_FUNCTION ToString ();
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
-        DelegateProperty NamedControlChange newNamedControlChange;
     };
 

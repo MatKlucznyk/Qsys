@@ -163,7 +163,7 @@ namespace QscQsys
 
         static void client_ConnectionStatus(int status, int id)
         {
-            if (status == 2)
+            if (status == 2 && !IsConnected)
             {
                 ErrorLog.Notice("QsysProcessor is connected.");
                 IsConnected = true;
@@ -212,7 +212,7 @@ namespace QscQsys
                     item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsRegistered, "true", 1));
                 }
             }
-            else
+            else if(IsConnected && status != 2)
             {
                 ErrorLog.Error("QsysProcessor disconnected!");
                 IsConnected = false;
