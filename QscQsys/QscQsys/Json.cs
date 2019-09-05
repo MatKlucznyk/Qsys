@@ -49,7 +49,7 @@ namespace QscQsys
         static double Rate = 0.15;
     }
 
-    public class AddControlToChangeGroup
+    public class AddComoponentToChangeGroup
     {
         [JsonProperty]
         static string jsonrpc = "2.0";
@@ -61,6 +61,25 @@ namespace QscQsys
         public AddComponentToChangeGroupParams ComponentParams { get; set; }
     }
 
+    public class AddControlToChangeGroup
+    {
+        [JsonProperty]
+        static string jsonrpc = "2.0";
+        [JsonProperty]
+        static string id = "crestron";
+        [JsonProperty]
+        public string method { get; set; }
+        [JsonProperty("params")]
+        public AddControlToChangeGroupParams ControlParams { get; set; }
+    }
+
+    public class AddControlToChangeGroupParams
+    {
+        [JsonProperty]
+        static string Id = "1";
+        public List<string> Controls { get; set; }
+    }
+
     public class AddComponentToChangeGroupParams
     {
         [JsonProperty]
@@ -69,10 +88,16 @@ namespace QscQsys
 
     }
 
+
     public class Component
     {
         public string Name { get; set; }
         public IList<ControlName> Controls { get; set; }
+    }
+
+    public class Control
+    {
+        public string Name { get; set; }
     }
 
     public class ControlName
@@ -96,6 +121,7 @@ namespace QscQsys
 
     public class ChangeResult
     {
+        [JsonProperty(Required = Required.Default)]
         public string Component { get; set; }
         public string Name { get; set; }
         public string String { get; set; }
@@ -114,10 +140,46 @@ namespace QscQsys
         public ComponentChangeParams Params { get; set; }
     }
 
+    public class ControlIntegerChange
+    {
+        [JsonProperty]
+        static string jsonrpc = "2.0";
+        [JsonProperty]
+        static string id = "crestron";
+        [JsonProperty]
+        static string method = "Control.Set";
+        [JsonProperty("params")]
+        public ControlIntegerParams Params { get; set; }
+    }
+
+    public class ControlStringChange
+    {
+        [JsonProperty]
+        static string jsonrpc = "2.0";
+        [JsonProperty]
+        static string id = "crestron";
+        [JsonProperty]
+        static string method = "Control.Set";
+        [JsonProperty("params")]
+        public ControlStringParams Params { get; set; }
+    }
+
     public class ComponentChangeParams
     {
         public string Name { get; set; }
         public IList<ComponentSetValue> Controls { get; set; }
+    }
+
+    public class ControlIntegerParams
+    {
+        public string Name { get; set; }
+        public int Value { get; set; }
+    }
+
+    public class ControlStringParams
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
     }
 
     public class ComponentSetValue

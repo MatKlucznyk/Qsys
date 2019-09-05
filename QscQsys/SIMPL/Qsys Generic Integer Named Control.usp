@@ -1,0 +1,42 @@
+#SYMBOL_NAME "Qsys Generic Integer Named Control"
+
+#INCLUDEPATH "D:\\Programming\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+analog_input SetIntegerValue;
+
+analog_Output IntegerValue;
+
+string_parameter  _skip_, NamedControlName[100];
+signed_integer_parameter MaxValue, MinValue;
+
+QsysNamedControlSimpl integerControl;
+
+threadsafe change SetIntegerValue
+{
+    Integer x;
+
+    if(SetIntegerValue = 0)
+    {
+        integerControl.SetInteger(0);
+    }
+    else
+    {
+        while(x != SetIntegerValue)
+        {
+            x = SetIntegerValue;
+            integerControl.SetInteger(x);
+        }
+    }
+}
+
+callback function NewIntegerChange(integer value, string x)
+{
+    IntegerValue = value;
+}
+
+function Main()
+{
+    RegisterDelegate(integerControl, newNamedControlChange, NewIntegerChange);
+    integerControl.Initialize(NamedControlName, MaxValue, MinValue);
+}

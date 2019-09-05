@@ -84,6 +84,7 @@
     <Compile Include="QsysMatrixMixerSimpl.cs" />
     <Compile Include="QsysMeter.cs" />
     <Compile Include="QsysMeterSimpl.cs" />
+    <Compile Include="QsysNamedControlSimpl.cs" />
     <Compile Include="QsysNv32hDecoder.cs" />
     <Compile Include="QsysNv32hDecoderSimpl.cs" />
     <Compile Include="QsysPotsController.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="QsysSnapshotSimpl.cs" />
     <Compile Include="QsysSoftphoneController.cs" />
     <Compile Include="QsysSoftphoneControllerSimpl.cs" />
+    <Compile Include="QsysNamedControl.cs" />
     <None Include="Properties\ControlSystem.cfg" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />

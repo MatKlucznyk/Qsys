@@ -105,8 +105,6 @@ namespace UserModule_QSYS_ROUTER
     
     public override void LogosSplusInitialize()
     {
-        SocketInfo __socketinfo__ = new SocketInfo( 1, this );
-        InitialParametersClass.ResolveHostName = __socketinfo__.ResolveHostName;
         _SplusNVRAM = new SplusNVRAM( this );
         
         INPUT = new Crestron.Logos.SplusObjects.AnalogInput( INPUT__AnalogSerialInput__, this );

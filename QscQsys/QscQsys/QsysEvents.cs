@@ -161,7 +161,9 @@ namespace QscQsys
 
         Nv32hDecoderInputChange = 14,
         
-        MeterUpdate = 15
+        MeterUpdate = 15,
+
+        NamedControlChange = 16
     }
 
     public enum eQscSimplEventIds

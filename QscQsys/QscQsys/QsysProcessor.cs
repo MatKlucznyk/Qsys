@@ -29,6 +29,7 @@ namespace QscQsys
 
         //internal static Dictionary<string, InternalEvents> Controls = new Dictionary<string, InternalEvents>();
         internal static Dictionary<Component, InternalEvents> Components = new Dictionary<Component, InternalEvents>();
+        internal static Dictionary<Control, InternalEvents> Controls = new Dictionary<Control, InternalEvents>();
         internal static Dictionary<string, SimplEvents> SimplClients = new Dictionary<string, SimplEvents>();
 
         /// <summary>
@@ -57,12 +58,45 @@ namespace QscQsys
 
                         if (isInitialized && IsConnected)
                         {
-                            AddControlToChangeGroup addControl;
+                            AddComoponentToChangeGroup addControl;
 
-                            addControl = new AddControlToChangeGroup();
+                            addControl = new AddComoponentToChangeGroup();
                             addControl.method = "ChangeGroup.AddComponentControl";
                             addControl.ComponentParams = new AddComponentToChangeGroupParams();
                             addControl.ComponentParams.Component = component;
+                            commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
+                        }
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                ErrorLog.Error("Error registering QsysClient to the QsysProcessor: {0}", e.Message);
+                return false;
+            }
+        }
+
+        static internal bool RegisterControl(Control control)
+        {
+            try
+            {
+                lock (Controls)
+                {
+                    if (!Controls.ContainsKey(control))
+                    {
+                        Controls.Add(control, new InternalEvents());
+
+                        if (isInitialized && IsConnected)
+                        {
+                            AddControlToChangeGroup addControl;
+
+                            addControl = new AddControlToChangeGroup();
+                            addControl.method = "ChangeGroup.AddControl";
+                            addControl.ControlParams = new AddControlToChangeGroupParams();
+                            addControl.ControlParams.Controls = new List<string>();
+                            addControl.ControlParams.Controls.Add(control.Name);
                             commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
                         }
                     }
@@ -142,15 +176,27 @@ namespace QscQsys
 
                 commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
 
-                AddControlToChangeGroup addControl;
+                AddComoponentToChangeGroup addComponent;
 
 
                 foreach (var item in Components)
                 {
+                    addComponent = new AddComoponentToChangeGroup();
+                    addComponent.method = "ChangeGroup.AddComponentControl";
+                    addComponent.ComponentParams = new AddComponentToChangeGroupParams();
+                    addComponent.ComponentParams.Component = item.Key;
+                    commandQueue.Enqueue(JsonConvert.SerializeObject(addComponent));
+                }
+
+                AddControlToChangeGroup addControl;
+
+                foreach (var item in Controls)
+                {
                     addControl = new AddControlToChangeGroup();
-                    addControl.method = "ChangeGroup.AddComponentControl";
-                    addControl.ComponentParams = new AddComponentToChangeGroupParams();
-                    addControl.ComponentParams.Component = item.Key;
+                    addControl.method = "ChangeGroup.AddControl";
+                    addControl.ControlParams = new AddControlToChangeGroupParams();
+                    addControl.ControlParams.Controls = new List<string>();
+                    addControl.ControlParams.Controls.Add(item.Key.Name);
                     commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
                 }
 
@@ -274,7 +320,7 @@ namespace QscQsys
                         {
                             //ChangeResult changeResult = (ChangeResult)change.Cast<ChangeResult>();
 
-                            ChangeResult changeResult = JsonConvert.DeserializeObject<ChangeResult>(change.ToString());
+                            ChangeResult changeResult = JsonConvert.DeserializeObject<ChangeResult>(change.ToString(), new JsonSerializerSettings { MissingMemberHandling = MissingMemberHandling.Ignore });
 
                             if (changeResult.Component != null)
                             {
@@ -284,14 +330,14 @@ namespace QscQsys
                                         item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.String));
                                 }
                             }
-                            /*else
+                            else if(changeResult.Name != null)
                             {
                                 foreach (var item in Controls)
                                 {
-                                    if (item.Key == changeResult.Name)
-                                        item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value));
+                                    if (item.Key.Name.Contains(changeResult.Name))
+                                        item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.String));
                                 }
-                            }*/
+                            }
                         }
                     }
                     else if (returnString.Contains("EngineStatus"))
