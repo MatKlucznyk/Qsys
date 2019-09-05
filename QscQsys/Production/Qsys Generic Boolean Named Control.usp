@@ -1,0 +1,43 @@
+#SYMBOL_NAME "Qsys Generic Boolean Named Control"
+
+//#INCLUDEPATH "D:\\Programming\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+digital_input SetBooleanStateOn;
+digital_input SetBooleanStateOff;
+digital_input ToggleBooleanState;
+
+digital_output BooleanState;
+
+string_parameter  _skip_, _skip_, _skip_, NamedControlName[100];
+
+QsysNamedControlSimpl booleanControl;
+
+push SetBooleanStateOn
+{
+    booleanControl.SetBoolean(1);
+}
+
+push SetBooleanStateOff
+{
+    booleanControl.SetBoolean(0);
+}
+
+push ToggleBooleanState
+{
+    if(BooleanState)
+        booleanControl.SetBoolean(0);
+    else
+        booleanControl.SetBoolean(1);
+}
+
+callback function NewBooleanChange(integer value, string x)
+{
+    BooleanState = value;
+}
+
+function Main()
+{
+    RegisterDelegate(booleanControl, newNamedControlChange, NewBooleanChange);
+    booleanControl.Initialize(NamedControlName, 0, 0);
+}

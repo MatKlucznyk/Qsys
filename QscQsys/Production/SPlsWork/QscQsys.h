@@ -1,6 +1,9 @@
 namespace QscQsys;
         // class declarations
+         class QsysNamedControlSimpl;
          class QsysPotsControllerSimpl;
+         class QsysNv32hDecoder;
+         class QsysNamedControl;
          class QsysRouter;
          class QsysPotsController;
          class QsysSoftphoneController;
@@ -12,15 +15,22 @@ namespace QscQsys;
          class ComponentProperties;
          class CreateChangeGroup;
          class CreateChangeGroupParams;
+         class AddComoponentToChangeGroup;
          class AddControlToChangeGroup;
+         class AddControlToChangeGroupParams;
          class AddComponentToChangeGroupParams;
          class Component;
+         class Control;
          class ControlName;
          class Heartbeat;
          class HeartbeatParams;
          class ChangeResult;
          class ComponentChange;
+         class ControlIntegerChange;
+         class ControlStringChange;
          class ComponentChangeParams;
+         class ControlIntegerParams;
+         class ControlStringParams;
          class ComponentSetValue;
          class SetCrossPointMute;
          class SetCrossPointMuteParams;
@@ -28,8 +38,11 @@ namespace QscQsys;
          class ComponentChangeParamsString;
          class ComponentSetValueString;
          class QsysSoftphoneControllerSimpl;
+         class QsysMeterSimpl;
+         class QsysMeter;
          class QsysCamera;
          class PtzTypes;
+         class QsysNv32hDecoderSimpl;
          class QsysSnapshotSimpl;
          class QsysSnapshot;
          class QsysFader;
@@ -41,8 +54,28 @@ namespace QscQsys;
          class QsysMatrixMixerSimpl;
          class QsysProcessor;
          class QsysMatrixMixer;
-         class QsysNv32hDecoder;
-         class QsysNv32hDecoderSimpl;
+     class QsysNamedControlSimpl 
+    {
+        // class delegates
+        delegate FUNCTION NamedControlChange ( INTEGER intData , SIMPLSHARPSTRING stringData );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING name , SIGNED_INTEGER max , SIGNED_INTEGER min );
+        FUNCTION SetInteger ( INTEGER value );
+        FUNCTION SetString ( STRING value );
+        FUNCTION SetBoolean ( INTEGER value );
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty NamedControlChange newNamedControlChange;
+    };
+
      class QsysPotsControllerSimpl 
     {
         // class delegates
@@ -228,7 +261,7 @@ namespace QscQsys;
         // class properties
     };
 
-     class AddControlToChangeGroup 
+     class AddComoponentToChangeGroup 
     {
         // class delegates
 
@@ -244,6 +277,40 @@ namespace QscQsys;
         // class properties
         STRING method[];
         AddComponentToChangeGroupParams ComponentParams;
+    };
+
+     class AddControlToChangeGroup 
+    {
+        // class delegates
+
+        // class events
+
+        // class functions
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        STRING method[];
+        AddControlToChangeGroupParams ControlParams;
+    };
+
+     class AddControlToChangeGroupParams 
+    {
+        // class delegates
+
+        // class events
+
+        // class functions
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
     };
 
      class AddComponentToChangeGroupParams 
@@ -264,6 +331,23 @@ namespace QscQsys;
     };
 
      class Component 
+    {
+        // class delegates
+
+        // class events
+
+        // class functions
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        STRING Name[];
+    };
+
+     class Control 
     {
         // class delegates
 
@@ -366,6 +450,40 @@ namespace QscQsys;
         ComponentChangeParams Params;
     };
 
+     class ControlIntegerChange 
+    {
+        // class delegates
+
+        // class events
+
+        // class functions
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        ControlIntegerParams Params;
+    };
+
+     class ControlStringChange 
+    {
+        // class delegates
+
+        // class events
+
+        // class functions
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        ControlStringParams Params;
+    };
+
      class ComponentChangeParams 
     {
         // class delegates
@@ -381,6 +499,42 @@ namespace QscQsys;
 
         // class properties
         STRING Name[];
+    };
+
+     class ControlIntegerParams 
+    {
+        // class delegates
+
+        // class events
+
+        // class functions
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        STRING Name[];
+        SIGNED_LONG_INTEGER Value;
+    };
+
+     class ControlStringParams 
+    {
+        // class delegates
+
+        // class events
+
+        // class functions
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        STRING Name[];
+        STRING Value[];
     };
 
      class ComponentSetValue 
@@ -524,6 +678,25 @@ namespace QscQsys;
         DelegateProperty CurrentlyCallingEvent onCurrentlyCallingEvent;
     };
 
+     class QsysMeterSimpl 
+    {
+        // class delegates
+        delegate FUNCTION MeterChange ( INTEGER meterValue );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING name , INTEGER index );
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty MeterChange onMeterChange;
+    };
+
     static class PtzTypes // enum
     {
         static SIGNED_LONG_INTEGER Up;
@@ -532,6 +705,26 @@ namespace QscQsys;
         static SIGNED_LONG_INTEGER Right;
         static SIGNED_LONG_INTEGER ZoomIn;
         static SIGNED_LONG_INTEGER ZoomOut;
+    };
+
+     class QsysNv32hDecoderSimpl 
+    {
+        // class delegates
+        delegate FUNCTION Nv32hDecoderInputChange ( INTEGER input );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING name );
+        FUNCTION ChangeSource ( INTEGER input );
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty Nv32hDecoderInputChange newNv32hDecoderInputChange;
     };
 
      class QsysSnapshotSimpl 
@@ -586,6 +779,8 @@ namespace QscQsys;
         static SIGNED_LONG_INTEGER PotsControllerAutoAnswerChange;
         static SIGNED_LONG_INTEGER PotsControllerDND_Change;
         static SIGNED_LONG_INTEGER Nv32hDecoderInputChange;
+        static SIGNED_LONG_INTEGER MeterUpdate;
+        static SIGNED_LONG_INTEGER NamedControlChange;
     };
 
     static class eQscSimplEventIds // enum
@@ -633,25 +828,5 @@ namespace QscQsys;
         INTEGER __class_id__;
 
         // class properties
-    };
-
-     class QsysNv32hDecoderSimpl 
-    {
-        // class delegates
-        delegate FUNCTION Nv32hDecoderInputChange ( INTEGER input );
-
-        // class events
-
-        // class functions
-        FUNCTION Initialize ( STRING name );
-        FUNCTION ChangeSource ( INTEGER input );
-        STRING_FUNCTION ToString ();
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
-        DelegateProperty Nv32hDecoderInputChange newNv32hDecoderInputChange;
     };
 
