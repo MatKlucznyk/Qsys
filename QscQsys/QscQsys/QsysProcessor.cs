@@ -316,6 +316,7 @@ namespace QscQsys
             {
                 var data = commandQueue.Dequeue();
 
+                SendDebug(string.Format("Processor - Sending to core from queue: {0}", data));
                 client.SendCommand(data + "\x00");
             }
         }
@@ -454,12 +455,11 @@ namespace QscQsys
                     else if (returnString.Contains("error"))
                     {
                         CoreError err = JsonConvert.DeserializeObject<CoreError>(returnString);
-                        CrestronConsole.PrintLine("Qsys Processor error message - {0}-{1}", err.error.code, err.error.message);
+                        CrestronConsole.PrintLine("QsysProcessor parse error message - {0}-{1}", err.error.code, err.error.message);
                     }
                 }
                 catch (Exception e)
                 {
-
                     SendDebug(String.Format("Error is QsysProcessor: {0}:\r\n{1}", e.Message, returnString));
                 }
             }
@@ -480,6 +480,7 @@ namespace QscQsys
             //gather.Gather(data);
             try
             {
+                SendDebug(string.Format("Processor - Received from core and adding to queue: {0}", data));
                 responseQueue.Enqueue(data);
             }
             catch (Exception e)
