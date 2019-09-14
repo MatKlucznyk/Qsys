@@ -31,9 +31,9 @@ namespace QscQsys
 
             component.Controls = names;
 
-            if (QsysProcessor.RegisterComponent(component))
+            if (QsysCore.RegisterComponent(component))
             {
-                QsysProcessor.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(QsysRouter_OnNewEvent);
+                QsysCore.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(QsysRouter_OnNewEvent);
 
                 registered = true;
             }
@@ -54,7 +54,7 @@ namespace QscQsys
             newInputSelectedChange.Params.Controls = new List<ComponentSetValue>();
             newInputSelectedChange.Params.Controls.Add(inputSelected);
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(newInputSelectedChange));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(newInputSelectedChange));
         }
 
         private void QsysRouter_OnNewEvent(object sender, QsysInternalEventsArgs e)

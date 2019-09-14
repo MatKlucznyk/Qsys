@@ -50,9 +50,9 @@ namespace QscQsys
 
             component.Controls = names;
 
-            if (QsysProcessor.RegisterComponent(component))
+            if (QsysCore.RegisterComponent(component))
             {
-                QsysProcessor.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(QsysPotsController_OnNewEvent);
+                QsysCore.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(QsysPotsController_OnNewEvent);
 
                 registered = true;
             }
@@ -123,7 +123,7 @@ namespace QscQsys
                 pinPad.Params.Controls = new List<ComponentSetValue>();
                 pinPad.Params.Controls.Add(pinPadSetValue);
 
-                QsysProcessor.Enqueue(JsonConvert.SerializeObject(pinPad));
+                QsysCore.Enqueue(JsonConvert.SerializeObject(pinPad));
             }
 
             QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString()));
@@ -162,7 +162,7 @@ namespace QscQsys
             dialNumber.Params.Controls = new List<ComponentSetValueString>();
             dialNumber.Params.Controls.Add(dialStringSetValue);
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(dialNumber));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(dialNumber));
 
             ComponentChange dial = new ComponentChange();
             dial.Params = new ComponentChangeParams();
@@ -176,7 +176,7 @@ namespace QscQsys
             dial.Params.Controls = new List<ComponentSetValue>();
             dial.Params.Controls.Add(dialSetValue);
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(dial));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(dial));
         }
 
         public void Dial(string number)
@@ -197,7 +197,7 @@ namespace QscQsys
             dialNumber.Params.Controls = new List<ComponentSetValueString>();
             dialNumber.Params.Controls.Add(dialStringSetValue);
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(dialNumber));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(dialNumber));
 
             ComponentChange dial = new ComponentChange();
             dial.Params = new ComponentChangeParams();
@@ -211,7 +211,7 @@ namespace QscQsys
             dial.Params.Controls = new List<ComponentSetValue>();
             dial.Params.Controls.Add(dialSetValue);
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(dial));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(dial));
         }
 
         public void Disconnect()
@@ -228,7 +228,7 @@ namespace QscQsys
             disconnect.Params.Controls = new List<ComponentSetValue>();
             disconnect.Params.Controls.Add(disconnectValue);
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(disconnect));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(disconnect));
         }
 
         public void Redial()
@@ -240,7 +240,7 @@ namespace QscQsys
 
         public void AutoAnswerToggle()
         {
-            if (QsysProcessor.IsDebugMode)
+            if (QsysCore.IsDebugMode)
             {
                 CrestronConsole.PrintLine("Current AutoAnswer '{0}', new AutoAnswer '{1}'", autoAnswer, !autoAnswer);
             }
@@ -249,14 +249,14 @@ namespace QscQsys
 
             ComponentSetValue aAsnwerValue = new ComponentSetValue() { Name = "call_autoanswer", Value = Convert.ToDouble(!autoAnswer) };
 
-            if (QsysProcessor.IsDebugMode)
+            if (QsysCore.IsDebugMode)
             {
                 CrestronConsole.PrintLine("Sending AutoAnswer '{0}'", aAsnwerValue.Value);
             }
 
             aAnswer.Params.Controls = new List<ComponentSetValue>() { aAsnwerValue };
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(aAnswer));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(aAnswer));
         }
 
         public void DndToggle()
@@ -267,7 +267,7 @@ namespace QscQsys
 
             d.Params.Controls = new List<ComponentSetValue>() { dValue };
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(d));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(d));
         }
     }
 }

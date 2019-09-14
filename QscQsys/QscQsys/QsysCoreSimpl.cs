@@ -6,10 +6,9 @@ using Crestron.SimplSharp;
 
 namespace QscQsys
 {
-    public class QsysProcessorSimplInterface
+    public class QsysCoreSimpl
     {
         private bool isRegistered;
-
         public delegate void IsRegistered(ushort value);
         public delegate void IsConnected(ushort value);
         public delegate void CoreState(ushort value);
@@ -31,19 +30,21 @@ namespace QscQsys
         public StatusCode onStatusCode { get; set; }
         public StatusString onStatusString { get; set; }
 
-        public void Register(string id)
-        {
-            if (QsysProcessor.RegisterSimplClient(id))
-            {
-                QsysProcessor.SimplClients[id].OnNewEvent += new EventHandler<SimplEventArgs>(QsysProcessor_SimplEvent);
 
-                isRegistered = true;
+        QsysCore core;
+
+        public void Initialize(ushort _coreID, SimplSharpString _host, ushort _port, SimplSharpString _user, SimplSharpString _pass)
+        {
+            if (core.Initialize((int)1, "", (ushort)1, "", ""))
+            {
+                core.SimplClients[Convert.ToString(_coreID)].OnNewEvent += new EventHandler<SimplEventArgs>(QsysProcessor_SimplEvent);
+                this.isRegistered = true;
             }
         }
 
-        public void Debug(ushort value)
+        public void setDebug(ushort _value)
         {
-            QsysProcessor.Debug(value);
+            this.core.setDebug(_value);
         }
 
         void QsysProcessor_SimplEvent(object sender, SimplEventArgs e)

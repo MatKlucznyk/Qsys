@@ -22,9 +22,9 @@ namespace QscQsys
 
             Component component = new Component() { Name = cName, Controls = new List<ControlName>() { new ControlName() { Name = string.Format("meter_{0}", meterIndex) } } };
 
-            if (QsysProcessor.RegisterComponent(component))
+            if (QsysCore.RegisterComponent(component))
             {
-                QsysProcessor.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
+                QsysCore.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
 
                 isRegistered = true;
                 isComponent = true;

@@ -48,9 +48,9 @@ namespace QscQsys
         {
             cName = Name;
             ctrlType = Type;
-            if (QsysProcessor.RegisterControl(cName))
+            if (QsysCore.RegisterControl(cName))
             {
-                QsysProcessor.Controls[cName].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Control_OnNewEvent);
+                QsysCore.Controls[cName].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Control_OnNewEvent);
 
                 registered = true;
             }
@@ -103,7 +103,7 @@ namespace QscQsys
             newValChange.Params.Name = cName;
             newValChange.Params.Value = newRawVal;
             newValChange.Params.Ramp = rampTime;
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(newValChange));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(newValChange));
         }
         
 
@@ -125,7 +125,7 @@ namespace QscQsys
             newValChange.Params.Name = cName;
             newValChange.Params.Value = newRawVal;
             newValChange.Params.Ramp = rampTime;
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(newValChange));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(newValChange));
         }
 
         public void SetState(bool value)
@@ -138,7 +138,7 @@ namespace QscQsys
             newStateChange.method = "Control.Set";
             newStateChange.Params.Name = cName;
             newStateChange.Params.Value = value;
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(newStateChange));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(newStateChange));
         }
         
         public void SetStateToggle()
@@ -152,7 +152,7 @@ namespace QscQsys
             newStateChange.method = "Control.Set";
             newStateChange.Params.Name = cName;
             newStateChange.Params.Value = bVal;
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(newStateChange));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(newStateChange));
         }
 
         public void Trigger()
@@ -165,7 +165,7 @@ namespace QscQsys
             newTriggerChange.method = "Control.Set";
             newTriggerChange.Params.Name = cName;
             newTriggerChange.Params.Value = true;
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(newTriggerChange));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(newTriggerChange));
         }
 
         public void SetString(string value)
@@ -178,7 +178,7 @@ namespace QscQsys
             newStringChange.method = "Control.Set";
             newStringChange.Params.Name = cName;
             newStringChange.Params.Value = value;
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(newStringChange));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(newStringChange));
         }
 
         /// <summary>

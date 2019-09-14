@@ -44,9 +44,9 @@ namespace QscQsys
 
             component.Controls = names;
 
-            if (QsysProcessor.RegisterComponent(component))
+            if (QsysCore.RegisterComponent(component))
             {
-                QsysProcessor.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
+                QsysCore.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
 
                 registered = true;
                 isComponent = true;
@@ -112,7 +112,7 @@ namespace QscQsys
             newVolumeChange.Params.Controls = new List<ComponentSetValue>();
             newVolumeChange.Params.Controls.Add(volume);
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(newVolumeChange));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(newVolumeChange));
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace QscQsys
             newVolumeChange.Params.Controls = new List<ComponentSetValue>();
             newVolumeChange.Params.Controls.Add(volume);
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(newVolumeChange));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(newVolumeChange));
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace QscQsys
                 newMuteChange.Params.Controls = new List<ComponentSetValue>();
                 newMuteChange.Params.Controls.Add(mute);
 
-                QsysProcessor.Enqueue(JsonConvert.SerializeObject(newMuteChange));
+                QsysCore.Enqueue(JsonConvert.SerializeObject(newMuteChange));
             }
         }
 

@@ -32,9 +32,9 @@ namespace QscQsys
 
             component.Controls = names;
 
-            if (QsysProcessor.RegisterComponent(component))
+            if (QsysCore.RegisterComponent(component))
             {
-                QsysProcessor.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
+                QsysCore.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
 
                 registered = true;
                 isComponent = true;
@@ -52,7 +52,7 @@ namespace QscQsys
         {
             ComponentChange inputChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "hdmi_out_0_select_index", Value = source } } } };
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(inputChange));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(inputChange));
         }
     }
 }

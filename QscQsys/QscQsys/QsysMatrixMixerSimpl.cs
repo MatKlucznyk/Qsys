@@ -31,9 +31,9 @@ namespace QscQsys
             List<ControlName> names = new List<ControlName>() { new ControlName{Name = crossName} };
             component.Controls = names;
 
-            if (QsysProcessor.RegisterComponent(component))
+            if (QsysCore.RegisterComponent(component))
             {
-                QsysProcessor.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(QsysMatrixMixerSimpl_OnNewEvent);
+                QsysCore.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(QsysMatrixMixerSimpl_OnNewEvent);
 
                 registered = true;
             }

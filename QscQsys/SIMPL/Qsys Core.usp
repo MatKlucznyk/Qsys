@@ -1,4 +1,4 @@
-#SYMBOL_NAME "Qsys Processor"
+#SYMBOL_NAME "Qsys Core"
 
 #INCLUDEPATH "..\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
@@ -8,20 +8,19 @@ Digital_Input Initialize, testLogin;
 Digital_Output IsInitialized, IsConnected, IsRedundant, IsEmulator;
 String_Output DesignName, DesignCode, CoreState, Platform, StatusString;
 Analog_Output StatusCode;
-String_Parameter _skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_, ID[100], Host[100], Username[100], Password[100];
-Integer_Parameter Port, DebugMode;
+String_Parameter _skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_, Host[100], Username[100], Password[100];
+Integer_Parameter CoreID, Port, DebugMode;
 
 integer waitTillStart;
 
-QsysProcessorSimplInterface processor;
+QsysCoreSimpl core;
 
 Push Initialize
 {                
 	while(!waitTillStart)
 	{}
-	processor.Debug(DebugMode);
-    processor.Register(ID);
-    QsysProcessor.Initialize(host, port, Username, Password);
+	core.setDebug(DebugMode);
+    core.Initialize(CoreID, host, port, Username, Password);
 }
 
 Callback Function NewIsRegistered(integer value)
@@ -96,16 +95,16 @@ Callback Function NewStatusString(string value)
 }
 Function Main()
 {
-	RegisterDelegate(processor, onIsRegistered, NewIsRegistered);  
-	RegisterDelegate(processor, onIsConnected, NewIsConnected);
-	RegisterDelegate(processor, onCoreState, NewCoreState);
-	RegisterDelegate(processor, onPlatform, NewPlatform); 
-	RegisterDelegate(processor, onDesignName, NewDesignName); 
-	RegisterDelegate(processor, onDesignCode, NewDesignCode); 
-	RegisterDelegate(processor, onIsRedundant, NewIsRedundant); 
-	RegisterDelegate(processor, onIsEmulator, NewIsEmulator); 
-	RegisterDelegate(processor, onStatusCode, NewStatusCode);
-	RegisterDelegate(processor, onStatusString, NewStatusString);
+	RegisterDelegate(core, onIsRegistered, NewIsRegistered);  
+	RegisterDelegate(core, onIsConnected, NewIsConnected);
+	RegisterDelegate(core, onCoreState, NewCoreState);
+	RegisterDelegate(core, onPlatform, NewPlatform); 
+	RegisterDelegate(core, onDesignName, NewDesignName); 
+	RegisterDelegate(core, onDesignCode, NewDesignCode); 
+	RegisterDelegate(core, onIsRedundant, NewIsRedundant); 
+	RegisterDelegate(core, onIsEmulator, NewIsEmulator); 
+	RegisterDelegate(core, onStatusCode, NewStatusCode);
+	RegisterDelegate(core, onStatusString, NewStatusString);
 	WaitForInitializationComplete();
 	
 	waitTillStart = 1;

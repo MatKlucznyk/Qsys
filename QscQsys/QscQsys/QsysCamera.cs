@@ -57,7 +57,7 @@ namespace QscQsys
             cameraChange.Params.Controls = new List<ComponentSetValue>();
             cameraChange.Params.Controls.Add(camera);
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(cameraChange));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(cameraChange));
         }
 
         public void StopPTZ(PtzTypes type)
@@ -101,7 +101,7 @@ namespace QscQsys
             cameraChange.Params.Controls = new List<ComponentSetValue>();
             cameraChange.Params.Controls.Add(camera);
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(cameraChange));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(cameraChange));
         }
 
         public enum PtzTypes

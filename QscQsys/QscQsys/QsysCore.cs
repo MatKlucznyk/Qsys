@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Crestron.SimplSharp;                          				// For Basic SIMPL# Classes
+using Crestron.SimplSharp;
 using Crestron.SimplSharp.CrestronIO;
 using ExtensionMethods;
 using Newtonsoft.Json;
@@ -12,62 +12,106 @@ using TCP_Client;
 namespace QscQsys
 {
     /// <summary>
-    /// Static processor for Q-Sys Cores.
+    /// Qsys Core
     /// </summary>
-    public static class QsysProcessor
+    public class QsysCore
     {
-        private static CrestronQueue<string> commandQueue;
-        private static CrestronQueue<string> responseQueue;
-        private static CTimer commandQueueTimer;
-        private static CTimer responseQueueTimer;
-        private static CTimer heartbeatTimer;
-        private static TCPClientDevice client;
-        private static bool debug;
+        //Core specific coms
+        private int coreID;
+        private string loginUser;
+        private string loginPass;
+        private string coreIP = "";
+        public string getCoreIP { get { return coreIP; }}
+        private int corePort = 0;
+        private TCPClientDevice client;
 
-        private static bool isInitialized;
-        private static bool isDisposed;
+        //Module vars
+        private bool debug;
+        public bool IsDebugMode { get { return debug; } }
+        private bool isInitialized;
+        private bool isDisposed;
+        public bool IsDisposed { get { return isDisposed; } }
+        private bool loggedIn;
+        public bool IsInitialized { get { return isInitialized; } }
+        public bool IsConnected { get; set; }
 
-        private static bool loggedIn;
-        private static string loginUser;
-        private static string loginPass;
-        private static eCoreState coreState;
-        private static string platform;
-        private static string designName;
-        private static string designCode;
-        private static bool isRedundant;
-        private static bool isEmulator;
-        private static int statusCode;
-        private static string statusString;
+        //Queues
+        private CrestronQueue<string> commandQueue;
+        private CrestronQueue<string> responseQueue;
 
-        internal static Dictionary<string, InternalEvents> Controls = new Dictionary<string, InternalEvents>();
-        internal static Dictionary<Component, InternalEvents> Components = new Dictionary<Component, InternalEvents>();
-        internal static Dictionary<string, SimplEvents> SimplClients = new Dictionary<string, SimplEvents>();
+        //Timers
+        private CTimer commandQueueTimer;
+        private CTimer responseQueueTimer;
+        private CTimer heartbeatTimer;
+        
+        //Core info
+        private eCoreState coreState;
+        public eCoreState CoreState { get { return coreState; } }
+        private string platform;
+        public string Platform { get { return platform; } }
+        private string designName;
+        public string DesignName { get { return designName; } }
+        private string designCode;
+        public string DesignCode { get { return designCode; } }
+        private bool isRedundant;
+        public bool IsRedundant { get { return isRedundant; } }
+        private bool isEmulator;
+        public bool IsEmulator { get { return isEmulator; } }
+        private int statusCode;
+        public int StatusCode { get { return statusCode; } }
+        private string statusString;
+        public string StatusString { get { return statusString; } }
+
+        //Components & controls & clients
+        internal Dictionary<string, InternalEvents> Controls = new Dictionary<string, InternalEvents>();
+        internal Dictionary<Component, InternalEvents> Components = new Dictionary<Component, InternalEvents>();
+        internal Dictionary<string, SimplEvents> SimplClients = new Dictionary<string, SimplEvents>();
+
+
 
         /// <summary>
-        /// Processor Status
+        /// Initialize new core
         /// </summary>
-        public static bool IsInitialized { get { return isInitialized; } }
-        public static bool IsConnected { get; set; }
-        public static eCoreState CoreState { get { return coreState; } }
-        public static string Platform { get { return platform; } }
-        public static string DesignName { get { return designName; } }
-        public static string DesignCode { get { return designCode; } }
-        public static bool IsRedundant { get { return isRedundant; } }
-        public static bool IsEmulator { get { return isEmulator; } }
-        public static int StatusCode { get { return statusCode; } }
-        public static string StatusString { get { return statusString; } }
+        public bool Initialize(int _coreID, string _host, ushort _port, string _user, string _pass)
+        {
+            bool ret = false;
+            coreID = _coreID;
+            coreIP = _host;
+            corePort = _port;
+            loginUser = _user;
+            loginPass = _pass;
+            if (QsysMain.AddCore(this, this.coreID))
+            {
+                SendDebug(string.Format("Add core {0} @ {1}:{2} & initialize", coreID, coreIP, corePort));
+                commandQueue = new CrestronQueue<string>();
+                responseQueue = new CrestronQueue<string>();
+                commandQueueTimer = new CTimer(CommandQueueDequeue, null, 0, 50);
+                responseQueueTimer = new CTimer(ResponseQueueDequeue, null, 0, 50);
+                initializeConnection();
+                ret = true;
+            }
+            else
+            {
+                SendDebug(string.Format("Error adding core {0} - already exists",this.coreID));
+                ErrorLog.Error("Error adding core {0} - already exists", this.coreID);
+            }
+            return ret;
+        }
 
-        /// <summary>
-        /// Processor disposed state.
-        /// </summary>
-        public static bool IsDisposed { get { return isDisposed; } }
+        private void initializeConnection()
+        {
+            if (this.coreIP.Length > 0)
+            {
+                client = new TCPClientDevice();
+                client.ID = this.coreID;
+                client.ConnectionStatus += new StatusEventHandler(client_ConnectionStatus);
+                client.ResponseString += new ResponseEventHandler(client_ResponseString);
+                client.Connect(this.coreIP, (ushort)this.corePort);
+            }
+        }
 
-        /// <summary>
-        /// Debug Mode
-        /// </summary>
-        public static bool IsDebugMode { get { return debug; } }
 
-        static internal bool RegisterControl(string control)
+        internal bool RegisterControl(string control)
         {
             try
             {
@@ -106,8 +150,7 @@ namespace QscQsys
             }
         }
 
-
-        static internal bool RegisterComponent(Component component)
+        internal bool RegisterComponent(Component component)
         {
             try
             {
@@ -139,7 +182,7 @@ namespace QscQsys
             }
         }
 
-        public static bool RegisterSimplClient(string id)
+        public bool RegisterSimplClient(string id)
         {
             try
             {
@@ -157,44 +200,20 @@ namespace QscQsys
                 return false;
             }
         }
-        
-        /// <summary>
-        /// Initialzes all methods that are required to setup the class. Connection is established on port 1702.
-        /// </summary>
-        public static void Initialize(string host, ushort port, string user, string pass)
-        {
-            if (!isInitialized)
-            {
-                ErrorLog.Notice("QsysProcessor is initializing.");
-                commandQueue = new CrestronQueue<string>();
-                responseQueue = new CrestronQueue<string>();
-                commandQueueTimer = new CTimer(CommandQueueDequeue, null, 0, 50);
-                responseQueueTimer = new CTimer(ResponseQueueDequeue, null, 0, 50);
 
-                loginUser = user;
-                loginPass = pass;
-
-                client = new TCPClientDevice();
-                client.ID = 1;
-                client.ConnectionStatus += new StatusEventHandler(client_ConnectionStatus);
-                client.ResponseString += new ResponseEventHandler(client_ResponseString);
-                client.Connect(host, port);
-            }
-        }
-
-        public static void Debug(ushort value)
+        public void setDebug(ushort value)
         {
             debug = Convert.ToBoolean(value);
         }
 
-        static void client_ResponseString(string response, int id)
+        void client_ResponseString(string response, int id)
         {
             if (debug)
                 //CrestronConsole.PrintLine("RX ID:{0} - {1}", id, response);
             ParseResponse(response);
         }
 
-        static void client_ConnectionStatus(int status, int id)
+        void client_ConnectionStatus(int status, int id)
         {
             if (status == 2 && !IsConnected)
             {
@@ -240,7 +259,7 @@ namespace QscQsys
             }
         }
 
-        private static void SendLogin()
+        static void SendLogin()
         {
             SendDebug(string.Format("Qsys - Sending login: {0}:{1}", loginUser, loginPass));
             CoreLogon logon = new CoreLogon();
@@ -250,7 +269,7 @@ namespace QscQsys
             commandQueue.Enqueue(JsonConvert.SerializeObject(logon));
         }
 
-        private static void CoreModuleInit()
+        static void CoreModuleInit()
         {
             commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
 
@@ -283,7 +302,7 @@ namespace QscQsys
             commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
         }
 
-        private static void SendHeartbeat(object o)
+        private void SendHeartbeat(object o)
         {
             commandQueue.Enqueue(JsonConvert.SerializeObject(new Heartbeat()));
         }
@@ -291,7 +310,7 @@ namespace QscQsys
         /// <summary>
         /// Cleans up all resources.
         /// </summary>
-        public static void Dispose()
+        public void Dispose()
         {
             if (IsInitialized)
             {
@@ -310,7 +329,7 @@ namespace QscQsys
             }
         }
 
-        private static void CommandQueueDequeue(object o)
+        private void CommandQueueDequeue(object o)
         {
             if (!commandQueue.IsEmpty)
             {
@@ -321,10 +340,10 @@ namespace QscQsys
             }
         }
 
-        static StringBuilder RxData = new StringBuilder();
-        static bool busy = false;
-        static int Pos = -1;
-        private static void ResponseQueueDequeue(object o)
+        StringBuilder RxData = new StringBuilder();
+        bool busy = false;
+        int Pos = -1;
+        private void ResponseQueueDequeue(object o)
         {
             if (!responseQueue.IsEmpty)
             {
@@ -360,7 +379,7 @@ namespace QscQsys
             }
         }
 
-        private static void ParseInternalResponse(string returnString)
+        private void ParseInternalResponse(string returnString)
         {
             if (returnString.Length > 0)
             {
@@ -465,7 +484,7 @@ namespace QscQsys
             }
         }
 
-        internal static void Enqueue(string data)
+        internal void Enqueue(string data)
         {
             commandQueue.Enqueue(data);
         }
@@ -475,7 +494,7 @@ namespace QscQsys
         /// Parse response from Q-Sys Core.
         /// </summary>
         /// <param name="data"></param>
-        public static void ParseResponse(string data)
+        public void ParseResponse(string data)
         {
             //gather.Gather(data);
             try
@@ -488,7 +507,7 @@ namespace QscQsys
             }
         }
 
-        public static void SendDebug(string msg)
+        public void SendDebug(string msg)
         {
             if (debug)
                 CrestronConsole.PrintLine("Qsys Debug: {0}", msg);

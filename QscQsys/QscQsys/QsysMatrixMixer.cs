@@ -32,7 +32,7 @@ namespace QscQsys
             set.Params.Outputs = outputs;
             set.Params.Value = value;
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(set));
+            QsysCore.Enqueue(JsonConvert.SerializeObject(set));
         }
     }
 }
