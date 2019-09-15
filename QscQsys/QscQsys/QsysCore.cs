@@ -29,6 +29,7 @@ namespace QscQsys
         private bool loginAttempt = false;
         private bool badLogin = false;
         public bool BadLogin { get { return this.badLogin; } }
+        private bool initRun = false;
 
         //Module vars
         private bool debug;
@@ -73,34 +74,40 @@ namespace QscQsys
         internal Dictionary<string, SimplEvents> SimplClients = new Dictionary<string, SimplEvents>();
 
 
-
         /// <summary>
         /// Initialize new core
         /// </summary>
         public bool Initialize(int _coreID, string _host, ushort _port, string _user, string _pass)
         {
-            bool ret = false;
-            coreID = _coreID;
-            coreIP = _host;
-            corePort = _port;
-            loginUser = _user;
-            loginPass = _pass;
-            if (QsysMain.AddCore(this, this.coreID))
-            {
+            if (this.initRun)
+                return false;
+
+            bool added = QsysMain.AddCore(this, this.coreID);
+            this.coreID = _coreID;
+            this.coreIP = _host;
+            this.corePort = _port;
+            this.loginUser = _user;
+            this.loginPass = _pass;
+
+            if (added)
                 this.SendDebug(string.Format("Add core {0} @ {1}:{2} & initialize", coreID, coreIP, corePort));
+
+            if (this.commandQueue == null)
                 this.commandQueue = new CrestronQueue<string>();
+
+            if (this.responseQueue == null)
                 this.responseQueue = new CrestronQueue<string>();
+
+            if (this.commandQueueTimer == null)
                 this.commandQueueTimer = new CTimer(CommandQueueDequeue, null, 0, 50);
+
+            if (this.responseQueueTimer == null)
                 this.responseQueueTimer = new CTimer(ResponseQueueDequeue, null, 0, 50);
+
+            if (this.isConnected == false)
                 this.initializeConnection();
-                ret = true;
-            }
-            else
-            {
-                this.SendDebug(string.Format("Error adding core {0} - already exists", this.coreID));
-                ErrorLog.Error("Error adding core {0} - already exists", this.coreID);
-            }
-            return ret;
+            this.initRun = true;
+            return true;
         }
 
         private void initializeConnection()
@@ -108,7 +115,7 @@ namespace QscQsys
             if (this.coreIP.Length > 0)
             {
                 this.client = new TCPClientDevice();
-                this.client.ID = this.coreID;
+                this.client.ID = 1;
                 this.client.ConnectionStatus += new StatusEventHandler(client_ConnectionStatus);
                 this.client.ResponseString += new ResponseEventHandler(client_ResponseString);
                 this.client.Connect(this.coreIP, (ushort)this.corePort);
@@ -116,7 +123,7 @@ namespace QscQsys
         }
 
 
-        internal bool RegisterControl(string _control)
+        internal bool RegisterNamedControl(string _control)
         {
             try
             {
@@ -138,9 +145,14 @@ namespace QscQsys
                             this.SendDebug(string.Format("Adding named control: {0} to core change group", _control));
                             this.commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
                         }
+                        return true;
+                    }
+                    else
+                    {
+                        this.SendDebug(string.Format("Failed to add named control as it alreadt exists: {0}", _control));
+                        return false;
                     }
                 }
-                return true;
             }
             catch (Exception e)
             {
@@ -149,7 +161,7 @@ namespace QscQsys
             }
         }
 
-        internal bool RegisterComponent(Component _component)
+        internal bool RegisterNamedComponent(Component _component)
         {
             try
             {
@@ -169,9 +181,14 @@ namespace QscQsys
                             this.SendDebug(string.Format("Adding named component: {0} to core change group", _component.Name));
                             this.commandQueue.Enqueue(JsonConvert.SerializeObject(addComponent));
                         }
+                        return true;
+                    }
+                    else
+                    {
+                        this.SendDebug(string.Format("Failed to add named component as it alreadt exists: {0}", _component.Name));
+                        return false;
                     }
                 }
-                return true;
             }
             catch (Exception e)
             {
@@ -270,6 +287,12 @@ namespace QscQsys
             this.commandQueue.Enqueue(JsonConvert.SerializeObject(logon));
         }
 
+        void SendCreateChangeGroup()
+        {
+            this.SendDebug("Creating change group and registering with the core");
+            this.commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
+        }
+
         private void CoreModuleInit()
         {
             this.SendDebug("Requesting all named components and controls");
@@ -303,8 +326,9 @@ namespace QscQsys
                     this.SendDebug(string.Format("Adding named component: {0} to change group", item.Key));
                     commandQueue.Enqueue(JsonConvert.SerializeObject(addComponents));
                 }
-                this.commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
             }
+
+            this.SendCreateChangeGroup();
         }
 
         private void SendHeartbeat(object _o)
@@ -339,7 +363,6 @@ namespace QscQsys
             if (!this.commandQueue.IsEmpty)
             {
                 var data = this.commandQueue.Dequeue();
-
                 this.SendDebug(string.Format("Sending to core from queue: {0}", data));
                 this.client.SendCommand(data + "\x00");
             }
@@ -475,14 +498,57 @@ namespace QscQsys
                     }
                     else if (_returnString.Contains("error"))
                     {
-                        CrestronConsole.PrintLine("got error");
                         CoreError err = JsonConvert.DeserializeObject<CoreError>(_returnString);
-                        //this.SendDebug(string.Format("core error message - {1}-{2}", err.error.code, err.error.message));
+                        this.SendDebug(String.Format("Core sent error: {0}:{1}", err.Error.Code, err.Error.Message));
+                        switch (err.Error.Code)
+                        {
+                            case -32700: //Parse error. Invalid JSON was received by the server.
+                                break;
+                            case -32600: //Invalid request. The JSON sent is not a valid Request object.
+                                break;
+                            case -32601: //Method not found.
+                                break;
+                            case -32602: //Invalid params.
+                                break;
+                            case -32603: //Server error.
+                                break;
+                            case 2: //Invalid Page Request ID
+                                break;
+                            case 3: //Bad Page Request - could not create the requested Page Request
+                                break;
+                            case 4: //Missing file
+                                break;
+                            case 5: //Change Groups exhausted
+                                break;
+                            case 6: //Unknown change croup
+                                break;
+                            case 7: //Unknown component name
+                                break;
+                            case 8: //Unknown control
+                                break; 
+                            case 9: //Illegal mixer channel index
+                                break;
+                            case 10: //Login required
+                                if (this.loginAttempt == false)
+                                {
+                                    this.SendLogin();
+                                    this.loginAttempt = true;
+                                }
+                                else
+                                {
+                                    this.SendDebug("The login attempt failed - check the username/pass to make sure its correct");
+                                    this.badLogin = true;
+                                }
+                                break;
+                        }
+                        this.SendDebug(string.Format("core error message - {0}-{1}", err.Error.Code, err.Error.Message));
                     }
                 }
                 catch (Exception e)
                 {
-                    this.SendDebug(String.Format("Parse internal error: {1}:\r\n{2}", this.coreID, e.Message, _returnString));
+                    this.SendDebug(String.Format("Parse internal error: \r\n--------MESSAGE---------\r\n", e.Message));
+                    this.SendDebug(String.Format("Parse internal error: \r\n--------TRACE---------\r\n", e.StackTrace));
+                    this.SendDebug(String.Format("Parse internal error: \r\n--------MESSAGE---------\r\n", _returnString));
                 }
             }
         }
@@ -499,7 +565,6 @@ namespace QscQsys
         /// <param name="data"></param>
         public void ParseResponse(string _data)
         {
-            //gather.Gather(data);
             try
             {
                 this.SendDebug(string.Format("Received from core and adding to queue: {0}", _data));

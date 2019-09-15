@@ -292,15 +292,19 @@ namespace QscQsys
 
     public class CoreError
     {
-        [JsonProperty]
+        [JsonProperty("jsonrpc")]
         public string jsonrpc { get; set; }
+        [JsonProperty("id")]
         public string id { get; set; }
-        public CoreErrorCode error { get; set; }
+        [JsonProperty("error")]
+        public CoreErrorCode Error { get; set; }
     }
     public class CoreErrorCode
     {
-        public int code { get; set; }
-        public string message { get; set; }
+        [JsonProperty("code")]
+        public int Code { get; set; }
+        [JsonProperty("message")]
+        public string Message { get; set; }
     }
 
 }   

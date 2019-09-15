@@ -16,7 +16,7 @@ S0Nd=1
 S1Nd=2
 SLNd=3
 PrNm=Qsys Named Control.umc
-DbVr=81.00.002.00
+DbVr=81.05.001.00
 DvcDbVr=107.00.001.00
 PgmNm=Ryan Wilkinson
 DlrNm=WMS
@@ -49,25 +49,11 @@ ObjTp=Bw
 H=1
 Lx=0
 Ly=0
-Rx=858
-Ry=564
+Rx=1271
+Ry=492
 Xm=-1
 Ym=-1
-SH=11
-Z=100
-Ht=1
-Hi=1
-]
-[
-ObjTp=Bw
-H=1
-Lx=858
-Ly=564
-Rx=1716
-Ry=1128
-Xm=-1
-Ym=-1
-SH=10
+SH=19
 Z=100
 Ht=1
 Hi=1
@@ -76,28 +62,14 @@ Hi=1
 ObjTp=Bw
 H=1
 Lx=0
-Ly=564
-Rx=858
-Ry=1128
+Ly=492
+Rx=1271
+Ry=984
 Xm=-1
 Ym=-1
-SH=16
+SH=21
 Z=100
-Ht=1
-Hi=1
-]
-[
-ObjTp=Bw
-H=1
-Lx=858
-Ly=0
-Rx=1716
-Ry=564
-Xm=-1
-Ym=-1
-SH=12
-Z=100
-Ht=1
+Ht=4
 Hi=1
 ]
 [
@@ -119,7 +91,7 @@ FltTmp=1
 FpCS=0
 NumFixedInputs=23
 NumFixedOutputs=23
-NumFixedParams=6
+NumFixedParams=9
 MinVariableInputs=0
 MinVariableInputsList2=0
 MinVariableInputsList3=0
@@ -128,60 +100,62 @@ MinVariableOutputsList2=0
 MinVariableOutputsList3=0
 MinVariableParams=0
 SymbolTree=32
-InputSigType1=Digital
+InputSigType1=Digital|Analog|Serial|String
 InputSigType2=Analog
 InputSigType3=Analog
 InputSigType4=Digital
 InputSigType5=Digital
-InputSigType6=Digital
+InputSigType6=Digital|Analog|Serial|String
 InputSigType7=Digital|Analog|Serial|String
-InputSigType8=Digital
+InputSigType8=Digital|Analog|Serial|String
 InputSigType9=Digital
 InputSigType10=Digital
 InputSigType11=Digital
 InputSigType12=Digital
-InputSigType13=Digital
+InputSigType13=Digital|Analog|Serial|String
 InputSigType14=Digital|Analog|Serial|String
-InputSigType15=Digital
+InputSigType15=Digital|Analog|Serial|String
 InputSigType16=Digital
-InputSigType17=Digital
+InputSigType17=Digital|Analog|Serial|String
 InputSigType18=Digital|Analog|Serial|String
-InputSigType19=Digital
+InputSigType19=Digital|Analog|Serial|String
 InputSigType20=Serial
-InputSigType21=Digital
+InputSigType21=Digital|Analog|Serial|String
 InputSigType22=Digital|Analog|Serial|String
 InputSigType23=Analog
-OutputSigType1=Digital
+OutputSigType1=Digital|Analog|Serial|String
 OutputSigType2=Analog
 OutputSigType3=Analog
 OutputSigType4=Digital|Analog|Serial|String
 OutputSigType5=Digital|Analog|Serial|String
-OutputSigType6=Digital
+OutputSigType6=Digital|Analog|Serial|String
 OutputSigType7=Digital|Analog|Serial|String
-OutputSigType8=Digital
+OutputSigType8=Digital|Analog|Serial|String
 OutputSigType9=Digital
 OutputSigType10=Digital
 OutputSigType11=Digital|Analog|Serial|String
 OutputSigType12=Digital|Analog|Serial|String
-OutputSigType13=Digital
+OutputSigType13=Digital|Analog|Serial|String
 OutputSigType14=Digital|Analog|Serial|String
-OutputSigType15=Digital
+OutputSigType15=Digital|Analog|Serial|String
 OutputSigType16=Digital
-OutputSigType17=Digital
+OutputSigType17=Digital|Analog|Serial|String
 OutputSigType18=Digital|Analog|Serial|String
-OutputSigType19=Digital
+OutputSigType19=Digital|Analog|Serial|String
 OutputSigType20=Serial
-OutputSigType21=Digital
-OutputSigType22=Digital|Analog|Serial|String
-ParamSigType1=String
-ParamSigType2=List
-ParamSigType3=Time
+OutputSigType21=Digital|Analog|Serial|String
+ParamSigType1=Constant
+ParamSigType2=String
+ParamSigType3=List
 ParamSigType4=Constant
 ParamSigType5=String
 ParamSigType6=String
+ParamSigType7=Time|Constant
+ParamSigType8=Time|Constant
+ParamSigType9=Time|Constant
 InputCue1=[~BeginGroup~]Value
-InputCue2=[Value_Unsigned]
-InputCue3=[Value_Signed]
+InputCue2=[Value_Scaled]
+InputCue3=[Value_Raw]
 InputCue4=[Raise]
 InputCue5=[Lower]
 InputCue6=[~EndGroup~]Value
@@ -203,8 +177,8 @@ InputCue21=[~EndGroup~]String
 InputCue22=[~UNUSED~]
 InputCue23=[QSys_Ramp_Time_MS]
 OutputCue1=[~BeginGroup~]Value
-OutputCue2=[Value_Unsigned_Is]
-OutputCue3=[Value_Signed_Is]
+OutputCue2=[Value_Scaled_Is]
+OutputCue3=[Value_Raw_Is]
 OutputCue4=[~UNUSED~]
 OutputCue5=[~UNUSED~]
 OutputCue6=[~EndGroup~]Value
@@ -225,18 +199,24 @@ OutputCue20=[String_Out]
 OutputCue21=[~EndGroup~]String
 OutputCue22=[~UNUSED~]
 OutputCue23=[~UNUSED~]
-ParamCue1=Control Name
-ParamCue2=Control Type,0d,1d,2d,3d
-ParamCue3=Ramp Time
+ParamCue1=Core ID
+ParamCue2=Control Name
+ParamCue3=Control Type,0d,1d,2d,3d
 ParamCue4=QSys Default Ramp Time MS
-ParamCue5=Val Min
-ParamCue6=Val Max
-MPp=6
-Pp2=3
-Pp3=1
+ParamCue5=Value Min
+ParamCue6=Value Max
+ParamCue7=Value Increment Amount
+ParamCue8=Value Incremenet Hold Time
+ParamCue9=Value Increment Repeat Time
+MPp=9
+Pp1=6
+Pp3=3
 Pp4=2
 Pp5=4
 Pp6=5
+Pp7=1
+Pp8=7
+Pp9=8
 FileName=Qsys Named Control.umc
 EncodingType=0
 ZeroOnIoOk=0
@@ -293,10 +273,11 @@ SmC=156
 Nm=Logic
 ObjVer=1
 CF=2
-mC=3
+mC=4
 C1=7
 C2=8
 C3=9
+C4=10
 ]
 [
 ObjTp=Sm
@@ -374,19 +355,25 @@ O20=31
 O21=38
 O22=4
 O23=4
-mP=6
-P1=Control Name
-P2=Control Type
-P3=Ramp Time
+mP=9
+P1=Core ID
+P2=Control Name
+P3=Control Type
 P4=QSys Default Ramp Time MS
-P5=Val Min
-P6=Val Max
-MPp=6
-Pp2=3
-Pp3=1
+P5=Value Min
+P6=Value Max
+P7=Value Increment Amount
+P8=Value Incremenet Hold Time
+P9=Value Increment Repeat Time
+MPp=9
+Pp1=6
+Pp3=3
 Pp4=2
 Pp5=4
 Pp6=5
+Pp7=1
+Pp8=7
+Pp9=8
 ]
 [
 ObjTp=Sm
@@ -417,7 +404,7 @@ O5=35
 O6=29
 O7=30
 O9=31
-mP=16
+mP=17
 P1=
 P2=
 P3=
@@ -430,10 +417,11 @@ P9=
 P10=
 P11=
 P12=#Control Name
-P13=#Control Type
-P14=#QSys Default Ramp Time MS
-P15=#Val Min
-P16=#Val Max
+P13=#Core ID
+P14=#Control Type
+P15=#QSys Default Ramp Time MS
+P16=#Value Min
+P17=#Value Max
 ]
 [
 ObjTp=Sm
@@ -461,37 +449,29 @@ Nm=SUBSYSTEM
 ObjVer=1
 PrH=4
 CF=2
+OpF=0
+HandF=1
 Cmn1=ramp
-mC=7
-C1=10
-C2=12
-C3=16
-C4=11
-C5=14
-C6=13
-C7=15
+mC=5
+C1=17
+C2=11
+C3=14
+C4=13
+C5=15
 ]
 [
 ObjTp=Sm
 H=10
-SmC=540
-Nm=Analog Ramp (Bounds Limited)
+SmC=156
+Nm=SUBSYSTEM
 ObjVer=1
-PrH=9
+PrH=4
 CF=2
-n1I=3
-n1O=1
-mI=3
-I1=36
-I2=20
-mO=1
-tO=1
-O1=10
-mP=4
-P1=#Ramp Time
-P2=0d
-P3=100d
-P4=0d
+Cmn1=ramp
+mC=3
+C1=21
+C2=19
+C3=20
 ]
 [
 ObjTp=Sm
@@ -503,6 +483,8 @@ PrH=9
 CF=2
 n1I=2
 n1O=1
+OpF=0
+PropF=1
 Cmn1=ramp active\\
 mI=2
 I1=36
@@ -510,29 +492,6 @@ I2=20
 mO=1
 tO=1
 O1=16
-]
-[
-ObjTp=Sm
-H=12
-SmC=541
-Nm=Analog Scaler with I/O Limits
-ObjVer=1
-PrH=9
-CF=2
-n1I=1
-n1O=1
-Cmn1=scale to 16b\\
-mI=1
-I1=10
-mO=1
-tO=1
-O1=15
-mP=5
-P1=0d
-P2=100d
-P3=0d
-P4=65535d
-P5=0d
 ]
 [
 ObjTp=Sm
@@ -544,6 +503,8 @@ PrH=9
 CF=2
 n1I=1
 n1O=1
+OpF=0
+PropF=1
 Cmn1=ramp not active\\
 mI=1
 I1=16
@@ -561,10 +522,12 @@ PrH=9
 CF=2
 n1I=2
 n1O=1
+OpF=0
+PropF=1
 Cmn1=ramp active - set\\
 mI=2
 I1=16
-I2=15
+I2=10
 mO=1
 tO=1
 O1=39
@@ -579,36 +542,101 @@ PrH=9
 CF=2
 n1I=2
 n1O=1
+OpF=0
+PropF=1
 Cmn1=ramp not active - set internal\\
 mI=2
 I1=17
-I2=18
+I2=29
 mO=1
 tO=1
 O1=10
 ]
 [
 ObjTp=Sm
-H=16
-SmC=541
-Nm=Analog Scaler with I/O Limits
+H=17
+SmC=543
+Nm=Analog Increment
 ObjVer=1
 PrH=9
 CF=2
-n1I=1
+n1I=3
 n1O=1
-Cmn1=scale to 0-100\\
-mI=1
-I1=29
+OpF=0
+PropF=1
+mI=3
+I1=36
+I2=20
 mO=1
 tO=1
-O1=18
-mP=5
-P1=0d
-P2=65535d
-P3=0d
-P4=100d
-P5=0d
+O1=10
+mP=6
+P1=#Value Increment Amount
+P2=#Value Incremenet Hold Time
+P3=#Value Increment Repeat Time
+P4=0d
+P5=65536d
+P6=0d
+]
+[
+ObjTp=Sm
+H=19
+SmC=205
+Nm=NOT
+ObjVer=1
+PrH=10
+CF=2
+n1I=1
+n1O=1
+Cmn1=ramp not active\\
+mI=1
+I1=16
+mO=1
+tO=1
+O1=17
+]
+[
+ObjTp=Sm
+H=20
+SmC=46
+Nm=Analog Buffer
+ObjVer=1
+PrH=10
+CF=2
+n1I=2
+n1O=1
+Cmn1=ramp not active - set internal\\
+mI=2
+I1=17
+I2=29
+mO=1
+tO=1
+O1=10
+]
+[
+ObjTp=Sm
+H=21
+SmC=605
+Nm=Analog Increment with Optional Feedback
+ObjVer=1
+PrH=10
+CF=2
+n1I=4
+n1O=1
+mI=4
+I1=36
+I2=20
+I4=29
+mO=1
+tO=1
+O1=39
+mP=6
+P1=#Value Increment Amount
+P2=#Value Incremenet Hold Time
+P3=#Value Increment Repeat Time
+P4=0%
+P5=100%
+P6=0d
 ]
 [
 ObjTp=Sg
@@ -620,37 +648,36 @@ SgTp=31
 ObjTp=Sg
 H=5
 Nm=[~BeginGroup~]Button
+SgTp=31
 ]
 [
 ObjTp=Sg
 H=6
 Nm=[~EndGroup~]Button
+SgTp=31
 ]
 [
 ObjTp=Sg
 H=7
 Nm=[~BeginGroup~]Trigger
+SgTp=31
 ]
 [
 ObjTp=Sg
 H=8
 Nm=[~EndGroup~]Trigger
+SgTp=31
 ]
 [
 ObjTp=Sg
 H=9
 Nm=[~BeginGroup~]Value
+SgTp=31
 ]
 [
 ObjTp=Sg
 H=10
 Nm=ramp_out
-SgTp=2
-]
-[
-ObjTp=Sg
-H=15
-Nm=ramp_out_scaled
 SgTp=2
 ]
 [
@@ -665,14 +692,9 @@ Nm=ramp_active_not
 ]
 [
 ObjTp=Sg
-H=18
-Nm=volume_is_0-100
-SgTp=2
-]
-[
-ObjTp=Sg
 H=19
 Nm=[~EndGroup~]Value
+SgTp=31
 ]
 [
 ObjTp=Sg
@@ -713,25 +735,25 @@ Nm=[Trigger]
 [
 ObjTp=Sg
 H=27
-Nm=[Value_Unsigned]
+Nm=[Value_Scaled]
 SgTp=2
 ]
 [
 ObjTp=Sg
 H=28
-Nm=[Value_Signed]
+Nm=[Value_Raw]
 SgTp=2
 ]
 [
 ObjTp=Sg
 H=29
-Nm=[Value_Unsigned_Is]
+Nm=[Value_Scaled_Is]
 SgTp=2
 ]
 [
 ObjTp=Sg
 H=30
-Nm=[Value_Signed_Is]
+Nm=[Value_Raw_Is]
 SgTp=2
 ]
 [
@@ -770,16 +792,18 @@ Nm=[Raise]
 ObjTp=Sg
 H=37
 Nm=[~BeginGroup~]String
+SgTp=31
 ]
 [
 ObjTp=Sg
 H=38
 Nm=[~EndGroup~]String
+SgTp=31
 ]
 [
 ObjTp=Sg
 H=39
-Nm=val_us_out
+Nm=val_scaled_set
 SgTp=2
 ]
 [
@@ -787,9 +811,10 @@ ObjTp=Dp
 H=1
 Tp=1
 HD=TRUE
-DV=10s
-NF=16
-DNF=16
+DV=655d
+Lng=TRUE
+NF=51
+DNF=1
 EncFmt=0
 DVLF=1
 Sgn=0
@@ -846,6 +871,44 @@ Tp=1
 HD=TRUE
 DV="65535"
 NoS=FALSE
+EncFmt=0
+DVLF=1
+Sgn=0
+]
+[
+ObjTp=Dp
+H=6
+Tp=1
+HD=TRUE
+DV=1d
+NF=1
+DNF=1
+EncFmt=0
+DVLF=1
+Sgn=0
+]
+[
+ObjTp=Dp
+H=7
+Tp=1
+HD=TRUE
+DV=.5s
+Lng=TRUE
+NF=51
+DNF=16
+EncFmt=0
+DVLF=1
+Sgn=0
+]
+[
+ObjTp=Dp
+H=8
+Tp=1
+HD=TRUE
+DV=.1s
+Lng=TRUE
+NF=51
+DNF=16
 EncFmt=0
 DVLF=1
 Sgn=0

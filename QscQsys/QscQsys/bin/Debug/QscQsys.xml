@@ -70,6 +70,18 @@
             </summary>
             <param name="data"></param>
         </member>
+        <member name="M:QscQsys.QsysNamedControl.#ctor(System.Int32,System.String,QscQsys.eControlType)">
+            <summary>
+            Default constructor for a QsysNamedControl
+            </summary>
+            <param name="Name">The component name of the gain.</param>
+        </member>
+        <member name="M:QscQsys.QsysNamedControl.RampTimeMS(System.Double)">
+            <summary>
+            Sets the QSys ramp time for the gain
+            </summary>
+            <param name="time"></param>
+        </member>
         <member name="T:QscQsys.EngineStatusResult">
             <summary>
             Engine Status

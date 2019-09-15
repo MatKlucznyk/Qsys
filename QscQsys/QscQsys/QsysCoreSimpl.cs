@@ -36,10 +36,7 @@ namespace QscQsys
 
         public void Initialize(ushort _coreID, SimplSharpString _host, ushort _port, SimplSharpString _user, SimplSharpString _pass)
         {
-            if (this.core == null)
-            {
-                core = new QsysCore();
-            }
+            this.core  = QsysMain.AddOrGetCoreObject(_coreID);
             if (core.Initialize((int)_coreID, _host.ToString(), _port, _user.ToString(), _pass.ToString()))
             {
                 core.setDebug(debug);
@@ -70,7 +67,6 @@ namespace QscQsys
                     break;
                 case eQscSimplEventIds.IsConnected:
                     if (onIsConnected != null)
-                        CrestronConsole.PrintLine("got event");
                         onIsConnected(e.IntData);
                     break;
                 case eQscSimplEventIds.CoreState:

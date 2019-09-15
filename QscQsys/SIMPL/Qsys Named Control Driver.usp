@@ -11,11 +11,11 @@ Digital_Output ButtonIsOn, ButtonIsOff, _skip_, _skip_, Triggered;
 Analog_Output ValueScaledOut, ValueRawOut, _skip_;
 String_Output StringOut;
                           
-QsysProcessorSimplInterface processor;                          
+//QsysCoreSimpl processor;                          
 QsysNamedControlSimpl ctrl;
 
 String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_, _skip_, _skip_, Control_Name[100];
-integer_parameter NamedControlType, DefaultQsysRampTimeMS;
+integer_parameter coreID, NamedControlType, DefaultQsysRampTimeMS;
 string_parameter Val_Minimum[10], Val_Maximum[10];
 
 integer currentValScaled;
@@ -121,11 +121,11 @@ Callback Function onStringChange(string value)
 
 Function Main()
 {              
-    RegisterDelegate(processor, onIsRegistered, onInitializationComplete);
+    //RegisterDelegate(processor, onIsRegistered, onInitializationComplete);
     RegisterDelegate(ctrl, newValueChange, onValueChange);
     RegisterDelegate(ctrl, newStateChange, onStateChange);
     RegisterDelegate(ctrl, newStringChange, onStringChange);
-    ctrl.Initialize(Control_Name, NamedControlType);                            
+    ctrl.Initialize(CoreID, Control_Name, NamedControlType);                            
     ctrl.RampTimeMS(DefaultQsysRampTimeMS);
     ctrl.SetMinMax(Val_Minimum, Val_Maximum);
 }
