@@ -49,53 +49,26 @@
             New mute change event ID.
             </summary>
         </member>
-        <member name="T:QscQsys.QsysProcessor">
+        <member name="T:QscQsys.QsysCore">
             <summary>
-            Static processor for Q-Sys Cores.
+            Qsys Core
             </summary>
         </member>
-        <member name="M:QscQsys.QsysProcessor.Initialize(System.String,System.UInt16,System.String,System.String)">
+        <member name="M:QscQsys.QsysCore.Initialize(System.Int32,System.String,System.UInt16,System.String,System.String)">
             <summary>
-            Initialzes all methods that are required to setup the class. Connection is established on port 1702.
+            Initialize new core
             </summary>
         </member>
-        <member name="M:QscQsys.QsysProcessor.Dispose">
+        <member name="M:QscQsys.QsysCore.Dispose">
             <summary>
             Cleans up all resources.
             </summary>
         </member>
-        <member name="M:QscQsys.QsysProcessor.ParseResponse(System.String)">
+        <member name="M:QscQsys.QsysCore.ParseResponse(System.String)">
             <summary>
             Parse response from Q-Sys Core.
             </summary>
             <param name="data"></param>
-        </member>
-        <member name="P:QscQsys.QsysProcessor.IsInitialized">
-            <summary>
-            Processor Status
-            </summary>
-        </member>
-        <member name="P:QscQsys.QsysProcessor.IsDisposed">
-            <summary>
-            Processor disposed state.
-            </summary>
-        </member>
-        <member name="P:QscQsys.QsysProcessor.IsDebugMode">
-            <summary>
-            Debug Mode
-            </summary>
-        </member>
-        <member name="M:QscQsys.QsysNamedControl.#ctor(System.String,QscQsys.eControlType)">
-            <summary>
-            Default constructor for a QsysNamedControl
-            </summary>
-            <param name="Name">The component name of the gain.</param>
-        </member>
-        <member name="M:QscQsys.QsysNamedControl.RampTimeMS(System.Double)">
-            <summary>
-            Sets the QSys ramp time for the gain
-            </summary>
-            <param name="time"></param>
         </member>
         <member name="T:QscQsys.EngineStatusResult">
             <summary>
@@ -106,44 +79,6 @@
             <summary>
             Heartbeat
             </summary>
-        </member>
-        <member name="M:QscQsys.QsysFader.#ctor(System.String)">
-            <summary>
-            Default constructor for a QsysFader
-            </summary>
-            <param name="Name">The component name of the gain.</param>
-        </member>
-        <member name="M:QscQsys.QsysFader.Volume(System.Int32)">
-            <summary>
-            Sets the current volume.
-            </summary>
-            <param name="value">The volume level to set to.</param>
-        </member>
-        <member name="M:QscQsys.QsysFader.VolumeDb(System.Int32)">
-            <summary>
-            Sets the current volume in DB.
-            </summary>
-            <param name="value">The volume level to set to.</param>
-        </member>
-        <member name="M:QscQsys.QsysFader.Mute(System.Boolean)">
-            <summary>
-            Sets the current mute state.
-            </summary>
-            <param name="value">The state to set the mute.</param>
-        </member>
-        <member name="M:QscQsys.QsysFader.RampTimeMS(System.Double)">
-            <summary>
-            Sets the QSys ramp time for the gain
-            </summary>
-            <param name="time"></param>
-        </member>
-        <member name="M:QscQsys.QsysMatrixMixer.SetCrossPointMute(System.String,System.String,System.Boolean)">
-            <summary>
-            Sets a crosspoint mute ex. *=everything, 1 2 3=channels 1, 2, 3,  1-6=channels 1 through 6, 1-8 !3=channels 1 through 8 except 3, * !3-5=everything but 3 through 5
-            </summary>
-            <param name="inputs">The input channels.</param>
-            <param name="outputs">The output channels.</param>
-            <param name="value">The value of the crosspoint mute.</param>
         </member>
     </members>
 </doc>

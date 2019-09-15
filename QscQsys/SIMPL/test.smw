@@ -19,7 +19,7 @@ S1Nd=2
 SLNd=3
 PrNm=test.smw
 CmVr=3.03
-DbVr=81.00.002.00
+DbVr=81.05.001.00
 DvcDbVr=107.00.001.00
 PgmNm=Mat Klucznyk
 DlrNm=RAVE Audio Visual
@@ -1181,14 +1181,14 @@ Mx1=0
 ObjTp=Bw
 H=1
 Lx=0
-Ly=0
-Rx=1128
-Ry=997
+Ly=564
+Rx=1527
+Ry=1128
 Xm=-1
 Ym=-1
-SH=27
+SH=31
 Z=100
-Ht=4
+Ht=3
 Hi=3
 ]
 [
@@ -1507,7 +1507,7 @@ PrH=4
 CF=2
 Cmn1=Proc
 mC=2
-C1=32
+C1=31
 C2=33
 ]
 [
@@ -1520,6 +1520,8 @@ PrH=4
 CF=2
 n1I=23
 n1O=23
+OpF=0
+HandF=1
 Cmn1=float\\
 mI=23
 I2=109
@@ -1819,6 +1821,8 @@ PrH=4
 CF=2
 n1I=23
 n1O=23
+OpF=0
+HandF=1
 Cmn1=integer\\
 mI=23
 I2=110
@@ -1896,6 +1900,8 @@ PrH=4
 CF=2
 n1I=23
 n1O=23
+OpF=0
+HandF=1
 Cmn1=momentary\\
 mI=23
 I9=93
@@ -1972,6 +1978,8 @@ PrH=4
 CF=2
 n1I=23
 n1O=23
+OpF=0
+HandF=1
 Cmn1=toggle\\
 mI=23
 I9=99
@@ -2048,6 +2056,8 @@ PrH=4
 CF=2
 n1I=23
 n1O=23
+OpF=0
+HandF=1
 Cmn1=trigger\\
 mI=23
 I16=106
@@ -2112,22 +2122,21 @@ GrpStO23=0
 ]
 [
 ObjTp=Sm
-H=32
-SmC=103
-Nm=Qsys Processor.usp
+H=31
+SmC=155
+Nm=Qsys Core.umc
 ObjVer=1
 PrH=19
 CF=2
-n1I=2
-n1O=4
-mI=2
+n1I=1
+n1O=10
+mI=1
 I1=77
-I2=75
 mO=10
 tO=10
-O1=13
+O1=9
 O2=12
-O3=9
+O3=13
 O4=73
 O5=74
 O6=78
@@ -2135,24 +2144,14 @@ O7=79
 O8=80
 O9=81
 O10=82
-mP=17
-P1=
-P2=
-P3=
-P4=
-P5=
-P6=
-P7=
-P8=
-P9=
-P10=
-P11=
-P12=main
-P13=10.0.1.129
-P14=test
-P15=1000
-P16=1710d
-P17=1d
+mP=6
+P1=1d
+P2=10.0.1.129
+P3=1710d
+P4=test
+P5=1000
+P6=1d
+Plb6=On
 ]
 [
 ObjTp=Sm
@@ -2183,6 +2182,8 @@ PrH=4
 CF=2
 n1I=23
 n1O=23
+OpF=0
+HandF=1
 Cmn1=string\\
 mI=23
 I20=108
@@ -2273,7 +2274,7 @@ Nm=pots.disconnect
 [
 ObjTp=Sg
 H=9
-Nm=core.isRedundant
+Nm=core.isInit
 ]
 [
 ObjTp=Sg
@@ -2293,7 +2294,7 @@ Nm=core.isConnected
 [
 ObjTp=Sg
 H=13
-Nm=core.isInit
+Nm=core.isRedundant
 ]
 [
 ObjTp=Sg
@@ -2617,11 +2618,6 @@ ObjTp=Sg
 H=74
 Nm=core.designName
 SgTp=4
-]
-[
-ObjTp=Sg
-H=75
-Nm=core.test
 ]
 [
 ObjTp=Sg

@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Crestron.SimplSharp;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Text;
+//using Crestron.SimplSharp;
 
-namespace QscQsys
-{
-    public class QsysSoftphoneControllerSimpl : QsysPotsControllerSimpl
-    {
-    }
-}
+//namespace QscQsys
+//{
+//    public class QsysSoftphoneControllerSimpl : QsysPotsControllerSimpl
+//    {
+//    }
+//}

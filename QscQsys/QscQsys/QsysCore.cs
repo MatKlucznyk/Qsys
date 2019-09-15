@@ -21,19 +21,24 @@ namespace QscQsys
         private string loginUser;
         private string loginPass;
         private string coreIP = "";
-        public string getCoreIP { get { return coreIP; }}
+        public string getCoreIP { get { return this.coreIP; } }
         private int corePort = 0;
         private TCPClientDevice client;
+        private bool isConnected = false;
+        public bool IsConnected { get { return this.isConnected; } }
+        private bool loginAttempt = false;
+        private bool badLogin = false;
+        public bool BadLogin { get { return this.badLogin; } }
 
         //Module vars
         private bool debug;
-        public bool IsDebugMode { get { return debug; } }
+        public bool IsDebugMode { get { return this.debug; } }
         private bool isInitialized;
         private bool isDisposed;
-        public bool IsDisposed { get { return isDisposed; } }
+        public bool IsDisposed { get { return this.isDisposed; } }
         private bool loggedIn;
-        public bool IsInitialized { get { return isInitialized; } }
-        public bool IsConnected { get; set; }
+        public bool IsInitialized { get { return this.isInitialized; } }
+        
 
         //Queues
         private CrestronQueue<string> commandQueue;
@@ -82,17 +87,17 @@ namespace QscQsys
             loginPass = _pass;
             if (QsysMain.AddCore(this, this.coreID))
             {
-                SendDebug(string.Format("Add core {0} @ {1}:{2} & initialize", coreID, coreIP, corePort));
-                commandQueue = new CrestronQueue<string>();
-                responseQueue = new CrestronQueue<string>();
-                commandQueueTimer = new CTimer(CommandQueueDequeue, null, 0, 50);
-                responseQueueTimer = new CTimer(ResponseQueueDequeue, null, 0, 50);
-                initializeConnection();
+                this.SendDebug(string.Format("Add core {0} @ {1}:{2} & initialize", coreID, coreIP, corePort));
+                this.commandQueue = new CrestronQueue<string>();
+                this.responseQueue = new CrestronQueue<string>();
+                this.commandQueueTimer = new CTimer(CommandQueueDequeue, null, 0, 50);
+                this.responseQueueTimer = new CTimer(ResponseQueueDequeue, null, 0, 50);
+                this.initializeConnection();
                 ret = true;
             }
             else
             {
-                SendDebug(string.Format("Error adding core {0} - already exists",this.coreID));
+                this.SendDebug(string.Format("Error adding core {0} - already exists", this.coreID));
                 ErrorLog.Error("Error adding core {0} - already exists", this.coreID);
             }
             return ret;
@@ -102,26 +107,26 @@ namespace QscQsys
         {
             if (this.coreIP.Length > 0)
             {
-                client = new TCPClientDevice();
-                client.ID = this.coreID;
-                client.ConnectionStatus += new StatusEventHandler(client_ConnectionStatus);
-                client.ResponseString += new ResponseEventHandler(client_ResponseString);
-                client.Connect(this.coreIP, (ushort)this.corePort);
+                this.client = new TCPClientDevice();
+                this.client.ID = this.coreID;
+                this.client.ConnectionStatus += new StatusEventHandler(client_ConnectionStatus);
+                this.client.ResponseString += new ResponseEventHandler(client_ResponseString);
+                this.client.Connect(this.coreIP, (ushort)this.corePort);
             }
         }
 
 
-        internal bool RegisterControl(string control)
+        internal bool RegisterControl(string _control)
         {
             try
             {
                 lock (Controls)
                 {
-                    if (!Controls.ContainsKey(control))
+                    if (!Controls.ContainsKey(_control))
                     {
-                        Controls.Add(control, new InternalEvents());
-
-                        if (isInitialized && IsConnected)
+                        this.Controls.Add(_control, new InternalEvents());
+                        this.SendDebug(string.Format("Adding named control: {0}", _control));
+                        if (isInitialized && isConnected)
                         {
                             AddControlToChangeGroup addControl;
 
@@ -129,15 +134,9 @@ namespace QscQsys
                             addControl.method = "ChangeGroup.AddControl";
                             addControl.ControlParams = new AddControlToChangeGroupParams();
                             addControl.ControlParams.Controls = new List<string>();
-                            addControl.ControlParams.Controls.Add(control);
-                            commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
-                            
-                            if (debug)
-                                CrestronConsole.PrintLine("Adding named control: {0} to change group", control);
-                        }
-                        else
-                        {
-                            CrestronConsole.PrintLine("reg: {0}, con: {1}", isInitialized, IsConnected);
+                            addControl.ControlParams.Controls.Add(_control);
+                            this.SendDebug(string.Format("Adding named control: {0} to core change group", _control));
+                            this.commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
                         }
                     }
                 }
@@ -145,52 +144,51 @@ namespace QscQsys
             }
             catch (Exception e)
             {
-                ErrorLog.Error("Error registering QsysClient to the QsysProcessor: {0}", e.Message);
+                ErrorLog.Error("Error registering Named Control to the Qsys core {0} : {1}", this.coreID, e.Message);
                 return false;
             }
         }
 
-        internal bool RegisterComponent(Component component)
+        internal bool RegisterComponent(Component _component)
         {
             try
             {
                 lock (Components)
                 {
-                    if (!Components.ContainsKey(component))
+                    if (!Components.ContainsKey(_component))
                     {
-                        Components.Add(component, new InternalEvents());
-
+                        Components.Add(_component, new InternalEvents());
+                        this.SendDebug(string.Format("Adding named component {0}", _component.Name));
                         if (isInitialized && IsConnected)
                         {
                             AddComponentToChangeGroup addComponent;
-
                             addComponent = new AddComponentToChangeGroup();
                             addComponent.method = "ChangeGroup.AddComponentControl";
                             addComponent.ComponentParams = new AddComponentToChangeGroupParams();
-                            addComponent.ComponentParams.Component = component;
-                            commandQueue.Enqueue(JsonConvert.SerializeObject(addComponent));
+                            addComponent.ComponentParams.Component = _component;
+                            this.SendDebug(string.Format("Adding named component: {0} to core change group", _component.Name));
+                            this.commandQueue.Enqueue(JsonConvert.SerializeObject(addComponent));
                         }
                     }
                 }
-
                 return true;
             }
             catch (Exception e)
             {
-                ErrorLog.Error("Error registering QsysClient to the QsysProcessor: {0}", e.Message);
+                ErrorLog.Error("Error registering Named Component to the Qsys Core {0} : {1}", this.coreID, e.Message);
                 return false;
             }
         }
 
-        public bool RegisterSimplClient(string id)
+        public bool RegisterSimplClient(string _id)
         {
             try
             {
                 lock (SimplClients)
                 {
-                    if(!SimplClients.ContainsKey(id))
+                    if(!SimplClients.ContainsKey(_id))
                     {
-                        SimplClients.Add(id, new SimplEvents());
+                        this.SimplClients.Add(_id, new SimplEvents());
                     }
                 }
                 return true;
@@ -201,77 +199,82 @@ namespace QscQsys
             }
         }
 
-        public void setDebug(ushort value)
+        public void setDebug(bool _value)
         {
-            debug = Convert.ToBoolean(value);
+            this.debug = _value;
         }
 
-        void client_ResponseString(string response, int id)
+        void client_ResponseString(string _response, int _id)
         {
-            if (debug)
-                //CrestronConsole.PrintLine("RX ID:{0} - {1}", id, response);
-            ParseResponse(response);
+            this.ParseResponse(_response);
         }
 
-        void client_ConnectionStatus(int status, int id)
+        void client_ConnectionStatus(int _status, int _id)
         {
-            if (status == 2 && !IsConnected)
+            try
             {
-                ErrorLog.Notice("QsysProcessor is connected.");
-                IsConnected = true;
-
-                foreach (var item in SimplClients)
+                if (_status == 2 && !isConnected)
                 {
-                    item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsConnected, "true", 1));
+                    this.isConnected = true;
+                    foreach (var item in this.SimplClients)
+                    {
+                        item.Value.Fire( new SimplEventArgs(eQscSimplEventIds.IsConnected,(SimplSharpString)"true", 1));
+                    }
+                    CrestronEnvironment.Sleep(1500);
+
+                    //Send login if needed
+                    if (this.loginUser.Length > 0 || this.loginPass.Length > 0)
+                    {
+                        this.SendLogin();
+                    }
+
+                    this.CoreModuleInit();
+
+                    this.heartbeatTimer = new CTimer(SendHeartbeat, null, 0, 15000);
+
+                    this.SendDebug("Initialized");
+                    this.isInitialized = true;
+
+                    foreach (var item in this.SimplClients)
+                    {
+                        item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsRegistered, (SimplSharpString)"true", 1));
+                        item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsConnected, (SimplSharpString)"true", 1));
+                    }
                 }
-
-                CrestronEnvironment.Sleep(1500);
-
-                //Send login if needed
-                if (loginUser.Length > 0 || loginPass.Length > 0)
+                else if (this.isConnected && _status != 2)
                 {
-                    SendLogin();
-                }
-
-                CoreModuleInit();
-                
-                heartbeatTimer = new CTimer(SendHeartbeat, null, 0, 15000);
-
-                ErrorLog.Notice("QsysProcessor is initialized.");
-                isInitialized = true;
-
-                foreach (var item in SimplClients)
-                {
-                    item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsRegistered, "true", 1));
+                    ErrorLog.Error("Qsys Core {0} disconnected!", this.coreID);
+                    this.isConnected = false;
+                    this.isInitialized = false;
+                    this.heartbeatTimer.Dispose();
+                    foreach (var item in this.SimplClients)
+                    {
+                        item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsRegistered, (SimplSharpString) "false", 0));
+                        item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsConnected, (SimplSharpString)"false", 0));
+                    }
                 }
             }
-            else if (IsConnected && status != 2)
+            catch (Exception e)
             {
-                ErrorLog.Error("QsysProcessor disconnected!");
-                IsConnected = false;
-                isInitialized = false;
-                heartbeatTimer.Dispose();
-                foreach (var item in SimplClients)
-                {
-                    item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsRegistered, "false", 0));
-                    item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsConnected, "false", 0));
-                }
+                ErrorLog.Error("Qsys Core {0} connection failure {1} - {2}", this.coreID, e.Message, e.StackTrace);
             }
         }
 
-        static void SendLogin()
+        void SendLogin()
         {
-            SendDebug(string.Format("Qsys - Sending login: {0}:{1}", loginUser, loginPass));
+            this.SendDebug(string.Format("Qsys - Sending login: {0}:{1}", this.loginUser, this.loginPass));
             CoreLogon logon = new CoreLogon();
             logon.Params = new CoreLogonParams();
             logon.Params.User = loginUser;
             logon.Params.Password = loginPass;
-            commandQueue.Enqueue(JsonConvert.SerializeObject(logon));
+            this.commandQueue.Enqueue(JsonConvert.SerializeObject(logon));
         }
 
-        static void CoreModuleInit()
+        private void CoreModuleInit()
         {
-            commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
+            this.SendDebug("Requesting all named components and controls");
+
+            this.commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
 
             if (Controls.Count() > 0)
             {
@@ -283,28 +286,30 @@ namespace QscQsys
                 foreach (var item in Controls)
                 {
                     addControls.ControlParams.Controls.Add(item.Key);
-                    if (debug)
-                        SendDebug(string.Format("Adding named control: {0} to change group", item.Key));
+                    this.SendDebug(string.Format("Adding named control: {0} to change group", item.Key));
                 }
-                commandQueue.Enqueue(JsonConvert.SerializeObject(addControls));
+                this.commandQueue.Enqueue(JsonConvert.SerializeObject(addControls));
             }
 
-            AddComponentToChangeGroup addComponents;
-            foreach (var item in Components)
+            if (Components.Count() > 0)
             {
-                addComponents = new AddComponentToChangeGroup();
-                addComponents.method = "ChangeGroup.AddComponentControl";
-                addComponents.ComponentParams = new AddComponentToChangeGroupParams();
-                addComponents.ComponentParams.Component = item.Key;
-                commandQueue.Enqueue(JsonConvert.SerializeObject(addComponents));
+                AddComponentToChangeGroup addComponents;
+                foreach (var item in Components)
+                {
+                    addComponents = new AddComponentToChangeGroup();
+                    addComponents.method = "ChangeGroup.AddComponentControl";
+                    addComponents.ComponentParams = new AddComponentToChangeGroupParams();
+                    addComponents.ComponentParams.Component = item.Key;
+                    this.SendDebug(string.Format("Adding named component: {0} to change group", item.Key));
+                    commandQueue.Enqueue(JsonConvert.SerializeObject(addComponents));
+                }
+                this.commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
             }
-
-            commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
         }
 
-        private void SendHeartbeat(object o)
+        private void SendHeartbeat(object _o)
         {
-            commandQueue.Enqueue(JsonConvert.SerializeObject(new Heartbeat()));
+            this.commandQueue.Enqueue(JsonConvert.SerializeObject(new Heartbeat()));
         }
 
         /// <summary>
@@ -312,82 +317,79 @@ namespace QscQsys
         /// </summary>
         public void Dispose()
         {
-            if (IsInitialized)
+            if (this.isInitialized)
             {
-                client.Disconnect();
-                commandQueue.Dispose();
-                commandQueueTimer.Stop();
-                commandQueueTimer.Dispose();
+                this.client.Disconnect();
+                this.commandQueue.Dispose();
+                this.commandQueueTimer.Stop();
+                this.commandQueueTimer.Dispose();
 
-                if (!heartbeatTimer.Disposed)
+                if (!this.heartbeatTimer.Disposed)
                 {
-                    heartbeatTimer.Stop();
-                    heartbeatTimer.Dispose();
+                    this.heartbeatTimer.Stop();
+                    this.heartbeatTimer.Dispose();
                 }
                 
-                isDisposed = true;
+                this.isDisposed = true;
             }
         }
 
-        private void CommandQueueDequeue(object o)
+        private void CommandQueueDequeue(object _o)
         {
-            if (!commandQueue.IsEmpty)
+            if (!this.commandQueue.IsEmpty)
             {
-                var data = commandQueue.Dequeue();
+                var data = this.commandQueue.Dequeue();
 
-                SendDebug(string.Format("Processor - Sending to core from queue: {0}", data));
-                client.SendCommand(data + "\x00");
+                this.SendDebug(string.Format("Sending to core from queue: {0}", data));
+                this.client.SendCommand(data + "\x00");
             }
         }
 
         StringBuilder RxData = new StringBuilder();
         bool busy = false;
         int Pos = -1;
-        private void ResponseQueueDequeue(object o)
+        private void ResponseQueueDequeue(object _o)
         {
-            if (!responseQueue.IsEmpty)
+            if (!this.responseQueue.IsEmpty)
             {
                 try
                 {
-                    // removes string from queue, blocks until an item is queued
-                    string tmpString = responseQueue.Dequeue();
+                    string tmpString = this.responseQueue.Dequeue(); // removes string from queue, blocks until an item is queued
 
-                    RxData.Append(tmpString); //Append received data to the COM buffer
+                    this.RxData.Append(tmpString); //Append received data to the COM buffer
 
-                    if (!busy)
+                    if (!this.busy)
                     {
-                        busy = true;
-                        while (RxData.ToString().Contains("\x00"))
+                        this.busy = true;
+                        while (this.RxData.ToString().Contains("\x00"))
                         {
-                            Pos = RxData.ToString().IndexOf("\x00");
-                            var data = RxData.ToString().Substring(0, Pos);
-                            var garbage = RxData.Remove(0, Pos + 1); // remove data from COM buffer
+                            this.Pos = this.RxData.ToString().IndexOf("\x00");
+                            var data = this.RxData.ToString().Substring(0, Pos);
+                            var garbage = this.RxData.Remove(0, Pos + 1); // remove data from COM buffer
 
-                            ParseInternalResponse(data);
+                            this.ParseInternalResponse(data);
                         }
 
-                        busy = false;
+                        this.busy = false;
                     }
                 }
                 catch (Exception e)
                 {
-                    busy = false;
+                    this.busy = false;
                     ErrorLog.Exception(e.Message, e);
                 }
-
-                //ParseInternalResponse(responseQueue.Dequeue());
             }
         }
 
-        private void ParseInternalResponse(string returnString)
+        private void ParseInternalResponse(string _returnString)
         {
-            if (returnString.Length > 0)
+            if (_returnString.Length > 0)
             {
                 try
                 {
-                    JObject response = JObject.Parse(returnString);
+                    JObject response = JObject.Parse(_returnString);
 
-                    if (returnString.Contains("Changes"))
+                    if (_returnString.Contains("Changes"))
                     {
                         IList<JToken> changes = response["params"]["Changes"].Children().ToList();
 
@@ -401,7 +403,7 @@ namespace QscQsys
 
                             if (changeResult.Component != null)
                             {
-                                foreach (var item in Components)
+                                foreach (var item in this.Components)
                                 {
                                     if (item.Key.Name == changeResult.Component)
                                         item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.String));
@@ -409,7 +411,7 @@ namespace QscQsys
                             }
                             else
                             {
-                                foreach (var item in Controls)
+                                foreach (var item in this.Controls)
                                 {
                                     if (item.Key == changeResult.Name)
                                         item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.String));
@@ -417,7 +419,7 @@ namespace QscQsys
                             }
                         }
                     }
-                    else if (returnString.Contains("Properties"))
+                    else if (_returnString.Contains("Properties"))
                     {
                         IList<JToken> components = response["result"].Children().ToList();
 
@@ -429,7 +431,7 @@ namespace QscQsys
 
                             if (result.Type == "gain")
                             {
-                                foreach (var item in Components)
+                                foreach (var item in this.Components)
                                 {
                                     if (item.Key.Name == result.Name)
                                     {
@@ -448,17 +450,17 @@ namespace QscQsys
                             }
                         }
                     }
-                    else if (returnString.Contains("EngineStatus") || returnString.Contains("StatusGet"))
+                    else if (_returnString.Contains("EngineStatus") || _returnString.Contains("StatusGet"))
                     {
-                        EngineStatusResult statusResult = JsonConvert.DeserializeObject<EngineStatusResult>(returnString);
-                        coreState = (eCoreState)Enum.Parse(typeof(eCoreState), statusResult.Properties.State, true);
-                        platform = statusResult.Properties.Platform;
-                        designName = statusResult.Properties.DesignName;
-                        designCode = statusResult.Properties.DesignCode;
-                        isRedundant = Convert.ToBoolean(statusResult.Properties.IsRedundant);
-                        isEmulator = Convert.ToBoolean(statusResult.Properties.IsEmulator);
-                        statusCode = statusResult.Properties.Status.Code;
-                        statusString = statusResult.Properties.Status.String;
+                        EngineStatusResult statusResult = JsonConvert.DeserializeObject<EngineStatusResult>(_returnString);
+                        this.coreState = (eCoreState)Enum.Parse(typeof(eCoreState), statusResult.Properties.State, true);
+                        this.platform = statusResult.Properties.Platform;
+                        this.designName = statusResult.Properties.DesignName;
+                        this.designCode = statusResult.Properties.DesignCode;
+                        this.isRedundant = Convert.ToBoolean(statusResult.Properties.IsRedundant);
+                        this.isEmulator = Convert.ToBoolean(statusResult.Properties.IsEmulator);
+                        this.statusCode = statusResult.Properties.Status.Code;
+                        this.statusString = statusResult.Properties.Status.String;
                         foreach (var item in SimplClients)
                         {
                             item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.CoreState, "", (ushort)coreState));
@@ -471,22 +473,23 @@ namespace QscQsys
                             item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.StatusString, statusString, 0));
                         }
                     }
-                    else if (returnString.Contains("error"))
+                    else if (_returnString.Contains("error"))
                     {
-                        CoreError err = JsonConvert.DeserializeObject<CoreError>(returnString);
-                        CrestronConsole.PrintLine("QsysProcessor parse error message - {0}-{1}", err.error.code, err.error.message);
+                        CrestronConsole.PrintLine("got error");
+                        CoreError err = JsonConvert.DeserializeObject<CoreError>(_returnString);
+                        //this.SendDebug(string.Format("core error message - {1}-{2}", err.error.code, err.error.message));
                     }
                 }
                 catch (Exception e)
                 {
-                    SendDebug(String.Format("Error is QsysProcessor: {0}:\r\n{1}", e.Message, returnString));
+                    this.SendDebug(String.Format("Parse internal error: {1}:\r\n{2}", this.coreID, e.Message, _returnString));
                 }
             }
         }
 
-        internal void Enqueue(string data)
+        internal void Enqueue(string _data)
         {
-            commandQueue.Enqueue(data);
+            this.commandQueue.Enqueue(_data);
         }
 
         //private static MemoryStream _memStream = new MemoryStream();
@@ -494,24 +497,23 @@ namespace QscQsys
         /// Parse response from Q-Sys Core.
         /// </summary>
         /// <param name="data"></param>
-        public void ParseResponse(string data)
+        public void ParseResponse(string _data)
         {
             //gather.Gather(data);
             try
             {
-                SendDebug(string.Format("Processor - Received from core and adding to queue: {0}", data));
-                responseQueue.Enqueue(data);
+                this.SendDebug(string.Format("Received from core and adding to queue: {0}", _data));
+                this.responseQueue.Enqueue(_data);
             }
             catch (Exception e)
             {
             }
         }
 
-        public void SendDebug(string msg)
+        public void SendDebug(string _msg)
         {
             if (debug)
-                CrestronConsole.PrintLine("Qsys Debug: {0}", msg);
-            //ErrorLog.Error("Error is QsysProcessor: {0}:\r\n{1}", e.Message, returnString);
+                CrestronConsole.PrintLine("Qsys Core {0} Debug: {1}", this.coreID, _msg);
         }
 
 

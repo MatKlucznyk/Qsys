@@ -29,22 +29,35 @@ namespace QscQsys
         public IsEmulator onIsEmulator { get; set; }
         public StatusCode onStatusCode { get; set; }
         public StatusString onStatusString { get; set; }
+        private bool debug;
 
 
         QsysCore core;
 
         public void Initialize(ushort _coreID, SimplSharpString _host, ushort _port, SimplSharpString _user, SimplSharpString _pass)
         {
-            if (core.Initialize((int)1, "", (ushort)1, "", ""))
+            if (this.core == null)
             {
+                core = new QsysCore();
+            }
+            if (core.Initialize((int)_coreID, _host.ToString(), _port, _user.ToString(), _pass.ToString()))
+            {
+                core.setDebug(debug);
+                core.RegisterSimplClient(Convert.ToString(_coreID));
                 core.SimplClients[Convert.ToString(_coreID)].OnNewEvent += new EventHandler<SimplEventArgs>(QsysProcessor_SimplEvent);
                 this.isRegistered = true;
+            }
+            else
+            {
+                //TODO: Remove all changegroups and re-add all, re-sync
             }
         }
 
         public void setDebug(ushort _value)
         {
-            this.core.setDebug(_value);
+            this.debug = Convert.ToBoolean(_value);
+            if (isRegistered)
+                this.core.setDebug(debug);
         }
 
         void QsysProcessor_SimplEvent(object sender, SimplEventArgs e)
@@ -57,6 +70,7 @@ namespace QscQsys
                     break;
                 case eQscSimplEventIds.IsConnected:
                     if (onIsConnected != null)
+                        CrestronConsole.PrintLine("got event");
                         onIsConnected(e.IntData);
                     break;
                 case eQscSimplEventIds.CoreState:
@@ -95,7 +109,5 @@ namespace QscQsys
                     break;
             }
         }
-
-
     }
 }

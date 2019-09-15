@@ -5,49 +5,47 @@ using Newtonsoft.Json;
 
 namespace QscQsys
 {
-    public enum eControlType
-    {
-        isValue = 0,
-        isButton = 1,
-        isTrigger = 2,
-        isString = 3
-    }
     public class QsysNamedControl
     {
-        private string cName;
-        private bool registered;
-        private eControlType ctrlType;
 
+        //Core
+        QsysCore myCore;
+
+        //Named Control
+        private string controlName;
+        public string ControlName { get { return this.controlName; } }
+        private bool registered;
+        public bool IsRegistered { get { return this.registered; } }
+        private eControlType controlType;
+        public eControlType ControlType { get { return this.ctrlType; } }
+
+        //Internal Vars
         private double val = 0;
+        public double Val { get { return val; } }
         private double valScaled = 0;
+        public double ValScaled { get { return valScaled; } }
         private double lastSentVal = 0;
         private string sVal = "";
+        public string S_Val { get { return sVal; } }
         private bool bVal = false;
-
+        public bool b_Val { get { return bVal; } }
         private double max;
         private double min;
         private double rampTime;
 
+        //Event
         public event EventHandler<QsysEventsArgs> QsysNamedControlEvent;
-
-        public string ControlName { get { return cName; } }
-        public bool IsRegistered { get { return registered; } }
-        public eControlType ControlType { get { return ctrlType; } }
-
-        public double Val { get { return val; } }
-        public double ValScaled { get { return valScaled; } }
-        public string S_Val { get { return sVal; } }
-        public bool b_Val { get { return bVal; } }
 
 
         /// <summary>
         /// Default constructor for a QsysNamedControl
         /// </summary>
         /// <param name="Name">The component name of the gain.</param>
-        public QsysNamedControl(string Name, eControlType Type)
+        public QsysNamedControl(int _coreID, string _controlName, eControlType _controlType)
         {
-            cName = Name;
-            ctrlType = Type;
+            this.controlName = _controlName;
+            this.ctrlType = _controlType;
+
             if (QsysCore.RegisterControl(cName))
             {
                 QsysCore.Controls[cName].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Control_OnNewEvent);
@@ -105,7 +103,7 @@ namespace QscQsys
             newValChange.Params.Ramp = rampTime;
             QsysCore.Enqueue(JsonConvert.SerializeObject(newValChange));
         }
-        
+
 
         public void SetValueRaw(double value)
         {
@@ -140,7 +138,7 @@ namespace QscQsys
             newStateChange.Params.Value = value;
             QsysCore.Enqueue(JsonConvert.SerializeObject(newStateChange));
         }
-        
+
         public void SetStateToggle()
         {
             if (ControlType != eControlType.isButton)
@@ -209,5 +207,13 @@ namespace QscQsys
             return (percentage) * (Min - Max) + Min;
         }
 
+    }
+
+    public enum eControlType
+    {
+        isValue = 0,
+        isButton = 1,
+        isTrigger = 2,
+        isString = 3
     }
 }
