@@ -1,39 +1,47 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using Crestron.SimplSharp;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Crestron.SimplSharp;
 
-//namespace QscQsys
-//{
-//    public class QsysMeter
-//    {
-//        private string cName;
-//        private bool isComponent;
-//        private bool isRegistered;
-//        private int meterIndex;
+namespace QscQsys
+{
+    public class QsysMeter
+    {
+        //Core
+        private QsysCore myCore;
 
-//        public event EventHandler<QsysEventsArgs> QsysMeterEvent;
+        //Named Component
+        private string componentName;
+        public string ComponentName { get { return componentName; } }
+        private bool registered;
+        public bool IsRegistered { get { return registered; } }
+        private bool isComponent;
 
-//        public QsysMeter(string name, int index)
-//        {
-//            cName = name;
-//            meterIndex = index;
+        //Internal Vars
+        private int meterIndex;
 
-//            Component component = new Component() { Name = cName, Controls = new List<ControlName>() { new ControlName() { Name = string.Format("meter_{0}", meterIndex) } } };
+        public event EventHandler<QsysEventsArgs> QsysMeterEvent;
 
-//            if (QsysCore.RegisterComponent(component))
-//            {
-//                QsysCore.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
+        public QsysMeter(int _coreID, string _componentName, int _index)
+        {
+            this.componentName = _componentName;
+            this.myCore = QsysMain.AddOrGetCoreObject(_coreID);
+            this.meterIndex = _index;
 
-//                isRegistered = true;
-//                isComponent = true;
-//            }
-//        }
+            Component component = new Component() { Name = this.componentName, Controls = new List<ControlName>() { new ControlName() { Name = string.Format("meter_{0}", this.meterIndex) } } };
 
-//        private void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
-//        {
-//            QsysMeterEvent(this, new QsysEventsArgs(eQscEventIds.MeterUpdate, cName, Convert.ToBoolean(e.Data), Convert.ToInt16(e.Data), e.SData));
-//        }
-//    }
-//}
+            if (this.myCore.RegisterNamedComponent(component))
+            {
+                this.myCore.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
+                this.registered = true;
+                this.isComponent = true;
+            }
+        }
+
+        private void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
+        {
+            QsysMeterEvent(this, new QsysEventsArgs(eQscEventIds.MeterUpdate, this.componentName, Convert.ToBoolean(e.Data), Convert.ToInt16(e.Data), e.SData));
+        }
+    }
+}

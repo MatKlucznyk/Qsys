@@ -9,11 +9,11 @@ Analog_Input Volume, Volume_db, RampTimeMS;
 Digital_Output MuteIsOn, MuteIsOff;
 Analog_Output _skip_,_skip_,_skip_, VolumeValue, VolumeValue_db;
                           
-QsysProcessorSimplInterface processor;                          
+//QsysProcessorSimplInterface processor;                          
 QsysFaderSimpl fader;
 
 String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_, _skip_, ComponentName[100];
-integer_parameter DefaultQsysRampTimeMS;
+integer_parameter CoreID, DefaultQsysRampTimeMS;
 integer currentVolume, currentVolume_db;
 
 Push MuteOn
@@ -97,9 +97,9 @@ Callback Function onMuteChange(integer value)
 
 Function Main()
 {              
-    RegisterDelegate(processor, onIsRegistered, onInitializationComplete);
+    //RegisterDelegate(processor, onIsRegistered, onInitializationComplete);
     RegisterDelegate(fader, newVolumeChange, onVolumeChange);
     RegisterDelegate(fader, newMuteChange, onMuteChange); 
-    fader.Initialize(ComponentName);                                  
+    fader.Initialize(CoreID, ComponentName);                                  
     fader.RampTimeMS(DefaultQsysRampTimeMS);
 }

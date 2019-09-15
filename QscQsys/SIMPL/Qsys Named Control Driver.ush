@@ -82,7 +82,7 @@
   ParamSigType11=Constant
   ParamCue12=Control_Name
   ParamSigType12=String
-  ParamCue13=coreID
+  ParamCue13=CoreID
   ParamSigType13=Constant
   ParamCue14=NamedControlType
   ParamSigType14=Constant

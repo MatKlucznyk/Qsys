@@ -1,4 +1,4 @@
-#SYMBOL_NAME "Qsys Meter"
+#SYMBOL_NAME "Qsys Meter Driver"
 
 #INCLUDEPATH "..\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
@@ -6,7 +6,7 @@
 Analog_output MeterValue;
 
 string_parameter _skip_, ComponentName[100];
-integer_parameter Index;
+integer_parameter CoreID, Index;
 
 QsysMeterSimpl meter;
 
@@ -18,5 +18,5 @@ callback function NewMeterUpdate(integer value)
 function Main()
 {
     RegisterDelegate(meter, onMeterChange, NewMeterUpdate);
-    meter.Initialize(ComponentName, Index);
+    meter.Initialize(CoreID, ComponentName, Index);
 }

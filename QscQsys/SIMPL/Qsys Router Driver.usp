@@ -1,4 +1,4 @@
-#SYMBOL_NAME "Qsys Router"
+#SYMBOL_NAME "Qsys Router Driver"
 
 #INCLUDEPATH "..\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
@@ -7,9 +7,9 @@ Analog_Input Input;
 Analog_Output InputValue;
 
 String_Parameter _skip_, ComponentName[100];
-Integer_Parameter OutputNumber;
+Integer_Parameter CoreID, OutputNumber;
                              
-QsysProcessorSimplInterface processor;                             
+//QsysProcessorSimplInterface processor;                             
 QsysRouterSimpl router;
 
 Threadsafe Change Input
@@ -34,8 +34,8 @@ Callback Function onRouterInputChange(integer in)
 
 Function Main()
 {
-    RegisterDelegate(processor, onIsRegistered, onInitializationComplete);
+    //RegisterDelegate(processor, onIsRegistered, onInitializationComplete);
     RegisterDelegate(router, newRouterInputChange, onRouterInputChange);  
-    router.Initialize(ComponentName, OutputNumber);
+    router.Initialize(CoreID, ComponentName, OutputNumber);
 
 }

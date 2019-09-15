@@ -1,4 +1,4 @@
-#SYMBOL_NAME "Qsys Nv32h Decoder"
+#SYMBOL_NAME "Qsys Nv32h Decoder Driver"
 
 #INCLUDEPATH "..\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
@@ -7,6 +7,7 @@ analog_input Source;
 
 analog_output CurrentSource;
 
+integer_parameter CoreID;
 string_parameter _skip_, ComponentName[100];
 
 QsysNv32hDecoderSimpl decoder;
@@ -31,5 +32,5 @@ callback function onInputChange(integer newSource)
 function Main()
 {
     RegisterDelegate(decoder, newNv32hDecoderInputChange, onInputChange);
-    decoder.Initialize(ComponentName);
+    decoder.Initialize(CoreID, ComponentName);
 }

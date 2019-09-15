@@ -74,8 +74,10 @@
   ParamSigType10=Constant
   ParamCue11=ComponentName
   ParamSigType11=String
-  ParamCue12=DefaultQsysRampTimeMS
+  ParamCue12=CoreID
   ParamSigType12=Constant
+  ParamCue13=DefaultQsysRampTimeMS
+  ParamSigType13=Constant
   MinVariableInputs=5
   MaxVariableInputs=5
   MinVariableInputsList2=3
@@ -84,8 +86,8 @@
   MaxVariableOutputs=2
   MinVariableOutputsList2=5
   MaxVariableOutputsList2=5
-  MinVariableParams=11
-  MaxVariableParams=11
+  MinVariableParams=12
+  MaxVariableParams=12
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
@@ -102,7 +104,8 @@
   Pp1=1
   Pp11=11
   Pp12=12
-  MPp=12
+  Pp13=13
+  MPp=13
   NVStorage=10
   ParamSigType1=String
   SmplCInputCue1=o#
@@ -132,6 +135,18 @@
 [BEGIN]
   ObjTp=Dp
   H=12
+  Tp=1
+  HD=False
+  Sgn=0
+  Lng=False
+  NF=63
+  NoS=True
+  DNF=1
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=13
   Tp=1
   HD=False
   Sgn=0

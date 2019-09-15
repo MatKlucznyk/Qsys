@@ -1,67 +1,51 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using Crestron.SimplSharp;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Crestron.SimplSharp;
 
-//namespace QscQsys
-//{
-//    public class QsysMatrixMixerSimpl
-//    {
-//        public delegate void CrossPointValueChange(ushort value);
-//        public CrossPointValueChange newCrossPointValueChange { get; set; }
+namespace QscQsys
+{
+    public class QsysMatrixMixerSimpl
+    {
+        public delegate void CrossPointValueChange(ushort value);
+        public CrossPointValueChange newCrossPointValueChange { get; set; }
+        public delegate void CrossPointMuteChange(ushort value);
+        public CrossPointMuteChange newCrosspointMuteChange { get; set; }
 
-//        private QsysMatrixMixer mixer;
+        private QsysMatrixMixer mixer;
 
-//        private ushort Input;
-//        private ushort Output;
-//        private string cName;
-//        private string crossName;
-//        private bool registered;
+        public void Initialize(ushort _coreID, SimplSharpString _namedComponent, ushort _input, ushort _output)
+        {
+            this.mixer = new QsysMatrixMixer((int)_coreID, _namedComponent.ToString(), _input, _output);
+            this.mixer.QsysMatrixMixerEvent += new EventHandler<QsysEventsArgs>(matrix_QsysMatrixMixerEvent);
+        }
 
-//        public void Initialize(string name, ushort input, ushort output)
-//        {
-//            cName = name;
-//            Input = input;
-//            Output = output;
+        private void matrix_QsysMatrixMixerEvent(object _sender, QsysEventsArgs _e)
+        {
+            switch (_e.EventID)
+            {
+                case eQscEventIds.MuteChange:
+                    if (newCrosspointMuteChange != null)
+                        newCrosspointMuteChange((ushort)_e.IntegerValue);
+                    break;
+            }
+        }
 
-//            Component component = new Component();
-//            component.Name = cName;
-//            crossName = string.Format("input_{0}_output_{1}_mute", input, output);
-//            List<ControlName> names = new List<ControlName>() { new ControlName{Name = crossName} };
-//            component.Controls = names;
-
-//            if (QsysCore.RegisterComponent(component))
-//            {
-//                QsysCore.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(QsysMatrixMixerSimpl_OnNewEvent);
-
-//                registered = true;
-//            }
-
-//            mixer = new QsysMatrixMixer(cName);
-//        }
-
-//        void QsysMatrixMixerSimpl_OnNewEvent(object sender, QsysInternalEventsArgs e)
-//        {
-//            if (e.Name == crossName && newCrossPointValueChange != null)
-//            {
-//                newCrossPointValueChange(Convert.ToUInt16(e.Data));
-//            }
-//        }
-
-//        public void SetCrossPoint(ushort value)
-//        {
-//            switch (value)
-//            {
-//                case(1):
-//                    mixer.SetCrossPointMute(Input.ToString(), Output.ToString(), true);
-//                    break;
-//                case(0):
-//                    mixer.SetCrossPointMute(Input.ToString(), Output.ToString(), false);
-//                    break;
-//                default:
-//                    break;
-//            }
-//        }
-//    }
-//}
+       
+        public void SetCrossPoint(ushort value)
+        {
+            switch (value)
+            {
+                case (1):
+                    mixer.SetCrossPointMute(this.mixer.Input.ToString(), this.mixer.Output.ToString(), true);
+                    break;
+                case (0):
+                    mixer.SetCrossPointMute(this.mixer.Input.ToString(), this.mixer.Output.ToString(), false);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+}

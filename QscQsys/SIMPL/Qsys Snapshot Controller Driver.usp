@@ -1,4 +1,4 @@
-#SYMBOL_NAME "Qsys Snapshot Controller"
+#SYMBOL_NAME "Qsys Snapshot Controller Driver"
 
 #INCLUDEPATH "..\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
@@ -6,6 +6,7 @@
 Digital_Input Load, Save;
 Analog_Input Number;
 
+integer_parameter CoreID;
 String_Parameter _skip_, _skip_, _skip_, ComponentName[100];
 
 QsysSnapshotSimpl snapshot;
@@ -31,5 +32,5 @@ Threadsafe Change Number
 
 Function Main()
 {
-    snapshot.Initialize(ComponentName);
+    snapshot.Initialize(CoreID, ComponentName);
 }

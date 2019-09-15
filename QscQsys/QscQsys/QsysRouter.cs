@@ -1,70 +1,76 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using Crestron.SimplSharp;
-//using Newtonsoft.Json;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Crestron.SimplSharp;
+using Newtonsoft.Json;
 
-//namespace QscQsys
-//{
-//    public class QsysRouter
-//    {
-//        private string cName;
-//        private bool registered;
-//        private int myOutput;
+namespace QscQsys
+{
+    public class QsysRouter
+    {
+        //Core
+        private QsysCore myCore;
 
-//        public event EventHandler<QsysEventsArgs> QsysRouterEvent;
+        //Named Component
+        private string componentName;
+        public string ComponentName { get { return componentName; } }
+        private bool registered;
+        public bool IsRegistered { get { return registered; } }
+        private bool isComponent;
 
-//        public string ComponentName { get { return cName; } }
-//        public bool IsRegistered { get { return registered; } }
-//        public int CurrentSelectedInput { set; get; }
+        //Internal Vars
+        private int myOutput;
+        public int CurrentSelectedInput { set; get; }
 
-//        public QsysRouter(string Name, int output)
-//        {
-//            cName = Name;
-//            myOutput = output;
-//            Component component = new Component();
-//            component.Name = Name;
-//            List<ControlName> names = new List<ControlName>();
-//            names.Add(new ControlName());
-//            names[0].Name = string.Format("select_{0}", output);
+        //Events
+        public event EventHandler<QsysEventsArgs> QsysRouterEvent;
+        
 
-//            component.Controls = names;
+        public QsysRouter(int _coreID, string _componentName, int _output)
+        {
+            this.componentName = _componentName;
+            this.myOutput = _output;
+            this.myCore = QsysMain.AddOrGetCoreObject(_coreID);
 
-//            if (QsysCore.RegisterComponent(component))
-//            {
-//                QsysCore.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(QsysRouter_OnNewEvent);
+            Component component = new Component();
+            component.Name = this.componentName;
+            List<ControlName> names = new List<ControlName>();
+            names.Add(new ControlName());
+            names[0].Name = string.Format("select_{0}", this.myOutput);
 
-//                registered = true;
-//            }
-//        }
+            component.Controls = names;
 
-//        public void InputSelect(int input)
-//        {
-//            ComponentChange newInputSelectedChange = new ComponentChange();
-//            newInputSelectedChange.Params = new ComponentChangeParams();
+            if (this.myCore.RegisterNamedComponent(component))
+            {
+                this.myCore.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
+                this.registered = true;
+                this.isComponent = true;
+            }
+        }
 
-//            newInputSelectedChange.Params.Name = cName;
+        public void InputSelect(int _input)
+        {
+            ComponentChange newInputSelectedChange = new ComponentChange();
+            newInputSelectedChange.Params = new ComponentChangeParams();
+            newInputSelectedChange.Params.Name = this.componentName;
 
-//            ComponentSetValue inputSelected = new ComponentSetValue();
-//            inputSelected.Name = string.Format("select_{0}", myOutput);
+            ComponentSetValue inputSelected = new ComponentSetValue();
+            inputSelected.Name = string.Format("select_{0}", this.myOutput);
+            inputSelected.Value = _input;
+            newInputSelectedChange.Params.Controls = new List<ComponentSetValue>();
+            newInputSelectedChange.Params.Controls.Add(inputSelected);
 
-//            inputSelected.Value = input;
+            this.myCore.Enqueue(JsonConvert.SerializeObject(newInputSelectedChange));
+        }
 
-//            newInputSelectedChange.Params.Controls = new List<ComponentSetValue>();
-//            newInputSelectedChange.Params.Controls.Add(inputSelected);
-
-//            QsysCore.Enqueue(JsonConvert.SerializeObject(newInputSelectedChange));
-//        }
-
-//        private void QsysRouter_OnNewEvent(object sender, QsysInternalEventsArgs e)
-//        {
-//            if (e.Name.Contains(string.Format("select_{0}", myOutput)))
-//            {
-//                CurrentSelectedInput = Convert.ToInt16(e.Data);
-
-//                QsysRouterEvent(this, new QsysEventsArgs(eQscEventIds.RouterInputSelected, cName, Convert.ToBoolean(e.Data), Convert.ToInt16(e.Data), e.Data.ToString()));
-//            }
-//        }
-//    }
-//}
+        private void Component_OnNewEvent(object _sender, QsysInternalEventsArgs _e)
+        {
+            if (_e.Name.Contains(string.Format("select_{0}", this.myOutput)))
+            {
+                this.CurrentSelectedInput = Convert.ToInt16(_e.Data);
+                QsysRouterEvent(this, new QsysEventsArgs(eQscEventIds.RouterInputSelected, this.componentName, Convert.ToBoolean(_e.Data), Convert.ToInt16(_e.Data), _e.Data.ToString()));
+            }
+        }
+    }
+}

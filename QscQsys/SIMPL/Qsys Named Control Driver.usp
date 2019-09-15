@@ -15,7 +15,7 @@ String_Output StringOut;
 QsysNamedControlSimpl ctrl;
 
 String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_, _skip_, _skip_, Control_Name[100];
-integer_parameter coreID, NamedControlType, DefaultQsysRampTimeMS;
+integer_parameter CoreID, NamedControlType, DefaultQsysRampTimeMS;
 string_parameter Val_Minimum[10], Val_Maximum[10];
 
 integer currentValScaled;

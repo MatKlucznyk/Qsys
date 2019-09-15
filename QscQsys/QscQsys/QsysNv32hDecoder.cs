@@ -1,58 +1,65 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using Crestron.SimplSharp;
-//using Newtonsoft.Json;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Crestron.SimplSharp;
+using Newtonsoft.Json;
 
-//namespace QscQsys
-//{
-//    public class QsysNv32hDecoder
-//    {
-//        private string cName;
-//        private bool registered;
-//        private int currentSource;
-//        private bool isComponent;
+namespace QscQsys
+{
+    public class QsysNv32hDecoder
+    {
 
-//        public event EventHandler<QsysEventsArgs> QsysNv32hDecoderEvent;
+        //Core
+        private QsysCore myCore;
 
-//        public string ComponentName { get { return cName; } }
-//        public bool IsRegistered { get { return registered; } }
-//        public int CurrentSource { get { return currentSource; } }
+        //Named Component
+        private string componentName;
+        public string ComponentName { get { return componentName; } }
+        private bool registered;
+        public bool IsRegistered { get { return registered; } }
+        private bool isComponent;
 
-//        public QsysNv32hDecoder(string Name)
-//        {
-//            cName = Name;
+        //Internal Vars
+        private int currentSource;
+        public int CurrentSource { get { return currentSource; } }
 
-//            Component component = new Component();
-//            component.Name = Name;
-//            List<ControlName> names = new List<ControlName>();
-//            names.Add(new ControlName());
-//            names[0].Name = "hdmi_out_0_select_index";
+        //Events
+        public event EventHandler<QsysEventsArgs> QsysNv32hDecoderEvent;
 
-//            component.Controls = names;
 
-//            if (QsysCore.RegisterComponent(component))
-//            {
-//                QsysCore.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
 
-//                registered = true;
-//                isComponent = true;
-//            }
-//        }
+        public QsysNv32hDecoder(int _coreID, string _componentName)
+        {
+            this.componentName = _componentName;
+            this.myCore = QsysMain.AddOrGetCoreObject(_coreID);
 
-//        void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
-//        {
-//            currentSource = Convert.ToInt16(e.Data);
+            Component component = new Component();
+            component.Name = this.componentName;
+            List<ControlName> names = new List<ControlName>();
+            names.Add(new ControlName());
+            names[0].Name = "hdmi_out_0_select_index";
+            component.Controls = names;
 
-//            QsysNv32hDecoderEvent(this, new QsysEventsArgs(eQscEventIds.Nv32hDecoderInputChange, cName, Convert.ToBoolean(currentSource), currentSource, currentSource.ToString()));
-//        }
+            if (this.myCore.RegisterNamedComponent(component))
+            {
+                this.myCore.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
+                this.registered = true;
+                this.isComponent = true;
+            }
+        }
 
-//        public void ChangeInput(int source)
-//        {
-//            ComponentChange inputChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "hdmi_out_0_select_index", Value = source } } } };
+        void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
+        {
+            currentSource = Convert.ToInt16(e.Data);
 
-//            QsysCore.Enqueue(JsonConvert.SerializeObject(inputChange));
-//        }
-//    }
-//}
+            QsysNv32hDecoderEvent(this, new QsysEventsArgs(eQscEventIds.Nv32hDecoderInputChange, this.componentName, Convert.ToBoolean(currentSource), currentSource, currentSource.ToString()));
+        }
+
+        public void ChangeInput(int source)
+        {
+            ComponentChange inputChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = this.componentName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "hdmi_out_0_select_index", Value = source } } } };
+            this.myCore.Enqueue(JsonConvert.SerializeObject(inputChange));
+        }
+    }
+}
