@@ -74,7 +74,7 @@ namespace QscQsys
 
         void Component_OnNewEvent(object _sender, QsysInternalEventsArgs _e)
         {
-            CrestronConsole.PrintLine("cam got {0} - val:{1} ctr:{2}", _e.Name, _e.Data, _e.SData);
+            //CrestronConsole.PrintLine("cam got {0} - val:{1} ctr:{2}", _e.Name, _e.Data, _e.SData);
             switch (_e.Name)
             {
                 case "ptz_preset":
@@ -87,7 +87,6 @@ namespace QscQsys
                         QsysCamEvent(this, new QsysEventsArgs(eQscEventIds.CameraChange, "position tilt", false, 0, numbers[1]));
                         positionZoom = double.Parse(numbers[2]);
                         QsysCamEvent(this, new QsysEventsArgs(eQscEventIds.CameraChange, "position zoom", false, 0, numbers[2]));
-                        CrestronConsole.PrintLine("pan: {0} tilt: {1} zoom {2}", positionPan, positionTilt, positionZoom);
                     }
                     break;
                 case "setup_pan_speed":
@@ -270,7 +269,7 @@ namespace QscQsys
             ComponentChange cameraChange = new ComponentChange();
             cameraChange.Params = new ComponentChangeParams();
             cameraChange.Params.Name = this.componentName;
-            ComponentSetValue setVal = new ComponentSetValue() { Name = "focus_auto", Value = 0 };
+            ComponentSetValue setVal = new ComponentSetValue() { Name = "focus_auto", Value = 1 };
             cameraChange.Params.Controls = new List<ComponentSetValue>();
             cameraChange.Params.Controls.Add(setVal);
             this.myCore.Enqueue(JsonConvert.SerializeObject(cameraChange));
@@ -292,7 +291,7 @@ namespace QscQsys
             ComponentChange cameraChange = new ComponentChange();
             cameraChange.Params = new ComponentChangeParams();
             cameraChange.Params.Name = this.componentName;
-            ComponentSetValue setVal = new ComponentSetValue() { Name = "preset_private_save_trigger", Value = 0 };
+            ComponentSetValue setVal = new ComponentSetValue() { Name = "preset_private_save_trigger", Value = 1 };
             cameraChange.Params.Controls = new List<ComponentSetValue>();
             cameraChange.Params.Controls.Add(setVal);
             this.myCore.Enqueue(JsonConvert.SerializeObject(cameraChange));
@@ -314,7 +313,7 @@ namespace QscQsys
             ComponentChange cameraChange = new ComponentChange();
             cameraChange.Params = new ComponentChangeParams();
             cameraChange.Params.Name = this.componentName;
-            ComponentSetValue setVal = new ComponentSetValue() { Name = "preset_home_save_trigger", Value = 0 };
+            ComponentSetValue setVal = new ComponentSetValue() { Name = "preset_home_save_trigger", Value = 1 };
             cameraChange.Params.Controls = new List<ComponentSetValue>();
             cameraChange.Params.Controls.Add(setVal);
             this.myCore.Enqueue(JsonConvert.SerializeObject(cameraChange));
