@@ -48,20 +48,6 @@ Mx1=0
 ObjTp=Bw
 H=1
 Lx=0
-Ly=0
-Rx=1032
-Ry=389
-Xm=-1
-Ym=-1
-SH=6
-Z=100
-Ht=1
-Hi=4
-]
-[
-ObjTp=Bw
-H=1
-Lx=0
 Ly=389
 Rx=1032
 Ry=778
@@ -71,6 +57,20 @@ SH=8
 Z=100
 Ht=1
 Hi=7
+]
+[
+ObjTp=Bw
+H=1
+Lx=0
+Ly=0
+Rx=1032
+Ry=389
+Xm=-1
+Ym=-1
+SH=6
+Z=100
+Ht=3
+Hi=3
 ]
 [
 ObjTp=Symbol
@@ -149,8 +149,9 @@ OutputCue11=[~UNUSED~]
 ParamCue1=Component Name
 ParamCue2=Ramp Time
 ParamCue3=QSys Default Ramp Time MS
-MPp=2
+MPp=3
 Pp2=1
+Pp3=2
 FileName=Qsys Fader.umc
 EncodingType=0
 ZeroOnIoOk=0
@@ -267,8 +268,9 @@ mP=3
 P1=Component Name
 P2=Ramp Time
 P3=QSys Default Ramp Time MS
-MPp=2
+MPp=3
 Pp2=1
+Pp3=2
 ]
 [
 ObjTp=Sm
@@ -572,6 +574,18 @@ HD=TRUE
 DV=10s
 NF=16
 DNF=16
+EncFmt=0
+DVLF=1
+Sgn=0
+]
+[
+ObjTp=Dp
+H=2
+Tp=1
+HD=TRUE
+DV=0d
+NF=1
+DNF=1
 EncFmt=0
 DVLF=1
 Sgn=0

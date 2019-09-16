@@ -7,8 +7,9 @@ analog_input Source;
 
 analog_output CurrentSource;
 
-integer_parameter CoreID;
+
 string_parameter _skip_, ComponentName[100];
+integer_parameter CoreID;
 
 QsysNv32hDecoderSimpl decoder;
 

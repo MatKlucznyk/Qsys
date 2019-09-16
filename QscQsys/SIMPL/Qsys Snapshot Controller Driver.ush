@@ -30,16 +30,16 @@
   InputList2Cue1=Number
   InputList2SigType1=Analog
   ParamCue1=[Reference Name]
-  ParamCue2=CoreID
+  ParamCue2=[~UNUSED~]
   ParamSigType2=Constant
   ParamCue3=[~UNUSED~]
   ParamSigType3=Constant
   ParamCue4=[~UNUSED~]
   ParamSigType4=Constant
-  ParamCue5=[~UNUSED~]
-  ParamSigType5=Constant
-  ParamCue6=ComponentName
-  ParamSigType6=String
+  ParamCue5=ComponentName
+  ParamSigType5=String
+  ParamCue6=CoreID
+  ParamSigType6=Constant
   MinVariableInputs=2
   MaxVariableInputs=2
   MinVariableInputsList2=1
@@ -64,7 +64,7 @@
   CompilerParamCode5=14
   NumFixedParams=1
   Pp1=1
-  Pp2=2
+  Pp5=5
   Pp6=6
   MPp=6
   NVStorage=10
@@ -87,14 +87,10 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=2
+  H=5
   Tp=1
   HD=False
-  Sgn=0
-  Lng=False
-  NF=63
-  NoS=True
-  DNF=1
+  NoS=False
   VVS=0
 [END]
 [BEGIN]
@@ -102,6 +98,10 @@
   H=6
   Tp=1
   HD=False
-  NoS=False
+  Sgn=0
+  Lng=False
+  NF=63
+  NoS=True
+  DNF=1
   VVS=0
 [END]

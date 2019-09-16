@@ -6,8 +6,8 @@
 Digital_Input Load, Save;
 Analog_Input Number;
 
-integer_parameter CoreID;
 String_Parameter _skip_, _skip_, _skip_, ComponentName[100];
+integer_parameter CoreID;
 
 QsysSnapshotSimpl snapshot;
 
