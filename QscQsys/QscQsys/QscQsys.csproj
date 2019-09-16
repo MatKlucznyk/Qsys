@@ -77,6 +77,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="QsysCameraSimpl.cs" />
     <Compile Include="QsysMain.cs" />
     <Compile Include="QsysNamedControlSimpl.cs" />
     <Compile Include="QsysNamedControl.cs" />

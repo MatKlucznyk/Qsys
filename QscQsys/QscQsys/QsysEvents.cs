@@ -163,7 +163,9 @@ namespace QscQsys
         
         MeterUpdate = 15,
 
-        NamedControl = 16
+        CameraChange = 16,
+
+        NamedControl = 17
     }
 
     public enum eQscSimplEventIds

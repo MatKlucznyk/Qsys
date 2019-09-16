@@ -1,0 +1,205 @@
+#SYMBOL_NAME "Qsys Camera Driver"
+
+#INCLUDEPATH "..\\QscQsys\\bin\\Debug"
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+Digital_Input MoveUp, MoveDown, MoveLeft, MoveRight, ZoomIn, ZoomOut, FocusFar, FocusNear;
+Digital_Input _skip_, Go_Home, Save_Home, Save_Privacy;
+Digital_Input _skip_, FocusAuto;
+Digital_Input _skip_, Privacy_Mode_Toggle, Privacy_Mode_On, Privacy_Mode_Off;
+
+Digital_Output Position_Is_Home, Privacy_Mode_Is_On, AutoFocus_Mode_Is_On;
+analog_output _skip_, Position_Pan, Position_Tilt, Position_Zoom;
+
+
+QsysCameraSimpl cam;
+
+String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_, _skip_;
+String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_, _skip_;
+String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_, _skip_;
+String_Parameter ComponentName[100];
+integer_parameter CoreID;
+
+push MoveUp
+{
+    cam.MoveUp(1);
+}
+release MoveUp
+{
+    cam.MoveUp(0);
+}
+push MoveDown
+{
+    cam.MoveDown(1);
+}
+release MoveDown
+{
+    cam.MoveDown(0);
+}
+push MoveLeft
+{
+    cam.MoveLeft(1);
+}
+release MoveLeft
+{
+    cam.MoveLeft(0);
+}
+push MoveRight
+{
+    cam.MoveRight(1);
+}
+release MoveRight
+{
+    cam.MoveRight(0);
+}
+push ZoomIn
+{
+    cam.ZoomIn(1);
+}
+release ZoomIn
+{
+    cam.ZoomIn(0);
+}
+push ZoomOut
+{
+    cam.ZoomOut(1);
+}
+release ZoomOut
+{
+    cam.ZoomOut(0);
+}
+push FocusFar
+{
+    cam.FocusFar(1);
+}
+release FocusFar
+{
+    cam.FocusFar(0);
+}
+push FocusNear
+{
+    cam.FocusNear(1);
+}
+release FocusNear
+{
+    cam.FocusNear(0);
+}
+
+push Go_Home
+{
+    cam.GoHome();
+}
+push Save_Home
+{
+    cam.SaveHome();
+}
+push Save_Privacy
+{
+    cam.SavePrivacyPosition();
+}
+
+
+push FocusAuto
+{
+    cam.FocusAutoMode();
+}
+
+push Privacy_Mode_Toggle
+{
+    cam.TogglePrivacyMode();
+}
+push Privacy_Mode_On
+{
+    cam.SetPrivacyMode(1);
+}
+push Privacy_Mode_Off
+{
+    cam.SetPrivacyMode(0);
+}
+
+
+// Threadsafe Change Volume
+// {
+//     integer x;
+
+//     While(x != Volume)
+//     {
+//        x = Volume;
+//         fader.Volume(Volume);
+//     }
+// }
+
+
+// Callback Function onVolumeChange(integer value, signed_integer valueDb)
+// {
+    
+// }
+
+Callback Function onPositionChange(string pos, integer val)
+{
+    if (pos = "pan")
+    {
+        Position_Pan = val;
+    }
+    if (pos = "tilt")
+    {
+        Position_Tilt = val;
+    }
+    if (pos = "zoom")
+    {
+        Position_Zoom = val;
+    }
+}
+
+Callback Function onAutoFocusChange(integer value)
+{
+    switch(value)
+    {
+       case (1):
+       {
+           AutoFocus_Mode_Is_On = ON;
+       }
+       case (0):
+       {
+           AutoFocus_Mode_Is_On = OFF;
+       }
+    }
+}
+
+Callback Function onHomeChange(integer value)
+{
+    switch(value)
+    {
+       case (1):
+       {
+           Position_Is_Home = ON;
+       }
+       case (0):
+       {
+           Position_Is_Home = OFF;
+       }
+    }
+}
+Callback Function onPrivacyChange(integer value)
+{
+    switch(value)
+    {
+       case (1):
+       {
+           Privacy_Mode_Is_On = ON;
+       }
+       case (0):
+       {
+           Privacy_Mode_Is_On = OFF;
+       }
+    }
+}
+Function Main()
+{              
+    RegisterDelegate(cam, newPositionChange, onPositionChange);
+    RegisterDelegate(cam, newAutoFocusChange, onAutoFocusChange);
+    RegisterDelegate(cam, newHomeChange, onHomeChange);
+    RegisterDelegate(cam, newPrivacyChange, onPrivacyChange);
+
+    cam.Initialize(CoreID, ComponentName);
+}

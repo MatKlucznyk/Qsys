@@ -1,4 +1,4 @@
-#SYMBOL_NAME "Qsys Core"
+#SYMBOL_NAME "Qsys Core Driver"
 
 #INCLUDEPATH "..\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
