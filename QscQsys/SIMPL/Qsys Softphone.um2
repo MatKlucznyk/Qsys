@@ -15,12 +15,12 @@ ObjTp=Hd
 S0Nd=1
 S1Nd=2
 SLNd=3
-PrNm=Qsys Pots.umc
+PrNm=Qsys Softphone.umc
 DbVr=81.05.001.00
 DvcDbVr=107.00.001.00
 PgmNm=Ryan Wilkinson
 DlrNm=WMS
-CltNm=Qsys POTS
+CltNm=Qsys Softphone
 Incl=1766,2574,2651,2817,2886,2938,2947,3181,3197,3233,3710,3735,3736,3816,3888,4176,4308,4476,4591,4769,5360,5388,5420,5455,5497,5699,5813,5919,6150,6161,
 McNm=Qsys Pots
 SmVr=1091
@@ -45,42 +45,14 @@ Sy1=0
 Mx1=0
 ]
 [
-ObjTp=Bw
-H=1
-Lx=0
-Ly=0
-Rx=746
-Ry=985
-Xm=-1
-Ym=-1
-SH=6
-Z=100
-Ht=4
-Hi=22
-]
-[
-ObjTp=Bw
-H=1
-Lx=746
-Ly=0
-Rx=1492
-Ry=985
-Xm=-1
-Ym=-1
-SH=7
-Z=100
-Ht=4
-Hi=18
-]
-[
 ObjTp=Symbol
-Name=Qsys Pots
+Name=Qsys Softphone
 Code=1
-SmplCName=Qsys Pots.umc
+SmplCName=Qsys Softphone.umc
 Smpl-C=3
 CompilerTimePrecision=Single_Or_Double_Precision
 Exclusions=1,19,20,21,88,89,167,168,179,213,214,215,216,217,225,226,248,249,266,267,310,362,378,380,405,407,408,409,478,522,537,554,586,590,611,624,718,756,767,830,841,842,854,883,955,1032,1062,1079,1128,1129,1134,1140,1157,1158,1195,1199,1220,1221,1222,1223,1299,1348,1349,1439,1472,1473,1499,1746,1803,1975,2229,2354,2514,2523,2532,2706,2707,3235,3236,3427,3454,3567,3568,3601,3602,3708,3902,3903,3912,3918,3925,3926,4206,4207,
-Hint=Qsys POTS
+Hint=Qsys Softphone
 SMWRev=3.00.00
 TIORev=0
 S+=1
@@ -190,7 +162,7 @@ Pp1=3
 Pp2=4
 Pp3=1
 Pp4=2
-FileName=Qsys Pots.umc
+FileName=Qsys Softphone.umc
 EncodingType=0
 ZeroOnIoOk=0
 ]
@@ -247,7 +219,7 @@ Nm=Logic
 ObjVer=1
 CF=2
 mC=1
-C1=7
+C1=8
 ]
 [
 ObjTp=Sm
@@ -336,9 +308,9 @@ Pp4=2
 ]
 [
 ObjTp=Sm
-H=7
+H=8
 SmC=103
-Nm=Qsys Pots Controller Driver.usp
+Nm=Qsys Softphone Controller Driver.usp
 ObjVer=1
 PrH=4
 CF=2
@@ -372,7 +344,7 @@ O17=27
 O18=28
 mP=21
 P1=
-P2=#Core ID
+P2=
 P3=
 P4=
 P5=
