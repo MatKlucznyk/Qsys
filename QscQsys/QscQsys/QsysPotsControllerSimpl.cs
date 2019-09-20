@@ -91,6 +91,16 @@ namespace QscQsys
             this.pots.NumPad(_number);
         }
 
+        public void NumPadClear()
+        {
+            this.pots.NumPadClear();
+        }
+
+        public void NumPadDelete()
+        {
+            this.pots.NumPadDelete();
+        }
+
         public void Disconnect()
         {
             this.pots.Disconnect();

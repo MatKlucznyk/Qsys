@@ -35,8 +35,12 @@
   InputSigType5=Digital
   InputCue6=[~UNUSED~]
   InputSigType6=Digital
-  InputCue7=KeyPad[#]
+  InputCue7=KeypadDelete
   InputSigType7=Digital
+  InputCue8=KeypadClear
+  InputSigType8=Digital
+  InputCue9=KeyPad[#]
+  InputSigType9=Digital
   OutputCue1=Connected
   OutputSigType1=Digital
   OutputCue2=Ringing
@@ -116,8 +120,8 @@
   ParamSigType20=String
   ParamCue21=CoreID
   ParamSigType21=Constant
-  MinVariableInputs=16
-  MaxVariableInputs=16
+  MinVariableInputs=18
+  MaxVariableInputs=18
   MinVariableInputsList2=1
   MaxVariableInputsList2=1
   MinVariableOutputs=5

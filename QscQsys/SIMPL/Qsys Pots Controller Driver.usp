@@ -6,7 +6,7 @@
 #DEFINE_CONSTANT true 1
 #DEFINE_CONSTANT false 0
 
-Digital_Input Dial, Redial, Disconnect, AutoAnswerToggle, DndToggle, _skip_, KeyPad[10,10];
+Digital_Input Dial, Redial, Disconnect, AutoAnswerToggle, DndToggle, _skip_, KeypadDelete, KeypadClear,  KeyPad[10,10];
 String_Input DialString[1000];
 
 Digital_Output Connected, Ringing, _skip_, AutoAnswerStatus, DndStatus;
@@ -56,6 +56,16 @@ Threadsafe Push KeyPad
     x = GetLastModifiedArrayIndex();
 
     pots.NumPad(ItoA(x - 1));
+}
+
+Threadsafe Push KeypadDelete
+{
+    pots.NumPadDelete();
+}
+
+Threadsafe Push KeypadClear
+{
+    pots.NumPadClear();
 }
 
 Callback Function NewOffHookEvent(integer value)
