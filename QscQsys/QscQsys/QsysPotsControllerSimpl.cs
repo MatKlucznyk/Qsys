@@ -47,11 +47,11 @@ namespace QscQsys
                     break;
                 case eQscEventIds.PotsControllerOffHook:
                     if (onOffHookEvent != null)
-                        onOffHookEvent(Convert.ToUInt16(_e.IntegerValue));
+                        onOffHookEvent(Convert.ToUInt16(_e.NumberValue));
                     break;
                 case eQscEventIds.PotsControllerIsRinging:
                     if (onRingingEvent != null)
-                        onRingingEvent(Convert.ToUInt16(_e.IntegerValue));
+                        onRingingEvent(Convert.ToUInt16(_e.NumberValue));
                     break;
                 case eQscEventIds.PotsControllerDialString:
                     if (onDialStringEvent != null)

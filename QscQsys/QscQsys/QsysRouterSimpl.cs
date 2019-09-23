@@ -24,7 +24,7 @@ namespace QscQsys
             if (_e.EventID == eQscEventIds.RouterInputSelected)
             {
                 if (newRouterInputChange != null)
-                    this.newRouterInputChange(Convert.ToUInt16(_e.IntegerValue));
+                    this.newRouterInputChange(Convert.ToUInt16(_e.NumberValue));
             }
         }
 

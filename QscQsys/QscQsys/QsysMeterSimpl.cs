@@ -22,7 +22,7 @@ namespace QscQsys
         void meter_QsysMeterEvent(object _sender, QsysEventsArgs _e)
         {
             if (onMeterChange != null)
-                onMeterChange(Convert.ToUInt16(_e.IntegerValue));
+                onMeterChange(Convert.ToUInt16(_e.NumberValue));
         }
     }
 }

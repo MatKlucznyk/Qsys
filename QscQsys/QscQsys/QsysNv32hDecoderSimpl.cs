@@ -24,7 +24,7 @@ namespace QscQsys
             if (e.EventID == eQscEventIds.Nv32hDecoderInputChange)
             {
                 if (this.newNv32hDecoderInputChange != null)
-                    this.newNv32hDecoderInputChange(Convert.ToUInt16(e.IntegerValue));
+                    this.newNv32hDecoderInputChange(Convert.ToUInt16(e.NumberValue));
             }
         }
 

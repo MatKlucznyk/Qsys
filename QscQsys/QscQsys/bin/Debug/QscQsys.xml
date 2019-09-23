@@ -9,7 +9,7 @@
             Event args for Q-Sys events.
             </summary>
         </member>
-        <member name="M:QscQsys.QsysEventsArgs.#ctor(QscQsys.eQscEventIds,System.String,System.Boolean,System.Int32,System.String)">
+        <member name="M:QscQsys.QsysEventsArgs.#ctor(QscQsys.eQscEventIds,System.String,System.Boolean,System.Double,System.String)">
             <summary>
             Default constructor for QsysEventArgs.
             </summary>

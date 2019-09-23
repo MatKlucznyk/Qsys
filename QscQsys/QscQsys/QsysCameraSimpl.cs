@@ -200,15 +200,15 @@ namespace QscQsys
                     break;
                 case "focus_auto":
                     if (newAutoFocusChange != null)
-                        newAutoFocusChange((ushort)_e.IntegerValue);
+                        newAutoFocusChange((ushort)_e.NumberValue);
                     break;
                 case "toggle_privacy":
                     if (newPrivacyChange != null)
-                        newPrivacyChange((ushort)_e.IntegerValue);
+                        newPrivacyChange((ushort)_e.NumberValue);
                     break;
                 case "preset_home_load":
                     if (newHomeChange != null)
-                        newHomeChange((ushort)_e.IntegerValue);
+                        newHomeChange((ushort)_e.NumberValue);
                     break;
             }
         }

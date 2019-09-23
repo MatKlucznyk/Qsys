@@ -27,7 +27,7 @@ namespace QscQsys
             {
                 case eQscEventIds.MuteChange:
                     if (newCrosspointMuteChange != null)
-                        newCrosspointMuteChange((ushort)_e.IntegerValue);
+                        newCrosspointMuteChange((ushort)_e.NumberValue);
                     break;
             }
         }

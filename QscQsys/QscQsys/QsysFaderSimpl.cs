@@ -59,11 +59,11 @@ namespace QscQsys
                     break;
                 case eQscEventIds.GainChange:
                     if (newVolumeChange != null)
-                        newVolumeChange((ushort)_e.IntegerValue, (short)this.fader.CurrentVolumeDb);
+                        newVolumeChange((ushort)_e.NumberValue, (short)this.fader.CurrentVolumeDb);
                     break;
                 case eQscEventIds.MuteChange:
                     if (newMuteChange != null)
-                        newMuteChange((ushort)_e.IntegerValue);
+                        newMuteChange((ushort)_e.NumberValue);
                     break;
                 case eQscEventIds.NewMaxGain:
                     break;

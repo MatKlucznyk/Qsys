@@ -12,7 +12,7 @@ namespace QscQsys
         public eQscEventIds EventID;
         public string ControlName;
         public bool BooleanValue;
-        public int IntegerValue;
+        public double NumberValue;
         public string StringValue;
 
         /// <summary>
@@ -21,14 +21,14 @@ namespace QscQsys
         /// <param name="eventID">The event ID that is associated with the event.</param>
         /// <param name="controlName">The control that has triggered the event.</param>
         /// <param name="booleanValue">Boolean value of the event.</param>
-        /// <param name="integerValue">Integer value of the event.</param>
+        /// <param name="integerValue">Double value of the event.</param>
         /// <param name="stringValue">String value of the event.</param>
-        public QsysEventsArgs(eQscEventIds eventID, string controlName, bool booleanValue, int integerValue, string stringValue)
+        public QsysEventsArgs(eQscEventIds eventID, string controlName, bool booleanValue, double numberValue, string stringValue)
         {
             this.EventID = eventID;
             this.ControlName = controlName;
             this.BooleanValue = booleanValue;
-            this.IntegerValue = integerValue;
+            this.NumberValue = numberValue;
             this.StringValue = stringValue;
         }
 
