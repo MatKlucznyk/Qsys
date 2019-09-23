@@ -57,13 +57,13 @@ namespace QscQsys
         {
             switch (this.controlType)
             {
-                case eControlType.isValue:
+                case eControlType.isIntegerValue:
+                case eControlType.isFloatValue:
                     this.val = _e.Data;
                     this.valScaled = Math.Round(scale(val, this.min, this.max, 0, 65535));
                     this.sVal = _e.SData;
-                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, this.controlName, false, (int)this.val, "[[VAL]]"));
-                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, this.controlName, false, (int)this.valScaled, "[[VAL-SCALED]]"));
-                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, this.controlName, false, 0, this.sVal));
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, "[[VAL]]", false, this.val, this.sVal));
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, "[[VAL-SCALED]]", false, this.valScaled, this.valScaled.ToString()));
                     break;
                 case eControlType.isButton:
                     this.bVal = Convert.ToBoolean(_e.Data);
@@ -83,7 +83,7 @@ namespace QscQsys
 
         public void SetValueScaled(double _value)
         {
-            if (this.controlType != eControlType.isValue)
+            if (this.controlType != eControlType.isIntegerValue || this.controlType != eControlType.isFloatValue)
                 return;
             double newRawVal = Math.Round(scale(_value, 0, 65535, this.min, this.max), 2);
             if (newRawVal == this.lastSentVal) //avoid repeats
@@ -102,7 +102,7 @@ namespace QscQsys
 
         public void SetValueRaw(double _value)
         {
-            if (this.controlType != eControlType.isValue)
+            if (this.controlType != eControlType.isIntegerValue || this.controlType != eControlType.isFloatValue)
                 return;
 
             double newRawVal = _value;
@@ -163,9 +163,6 @@ namespace QscQsys
 
         public void SetString(string _value)
         {
-            if (ControlType != eControlType.isString)
-                return;
-
             ControlSetString newStringChange = new ControlSetString();
             newStringChange.Params = new ControlSetValueString();
             newStringChange.method = "Control.Set";
@@ -190,7 +187,7 @@ namespace QscQsys
         }
         public void SetMinMaxViaString(string _newMin, string _newMax)
         {
-            if (ControlType != eControlType.isValue)
+            if (ControlType != eControlType.isIntegerValue || this.controlType != eControlType.isFloatValue)
                 return;
             this.min = Convert.ToDouble(_newMin);
             this.max = Convert.ToDouble(_newMax);
@@ -206,9 +203,10 @@ namespace QscQsys
 
     public enum eControlType
     {
-        isValue = 0,
-        isButton = 1,
-        isTrigger = 2,
-        isString = 3
+        isIntegerValue = 0,
+        isFloatValue = 1,
+        isButton = 2,
+        isTrigger = 3,
+        isString = 4
     }
 }

@@ -16,7 +16,7 @@
             <param name="eventID">The event ID that is associated with the event.</param>
             <param name="controlName">The control that has triggered the event.</param>
             <param name="booleanValue">Boolean value of the event.</param>
-            <param name="integerValue">Integer value of the event.</param>
+            <param name="integerValue">Double value of the event.</param>
             <param name="stringValue">String value of the event.</param>
         </member>
         <member name="T:QscQsys.QsysInternalEventsArgs">

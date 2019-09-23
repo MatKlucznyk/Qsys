@@ -31,13 +31,16 @@ namespace QscQsys
                 case eQscEventIds.NamedControl:
                     switch (this.nc.ControlType)
                     {
-                        case eControlType.isValue:
+                        case eControlType.isIntegerValue:
                             if (this.newValueChange != null && this.newStringChange != null)
                             {
-                                if (_e.StringValue == "[[VAL]]")
-                                {
-                                    this.newValueChange((ushort)this.nc.ValScaled, (short)this.nc.Val, this.nc.S_Val);
-                                }
+                                this.newValueChange((ushort)this.nc.ValScaled, (short)this.nc.Val, this.nc.S_Val);
+                            }
+                            break;
+                        case eControlType.isFloatValue:
+                            if (this.newValueChange != null && this.newStringChange != null)
+                            {
+                                this.newValueChange((ushort)this.nc.ValScaled, (short)(this.nc.Val*10), this.nc.S_Val);
                             }
                             break;
                         case eControlType.isButton:
@@ -70,7 +73,14 @@ namespace QscQsys
 
         public void SetValueRaw(short _value)
         {
-            this.nc.SetValueRaw(_value);
+            if (this.nc.ControlType == eControlType.isIntegerValue)
+            {
+                this.nc.SetValueRaw(_value);
+            }
+            else if (this.nc.ControlType == eControlType.isFloatValue)
+            {
+                this.nc.SetValueRaw(_value/10);
+            }
         }
 
         public void SetState(ushort _value)
@@ -102,6 +112,5 @@ namespace QscQsys
         {
             this.nc.SetMinMaxViaString(_newMin.ToString(), _newMax.ToString());
         }
-
     }
 }

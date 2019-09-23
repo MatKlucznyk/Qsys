@@ -45,6 +45,20 @@ Sy1=0
 Mx1=0
 ]
 [
+ObjTp=Bw
+H=1
+Lx=0
+Ly=0
+Rx=1536
+Ry=1129
+Xm=-1
+Ym=-1
+SH=6
+Z=100
+Ht=3
+Hi=3
+]
+[
 ObjTp=Symbol
 Name=Qsys Named Control
 Code=1
@@ -174,7 +188,7 @@ OutputCue22=[~UNUSED~]
 OutputCue23=[~UNUSED~]
 ParamCue1=Core ID
 ParamCue2=Control Name
-ParamCue3=Control Type,0d,1d,2d,3d
+ParamCue3=Control Type,0d,1d,2d,3d,4d
 ParamCue4=QSys Default Ramp Time MS
 ParamCue5=Value Min
 ParamCue6=Value Max
@@ -777,15 +791,17 @@ DNF=1
 EncFmt=0
 DVLF=1
 VVS=2
-VN=4
+VN=5
 Val1=0d
-Lbl1=Value
+Lbl1=Int Value
 Val2=1d
-Lbl2=Button
+Lbl2=Float Val
 Val3=2d
-Lbl3=Trigger
+Lbl3=Button
 Val4=3d
-Lbl4=String
+Lbl4=Trigger
+Val5=4d
+Lbl5=String
 Sgn=0
 ]
 [
