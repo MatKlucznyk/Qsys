@@ -136,7 +136,6 @@ namespace QscQsys
                         if (isInitialized && isConnected)
                         {
                             AddControlToChangeGroup addControl;
-
                             addControl = new AddControlToChangeGroup();
                             addControl.method = "ChangeGroup.AddControl";
                             addControl.ControlParams = new AddControlToChangeGroupParams();
@@ -327,7 +326,6 @@ namespace QscQsys
                     commandQueue.Enqueue(JsonConvert.SerializeObject(addComponents));
                 }
             }
-
             this.SendCreateChangeGroup();
         }
 
@@ -415,15 +413,10 @@ namespace QscQsys
                     if (_returnString.Contains("Changes"))
                     {
                         IList<JToken> changes = response["params"]["Changes"].Children().ToList();
-
                         IList<ComponentChangeResult> changeResults = new List<ComponentChangeResult>();
-
                         foreach (JToken change in changes)
                         {
-                            //ChangeResult changeResult = (ChangeResult)change.Cast<ChangeResult>();
-
                             ComponentChangeResult changeResult = JsonConvert.DeserializeObject<ComponentChangeResult>(change.ToString());
-
                             if (changeResult.Component != null)
                             {
                                 foreach (var item in this.Components)
@@ -445,13 +438,10 @@ namespace QscQsys
                     else if (_returnString.Contains("Properties"))
                     {
                         IList<JToken> components = response["result"].Children().ToList();
-
                         IList<ComponentResults> componentResults = new List<ComponentResults>();
-
                         foreach (var component in components)
                         {
                             ComponentResults result = JsonConvert.DeserializeObject<ComponentResults>(component.ToString());
-
                             if (result.Type == "gain")
                             {
                                 foreach (var item in this.Components)
@@ -580,8 +570,6 @@ namespace QscQsys
             if (debug)
                 CrestronConsole.PrintLine("Qsys Core {0} Debug: {1}", this.coreID, _msg);
         }
-
-
     }
     public enum eCoreState
     {
