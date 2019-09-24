@@ -8,8 +8,12 @@ namespace QscQsys
 {
     public class QsysNamedControlSimpl
     {
-        public delegate void ValueChange(ushort valScaled, short valRaw, SimplSharpString valString);
-        public ValueChange newValueChange { get; set; }
+        public delegate void ValueIntChange(ushort valInt, SimplSharpString valString);
+        public ValueIntChange newValueIntChange { get; set; }
+        public delegate void ValueFloatChange(short valFloat, SimplSharpString valString);
+        public ValueFloatChange newValueFloatChange { get; set; }
+        public delegate void PositionChange(ushort valPos);
+        public PositionChange newPositionChange { get; set; }
         public delegate void StateChange(ushort value);
         public StateChange newStateChange { get; set; }
         public delegate void StringChange(SimplSharpString value);
@@ -32,22 +36,28 @@ namespace QscQsys
                     switch (this.nc.ControlType)
                     {
                         case eControlType.isIntegerValue:
-                            if (this.newValueChange != null && this.newStringChange != null)
+                            if (this.newValueIntChange != null)
                             {
-                                this.newValueChange((ushort)this.nc.ValScaled, (short)this.nc.Val, this.nc.S_Val);
+                                this.newValueIntChange((ushort)this.nc.ControlValue, this.nc.ControlString);
+                            }
+                            if (this.newPositionChange != null)
+                            {
+                                this.newPositionChange((ushort)this.nc.scale(this.nc.ControlPosition,0.0,1.0,0,65535));
                             }
                             break;
                         case eControlType.isFloatValue:
-                            if (this.newValueChange != null && this.newStringChange != null)
+                            if (this.newValueFloatChange != null)
                             {
-                                this.newValueChange((ushort)this.nc.ValScaled, (short)(this.nc.Val*10), this.nc.S_Val);
+                                this.newValueFloatChange((short)(this.nc.ControlValue*10), this.nc.ControlString);
+                            }
+                            if (this.newPositionChange != null)
+                            {
+                                this.newPositionChange((ushort)this.nc.scale(this.nc.ControlPosition, 0.0, 1.0, 0, 65535));
                             }
                             break;
                         case eControlType.isButton:
-                            if (this.newStateChange != null && this.newStringChange != null && this.newValueChange != null)
-                            {
+                            if (this.newStateChange != null)
                                 this.newStateChange(Convert.ToUInt16(_e.BooleanValue));
-                            }
                             break;
                         case eControlType.isTrigger:
                             if (newStateChange != null)
@@ -66,21 +76,25 @@ namespace QscQsys
             }
         }
 
-        public void SetValueScaled(ushort _value)
+        public void SetPosition(ushort _position)
         {
-            this.nc.SetValueScaled(_value);
+            this.nc.SetPosition(this.nc.scale(_position, 0, 65535, 0.0, 1.0));
         }
 
-        public void SetValueRaw(short _value)
+        public void SetValue(ushort _value)
         {
-            if (this.nc.ControlType == eControlType.isIntegerValue)
+            if (this.nc.ControlType == eControlType.isFloatValue)
             {
-                this.nc.SetValueRaw(_value);
+                this.nc.SetValue((short)_value / 10);
             }
-            else if (this.nc.ControlType == eControlType.isFloatValue)
+            else
             {
-                this.nc.SetValueRaw(_value/10);
+                this.nc.SetValue(_value);
             }
+        }
+        public void SetValueInt(ushort _value)
+        {
+            this.nc.SetValue(_value);
         }
 
         public void SetState(ushort _value)
@@ -108,9 +122,5 @@ namespace QscQsys
             this.nc.RampTimeMS(_time);
         }
 
-        public void SetMinMax(SimplSharpString _newMin, SimplSharpString _newMax)
-        {
-            this.nc.SetMinMaxViaString(_newMin.ToString(), _newMax.ToString());
-        }
     }
 }

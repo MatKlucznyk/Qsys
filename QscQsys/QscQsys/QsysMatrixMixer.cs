@@ -58,9 +58,9 @@ namespace QscQsys
 
         void Component_OnNewEvent(object _sender, QsysInternalEventsArgs _e)
         {
-            if (_e.Name == crossName)
+            if (_e.changeResult.Name == crossName)
             {
-                this.mute = Convert.ToBoolean(_e.Data);
+                this.mute = Convert.ToBoolean(_e.changeResult.Value);
                 QsysMatrixMixerEvent(this, new QsysEventsArgs(eQscEventIds.MuteChange, this.componentName, this.mute, Convert.ToInt16(this.mute), Convert.ToString(this.mute)));
             }
         }

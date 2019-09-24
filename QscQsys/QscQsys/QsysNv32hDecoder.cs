@@ -51,7 +51,7 @@ namespace QscQsys
 
         void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
         {
-            currentSource = Convert.ToInt16(e.Data);
+            currentSource = Convert.ToInt16(e.changeResult.Value);
 
             QsysNv32hDecoderEvent(this, new QsysEventsArgs(eQscEventIds.Nv32hDecoderInputChange, this.componentName, Convert.ToBoolean(currentSource), currentSource, currentSource.ToString()));
         }

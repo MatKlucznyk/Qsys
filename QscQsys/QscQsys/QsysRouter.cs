@@ -66,10 +66,10 @@ namespace QscQsys
 
         private void Component_OnNewEvent(object _sender, QsysInternalEventsArgs _e)
         {
-            if (_e.Name.Contains(string.Format("select_{0}", this.myOutput)))
+            if (_e.changeResult.Name.Contains(string.Format("select_{0}", this.myOutput)))
             {
-                this.CurrentSelectedInput = Convert.ToInt16(_e.Data);
-                QsysRouterEvent(this, new QsysEventsArgs(eQscEventIds.RouterInputSelected, this.componentName, Convert.ToBoolean(_e.Data), Convert.ToInt16(_e.Data), _e.Data.ToString()));
+                this.CurrentSelectedInput = Convert.ToInt16(_e.changeResult.Value);
+                QsysRouterEvent(this, new QsysEventsArgs(eQscEventIds.RouterInputSelected, this.componentName, Convert.ToBoolean(_e.changeResult.Value), Convert.ToInt16(_e.changeResult.Value), _e.changeResult.String));
             }
         }
     }

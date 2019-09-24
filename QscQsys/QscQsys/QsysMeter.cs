@@ -41,7 +41,7 @@ namespace QscQsys
 
         private void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
         {
-            QsysMeterEvent(this, new QsysEventsArgs(eQscEventIds.MeterUpdate, this.componentName, Convert.ToBoolean(e.Data), Convert.ToInt16(e.Data), e.SData));
+            QsysMeterEvent(this, new QsysEventsArgs(eQscEventIds.MeterUpdate, this.componentName, Convert.ToBoolean(e.changeResult.Value), e.changeResult.Value, e.changeResult.String));
         }
     }
 }

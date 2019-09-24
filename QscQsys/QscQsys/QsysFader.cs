@@ -60,36 +60,29 @@ namespace QscQsys
 
         void Component_OnNewEvent(object _sender, QsysInternalEventsArgs _e)
         {
-            if (_e.Name == "gain")
+            if (_e.changeResult.Name == "gain")
             {
-                if (_e.Data >= min && _e.Data <= max)
+                if (_e.changeResult.Value >= min && _e.changeResult.Value <= max)
                 {
-                    currentLvl = (int)Math.Round((65535 / (max - min)) * (_e.Data + (min * (-1))));
-                    currentLvlDb = _e.Data;
+                    currentLvl = (int)Math.Round((65535 / (max - min)) * (_e.changeResult.Value + (min * (-1))));
+                    currentLvlDb = _e.changeResult.Value;
                     lastSentLvl = -1;
                     QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.GainChange, this.componentName, true, this.currentLvl, this.currentLvl.ToString()));
                 }
             }
-            else if (_e.Name == "mute")
+            else if (_e.changeResult.Name == "mute")
             {
-                if (_e.Data == 1)
-                {
-                    QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.MuteChange, this.componentName, true, 1, "true"));
-                    currentMute = true;
-                }
-                else if (_e.Data == 0)
-                {
-                    QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.MuteChange, this.componentName, false, 0, "false"));
-                    currentMute = false;
-                }
+                bool b = Convert.ToBoolean(_e.changeResult.Value);
+                QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.MuteChange, this.componentName, b, _e.changeResult.Value, Convert.ToString(b)));
+                currentMute = b;
             }
-            else if (_e.Name == "max_gain")
+            else if (_e.changeResult.Name == "max_gain")
             {
-                this.max = _e.Data;
+                this.max = _e.changeResult.Value;
             }
-            else if (_e.Name == "min_gain")
+            else if (_e.changeResult.Name == "min_gain")
             {
-                this.min = _e.Data;
+                this.min = _e.changeResult.Value;
             }
         }
 

@@ -4,22 +4,17 @@
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 Digital_Input ButtonOn, ButtonOff, ButtonMomentary, ButtonToggle, Trigger;
-Analog_Input ValueScaled, ValueRaw, RampTimeMS;
+Analog_Input Value, Position, RampTimeMS;
 String_Input StringSet[255];
 
 Digital_Output ButtonIsOn, ButtonIsOff, _skip_, _skip_, Triggered;
-Analog_Output ValueScaledOut, ValueRawOut, _skip_;
+Analog_Output ValueIs, PositionIs, _skip_;
 String_Output StringOut;
-                          
-//QsysCoreSimpl processor;                          
+                                   
 QsysNamedControlSimpl ctrl;
 
 String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_, _skip_, _skip_, Control_Name[100];
 integer_parameter CoreID, NamedControlType, DefaultQsysRampTimeMS;
-string_parameter Val_Minimum[10], Val_Maximum[10];
-
-integer currentValScaled;
-signed_integer currentValRaw;
 
 Push ButtonOn
 {
@@ -55,23 +50,22 @@ Threadsafe change StringSet
    ctrl.SetString(StringSet);
 }
 
-Threadsafe Change ValueScaled
+Threadsafe Change Value
 {
     integer x;
-    While(x != ValueScaled)
+    While(x != Value)
     {
-       x = ValueScaled;
-        ctrl.SetValueScaled(ValueScaled);
+        x = Value;
+        ctrl.SetValue(Value);
     }
 }
-
-Threadsafe Change ValueRaw
+Threadsafe Change Position
 {
-    signed_integer x;
-    While(x != ValueRaw)
+    integer x;
+    While(x != Position)
     {
-       x = ValueRaw;
-        ctrl.SetValueRaw(ValueRaw);
+        x = Position;
+        ctrl.SetPosition(Position);
     }
 }
 
@@ -80,20 +74,26 @@ Change RampTimeMS
     ctrl.RampTimeMS(RampTimeMS);
 }
 
-Callback Function onInitializationComplete(integer value)
-{        
-}
-Callback Function onValueChange(integer valScaled, signed_integer valRaw, string valString)
+Callback Function onValueIntChange(integer val, string valString)
 {
-    currentValScaled = valScaled;
-    currentValRaw = valRaw;
     StringOut = valString;
-    ValueScaledOut = currentValScaled;
-    ValueRawOut = currentValRaw;
+    ValueIs = val;
 }
+
+Callback Function onValueFloatChange(signed_integer val, string valString)
+{
+    StringOut = valString;
+    ValueIs = val;
+}
+
+Callback Function onPositionChange(integer pos)
+{
+    PositionIs = pos;
+}
+
 Callback Function onStateChange(integer value)
 {
-    if (NamedControlType = 2)
+    if (NamedControlType = 3)
     {
         pulse(20, Triggered);
     }
@@ -121,11 +121,11 @@ Callback Function onStringChange(string value)
 
 Function Main()
 {              
-    //RegisterDelegate(processor, onIsRegistered, onInitializationComplete);
-    RegisterDelegate(ctrl, newValueChange, onValueChange);
+    RegisterDelegate(ctrl, newValueIntChange, onValueIntChange);
+    RegisterDelegate(ctrl, newValueFloatChange, onValueFloatChange);
+    RegisterDelegate(ctrl, newPositionChange, onPositionChange);
     RegisterDelegate(ctrl, newStateChange, onStateChange);
     RegisterDelegate(ctrl, newStringChange, onStringChange);
     ctrl.Initialize(CoreID, Control_Name, NamedControlType);                            
     ctrl.RampTimeMS(DefaultQsysRampTimeMS);
-    ctrl.SetMinMax(Val_Minimum, Val_Maximum);
 }

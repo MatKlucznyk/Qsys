@@ -20,17 +20,25 @@ namespace QscQsys
         public eControlType ControlType { get { return this.controlType; } }
 
         //Internal Vars
-        private double val = 0;
-        public double Val { get { return val; } }
-        private double valScaled = 0;
-        public double ValScaled { get { return valScaled; } }
+        private double controlValue = 0;
+        public double ControlValue { get { return controlValue; } }
+        private string controlString = "";
+        public string ControlString { get { return controlString; } }
+        private bool controlBool = false;
+        public bool ControlBool { get { return controlBool; } }
+        private double controlPosition = 0;
+        public double ControlPosition { get { return controlPosition; } }
+        private string controlColor = "";
+        public string ControlColor { get { return controlColor; } }
+        private bool controlIndeterminate = false;
+        public bool ControlIndeterminate { get { return controlIndeterminate; } }
+        private bool controlInvisible = false;
+        public bool ControlInvisible { get { return controlInvisible; } }
+        private bool controlDisabled = false;
+        public bool ControlDisabled { get { return controlDisabled; } }
+        //Legend
+        //Choices
         private double lastSentVal = 0;
-        private string sVal = "";
-        public string S_Val { get { return sVal; } }
-        private bool bVal = false;
-        public bool b_Val { get { return bVal; } }
-        private double max;
-        private double min;
         private double rampTime;
 
         //Event
@@ -55,120 +63,121 @@ namespace QscQsys
 
         void Control_OnNewEvent(object _sender, QsysInternalEventsArgs _e)
         {
+
+            if (_e.changeResult.String != null)
+                this.controlString = _e.changeResult.String;
+
+            if (_e.changeResult.Value != null)
+                this.controlValue = _e.changeResult.Value;
+
+            if (_e.changeResult.Position != null)
+                this.controlPosition = _e.changeResult.Position;
+
+            if (_e.changeResult.Color != null)
+                ; //later
+
+            if (_e.changeResult.Indeterminate != null)
+                this.controlIndeterminate = _e.changeResult.Indeterminate;
+
+            if (_e.changeResult.Invisible != null)
+                this.controlInvisible = _e.changeResult.Invisible;
+            
+            if (_e.changeResult.Disabled != null)
+                this.controlDisabled = _e.changeResult.Disabled;
+            
+            //legend
+            //changes
+
             switch (this.controlType)
             {
                 case eControlType.isIntegerValue:
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, "[[VAL]]", false, this.controlValue, this.controlString));
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, "[[POS]]", false, this.controlPosition, ""));
+                    break;
                 case eControlType.isFloatValue:
-                    this.val = _e.Data;
-                    this.valScaled = Math.Round(scale(val, this.min, this.max, 0, 65535));
-                    this.sVal = _e.SData;
-                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, "[[VAL]]", false, this.val, this.sVal));
-                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, "[[VAL-SCALED]]", false, this.valScaled, this.valScaled.ToString()));
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, "[[VAL]]", false, this.controlValue, this.controlString));
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, "[[POS]]", false, this.controlPosition, ""));
                     break;
                 case eControlType.isButton:
-                    this.bVal = Convert.ToBoolean(_e.Data);
-                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, this.controlName, this.bVal, 0, ""));
+                    this.controlBool = Convert.ToBoolean(this.controlValue);
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, this.controlName, this.controlBool, Convert.ToInt16(this.controlBool), Convert.ToString(this.controlBool)));
                     break;
                 case eControlType.isTrigger:
-                    this.bVal = false;
+                    this.controlBool = false;
                     QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, this.controlName, false, 0, ""));
                     break;
                 case eControlType.isString:
-                    this.sVal = _e.SData;
-                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, this.controlName, false, 0, this.sVal));
+                    QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControl, this.controlName, false, 0, this.controlString));
                     break;
             }
         }
 
 
-        public void SetValueScaled(double _value)
+        public void SetPosition(double _position)
         {
-            if (this.controlType != eControlType.isIntegerValue || this.controlType != eControlType.isFloatValue)
-                return;
-            double newRawVal = Math.Round(scale(_value, 0, 65535, this.min, this.max), 2);
-            if (newRawVal == this.lastSentVal) //avoid repeats
-                return;
-            this.lastSentVal = newRawVal;
-
-            ControlSetDouble newValChange = new ControlSetDouble();
-            newValChange.Params = new ControlSetValueDouble();
-            newValChange.method = "Control.Set";
-            newValChange.Params.Name = this.controlName;
-            newValChange.Params.Value = newRawVal;
-            newValChange.Params.Ramp = this.rampTime;
-            this.myCore.Enqueue(JsonConvert.SerializeObject(newValChange));
+            if (this.controlType == eControlType.isIntegerValue || this.controlType == eControlType.isFloatValue)
+            {
+                double p = clamp(_position, 0.0, 1.0);
+                ControlSet cs = new ControlSet();
+                cs.method = "Control.Set";
+                cs.Params = new ControlSetParams { Name = this.controlName, Position = Math.Round(p, 8), Ramp = this.rampTime };
+                this.myCore.Enqueue(JsonConvert.SerializeObject(cs));
+            }
         }
 
 
-        public void SetValueRaw(double _value)
+        public void SetValue(double _value)
         {
-            if (this.controlType != eControlType.isIntegerValue || this.controlType != eControlType.isFloatValue)
-                return;
-
-            double newRawVal = _value;
-            if (newRawVal > this.max && _value < this.min) //ensure within range
-                return;
-            if (this.lastSentVal == newRawVal) //avoid repeats
-                return;
-            this.lastSentVal = newRawVal;
-
-            ControlSetDouble newValChange = new ControlSetDouble();
-            newValChange.Params = new ControlSetValueDouble();
-            newValChange.method = "Control.Set";
-            newValChange.Params.Name = this.controlName;
-            newValChange.Params.Value = newRawVal;
-            newValChange.Params.Ramp = this.rampTime;
-            this.myCore.Enqueue(JsonConvert.SerializeObject(newValChange));
+            if (this.controlType == eControlType.isIntegerValue || this.controlType == eControlType.isFloatValue)
+            {
+                ControlSet cs = new ControlSet();
+                cs.method = "Control.Set";
+                cs.Params = new ControlSetParams { Name = this.controlName, Value = Math.Round(_value, 8).ToString(), Ramp = this.rampTime };
+                CrestronConsole.PrintLine(String.Format("setting val to {0}", _value.ToString()));
+                this.myCore.Enqueue(JsonConvert.SerializeObject(cs));
+            }
         }
 
         public void SetState(bool _value)
         {
-            if (ControlType != eControlType.isButton)
-                return;
-
-            ControlSetBool newStateChange = new ControlSetBool();
-            newStateChange.Params = new ControlSetValueBool();
-            newStateChange.method = "Control.Set";
-            newStateChange.Params.Name = this.controlName;
-            newStateChange.Params.Value = _value;
-            this.myCore.Enqueue(JsonConvert.SerializeObject(newStateChange));
+            if (this.ControlType == eControlType.isButton)
+            {
+                ControlSet cs = new ControlSet();
+                cs.method = "Control.Set";
+                cs.Params = new ControlSetParams { Name = this.controlName, Value = _value.ToString() };
+                this.myCore.Enqueue(JsonConvert.SerializeObject(cs));
+            }
         }
 
         public void SetStateToggle()
         {
-            if (ControlType != eControlType.isButton)
-                return;
-
-            this.bVal = !this.bVal;
-            ControlSetBool newStateChange = new ControlSetBool();
-            newStateChange.Params = new ControlSetValueBool();
-            newStateChange.method = "Control.Set";
-            newStateChange.Params.Name = this.controlName;
-            newStateChange.Params.Value = this.bVal;
-            this.myCore.Enqueue(JsonConvert.SerializeObject(newStateChange));
+            if (ControlType == eControlType.isButton)
+            {
+                this.controlBool = !this.controlBool;
+                ControlSet cs = new ControlSet();
+                cs.method = "Control.Set";
+                cs.Params = new ControlSetParams { Name = this.controlName, Value = this.controlBool.ToString() };
+                this.myCore.Enqueue(JsonConvert.SerializeObject(cs));
+            }
         }
 
         public void Trigger()
         {
-            if (ControlType != eControlType.isTrigger)
-                return;
-
-            ControlSetBool newTriggerChange = new ControlSetBool();
-            newTriggerChange.Params = new ControlSetValueBool();
-            newTriggerChange.method = "Control.Set";
-            newTriggerChange.Params.Name = this.controlName;
-            newTriggerChange.Params.Value = true;
-            this.myCore.Enqueue(JsonConvert.SerializeObject(newTriggerChange));
+            if (ControlType == eControlType.isTrigger)
+            {
+                ControlSet cs = new ControlSet();
+                cs.method = "Control.Set";
+                cs.Params = new ControlSetParams { Name = this.controlName, Value = "1" };
+                this.myCore.Enqueue(JsonConvert.SerializeObject(cs));
+            }
         }
 
         public void SetString(string _value)
         {
-            ControlSetString newStringChange = new ControlSetString();
-            newStringChange.Params = new ControlSetValueString();
-            newStringChange.method = "Control.Set";
-            newStringChange.Params.Name = this.controlName;
-            newStringChange.Params.Value = _value;
-            this.myCore.Enqueue(JsonConvert.SerializeObject(newStringChange));
+            ControlSet cs = new ControlSet();
+            cs.method = "Control.Set";
+            cs.Params = new ControlSetParams { Name = this.controlName, Value = _value };
+            this.myCore.Enqueue(JsonConvert.SerializeObject(cs));
         }
 
         /// <summary>
@@ -180,25 +189,24 @@ namespace QscQsys
             this.rampTime = _time / 1000; //ms to sec
         }
 
-        public void SetMinMax(double _newMin, double _newMax)
-        {
-            this.min = _newMin;
-            this.max = _newMax;
-        }
-        public void SetMinMaxViaString(string _newMin, string _newMax)
-        {
-            if (ControlType != eControlType.isIntegerValue || this.controlType != eControlType.isFloatValue)
-                return;
-            this.min = Convert.ToDouble(_newMin);
-            this.max = Convert.ToDouble(_newMax);
-        }
 
-        private double scale(double A, double A1, double A2, double Min, double Max)
+        public double scale(double A, double A1, double A2, double Min, double Max)
         {
             double percentage = (A - A1) / (A1 - A2);
             return (percentage) * (Min - Max) + Min;
         }
 
+        private double clamp(double _in, double _min, double _max)
+        {
+            double newVal;
+            if (_in > _max)
+                newVal = _max;
+            else if (_in < _min)
+                newVal = _min;
+            else
+                newVal = _in;
+            return newVal;
+        }
     }
 
     public enum eControlType

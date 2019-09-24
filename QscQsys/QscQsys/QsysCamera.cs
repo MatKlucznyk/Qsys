@@ -74,11 +74,10 @@ namespace QscQsys
 
         void Component_OnNewEvent(object _sender, QsysInternalEventsArgs _e)
         {
-            //CrestronConsole.PrintLine("cam got {0} - val:{1} ctr:{2}", _e.Name, _e.Data, _e.SData);
-            switch (_e.Name)
+            switch (_e.changeResult.Name)
             {
                 case "ptz_preset":
-                    string[] numbers = Regex.Split(_e.SData, @"\s+");
+                    string[] numbers = Regex.Split(_e.changeResult.String, @"\s+");
                     if (numbers.Length == 3)
                     {
                         positionPan = double.Parse(numbers[0]);
@@ -90,32 +89,32 @@ namespace QscQsys
                     }
                     break;
                 case "setup_pan_speed":
-                    this.speedPan = (int)_e.Data;
-                    QsysCamEvent(this, new QsysEventsArgs(eQscEventIds.CameraChange, _e.Name, false, (int)_e.Data, _e.SData));
+                    this.speedPan = (int)_e.changeResult.Value;
+                    QsysCamEvent(this, new QsysEventsArgs(eQscEventIds.CameraChange, _e.changeResult.Name, false, (int)_e.changeResult.Value, _e.changeResult.String));
                     break;
                 case "setup_tilt_speed":
-                    this.speedTilt = (int)_e.Data;
-                    QsysCamEvent(this, new QsysEventsArgs(eQscEventIds.CameraChange, _e.Name, false, (int)_e.Data, _e.SData));
+                    this.speedTilt = (int)_e.changeResult.Value;
+                    QsysCamEvent(this, new QsysEventsArgs(eQscEventIds.CameraChange, _e.changeResult.Name, false, (int)_e.changeResult.Value, _e.changeResult.String));
                     break;
                 case "setup_zoom_speed":
-                    this.speedZoom = (int)_e.Data;
-                    QsysCamEvent(this, new QsysEventsArgs(eQscEventIds.CameraChange, _e.Name, false, (int)_e.Data, _e.SData));
+                    this.speedZoom = (int)_e.changeResult.Value;
+                    QsysCamEvent(this, new QsysEventsArgs(eQscEventIds.CameraChange, _e.changeResult.Name, false, (int)_e.changeResult.Value, _e.changeResult.String));
                     break;
                 case "aaaa_setup_snapshot_speed":
-                    this.speedRecall = (int)_e.Data;
-                    QsysCamEvent(this, new QsysEventsArgs(eQscEventIds.CameraChange, _e.Name, false, (int)_e.Data, _e.SData));
+                    this.speedRecall = (int)_e.changeResult.Value;
+                    QsysCamEvent(this, new QsysEventsArgs(eQscEventIds.CameraChange, _e.changeResult.Name, false, (int)_e.changeResult.Value, _e.changeResult.String));
                     break;
                 case "focus_auto":
-                    this.afAutoMode = Convert.ToBoolean(_e.Data);
-                    QsysCamEvent(this, new QsysEventsArgs(eQscEventIds.CameraChange, _e.Name, false, (int)_e.Data, _e.SData));
+                    this.afAutoMode = Convert.ToBoolean(_e.changeResult.Value);
+                    QsysCamEvent(this, new QsysEventsArgs(eQscEventIds.CameraChange, _e.changeResult.Name, false, (int)_e.changeResult.Value, _e.changeResult.String));
                     break;
                 case "toggle_privacy":
-                    this.privacyMode = Convert.ToBoolean(_e.Data);
-                    QsysCamEvent(this, new QsysEventsArgs(eQscEventIds.CameraChange, _e.Name, false, (int)_e.Data, _e.SData));
+                    this.privacyMode = Convert.ToBoolean(_e.changeResult.Value);
+                    QsysCamEvent(this, new QsysEventsArgs(eQscEventIds.CameraChange, _e.changeResult.Name, false, (int)_e.changeResult.Value, _e.changeResult.String));
                     break;
                 case "preset_home_load":
-                    this.homeMode = Convert.ToBoolean(_e.Data);
-                    QsysCamEvent(this, new QsysEventsArgs(eQscEventIds.CameraChange, _e.Name, false, (int)_e.Data, _e.SData));
+                    this.homeMode = Convert.ToBoolean(_e.changeResult.Value);
+                    QsysCamEvent(this, new QsysEventsArgs(eQscEventIds.CameraChange, _e.changeResult.Name, false, (int)_e.changeResult.Value, _e.changeResult.String));
                     break;
             }
         }

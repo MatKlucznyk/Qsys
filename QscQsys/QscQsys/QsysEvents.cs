@@ -39,18 +39,14 @@ namespace QscQsys
     /// </summary>
     internal class QsysInternalEventsArgs : EventArgs
     {
-        public string Name;
-        public double Data;
-        public string SData;
+        public ChangeResult changeResult;
 
-        public QsysInternalEventsArgs(string name, double data, string sData)
+        public QsysInternalEventsArgs(ChangeResult _changeResult)
         {
-            this.Name = name;
-            this.Data = data;
-            this.SData = sData;
-
+            this.changeResult = _changeResult;
         }
     }
+
 
     /// <summary>
     /// Used only for internal methods.

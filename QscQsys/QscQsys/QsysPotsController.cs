@@ -67,16 +67,16 @@ namespace QscQsys
 
         void Component_OnNewEvent(object _sender, QsysInternalEventsArgs _e)
         {
-            switch (_e.Name)
+            switch (_e.changeResult.Name)
             {
                 case "call_offhook":
-                    if (_e.Data == 1)
+                    if (_e.changeResult.Value == 1)
                     {
                         this.hookState = true;
                         this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerOffHook, this.componentName, true, 1, "1"));
                         this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCurrentlyCalling, this.componentName, true, this.currentlyCalling.Length, this.currentlyCalling));
                     }
-                    else if (_e.Data == 0)
+                    else if (_e.changeResult.Value == 0)
                     {
                         this.hookState = false;
                         this.dialString.Remove(0, this.dialString.Length);
@@ -88,24 +88,24 @@ namespace QscQsys
                     }
                     break;
                 case "call_ringing":
-                    if (_e.Data == 1)
+                    if (_e.changeResult.Value == 1)
                     {
                         this.ringingState = true;
                         this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIsRinging, this.componentName, true, 1, "1"));
                     }
-                    else if (_e.Data == 0)
+                    else if (_e.changeResult.Value == 0)
                     {
                         this.ringingState = false;
                         this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIsRinging, this.componentName, false, 0, "0"));
                     }
                     break;
                 case "call_autoanswer":
-                    this.autoAnswer = Convert.ToBoolean(_e.Data);
-                    this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerAutoAnswerChange, this.componentName, this.autoAnswer, Convert.ToInt16(_e.Data), Convert.ToString(Convert.ToInt16(_e.Data))));
+                    this.autoAnswer = Convert.ToBoolean(_e.changeResult.Value);
+                    this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerAutoAnswerChange, this.componentName, this.autoAnswer, Convert.ToInt16(_e.changeResult.Value), Convert.ToString(Convert.ToInt16(_e.changeResult.Value))));
                     break;
                 case "call_dnd":
-                    this.dnd = Convert.ToBoolean(_e.Data);
-                    this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDND_Change, this.componentName, this.dnd, Convert.ToInt16(_e.Data), Convert.ToString(Convert.ToInt16(_e.Data))));
+                    this.dnd = Convert.ToBoolean(_e.changeResult.Value);
+                    this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDND_Change, this.componentName, this.dnd, Convert.ToInt16(_e.changeResult.Value), Convert.ToString(Convert.ToInt16(_e.changeResult.Value))));
                     break;
                 default:
                     break;

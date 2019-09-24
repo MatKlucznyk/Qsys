@@ -414,20 +414,19 @@ namespace QscQsys
                 try
                 {
                     JObject response = JObject.Parse(_returnString);
-
                     if (_returnString.Contains("Changes"))
                     {
                         IList<JToken> changes = response["params"]["Changes"].Children().ToList();
-                        IList<ComponentChangeResult> changeResults = new List<ComponentChangeResult>();
+                        IList<ChangeResult> changeResults = new List<ChangeResult>();
                         foreach (JToken change in changes)
                         {
-                            ComponentChangeResult changeResult = JsonConvert.DeserializeObject<ComponentChangeResult>(change.ToString());
+                            ChangeResult changeResult = JsonConvert.DeserializeObject<ChangeResult>(change.ToString());
                             if (changeResult.Component != null)
                             {
                                 foreach (var item in this.Components)
                                 {
                                     if (item.Key.Name == changeResult.Component)
-                                        item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.String));
+                                        item.Value.Fire(new QsysInternalEventsArgs(changeResult));
                                 }
                             }
                             else
@@ -435,38 +434,38 @@ namespace QscQsys
                                 foreach (var item in this.Controls)
                                 {
                                     if (item.Key == changeResult.Name)
-                                        item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.String));
+                                        item.Value.Fire(new QsysInternalEventsArgs(changeResult));
                                 }
                             }
                         }
                     }
                     else if (_returnString.Contains("Properties"))
                     {
-                        IList<JToken> components = response["result"].Children().ToList();
-                        IList<ComponentResults> componentResults = new List<ComponentResults>();
-                        foreach (var component in components)
-                        {
-                            ComponentResults result = JsonConvert.DeserializeObject<ComponentResults>(component.ToString());
-                            if (result.Type == "gain")
-                            {
-                                foreach (var item in this.Components)
-                                {
-                                    if (item.Key.Name == result.Name)
-                                    {
-                                        List<ComponentProperties> props = result.Properties.ToList();
-                                        ComponentProperties prop;
-                                        if ((prop = props.Find(x => x.Name == "max_gain")) != null)
-                                        {
-                                            item.Value.Fire(new QsysInternalEventsArgs("max_gain", Convert.ToDouble(prop.Value), string.Empty));
-                                        }
-                                        if ((prop = props.Find(x => x.Name == "min_gain")) != null)
-                                        {
-                                            item.Value.Fire(new QsysInternalEventsArgs("min_gain", Convert.ToDouble(prop.Value), string.Empty));
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        //IList<JToken> components = response["result"].Children().ToList();
+                        //IList<ComponentResults> componentResults = new List<ComponentResults>();
+                        //foreach (var component in components)
+                        //{
+                        //    ComponentResults result = JsonConvert.DeserializeObject<ComponentResults>(component.ToString());
+                        //    if (result.Type == "gain")
+                        //    {
+                        //        foreach (var item in this.Components)
+                        //        {
+                        //            if (item.Key.Name == result.Name)
+                        //            {
+                        //                List<ComponentProperties> props = result.Properties.ToList();
+                        //                ComponentProperties prop;
+                        //                if ((prop = props.Find(x => x.Name == "max_gain")) != null)
+                        //                {
+                        //                    item.Value.Fire(new QsysInternalEventsArgs("max_gain", Convert.ToDouble(prop.Value), string.Empty));
+                        //                }
+                        //                if ((prop = props.Find(x => x.Name == "min_gain")) != null)
+                        //                {
+                        //                    item.Value.Fire(new QsysInternalEventsArgs("min_gain", Convert.ToDouble(prop.Value), string.Empty));
+                        //                }
+                        //            }
+                        //        }
+                        //    }
+                        //}
                     }
                     else if (_returnString.Contains("EngineStatus") || _returnString.Contains("StatusGet"))
                     {

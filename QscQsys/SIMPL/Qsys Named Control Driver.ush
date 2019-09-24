@@ -43,17 +43,17 @@
   OutputSigType4=Digital
   OutputCue5=Triggered
   OutputSigType5=Digital
-  InputList2Cue1=ValueScaled
+  InputList2Cue1=Value
   InputList2SigType1=Analog
-  InputList2Cue2=ValueRaw
+  InputList2Cue2=Position
   InputList2SigType2=Analog
   InputList2Cue3=RampTimeMS
   InputList2SigType3=Analog
   InputList2Cue4=StringSet
   InputList2SigType4=Serial
-  OutputList2Cue1=ValueScaledOut
+  OutputList2Cue1=ValueIs
   OutputList2SigType1=Analog
-  OutputList2Cue2=ValueRawOut
+  OutputList2Cue2=PositionIs
   OutputList2SigType2=Analog
   OutputList2Cue3=[~UNUSED~]
   OutputList2SigType3=Analog
@@ -88,10 +88,6 @@
   ParamSigType14=Constant
   ParamCue15=DefaultQsysRampTimeMS
   ParamSigType15=Constant
-  ParamCue16=Val_Minimum
-  ParamSigType16=String
-  ParamCue17=Val_Maximum
-  ParamSigType17=String
   MinVariableInputs=5
   MaxVariableInputs=5
   MinVariableInputsList2=4
@@ -100,8 +96,8 @@
   MaxVariableOutputs=5
   MinVariableOutputsList2=4
   MaxVariableOutputsList2=4
-  MinVariableParams=16
-  MaxVariableParams=16
+  MinVariableParams=14
+  MaxVariableParams=14
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
@@ -120,9 +116,7 @@
   Pp13=13
   Pp14=14
   Pp15=15
-  Pp16=16
-  Pp17=17
-  MPp=17
+  MPp=15
   NVStorage=10
   ParamSigType1=String
   SmplCInputCue1=o#
@@ -183,21 +177,5 @@
   NF=63
   NoS=True
   DNF=1
-  VVS=0
-[END]
-[BEGIN]
-  ObjTp=Dp
-  H=16
-  Tp=1
-  HD=False
-  NoS=False
-  VVS=0
-[END]
-[BEGIN]
-  ObjTp=Dp
-  H=17
-  Tp=1
-  HD=False
-  NoS=False
   VVS=0
 [END]
