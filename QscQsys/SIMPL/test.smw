@@ -36,7 +36,7 @@ FltTmp=1
 FpCS=0
 EnType=0
 ZeroOnIoOk=0
-PIT=Main
+PIT=qsysTest
 SGMethod=1
 ]
 [
@@ -1754,10 +1754,10 @@ O9=81
 O10=82
 mP=6
 P1=1d
-P2=10.0.1.129
+P2=10.0.4.21
 P3=1710d
-P4="test"
-P5="1234"
+P4=""
+P5=""
 P6=1d
 ]
 [
