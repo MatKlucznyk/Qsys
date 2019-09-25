@@ -182,19 +182,34 @@ namespace QscQsys
         public string Value { get; set; }
     }
 
-    public class ControlSet
+    public class ControlSetValue
     {
         [JsonProperty]
         public string jsonrpc = "2.0";
         [JsonProperty]
         public string method { get; set; }
         [JsonProperty("params")]
-        public ControlSetParams Params { get; set; }
+        public ControlSetValueParams Params { get; set; }
     }
-    public class ControlSetParams
+    public class ControlSetValueParams
     {
         public string Name { get; set; }
         public string Value { get; set; }
+        public double Ramp { get; set; }
+    }
+
+    public class ControlSetPosition
+    {
+        [JsonProperty]
+        public string jsonrpc = "2.0";
+        [JsonProperty]
+        public string method { get; set; }
+        [JsonProperty("params")]
+        public ControlSetPositionParams Params { get; set; }
+    }
+    public class ControlSetPositionParams
+    {
+        public string Name { get; set; }
         public double Position { get; set; }
         public double Ramp { get; set; }
     }

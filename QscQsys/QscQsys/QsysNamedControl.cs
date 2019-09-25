@@ -118,9 +118,9 @@ namespace QscQsys
             if (this.controlType == eControlType.isIntegerValue || this.controlType == eControlType.isFloatValue)
             {
                 double p = clamp(_position, 0.0, 1.0);
-                ControlSet cs = new ControlSet();
+                ControlSetPosition cs = new ControlSetPosition();
                 cs.method = "Control.Set";
-                cs.Params = new ControlSetParams { Name = this.controlName, Position = Math.Round(p, 8), Ramp = this.rampTime };
+                cs.Params = new ControlSetPositionParams { Name = this.controlName, Position = Math.Round(p, 8), Ramp = this.rampTime };
                 this.myCore.Enqueue(JsonConvert.SerializeObject(cs));
             }
         }
@@ -130,9 +130,9 @@ namespace QscQsys
         {
             if (this.controlType == eControlType.isIntegerValue || this.controlType == eControlType.isFloatValue)
             {
-                ControlSet cs = new ControlSet();
+                ControlSetValue cs = new ControlSetValue();
                 cs.method = "Control.Set";
-                cs.Params = new ControlSetParams { Name = this.controlName, Value = Math.Round(_value, 8).ToString(), Ramp = this.rampTime };
+                cs.Params = new ControlSetValueParams { Name = this.controlName, Value = Math.Round(_value, 8).ToString(), Ramp = this.rampTime };
                 CrestronConsole.PrintLine(String.Format("setting val to {0}", _value.ToString()));
                 this.myCore.Enqueue(JsonConvert.SerializeObject(cs));
             }
@@ -142,9 +142,9 @@ namespace QscQsys
         {
             if (this.ControlType == eControlType.isButton)
             {
-                ControlSet cs = new ControlSet();
+                ControlSetValue cs = new ControlSetValue();
                 cs.method = "Control.Set";
-                cs.Params = new ControlSetParams { Name = this.controlName, Value = _value.ToString() };
+                cs.Params = new ControlSetValueParams { Name = this.controlName, Value = _value.ToString() };
                 this.myCore.Enqueue(JsonConvert.SerializeObject(cs));
             }
         }
@@ -154,9 +154,9 @@ namespace QscQsys
             if (ControlType == eControlType.isButton)
             {
                 this.controlBool = !this.controlBool;
-                ControlSet cs = new ControlSet();
+                ControlSetValue cs = new ControlSetValue();
                 cs.method = "Control.Set";
-                cs.Params = new ControlSetParams { Name = this.controlName, Value = this.controlBool.ToString() };
+                cs.Params = new ControlSetValueParams { Name = this.controlName, Value = this.controlBool.ToString() };
                 this.myCore.Enqueue(JsonConvert.SerializeObject(cs));
             }
         }
@@ -165,18 +165,18 @@ namespace QscQsys
         {
             if (ControlType == eControlType.isTrigger)
             {
-                ControlSet cs = new ControlSet();
+                ControlSetValue cs = new ControlSetValue();
                 cs.method = "Control.Set";
-                cs.Params = new ControlSetParams { Name = this.controlName, Value = "1" };
+                cs.Params = new ControlSetValueParams { Name = this.controlName, Value = "1" };
                 this.myCore.Enqueue(JsonConvert.SerializeObject(cs));
             }
         }
 
         public void SetString(string _value)
         {
-            ControlSet cs = new ControlSet();
+            ControlSetValue cs = new ControlSetValue();
             cs.method = "Control.Set";
-            cs.Params = new ControlSetParams { Name = this.controlName, Value = _value };
+            cs.Params = new ControlSetValueParams { Name = this.controlName, Value = _value };
             this.myCore.Enqueue(JsonConvert.SerializeObject(cs));
         }
 
