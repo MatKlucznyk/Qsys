@@ -43,7 +43,8 @@ namespace QscQsys
 
         public void SetMute(ushort _value)
         {
-            this.gc.SetMute(Convert.ToBoolean(_value));
+            bool b = Convert.ToBoolean(_value);
+            this.gc.SetMute(Convert.ToBoolean(b));
         }
 
         public void ToggleMute()

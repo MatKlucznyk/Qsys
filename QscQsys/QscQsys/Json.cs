@@ -41,13 +41,29 @@ namespace QscQsys
         [JsonProperty("params")]
         CreateChangeGroupParams Params = new CreateChangeGroupParams();
     }
-
     public class CreateChangeGroupParams
     {
         [JsonProperty]
         static string Id = "1";
         [JsonProperty]
         static double Rate = 0.15;
+    }
+
+    public class ClearChangeGroup
+    {
+        [JsonProperty]
+        static string jsonrpc = "2.0";
+        [JsonProperty]
+        static string id = "crestron";
+        [JsonProperty]
+        static string method = "ChangeGroup.Clear";
+        [JsonProperty("params")]
+        ClearChangeGroupParams Params = new ClearChangeGroupParams();
+    }
+    public class ClearChangeGroupParams
+    {
+        [JsonProperty]
+        static string Id = "1";
     }
 
     public class AddControlToChangeGroup
@@ -124,23 +140,30 @@ namespace QscQsys
         [JsonProperty("params")]
         public ComponentChangeParams Params { get; set; }
     }
-
     public class ComponentChangeParams
     {
         public string Name { get; set; }
         public IList<ComponentSetValue> Controls { get; set; }
     }
-
     public class ComponentSetValue
     {
         public string Name { get; set; }
         public double Value { get; set; }
-        public double Ramp { get; set; }
         public double Position { get; set; }
+        public double Ramp { get; set; }
+
+        [JsonIgnore]
+        public bool typePos { get; set; }
+
+        public bool ShouldSerializeValue()
+        {
+            return !typePos;
+        }
+        public bool ShouldSerializePosition()
+        {
+            return typePos;
+        }
     }
-
-
-
 
     public class SetCrossPointMute
     {

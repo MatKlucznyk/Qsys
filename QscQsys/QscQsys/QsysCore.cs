@@ -291,11 +291,17 @@ namespace QscQsys
             this.SendDebug("Creating change group and registering with the core");
             this.commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
         }
+        void SendClearChangeGroup()
+        {
+            this.SendDebug("Clearing change group within core");
+            this.commandQueue.Enqueue(JsonConvert.SerializeObject(new ClearChangeGroup()));
+        }
 
         private void CoreModuleInit()
         {
-            this.SendDebug("Requesting all named components and controls");
+            SendClearChangeGroup();
 
+            this.SendDebug("Requesting all named components and controls");
             this.commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
 
             if (Controls.Count() > 0)
@@ -326,6 +332,7 @@ namespace QscQsys
                     commandQueue.Enqueue(JsonConvert.SerializeObject(addComponents));
                 }
             }
+            
             this.SendCreateChangeGroup();
         }
 
@@ -390,12 +397,11 @@ namespace QscQsys
                             var data = this.RxData.ToString().Substring(0, Pos);
                             var garbage = this.RxData.Remove(0, Pos + 1); // remove data from COM buffer
 
-                            if (data[0] != '{')
-                                data = "{" + data;
+                            if (data.Contains("\"params\":{\"Id\":\"1\",\"Changes\":[]}") || data.Length < 3)
+                                return;
 
                             if (this.debug)
-                                if (!data.Contains("{\"jsonrpc\":\"2.0\",\"method\":\"ChangeGroup.Poll\",\"params\":{\"Id\":\"1\",\"Changes\":[]}}") && data.Length > 2)
-                                    this.SendDebug(string.Format("Received from core and dequeue to parse: {0}", data));
+                                this.SendDebug(string.Format("Received from core and dequeue to parse: {0}", data));
                            
                             this.ParseInternalResponse(data);
                         }
@@ -485,7 +491,7 @@ namespace QscQsys
                         foreach (var item in SimplClients)
                         {
                             item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.CoreState, "", (ushort)coreState));
-                            item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.Platform, "", (ushort)coreState));     
+                            item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.Platform, this.platform, 0));     
                             item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.DesignName, designName, 0));
                             item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.DesignCode, designCode, 0));
                             item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsRedundant, Convert.ToString(isRedundant), (ushort)Convert.ToInt16(isRedundant)));
@@ -565,8 +571,6 @@ namespace QscQsys
         {
             try
             {
-                //this.SendDebug(string.Format("Received from core and adding to queue: {0}", _data));
-                //{"jsonrpc":"2.0","method":"ChangeGroup.Poll","params":{"Id":"1","Changes":[]}}
                 this.responseQueue.Enqueue(_data);
             }
             catch (Exception e)

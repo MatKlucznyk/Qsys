@@ -63,6 +63,7 @@ namespace QscQsys
                 {
                     this.volumeLevel = _e.changeResult.Value;
                     this.volumeString = _e.changeResult.String;
+                    this.volumePosition = _e.changeResult.Position;
                     QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.GainChange, "[[VAL]]", false, _e.changeResult.Value, _e.changeResult.String));
                     QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.GainChange, "[[POS]]", false, _e.changeResult.Position, ""));
                 }
@@ -76,17 +77,14 @@ namespace QscQsys
         }
 
 
-
-
-
         public void SetPosition(double _position)
         {
             double newP = clamp(_position, 0.0, 1.0);
             ComponentChange newVolumeChange = new ComponentChange();
             newVolumeChange.Params = new ComponentChangeParams();
             newVolumeChange.Params.Name = this.componentName;
-            ComponentSetValue volume = new ComponentSetValue { Name = "gain", Position = Math.Round(newP, 8), Ramp = rampTime };
             newVolumeChange.Params.Controls = new List<ComponentSetValue>();
+            ComponentSetValue volume = new ComponentSetValue { Name = "gain", Position = Math.Round(newP, 8), Ramp = this.rampTime, typePos = true };
             newVolumeChange.Params.Controls.Add(volume);
 
             string jsonIgnoreNullValues = JsonConvert.SerializeObject(newVolumeChange, Formatting.None, new JsonSerializerSettings{ NullValueHandling = NullValueHandling.Ignore });
@@ -99,7 +97,7 @@ namespace QscQsys
             ComponentChange newVolumeChange = new ComponentChange();
             newVolumeChange.Params = new ComponentChangeParams();
             newVolumeChange.Params.Name = this.componentName;
-            ComponentSetValue volume = new ComponentSetValue { Name = "gain", Value = Math.Round(_value, 8), Ramp = rampTime };
+            ComponentSetValue volume = new ComponentSetValue { Name = "gain", Value = Math.Round(_value, 8), Ramp = this.rampTime };
             newVolumeChange.Params.Controls = new List<ComponentSetValue>();
             newVolumeChange.Params.Controls.Add(volume);
 
@@ -112,27 +110,23 @@ namespace QscQsys
             ComponentChange newMuteChange = new ComponentChange();
             newMuteChange.Params = new ComponentChangeParams();
             newMuteChange.Params.Name = this.componentName;
-            ComponentSetValue mute = new ComponentSetValue { Name = "gain", Value = Convert.ToDouble(_value) };
+            ComponentSetValue mute = new ComponentSetValue { Name = "gain", Value = Convert.ToDouble(_value), Ramp = this.rampTime };
             newMuteChange.Params.Controls = new List<ComponentSetValue>();
             newMuteChange.Params.Controls.Add(mute);
             string jsonIgnoreNullValues = JsonConvert.SerializeObject(newMuteChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             this.myCore.Enqueue(jsonIgnoreNullValues);
         }
 
-
         public void SetMute(bool _value)
         {
-            if (this.currentMute != _value)
-            {
-                ComponentChange newMuteChange = new ComponentChange();
-                newMuteChange.Params = new ComponentChangeParams();
-                newMuteChange.Params.Name = this.componentName;
-                ComponentSetValue mute = new ComponentSetValue { Name = "mute", Value = Convert.ToDouble(_value) };
-                newMuteChange.Params.Controls = new List<ComponentSetValue>();
-                newMuteChange.Params.Controls.Add(mute);
-                string jsonIgnoreNullValues = JsonConvert.SerializeObject(newMuteChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                this.myCore.Enqueue(jsonIgnoreNullValues);
-            }
+            ComponentChange newMuteChange = new ComponentChange();
+            newMuteChange.Params = new ComponentChangeParams();
+            newMuteChange.Params.Name = this.componentName;
+            ComponentSetValue mute = new ComponentSetValue { Name = "mute", Value = _value ? 1:0 };
+            newMuteChange.Params.Controls = new List<ComponentSetValue>();
+            newMuteChange.Params.Controls.Add(mute);
+            string jsonIgnoreNullValues = JsonConvert.SerializeObject(newMuteChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            this.myCore.Enqueue(jsonIgnoreNullValues);
         }
 
 
