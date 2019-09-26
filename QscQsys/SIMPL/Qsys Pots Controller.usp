@@ -10,11 +10,11 @@ Digital_Input Dial, Redial, Disconnect, AutoAnswerToggle, DndToggle, _skip_, Key
 String_Input DialString[1000];
 
 Digital_Output Connected, Ringing, _skip_, AutoAnswerStatus, DndStatus;
-String_Output _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_,_skip_,  DialStringOut, CurrentlyCalling;
+String_Output _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_,_skip_,  DialStringOut, CurrentlyCalling, CallStatus;
 
 QsysPotsControllerSimpl pots;
 
-String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_,_skip_,_skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, ComponentName[100];
+String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_,_skip_,_skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, ComponentName[100];
 
 Push Dial
 {
@@ -99,6 +99,11 @@ Callback Function NewCurrentlyCallingEvent(string newCurrentlyCalling)
     CurrentlyCalling = newCurrentlyCalling;
 }
 
+callback function NewCurrentCallStatusChange(string status)
+{
+    CallStatus = status;
+}
+
 Function Main()
 {
     RegisterDelegate(pots, onOffHookEvent, NewOffHookEvent);
@@ -107,5 +112,6 @@ Function Main()
     RegisterDelegate(pots, onDndEvent, NewDndEvent);
     RegisterDelegate(pots, onDialStringEvent, NewDialStringEvent);
     RegisterDelegate(pots, onCurrentlyCallingEvent, NewCurrentlyCallingEvent);
+    RegisterDelegate(pots, onCurrentCallStatusChange, NewCurrentCallStatusChange);
     pots.Initialize(ComponentName);
 }

@@ -163,7 +163,9 @@ namespace QscQsys
         
         MeterUpdate = 15,
 
-        NamedControlChange = 16
+        NamedControlChange = 16,
+
+        PotsControllerCallStatusChange = 17
     }
 
     public enum eQscSimplEventIds

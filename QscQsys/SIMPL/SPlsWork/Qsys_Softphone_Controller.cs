@@ -20,6 +20,7 @@ namespace UserModule_QSYS_SOFTPHONE_CONTROLLER
         
         
         
+        
         Crestron.Logos.SplusObjects.DigitalInput DIAL;
         Crestron.Logos.SplusObjects.DigitalInput REDIAL;
         Crestron.Logos.SplusObjects.DigitalInput DISCONNECT;

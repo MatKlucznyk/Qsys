@@ -14,12 +14,14 @@ namespace QscQsys
         public delegate void DndEvent(ushort value);
         public delegate void DialStringEvent(SimplSharpString dialString);
         public delegate void CurrentlyCallingEvent(SimplSharpString currentlyCalling);
+        public delegate void CurrentCallStatus(SimplSharpString callStatus);
         public OffHookEvent onOffHookEvent { get; set; }
         public RingingEvent onRingingEvent { get; set; }
         public AutoAnswerEvent onAutoAnswerEvent { get; set; }
         public DndEvent onDndEvent { get; set; }
         public DialStringEvent onDialStringEvent { get; set; }
         public CurrentlyCallingEvent onCurrentlyCallingEvent { get; set; }
+        public CurrentCallStatus onCurrentCallStatusChange { get; set; }
 
         private QsysPotsController pots;
 
@@ -70,6 +72,10 @@ namespace QscQsys
                 case eQscEventIds.PotsControllerDND_Change:
                     if(onDndEvent != null)
                         onDndEvent(Convert.ToUInt16(e.BooleanValue));
+                    break;
+                case eQscEventIds.PotsControllerCallStatusChange:
+                    if (onCurrentCallStatusChange != null)
+                        onCurrentCallStatusChange(e.StringValue);
                     break;
                 default:
                     break;

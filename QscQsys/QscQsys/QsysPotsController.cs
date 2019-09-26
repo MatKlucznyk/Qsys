@@ -18,6 +18,7 @@ namespace QscQsys
         private StringBuilder dialString = new StringBuilder();
         private string currentlyCalling;
         private string lastCalled;
+        private string callStatus;
 
         public event EventHandler<QsysEventsArgs> QsysPotsControllerEvent;
 
@@ -30,6 +31,7 @@ namespace QscQsys
         public string DialString { get { return dialString.ToString(); } }
         public string CurrentlyCalling { get { return currentlyCalling; } }
         public string LastNumberCalled { get { return lastCalled; } }
+        public string CallStatus { get { return callStatus; } }
 
         public QsysPotsController(string Name)
         {
@@ -38,7 +40,7 @@ namespace QscQsys
             Component component = new Component();
             component.Name = Name;
             List<ControlName> names = new List<ControlName>();
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 5; i++)
             {
                 names.Add(new ControlName());
             }
@@ -46,6 +48,7 @@ namespace QscQsys
             names[1].Name = "call_ringing";
             names[2].Name = "call_autoanswer";
             names[3].Name = "call_dnd";
+            names[4].Name = "call_status";
 
 
             component.Controls = names;
@@ -99,6 +102,10 @@ namespace QscQsys
                 case "call_dnd":
                     dnd = Convert.ToBoolean(e.Data);
                     QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDND_Change, cName, dnd, Convert.ToInt16(e.Data), Convert.ToString(Convert.ToInt16(e.Data))));
+                    break;
+                case "call_status":
+                    callStatus = e.SData;
+                    QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCallStatusChange, cName, true, e.SData.Length, e.SData));
                     break;
                 default:
                     break;

@@ -75,6 +75,8 @@
   OutputList2SigType12=Serial
   OutputList2Cue13=CurrentlyCalling
   OutputList2SigType13=Serial
+  OutputList2Cue14=CallStatus
+  OutputList2SigType14=Serial
   ParamCue1=[Reference Name]
   ParamCue2=[~UNUSED~]
   ParamSigType2=Constant
@@ -112,18 +114,20 @@
   ParamSigType18=Constant
   ParamCue19=[~UNUSED~]
   ParamSigType19=Constant
-  ParamCue20=ComponentName
-  ParamSigType20=String
+  ParamCue20=[~UNUSED~]
+  ParamSigType20=Constant
+  ParamCue21=ComponentName
+  ParamSigType21=String
   MinVariableInputs=16
   MaxVariableInputs=16
   MinVariableInputsList2=1
   MaxVariableInputsList2=1
   MinVariableOutputs=5
   MaxVariableOutputs=5
-  MinVariableOutputsList2=13
-  MaxVariableOutputsList2=13
-  MinVariableParams=19
-  MaxVariableParams=19
+  MinVariableOutputsList2=14
+  MaxVariableOutputsList2=14
+  MinVariableParams=20
+  MaxVariableParams=20
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
@@ -138,8 +142,8 @@
   CompilerParamCode5=14
   NumFixedParams=1
   Pp1=1
-  Pp20=20
-  MPp=20
+  Pp21=21
+  MPp=21
   NVStorage=10
   ParamSigType1=String
   SmplCInputCue1=o#
@@ -160,7 +164,7 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=20
+  H=21
   Tp=1
   HD=False
   NoS=False

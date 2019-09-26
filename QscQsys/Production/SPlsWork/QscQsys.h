@@ -85,6 +85,7 @@ namespace QscQsys;
         delegate FUNCTION DndEvent ( INTEGER value );
         delegate FUNCTION DialStringEvent ( SIMPLSHARPSTRING dialString );
         delegate FUNCTION CurrentlyCallingEvent ( SIMPLSHARPSTRING currentlyCalling );
+        delegate FUNCTION CurrentCallStatus ( SIMPLSHARPSTRING callStatus );
 
         // class events
 
@@ -110,6 +111,7 @@ namespace QscQsys;
         DelegateProperty DndEvent onDndEvent;
         DelegateProperty DialStringEvent onDialStringEvent;
         DelegateProperty CurrentlyCallingEvent onCurrentlyCallingEvent;
+        DelegateProperty CurrentCallStatus onCurrentCallStatusChange;
     };
 
      class QsysProcessorSimplInterface 
@@ -651,6 +653,7 @@ namespace QscQsys;
         delegate FUNCTION DndEvent ( INTEGER value );
         delegate FUNCTION DialStringEvent ( SIMPLSHARPSTRING dialString );
         delegate FUNCTION CurrentlyCallingEvent ( SIMPLSHARPSTRING currentlyCalling );
+        delegate FUNCTION CurrentCallStatus ( SIMPLSHARPSTRING callStatus );
 
         // class events
 
@@ -676,6 +679,7 @@ namespace QscQsys;
         DelegateProperty DndEvent onDndEvent;
         DelegateProperty DialStringEvent onDialStringEvent;
         DelegateProperty CurrentlyCallingEvent onCurrentlyCallingEvent;
+        DelegateProperty CurrentCallStatus onCurrentCallStatusChange;
     };
 
      class QsysMeterSimpl 
@@ -781,6 +785,7 @@ namespace QscQsys;
         static SIGNED_LONG_INTEGER Nv32hDecoderInputChange;
         static SIGNED_LONG_INTEGER MeterUpdate;
         static SIGNED_LONG_INTEGER NamedControlChange;
+        static SIGNED_LONG_INTEGER PotsControllerCallStatusChange;
     };
 
     static class eQscSimplEventIds // enum

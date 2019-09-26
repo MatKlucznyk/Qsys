@@ -12,11 +12,12 @@ using QscQsys;
 using ExtensionMethods;
 using TCP_Client;
 
-namespace UserModule_QSYS_SOFTPHONE_CONTROLLER
+namespace UserModule_QSYS_POTS_CONTROLLER
 {
-    public class UserModuleClass_QSYS_SOFTPHONE_CONTROLLER : SplusObject
+    public class UserModuleClass_QSYS_POTS_CONTROLLER : SplusObject
     {
         static CCriticalSection g_criticalSection = new CCriticalSection();
+        
         
         
         
@@ -34,7 +35,7 @@ namespace UserModule_QSYS_SOFTPHONE_CONTROLLER
         Crestron.Logos.SplusObjects.StringOutput DIALSTRINGOUT;
         Crestron.Logos.SplusObjects.StringOutput CURRENTLYCALLING;
         Crestron.Logos.SplusObjects.StringOutput CALLSTATUS;
-        QscQsys.QsysSoftphoneControllerSimpl SOFTPHONE;
+        QscQsys.QsysPotsControllerSimpl POTS;
         StringParameter COMPONENTNAME;
         object DIAL_OnPush_0 ( Object __EventInfo__ )
         
@@ -48,13 +49,13 @@ namespace UserModule_QSYS_SOFTPHONE_CONTROLLER
                 if ( Functions.TestForTrue  ( ( Functions.Length( DIALSTRING ))  ) ) 
                     { 
                     __context__.SourceCodeLine = 23;
-                    SOFTPHONE . Dial ( DIALSTRING .ToString()) ; 
+                    POTS . Dial ( DIALSTRING .ToString()) ; 
                     } 
                 
                 else 
                     { 
                     __context__.SourceCodeLine = 27;
-                    SOFTPHONE . DialWithoutString ( ) ; 
+                    POTS . DialWithoutString ( ) ; 
                     } 
                 
                 
@@ -75,7 +76,7 @@ namespace UserModule_QSYS_SOFTPHONE_CONTROLLER
             SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
             
             __context__.SourceCodeLine = 33;
-            SOFTPHONE . Redial ( ) ; 
+            POTS . Redial ( ) ; 
             
             
         }
@@ -94,7 +95,7 @@ object DISCONNECT_OnPush_2 ( Object __EventInfo__ )
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
         __context__.SourceCodeLine = 38;
-        SOFTPHONE . Disconnect ( ) ; 
+        POTS . Disconnect ( ) ; 
         
         
     }
@@ -113,7 +114,7 @@ object AUTOANSWERTOGGLE_OnPush_3 ( Object __EventInfo__ )
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
         __context__.SourceCodeLine = 43;
-        SOFTPHONE . AutoAnswerToggle ( ) ; 
+        POTS . AutoAnswerToggle ( ) ; 
         
         
     }
@@ -132,7 +133,7 @@ object DNDTOGGLE_OnPush_4 ( Object __EventInfo__ )
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
         __context__.SourceCodeLine = 48;
-        SOFTPHONE . DndToggle ( ) ; 
+        POTS . DndToggle ( ) ; 
         
         
     }
@@ -155,7 +156,7 @@ object KEYPAD_OnPush_5 ( Object __EventInfo__ )
         __context__.SourceCodeLine = 55;
         X = (ushort) ( Functions.GetLastModifiedArrayIndex( __SignalEventArg__ ) ) ; 
         __context__.SourceCodeLine = 57;
-        SOFTPHONE . NumPad ( Functions.ItoA( (int)( (X - 1) ) ) .ToString()) ; 
+        POTS . NumPad ( Functions.ItoA( (int)( (X - 1) ) ) .ToString()) ; 
         
         
     }
@@ -314,28 +315,28 @@ public override object FunctionMain (  object __obj__ )
         SplusExecutionContext __context__ = SplusFunctionMainStartCode();
         
         __context__.SourceCodeLine = 109;
-        // RegisterDelegate( SOFTPHONE , ONOFFHOOKEVENT , NEWOFFHOOKEVENT ) 
-        SOFTPHONE .onOffHookEvent  = NEWOFFHOOKEVENT; ; 
+        // RegisterDelegate( POTS , ONOFFHOOKEVENT , NEWOFFHOOKEVENT ) 
+        POTS .onOffHookEvent  = NEWOFFHOOKEVENT; ; 
         __context__.SourceCodeLine = 110;
-        // RegisterDelegate( SOFTPHONE , ONRINGINGEVENT , NEWRINGINGEVENT ) 
-        SOFTPHONE .onRingingEvent  = NEWRINGINGEVENT; ; 
+        // RegisterDelegate( POTS , ONRINGINGEVENT , NEWRINGINGEVENT ) 
+        POTS .onRingingEvent  = NEWRINGINGEVENT; ; 
         __context__.SourceCodeLine = 111;
-        // RegisterDelegate( SOFTPHONE , ONAUTOANSWEREVENT , NEWAUTOANSWEREVENT ) 
-        SOFTPHONE .onAutoAnswerEvent  = NEWAUTOANSWEREVENT; ; 
+        // RegisterDelegate( POTS , ONAUTOANSWEREVENT , NEWAUTOANSWEREVENT ) 
+        POTS .onAutoAnswerEvent  = NEWAUTOANSWEREVENT; ; 
         __context__.SourceCodeLine = 112;
-        // RegisterDelegate( SOFTPHONE , ONDNDEVENT , NEWDNDEVENT ) 
-        SOFTPHONE .onDndEvent  = NEWDNDEVENT; ; 
+        // RegisterDelegate( POTS , ONDNDEVENT , NEWDNDEVENT ) 
+        POTS .onDndEvent  = NEWDNDEVENT; ; 
         __context__.SourceCodeLine = 113;
-        // RegisterDelegate( SOFTPHONE , ONDIALSTRINGEVENT , NEWDIALSTRINGEVENT ) 
-        SOFTPHONE .onDialStringEvent  = NEWDIALSTRINGEVENT; ; 
+        // RegisterDelegate( POTS , ONDIALSTRINGEVENT , NEWDIALSTRINGEVENT ) 
+        POTS .onDialStringEvent  = NEWDIALSTRINGEVENT; ; 
         __context__.SourceCodeLine = 114;
-        // RegisterDelegate( SOFTPHONE , ONCURRENTLYCALLINGEVENT , NEWCURRENTLYCALLINGEVENT ) 
-        SOFTPHONE .onCurrentlyCallingEvent  = NEWCURRENTLYCALLINGEVENT; ; 
+        // RegisterDelegate( POTS , ONCURRENTLYCALLINGEVENT , NEWCURRENTLYCALLINGEVENT ) 
+        POTS .onCurrentlyCallingEvent  = NEWCURRENTLYCALLINGEVENT; ; 
         __context__.SourceCodeLine = 115;
-        // RegisterDelegate( SOFTPHONE , ONCURRENTCALLSTATUSCHANGE , NEWCURRENTCALLSTATUSCHANGE ) 
-        SOFTPHONE .onCurrentCallStatusChange  = NEWCURRENTCALLSTATUSCHANGE; ; 
+        // RegisterDelegate( POTS , ONCURRENTCALLSTATUSCHANGE , NEWCURRENTCALLSTATUSCHANGE ) 
+        POTS .onCurrentCallStatusChange  = NEWCURRENTCALLSTATUSCHANGE; ; 
         __context__.SourceCodeLine = 116;
-        SOFTPHONE . Initialize ( COMPONENTNAME  .ToString()) ; 
+        POTS . Initialize ( COMPONENTNAME  .ToString()) ; 
         
         
     }
@@ -347,8 +348,6 @@ public override object FunctionMain (  object __obj__ )
 
 public override void LogosSplusInitialize()
 {
-    SocketInfo __socketinfo__ = new SocketInfo( 1, this );
-    InitialParametersClass.ResolveHostName = __socketinfo__.ResolveHostName;
     _SplusNVRAM = new SplusNVRAM( this );
     
     DIAL = new Crestron.Logos.SplusObjects.DigitalInput( DIAL__DigitalInput__, this );
@@ -418,12 +417,12 @@ public override void LogosSplusInitialize()
 
 public override void LogosSimplSharpInitialize()
 {
-    SOFTPHONE  = new QscQsys.QsysSoftphoneControllerSimpl();
+    POTS  = new QscQsys.QsysPotsControllerSimpl();
     
     
 }
 
-public UserModuleClass_QSYS_SOFTPHONE_CONTROLLER ( string InstanceName, string ReferenceID, Crestron.Logos.SplusObjects.CrestronStringEncoding nEncodingType ) : base( InstanceName, ReferenceID, nEncodingType ) {}
+public UserModuleClass_QSYS_POTS_CONTROLLER ( string InstanceName, string ReferenceID, Crestron.Logos.SplusObjects.CrestronStringEncoding nEncodingType ) : base( InstanceName, ReferenceID, nEncodingType ) {}
 
 
 

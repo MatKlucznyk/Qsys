@@ -33,6 +33,7 @@ namespace UserModule_QSYS_POTS_CONTROLLER
         Crestron.Logos.SplusObjects.DigitalOutput DNDSTATUS;
         Crestron.Logos.SplusObjects.StringOutput DIALSTRINGOUT;
         Crestron.Logos.SplusObjects.StringOutput CURRENTLYCALLING;
+        Crestron.Logos.SplusObjects.StringOutput CALLSTATUS;
         QscQsys.QsysPotsControllerSimpl POTS;
         StringParameter COMPONENTNAME;
         object DIAL_OnPush_0 ( Object __EventInfo__ )
@@ -292,31 +293,48 @@ public void NEWCURRENTLYCALLINGEVENT ( SimplSharpString NEWCURRENTLYCALLING )
     finally { ObjectFinallyHandler(); }
     }
     
+public void NEWCURRENTCALLSTATUSCHANGE ( SimplSharpString STATUS ) 
+    { 
+    try
+    {
+        SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
+        
+        __context__.SourceCodeLine = 104;
+        CALLSTATUS  .UpdateValue ( STATUS  .ToString()  ) ; 
+        
+        
+    }
+    finally { ObjectFinallyHandler(); }
+    }
+    
 public override object FunctionMain (  object __obj__ ) 
     { 
     try
     {
         SplusExecutionContext __context__ = SplusFunctionMainStartCode();
         
-        __context__.SourceCodeLine = 104;
+        __context__.SourceCodeLine = 109;
         // RegisterDelegate( POTS , ONOFFHOOKEVENT , NEWOFFHOOKEVENT ) 
         POTS .onOffHookEvent  = NEWOFFHOOKEVENT; ; 
-        __context__.SourceCodeLine = 105;
+        __context__.SourceCodeLine = 110;
         // RegisterDelegate( POTS , ONRINGINGEVENT , NEWRINGINGEVENT ) 
         POTS .onRingingEvent  = NEWRINGINGEVENT; ; 
-        __context__.SourceCodeLine = 106;
+        __context__.SourceCodeLine = 111;
         // RegisterDelegate( POTS , ONAUTOANSWEREVENT , NEWAUTOANSWEREVENT ) 
         POTS .onAutoAnswerEvent  = NEWAUTOANSWEREVENT; ; 
-        __context__.SourceCodeLine = 107;
+        __context__.SourceCodeLine = 112;
         // RegisterDelegate( POTS , ONDNDEVENT , NEWDNDEVENT ) 
         POTS .onDndEvent  = NEWDNDEVENT; ; 
-        __context__.SourceCodeLine = 108;
+        __context__.SourceCodeLine = 113;
         // RegisterDelegate( POTS , ONDIALSTRINGEVENT , NEWDIALSTRINGEVENT ) 
         POTS .onDialStringEvent  = NEWDIALSTRINGEVENT; ; 
-        __context__.SourceCodeLine = 109;
+        __context__.SourceCodeLine = 114;
         // RegisterDelegate( POTS , ONCURRENTLYCALLINGEVENT , NEWCURRENTLYCALLINGEVENT ) 
         POTS .onCurrentlyCallingEvent  = NEWCURRENTLYCALLINGEVENT; ; 
-        __context__.SourceCodeLine = 110;
+        __context__.SourceCodeLine = 115;
+        // RegisterDelegate( POTS , ONCURRENTCALLSTATUSCHANGE , NEWCURRENTCALLSTATUSCHANGE ) 
+        POTS .onCurrentCallStatusChange  = NEWCURRENTCALLSTATUSCHANGE; ; 
+        __context__.SourceCodeLine = 116;
         POTS . Initialize ( COMPONENTNAME  .ToString()) ; 
         
         
@@ -376,6 +394,9 @@ public override void LogosSplusInitialize()
     CURRENTLYCALLING = new Crestron.Logos.SplusObjects.StringOutput( CURRENTLYCALLING__AnalogSerialOutput__, this );
     m_StringOutputList.Add( CURRENTLYCALLING__AnalogSerialOutput__, CURRENTLYCALLING );
     
+    CALLSTATUS = new Crestron.Logos.SplusObjects.StringOutput( CALLSTATUS__AnalogSerialOutput__, this );
+    m_StringOutputList.Add( CALLSTATUS__AnalogSerialOutput__, CALLSTATUS );
+    
     COMPONENTNAME = new StringParameter( COMPONENTNAME__Parameter__, this );
     m_ParameterList.Add( COMPONENTNAME__Parameter__, COMPONENTNAME );
     
@@ -420,6 +441,7 @@ const uint AUTOANSWERSTATUS__DigitalOutput__ = 2;
 const uint DNDSTATUS__DigitalOutput__ = 3;
 const uint DIALSTRINGOUT__AnalogSerialOutput__ = 0;
 const uint CURRENTLYCALLING__AnalogSerialOutput__ = 1;
+const uint CALLSTATUS__AnalogSerialOutput__ = 2;
 const uint COMPONENTNAME__Parameter__ = 10;
 
 [SplusStructAttribute(-1, true, false)]
