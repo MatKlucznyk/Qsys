@@ -1,33 +1,34 @@
-#SYMBOL_NAME "Qsys Fader Driver"
+#SYMBOL_NAME "Qsys Gain Component Driver"
 
 #INCLUDEPATH "..\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 Digital_Input MuteOn, MuteOff, MuteToggle, _skip_, _skip_;
 Analog_Input Volume, Position, RampTimeMS;
+String_Input StringVolSet[255];
 
 Digital_Output MuteIsOn, MuteIsOff;
 Analog_Output _skip_,_skip_,_skip_, VolumeIs, PositionIs;
 string_output StringOut;
                                                    
-QsysFaderSimpl fader;
+QsysGainComponentSimpl gc;
 
 String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_, _skip_, ComponentName[100];
 integer_parameter CoreID, DefaultQsysRampTimeMS;
 
 Push MuteOn
 {
-    fader.SetMute(1);
+    gc.SetMute(1);
 }
 
 Push MuteOff
 {
-    fader.SetMute(0);
+    gc.SetMute(0);
 }
 
 Push MuteToggle
 {
-    fader.ToggleMute();
+    gc.ToggleMute();
 }
 
 
@@ -37,7 +38,7 @@ Threadsafe Change Volume
     While(x != Volume)
     {
        x = Volume;
-        fader.SetVolume(Volume);
+        gc.SetVolume(Volume);
     }
 }
 
@@ -47,13 +48,18 @@ Threadsafe Change Position
     While(x != Position)
     {
         x = Position;
-        fader.SetVolumePosition(Position);
+        gc.SetVolumePosition(Position);
     }
 }
 
 Change RampTimeMS
 {
-    fader.RampTimeMS(RampTimeMS);
+    gc.RampTimeMS(RampTimeMS);
+}
+
+Threadsafe change StringVolSet
+{
+    gc.SetVolumeString(StringVolSet);
 }
 
 Callback Function onVolumeChange(signed_integer val, string valString)
@@ -74,7 +80,7 @@ Callback Function onMuteChange(integer value)
         case (1):
         {
             MuteIsOff = OFF;
-           MuteIsOn = ON;
+            MuteIsOn = ON;
         }
         case (0):
         {
@@ -90,10 +96,10 @@ Callback Function onStringChange(string value)
 
 Function Main()
 {
-    RegisterDelegate(fader, newVolumeChange, onVolumeChange);
-    RegisterDelegate(fader, newVolumePositionChange, onPositionChange);
-    RegisterDelegate(fader, newMuteChange, onMuteChange);
-    RegisterDelegate(fader, newStringChange, onStringChange);
-    fader.Initialize(CoreID, ComponentName);                                  
-    fader.RampTimeMS(DefaultQsysRampTimeMS);
+    RegisterDelegate(gc, newVolumeChange, onVolumeChange);
+    RegisterDelegate(gc, newVolumePositionChange, onPositionChange);
+    RegisterDelegate(gc, newMuteChange, onMuteChange);
+    RegisterDelegate(gc, newStringChange, onStringChange);
+    gc.Initialize(CoreID, ComponentName);                                  
+    gc.RampTimeMS(DefaultQsysRampTimeMS);
 }

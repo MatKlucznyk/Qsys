@@ -83,7 +83,7 @@
     <Compile Include="QsysNamedControl.cs" />
     <Compile Include="Json.cs" />
     <Compile Include="QsysCamera.cs" />
-    <Compile Include="QsysFaderSimpl.cs" />
+    <Compile Include="QsysGainComponentSimpl.cs" />
     <Compile Include="QsysMatrixMixer.cs" />
     <Compile Include="QsysMatrixMixerSimpl.cs" />
     <Compile Include="QsysMeter.cs" />
@@ -95,7 +95,7 @@
     <Compile Include="QsysCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QsysEvents.cs" />
-    <Compile Include="QsysFader.cs" />
+    <Compile Include="QsysGainComponent.cs" />
     <Compile Include="QsysCoreSimpl.cs" />
     <Compile Include="QsysRouter.cs" />
     <Compile Include="QsysRouterSimpl.cs" />

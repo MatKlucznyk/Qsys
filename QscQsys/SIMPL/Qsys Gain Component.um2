@@ -15,7 +15,7 @@ ObjTp=Hd
 S0Nd=1
 S1Nd=2
 SLNd=3
-PrNm=Qsys Fader.umc
+PrNm=Qsys Gain Component.umc
 DbVr=81.05.001.00
 DvcDbVr=107.00.001.00
 PgmNm=Ryan Wilkinson
@@ -47,36 +47,64 @@ Mx1=0
 [
 ObjTp=Bw
 H=1
-Lx=0
-Ly=484
-Rx=526
-Ry=968
+Lx=839
+Ly=0
+Rx=1678
+Ry=564
 Xm=-1
 Ym=-1
-SH=7
+SH=6
 Z=100
-Ht=3
-Hi=13
+Ht=1
+Hi=5
+]
+[
+ObjTp=Bw
+H=1
+Lx=839
+Ly=564
+Rx=1678
+Ry=1128
+Xm=-1
+Ym=-1
+SH=8
+Z=100
+Ht=4
+Hi=8
 ]
 [
 ObjTp=Bw
 H=1
 Lx=0
 Ly=0
-Rx=526
-Ry=484
+Rx=839
+Ry=564
 Xm=-1
 Ym=-1
-SH=6
+SH=9
 Z=100
-Ht=3
-Hi=4
+Ht=1
+Hi=1
+]
+[
+ObjTp=Bw
+H=1
+Lx=0
+Ly=564
+Rx=839
+Ry=1128
+Xm=-1
+Ym=-1
+SH=7
+Z=100
+Ht=4
+Hi=1
 ]
 [
 ObjTp=Symbol
-Name=Qsys Fader
+Name=Qsys Gain Component
 Code=1
-SmplCName=Qsys Fader.umc
+SmplCName=Qsys Gain Component.umc
 Smpl-C=3
 CompilerTimePrecision=Single_Or_Double_Precision
 Exclusions=1,19,20,21,88,89,167,168,179,213,214,215,216,217,225,226,248,249,266,267,310,362,378,380,405,407,408,409,478,522,537,554,586,590,611,624,718,756,767,830,841,842,854,883,955,1032,1062,1079,1128,1129,1134,1140,1157,1158,1195,1199,1220,1221,1222,1223,1299,1348,1349,1439,1472,1473,1499,1746,1803,1975,2229,2354,2514,2523,2532,2706,2707,3235,3236,3427,3454,3567,3568,3601,3602,3708,3902,3903,3912,3918,3925,3926,4206,4207,302,305,
@@ -91,7 +119,7 @@ FltTmp=1
 FpCS=0
 NumFixedInputs=11
 NumFixedOutputs=11
-NumFixedParams=4
+NumFixedParams=7
 MinVariableInputs=0
 MinVariableInputsList2=0
 MinVariableInputsList3=0
@@ -121,11 +149,15 @@ OutputSigType6=Digital|Analog|Serial|String
 OutputSigType7=Digital|Analog|Serial|String
 OutputSigType8=Analog
 OutputSigType9=Analog
-OutputSigType10=Digital|Analog|Serial|String
+OutputSigType10=Serial
+OutputSigType11=Digital|Analog|Serial|String
 ParamSigType1=Constant
 ParamSigType2=String
 ParamSigType3=Time
 ParamSigType4=Constant
+ParamSigType5=Time|Percent|Constant
+ParamSigType6=Time|Constant
+ParamSigType7=Time|Constant
 InputCue1=[Mute_On]
 InputCue2=[Mute_Off]
 InputCue3=[Mute_Toggle]
@@ -133,8 +165,8 @@ InputCue4=[~UNUSED~]
 InputCue5=[Volume_Up]
 InputCue6=[Volume_Down]
 InputCue7=[~UNUSED~]
-InputCue8=[Volume_Set]
-InputCue9=[Volume_db_Set]
+InputCue8=[Volume]
+InputCue9=[Volume_Position]
 InputCue10=[~UNUSED~]
 InputCue11=[QSys_Ramp_Time_MS]
 OutputCue1=[Mute_Is_On]
@@ -145,17 +177,23 @@ OutputCue5=[~UNUSED~]
 OutputCue6=[~UNUSED~]
 OutputCue7=[~UNUSED~]
 OutputCue8=[Volume_Is]
-OutputCue9=[Volume_db_Is]
-OutputCue10=[~UNUSED~]
+OutputCue9=[Volume_Position_Is]
+OutputCue10=[Volume_String_Is]
 OutputCue11=[~UNUSED~]
 ParamCue1=Core ID
 ParamCue2=Component Name
 ParamCue3=Ramp Time
 ParamCue4=QSys Default Ramp Time MS
-MPp=4
+ParamCue5=Value Increment Amount
+ParamCue6=Value Incremenet Hold Time
+ParamCue7=Value Increment Repeat Time
+MPp=7
 Pp3=1
 Pp4=2
-FileName=Qsys Fader.umc
+Pp5=3
+Pp6=4
+Pp7=5
+FileName=Qsys Gain Component.umc
 EncodingType=0
 ZeroOnIoOk=0
 ]
@@ -211,9 +249,10 @@ SmC=156
 Nm=Logic
 ObjVer=1
 CF=2
-mC=2
-C1=7
-C2=9
+mC=3
+C1=8
+C2=7
+C3=9
 ]
 [
 ObjTp=Sm
@@ -250,7 +289,7 @@ I4=9
 I5=11
 I6=12
 I7=9
-I8=13
+I8=22
 I9=19
 I10=9
 I11=21
@@ -264,23 +303,47 @@ O5=9
 O6=9
 O7=9
 O8=14
-O9=20
-O10=9
+O9=23
+O10=24
 O11=9
-mP=4
+mP=7
 P1=Core ID
 P2=Component Name
 P3=Ramp Time
 P4=QSys Default Ramp Time MS
-MPp=4
+P5=Value Increment Amount
+P6=Value Incremenet Hold Time
+P7=Value Increment Repeat Time
+MPp=7
 Pp3=1
 Pp4=2
+Pp5=3
+Pp6=4
+Pp7=5
 ]
 [
 ObjTp=Sm
 H=7
+SmC=46
+Nm=Analog Buffer
+ObjVer=1
+PrH=4
+CF=2
+n1I=2
+n1O=1
+Cmn1=analog in to send\\
+mI=2
+I1=2
+I2=19
+mO=1
+tO=1
+O1=15
+]
+[
+ObjTp=Sm
+H=8
 SmC=103
-Nm=Qsys Fader Driver.usp
+Nm=Qsys Gain Component Driver.usp
 ObjVer=1
 PrH=4
 CF=2
@@ -291,15 +354,16 @@ mI=8
 I1=6
 I2=8
 I3=7
-I6=13
-I7=19
+I6=22
+I7=15
 I8=21
-mO=7
-tO=7
+mO=8
+tO=8
 O1=4
 O2=5
 O6=14
-O7=20
+O7=23
+O8=24
 mP=13
 P1=
 P2=
@@ -318,159 +382,27 @@ P13=#QSys Default Ramp Time MS
 [
 ObjTp=Sm
 H=9
-SmC=156
-Nm=SUBSYSTEM
+SmC=605
+Nm=Analog Increment with Optional Feedback
 ObjVer=1
 PrH=4
 CF=2
-Cmn1=ramp
-mC=7
-C1=10
-C2=12
-C3=16
-C4=11
-C5=14
-C6=13
-C7=15
-]
-[
-ObjTp=Sm
-H=10
-SmC=540
-Nm=Analog Ramp (Bounds Limited)
-ObjVer=1
-PrH=9
-CF=2
-n1I=3
+n1I=4
 n1O=1
-mI=3
+mI=4
 I1=11
 I2=12
-mO=1
-tO=1
-O1=10
-mP=4
-P1=#Ramp Time
-P2=0d
-P3=100d
-P4=0d
-]
-[
-ObjTp=Sm
-H=11
-SmC=3
-Nm=OR
-ObjVer=1
-PrH=9
-CF=2
-n1I=2
-n1O=1
-Cmn1=ramp active\\
-mI=2
-I1=11
-I2=12
-mO=1
-tO=1
-O1=16
-]
-[
-ObjTp=Sm
-H=12
-SmC=541
-Nm=Analog Scaler with I/O Limits
-ObjVer=1
-PrH=9
-CF=2
-n1I=1
-n1O=1
-Cmn1=scale to 16b\\
-mI=1
-I1=10
+I4=23
 mO=1
 tO=1
 O1=15
-mP=5
-P1=0d
-P2=100d
-P3=0d
-P4=65535d
-P5=0d
-]
-[
-ObjTp=Sm
-H=13
-SmC=205
-Nm=NOT
-ObjVer=1
-PrH=9
-CF=2
-n1I=1
-n1O=1
-Cmn1=ramp not active\\
-mI=1
-I1=16
-mO=1
-tO=1
-O1=17
-]
-[
-ObjTp=Sm
-H=14
-SmC=46
-Nm=Analog Buffer
-ObjVer=1
-PrH=9
-CF=2
-n1I=2
-n1O=1
-Cmn1=ramp active - set\\
-mI=2
-I1=16
-I2=15
-mO=1
-tO=1
-O1=13
-]
-[
-ObjTp=Sm
-H=15
-SmC=46
-Nm=Analog Buffer
-ObjVer=1
-PrH=9
-CF=2
-n1I=2
-n1O=1
-Cmn1=ramp not active - set internal\\
-mI=2
-I1=17
-I2=18
-mO=1
-tO=1
-O1=10
-]
-[
-ObjTp=Sm
-H=16
-SmC=541
-Nm=Analog Scaler with I/O Limits
-ObjVer=1
-PrH=9
-CF=2
-n1I=1
-n1O=1
-Cmn1=scale to 0-100\\
-mI=1
-I1=14
-mO=1
-tO=1
-O1=18
-mP=5
-P1=0d
-P2=65535d
-P3=0d
-P4=100d
-P5=0d
+mP=6
+P1=#Value Increment Amount
+P2=#Value Incremenet Hold Time
+P3=#Value Increment Repeat Time
+P4=0d
+P5=65535d
+P6=0d
 ]
 [
 ObjTp=Sg
@@ -505,12 +437,6 @@ SgTp=31
 ]
 [
 ObjTp=Sg
-H=10
-Nm=ramp_out
-SgTp=2
-]
-[
-ObjTp=Sg
 H=11
 Nm=[Volume_Up]
 ]
@@ -521,12 +447,6 @@ Nm=[Volume_Down]
 ]
 [
 ObjTp=Sg
-H=13
-Nm=[Volume_Set]
-SgTp=2
-]
-[
-ObjTp=Sg
 H=14
 Nm=[Volume_Is]
 SgTp=2
@@ -534,35 +454,13 @@ SgTp=2
 [
 ObjTp=Sg
 H=15
-Nm=ramp_out_scaled
-SgTp=2
-]
-[
-ObjTp=Sg
-H=16
-Nm=ramp_active
-]
-[
-ObjTp=Sg
-H=17
-Nm=ramp_active_not
-]
-[
-ObjTp=Sg
-H=18
-Nm=volume_is_0-100
+Nm=pos_int
 SgTp=2
 ]
 [
 ObjTp=Sg
 H=19
-Nm=[Volume_db_Set]
-SgTp=2
-]
-[
-ObjTp=Sg
-H=20
-Nm=[Volume_db_Is]
+Nm=[Volume_Position]
 SgTp=2
 ]
 [
@@ -570,6 +468,24 @@ ObjTp=Sg
 H=21
 Nm=[QSys_Ramp_Time_MS]
 SgTp=2
+]
+[
+ObjTp=Sg
+H=22
+Nm=[Volume]
+SgTp=2
+]
+[
+ObjTp=Sg
+H=23
+Nm=[Volume_Position_Is]
+SgTp=2
+]
+[
+ObjTp=Sg
+H=24
+Nm=[Volume_String_Is]
+SgTp=4
 ]
 [
 ObjTp=Dp
@@ -591,6 +507,42 @@ HD=TRUE
 DV=0d
 NF=1
 DNF=1
+EncFmt=0
+DVLF=1
+Sgn=0
+]
+[
+ObjTp=Dp
+H=3
+Tp=1
+HD=TRUE
+DV=1%
+NF=55
+DNF=1
+EncFmt=0
+DVLF=1
+Sgn=0
+]
+[
+ObjTp=Dp
+H=4
+Tp=1
+HD=TRUE
+DV=.5s
+NF=48
+DNF=16
+EncFmt=0
+DVLF=1
+Sgn=0
+]
+[
+ObjTp=Dp
+H=5
+Tp=1
+HD=TRUE
+DV=.1s
+NF=48
+DNF=16
 EncFmt=0
 DVLF=1
 Sgn=0

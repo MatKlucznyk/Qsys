@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace QscQsys
 {
-    public class QsysFader
+    public class QsysGainComponent
     {
         //Core
         private QsysCore myCore;
@@ -35,7 +35,7 @@ namespace QscQsys
         /// Default constructor for a QsysFader
         /// </summary>
         /// <param name="Name">The component name of the gain.</param>
-        public QsysFader(int _coreID, string _componentName)
+        public QsysGainComponent(int _coreID, string _componentName)
         {
             this.componentName = _componentName;
             this.myCore = QsysMain.AddOrGetCoreObject(_coreID);
@@ -107,6 +107,18 @@ namespace QscQsys
             this.myCore.Enqueue(jsonIgnoreNullValues);
         }
 
+        public void SetVolumeString(string _value)
+        {
+            ComponentChange newMuteChange = new ComponentChange();
+            newMuteChange.Params = new ComponentChangeParams();
+            newMuteChange.Params.Name = this.componentName;
+            ComponentSetValue mute = new ComponentSetValue { Name = "gain", Value = Convert.ToDouble(_value) };
+            newMuteChange.Params.Controls = new List<ComponentSetValue>();
+            newMuteChange.Params.Controls.Add(mute);
+            string jsonIgnoreNullValues = JsonConvert.SerializeObject(newMuteChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            this.myCore.Enqueue(jsonIgnoreNullValues);
+        }
+
 
         public void SetMute(bool _value)
         {
@@ -136,6 +148,8 @@ namespace QscQsys
             string jsonIgnoreNullValues = JsonConvert.SerializeObject(newMuteChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             this.myCore.Enqueue(jsonIgnoreNullValues);
         }
+
+
 
 
         /// <summary>

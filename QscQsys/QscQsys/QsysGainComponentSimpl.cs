@@ -6,7 +6,7 @@ using Crestron.SimplSharp;
 
 namespace QscQsys
 {
-    public class QsysFaderSimpl
+    public class QsysGainComponentSimpl
     {
         public delegate void VolumeChange(short valFloat, SimplSharpString valString);
         public VolumeChange newVolumeChange { get; set; }
@@ -17,38 +17,43 @@ namespace QscQsys
         public delegate void StringChange(SimplSharpString value);
         public StringChange newStringChange { get; set; }
 
-        private QsysFader fader;
+        private QsysGainComponent gc;
 
         public void Initialize(ushort _coreID, SimplSharpString _namedComponent)
         {
-            this.fader = new QsysFader((int)_coreID, _namedComponent.ToString());
-            this.fader.QsysFaderEvent += new EventHandler<QsysEventsArgs>(fader_QsysFaderEvent);
+            this.gc = new QsysGainComponent((int)_coreID, _namedComponent.ToString());
+            this.gc.QsysFaderEvent += new EventHandler<QsysEventsArgs>(fader_QsysFaderEvent);
         }
 
 
         public void SetVolumePosition(ushort _position)
         {
-            this.fader.SetPosition(this.fader.scale(_position, 0, 65535, 0.0, 1.0));
+            this.gc.SetPosition(this.gc.scale(_position, 0, 65535, 0.0, 1.0));
         }
 
         public void SetVolume(ushort _value)
         {
-            this.fader.SetVolume((short)_value / 10);
+            this.gc.SetVolume((short)_value / 10);
+        }
+
+        public void SetVolumeString(SimplSharpString _value)
+        {
+            this.gc.SetVolumeString(_value.ToString());
         }
 
         public void SetMute(ushort _value)
         {
-            this.fader.SetMute(Convert.ToBoolean(_value));
+            this.gc.SetMute(Convert.ToBoolean(_value));
         }
 
         public void ToggleMute()
         {
-            this.fader.ToggleMute();
+            this.gc.ToggleMute();
         }
 
         public void RampTimeMS(ushort _time)
         {
-            this.fader.RampTimeMS(_time);
+            this.gc.RampTimeMS(_time);
         }
 
         private void fader_QsysFaderEvent(object _sender, QsysEventsArgs _e)
@@ -59,11 +64,11 @@ namespace QscQsys
                     if (newVolumeChange != null)
                         if (this.newVolumeChange != null)
                         {
-                            this.newVolumeChange((short)(this.fader.VolumeLevel * 10), this.fader.VolumeString);
+                            this.newVolumeChange((short)(this.gc.VolumeLevel * 10), this.gc.VolumeString);
                         }
                         if (this.newVolumePositionChange != null)
                         {
-                            this.newVolumePositionChange((ushort)this.fader.scale(this.fader.VolumePosition, 0.0, 1.0, 0, 65535));
+                            this.newVolumePositionChange((ushort)this.gc.scale(this.gc.VolumePosition, 0.0, 1.0, 0, 65535));
                         }
                     break;
                 case eQscEventIds.MuteChange:

@@ -390,9 +390,13 @@ namespace QscQsys
                             var data = this.RxData.ToString().Substring(0, Pos);
                             var garbage = this.RxData.Remove(0, Pos + 1); // remove data from COM buffer
 
+                            if (data[0] != '{')
+                                data = "{" + data;
+
                             if (this.debug)
                                 if (!data.Contains("{\"jsonrpc\":\"2.0\",\"method\":\"ChangeGroup.Poll\",\"params\":{\"Id\":\"1\",\"Changes\":[]}}") && data.Length > 2)
                                     this.SendDebug(string.Format("Received from core and dequeue to parse: {0}", data));
+                           
                             this.ParseInternalResponse(data);
                         }
 

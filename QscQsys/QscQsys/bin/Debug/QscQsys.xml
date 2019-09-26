@@ -92,18 +92,6 @@
             Heartbeat
             </summary>
         </member>
-        <member name="M:QscQsys.QsysFader.#ctor(System.Int32,System.String)">
-            <summary>
-            Default constructor for a QsysFader
-            </summary>
-            <param name="Name">The component name of the gain.</param>
-        </member>
-        <member name="M:QscQsys.QsysFader.RampTimeMS(System.Double)">
-            <summary>
-            Sets the QSys ramp time for the gain
-            </summary>
-            <param name="time"></param>
-        </member>
         <member name="M:QscQsys.QsysMatrixMixer.SetCrossPointMute(System.String,System.String,System.Boolean)">
             <summary>
             Sets a crosspoint mute ex. *=everything, 1 2 3=channels 1, 2, 3,  1-6=channels 1 through 6, 1-8 !3=channels 1 through 8 except 3, * !3-5=everything but 3 through 5
@@ -111,6 +99,18 @@
             <param name="inputs">The input channels.</param>
             <param name="outputs">The output channels.</param>
             <param name="value">The value of the crosspoint mute.</param>
+        </member>
+        <member name="M:QscQsys.QsysGainComponent.#ctor(System.Int32,System.String)">
+            <summary>
+            Default constructor for a QsysFader
+            </summary>
+            <param name="Name">The component name of the gain.</param>
+        </member>
+        <member name="M:QscQsys.QsysGainComponent.RampTimeMS(System.Double)">
+            <summary>
+            Sets the QSys ramp time for the gain
+            </summary>
+            <param name="time"></param>
         </member>
     </members>
 </doc>
