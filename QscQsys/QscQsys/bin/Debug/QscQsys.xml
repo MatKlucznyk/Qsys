@@ -98,24 +98,6 @@
             </summary>
             <param name="Name">The component name of the gain.</param>
         </member>
-        <member name="M:QscQsys.QsysFader.Volume(System.Int32)">
-            <summary>
-            Sets the current volume.
-            </summary>
-            <param name="value">The volume level to set to.</param>
-        </member>
-        <member name="M:QscQsys.QsysFader.VolumeDb(System.Int32)">
-            <summary>
-            Sets the current volume in DB.
-            </summary>
-            <param name="value">The volume level to set to.</param>
-        </member>
-        <member name="M:QscQsys.QsysFader.Mute(System.Boolean)">
-            <summary>
-            Sets the current mute state.
-            </summary>
-            <param name="value">The state to set the mute.</param>
-        </member>
         <member name="M:QscQsys.QsysFader.RampTimeMS(System.Double)">
             <summary>
             Sets the QSys ramp time for the gain

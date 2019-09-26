@@ -19,13 +19,12 @@ namespace QscQsys
         //Internal Vars
         private bool currentMute;
         public bool CurrentMute { get { return currentMute; } }
-        private int currentLvl;
-        public int CurrentVolume { get { return currentLvl; } }
-        private double currentLvlDb;
-        public double CurrentVolumeDb { get { return currentLvlDb; } }
-        private int lastSentLvl;
-        private double max;
-        private double min;
+        private double volumeLevel;
+        public double VolumeLevel { get { return volumeLevel; } }
+        private double volumePosition;
+        public double VolumePosition { get { return volumePosition; } }
+        private string volumeString = "";
+        public string VolumeString { get { return volumeString; } }
         private double rampTime;
 
         //Events
@@ -44,10 +43,8 @@ namespace QscQsys
             Component component = new Component();
             component.Name = this.componentName;
             List<ControlName> names = new List<ControlName>();
-            names.Add(new ControlName());
-            names.Add(new ControlName());
-            names[0].Name = "gain";
-            names[1].Name = "mute";
+            names.Add(new ControlName { Name = "gain" });
+            names.Add(new ControlName { Name = "mute" });
             component.Controls = names;
 
             if (this.myCore.RegisterNamedComponent(component))
@@ -62,113 +59,84 @@ namespace QscQsys
         {
             if (_e.changeResult.Name == "gain")
             {
-                if (_e.changeResult.Value >= min && _e.changeResult.Value <= max)
+                if (this.volumeLevel != _e.changeResult.Value)
                 {
-                    currentLvl = (int)Math.Round((65535 / (max - min)) * (_e.changeResult.Value + (min * (-1))));
-                    currentLvlDb = _e.changeResult.Value;
-                    lastSentLvl = -1;
-                    QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.GainChange, this.componentName, true, this.currentLvl, this.currentLvl.ToString()));
+                    this.volumeLevel = _e.changeResult.Value;
+                    this.volumeString = _e.changeResult.String;
+                    QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.GainChange, "[[VAL]]", false, _e.changeResult.Value, _e.changeResult.String));
+                    QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.GainChange, "[[POS]]", false, _e.changeResult.Position, ""));
                 }
             }
             else if (_e.changeResult.Name == "mute")
             {
                 bool b = Convert.ToBoolean(_e.changeResult.Value);
-                QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.MuteChange, this.componentName, b, _e.changeResult.Value, Convert.ToString(b)));
                 currentMute = b;
-            }
-            else if (_e.changeResult.Name == "max_gain")
-            {
-                this.max = _e.changeResult.Value;
-            }
-            else if (_e.changeResult.Name == "min_gain")
-            {
-                this.min = _e.changeResult.Value;
+                QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.MuteChange, this.componentName, b, Convert.ToInt16(b), Convert.ToString(b)));
             }
         }
 
-        /// <summary>
-        /// Sets the current volume.
-        /// </summary>
-        /// <param name="value">The volume level to set to.</param>
-        public void Volume(int _value)
-        {
-            double newVal = Math.Round((_value / (65535 / (this.max - this.min))) + this.min);
-            if (this.lastSentLvl == newVal || newVal == this.currentLvl) //avoid repeats
-                return;
-            this.lastSentLvl = (int)newVal;
 
+
+
+
+        public void SetPosition(double _position)
+        {
+            double newP = clamp(_position, 0.0, 1.0);
             ComponentChange newVolumeChange = new ComponentChange();
             newVolumeChange.Params = new ComponentChangeParams();
             newVolumeChange.Params.Name = this.componentName;
-
-            ComponentSetValue volume = new ComponentSetValue();
-
-            volume.Name = "gain";
-            volume.Value = newVal;
-            volume.Ramp = rampTime;
-
+            ComponentSetValue volume = new ComponentSetValue { Name = "gain", Position = Math.Round(newP, 8), Ramp = rampTime };
             newVolumeChange.Params.Controls = new List<ComponentSetValue>();
             newVolumeChange.Params.Controls.Add(volume);
 
-            this.myCore.Enqueue(JsonConvert.SerializeObject(newVolumeChange));
+            string jsonIgnoreNullValues = JsonConvert.SerializeObject(newVolumeChange, Formatting.None, new JsonSerializerSettings{ NullValueHandling = NullValueHandling.Ignore });
+            this.myCore.Enqueue(jsonIgnoreNullValues);
         }
 
-        /// <summary>
-        /// Sets the current volume in DB.
-        /// </summary>
-        /// <param name="value">The volume level to set to.</param>
-        public void VolumeDb(int _value)
-        {
-            double newVal = _value;
-            if (newVal > this.max && _value < this.min) //ensure within range
-                return;
-            if (this.lastSentLvl == newVal || newVal == this.currentLvl) //avoid repeats
-                return;
-            this.lastSentLvl = (int)newVal;
 
+        public void SetVolume(double _value)
+        {
             ComponentChange newVolumeChange = new ComponentChange();
             newVolumeChange.Params = new ComponentChangeParams();
             newVolumeChange.Params.Name = this.componentName;
-
-            ComponentSetValue volume = new ComponentSetValue();
-
-            volume.Name = "gain";
-            volume.Value = newVal;
-            volume.Ramp = rampTime;
-
+            ComponentSetValue volume = new ComponentSetValue { Name = "gain", Value = Math.Round(_value, 8), Ramp = rampTime };
             newVolumeChange.Params.Controls = new List<ComponentSetValue>();
             newVolumeChange.Params.Controls.Add(volume);
 
-            this.myCore.Enqueue(JsonConvert.SerializeObject(newVolumeChange));
+            string jsonIgnoreNullValues = JsonConvert.SerializeObject(newVolumeChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            this.myCore.Enqueue(jsonIgnoreNullValues);
         }
 
-        /// <summary>
-        /// Sets the current mute state.
-        /// </summary>
-        /// <param name="value">The state to set the mute.</param>
-        public void Mute(bool _value)
+
+        public void SetMute(bool _value)
         {
             if (this.currentMute != _value)
             {
                 ComponentChange newMuteChange = new ComponentChange();
                 newMuteChange.Params = new ComponentChangeParams();
-
                 newMuteChange.Params.Name = this.componentName;
-
-                ComponentSetValue mute = new ComponentSetValue();
-                mute.Name = "mute";
-
-                if (_value)
-                    mute.Value = 1;
-                else
-                    mute.Value = 0;
-
+                ComponentSetValue mute = new ComponentSetValue { Name = "mute", Value = Convert.ToDouble(_value) };
                 newMuteChange.Params.Controls = new List<ComponentSetValue>();
                 newMuteChange.Params.Controls.Add(mute);
-
-                this.myCore.Enqueue(JsonConvert.SerializeObject(newMuteChange));
+                string jsonIgnoreNullValues = JsonConvert.SerializeObject(newMuteChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                this.myCore.Enqueue(jsonIgnoreNullValues);
             }
         }
+
+
+        public void ToggleMute()
+        {
+            this.currentMute = !this.currentMute;
+            ComponentChange newMuteChange = new ComponentChange();
+            newMuteChange.Params = new ComponentChangeParams();
+            newMuteChange.Params.Name = this.componentName;
+            ComponentSetValue mute = new ComponentSetValue { Name = "mute", Value = Convert.ToDouble(this.currentMute) };
+            newMuteChange.Params.Controls = new List<ComponentSetValue>();
+            newMuteChange.Params.Controls.Add(mute);
+            string jsonIgnoreNullValues = JsonConvert.SerializeObject(newMuteChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            this.myCore.Enqueue(jsonIgnoreNullValues);
+        }
+
 
         /// <summary>
         /// Sets the QSys ramp time for the gain
@@ -179,6 +147,24 @@ namespace QscQsys
             this.rampTime = time / 1000; //ms to sec
         }
 
+
+        public double scale(double A, double A1, double A2, double Min, double Max)
+        {
+            double percentage = (A - A1) / (A1 - A2);
+            return (percentage) * (Min - Max) + Min;
+        }
+
+        private double clamp(double _in, double _min, double _max)
+        {
+            double newVal;
+            if (_in > _max)
+                newVal = _max;
+            else if (_in < _min)
+                newVal = _min;
+            else
+                newVal = _in;
+            return newVal;
+        }
 
     }
 }

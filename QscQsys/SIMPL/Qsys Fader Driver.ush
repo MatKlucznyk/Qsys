@@ -39,7 +39,7 @@
   OutputSigType2=Digital
   InputList2Cue1=Volume
   InputList2SigType1=Analog
-  InputList2Cue2=Volume_db
+  InputList2Cue2=Position
   InputList2SigType2=Analog
   InputList2Cue3=RampTimeMS
   InputList2SigType3=Analog
@@ -49,10 +49,12 @@
   OutputList2SigType2=Analog
   OutputList2Cue3=[~UNUSED~]
   OutputList2SigType3=Analog
-  OutputList2Cue4=VolumeValue
+  OutputList2Cue4=VolumeIs
   OutputList2SigType4=Analog
-  OutputList2Cue5=VolumeValue_db
+  OutputList2Cue5=PositionIs
   OutputList2SigType5=Analog
+  OutputList2Cue6=StringOut
+  OutputList2SigType6=Serial
   ParamCue1=[Reference Name]
   ParamCue2=[~UNUSED~]
   ParamSigType2=Constant
@@ -84,8 +86,8 @@
   MaxVariableInputsList2=3
   MinVariableOutputs=2
   MaxVariableOutputs=2
-  MinVariableOutputsList2=5
-  MaxVariableOutputsList2=5
+  MinVariableOutputsList2=6
+  MaxVariableOutputsList2=6
   MinVariableParams=12
   MaxVariableParams=12
   Expand=expand_separately
