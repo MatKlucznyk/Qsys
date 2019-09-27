@@ -118,9 +118,9 @@ namespace QscQsys
             if (this.controlType == eControlType.isIntegerValue || this.controlType == eControlType.isFloatValue)
             {
                 double p = clamp(_position, 0.0, 1.0);
-                ControlSetPosition cs = new ControlSetPosition();
+                ControlSetValue cs = new ControlSetValue();
                 cs.method = "Control.Set";
-                cs.Params = new ControlSetPositionParams { Name = this.controlName, Position = Math.Round(p, 8), Ramp = this.rampTime };
+                cs.Params = new ControlSetValueParams { Name = this.controlName, Position = Math.Round(p, 8), Ramp = this.rampTime, typePos = true };
                 this.myCore.Enqueue(JsonConvert.SerializeObject(cs));
             }
         }
@@ -144,7 +144,7 @@ namespace QscQsys
             {
                 ControlSetValue cs = new ControlSetValue();
                 cs.method = "Control.Set";
-                cs.Params = new ControlSetValueParams { Name = this.controlName, Value = _value.ToString() };
+                cs.Params = new ControlSetValueParams { Name = this.controlName, Value = _value ? "1":"0" };
                 this.myCore.Enqueue(JsonConvert.SerializeObject(cs));
             }
         }
@@ -156,7 +156,7 @@ namespace QscQsys
                 this.controlBool = !this.controlBool;
                 ControlSetValue cs = new ControlSetValue();
                 cs.method = "Control.Set";
-                cs.Params = new ControlSetValueParams { Name = this.controlName, Value = this.controlBool.ToString() };
+                cs.Params = new ControlSetValueParams { Name = this.controlName, Value = this.controlBool ? "1":"0" };
                 this.myCore.Enqueue(JsonConvert.SerializeObject(cs));
             }
         }

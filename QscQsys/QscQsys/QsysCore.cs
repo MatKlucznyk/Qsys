@@ -238,24 +238,6 @@ namespace QscQsys
                     }
                     CrestronEnvironment.Sleep(1500);
 
-                    //Send login if needed
-                    if (this.loginUser.Length > 0 || this.loginPass.Length > 0)
-                    {
-                        this.SendLogin();
-                    }
-
-                    this.CoreModuleInit();
-
-                    this.heartbeatTimer = new CTimer(SendHeartbeat, null, 0, 15000);
-
-                    this.SendDebug("Initialized");
-                    this.isInitialized = true;
-
-                    foreach (var item in this.SimplClients)
-                    {
-                        item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsRegistered, (SimplSharpString)"true", 1));
-                        item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsConnected, (SimplSharpString)"true", 1));
-                    }
                 }
                 else if (this.isConnected && _status != 2)
                 {
@@ -289,7 +271,7 @@ namespace QscQsys
         void SendCreateChangeGroup()
         {
             this.SendDebug("Creating change group and registering with the core");
-            this.commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
+            this.commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroupAutoPoll()));
         }
         void SendClearChangeGroup()
         {
@@ -299,6 +281,24 @@ namespace QscQsys
 
         private void CoreModuleInit()
         {
+
+            //Send login if needed
+            if (this.loginUser.Length > 0 && this.loginPass.Length > 0)
+            {
+                this.SendLogin();
+            }
+
+            this.heartbeatTimer = new CTimer(SendHeartbeat, null, 0, 15000);
+
+            this.SendDebug("Initialized");
+            this.isInitialized = true;
+
+            foreach (var item in this.SimplClients)
+            {
+                item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsRegistered, (SimplSharpString)"true", 1));
+                item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsConnected, (SimplSharpString)"true", 1));
+            }
+
             this.SendDebug("Requesting all named components and controls");
 
             this.commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
@@ -331,7 +331,6 @@ namespace QscQsys
                     commandQueue.Enqueue(JsonConvert.SerializeObject(addComponents));
                 }
             }
-            this.SendCreateChangeGroup();
         }
 
         private void SendHeartbeat(object _o)
@@ -383,7 +382,6 @@ namespace QscQsys
                 try
                 {
                     string tmpString = this.responseQueue.Dequeue(); // removes string from queue, blocks until an item is queued
-
                     this.RxData.Append(tmpString); //Append received data to the COM buffer
 
                     if (!this.busy)
@@ -496,6 +494,12 @@ namespace QscQsys
                             item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.StatusCode, Convert.ToString(statusCode), (ushort)statusCode));
                             item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.StatusString, statusString, 0));
                         }
+
+                        if (!this.isInitialized)
+                        {
+                            this.CoreModuleInit();
+                            this.SendCreateChangeGroup();
+                        }
                     }
                     else if (_returnString.Contains("error"))
                     {
@@ -521,7 +525,8 @@ namespace QscQsys
                                 break;
                             case 5: //Change Groups exhausted
                                 break;
-                            case 6: //Unknown change croup
+                            case 6: //Unknown change 6roup
+                                this.SendCreateChangeGroup();
                                 break;
                             case 7: //Unknown component name
                                 break;
@@ -547,9 +552,7 @@ namespace QscQsys
                 }
                 catch (Exception e)
                 {
-                    this.SendDebug(String.Format("Parse internal error: \r\n--------MESSAGE---------\r\n", e.Message));
-                    this.SendDebug(String.Format("Parse internal error: \r\n--------TRACE---------\r\n", e.StackTrace));
-                    this.SendDebug(String.Format("Parse internal error: \r\n--------MESSAGE---------\r\n", _returnString));
+                    this.SendDebug(String.Format("Parse internal error: \r\n--------MESSAGE---------\r\n{0}\r\n--------TRACE---------\r\n{1}\r\n--------ORIGINAL---------\r\n{2}\r\n---------------------\r\n", e.Message, e.StackTrace, _returnString));
                 }
             }
         }

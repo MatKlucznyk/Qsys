@@ -56,4 +56,4 @@ C:\Users\WMS\Desktop\Git Projects\Qsys\QscQsys\QscQsys\bin\Debug\Newtonsoft.Json
 C:\Users\WMS\Desktop\Git Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpCustomAttributesInterface.dll
 C:\Users\WMS\Desktop\Git Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpHelperInterface.dll
 C:\Users\WMS\Desktop\Git Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpReflectionInterface.dll
-C:\Users\WMS\Desktop\Git Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.xml
+C:\Users\wms\Desktop\Git Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.xml
