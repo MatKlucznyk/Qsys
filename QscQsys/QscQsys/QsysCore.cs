@@ -299,9 +299,8 @@ namespace QscQsys
                 item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsConnected, (SimplSharpString)"true", 1));
             }
 
-            this.SendDebug("Requesting all named components and controls");
-
-            this.commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
+            //this.SendDebug("Requesting all named components and controls");
+            //this.commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
 
             if (Controls.Count() > 0)
             {
