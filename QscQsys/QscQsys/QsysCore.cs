@@ -299,9 +299,8 @@ namespace QscQsys
 
         private void CoreModuleInit()
         {
-            SendClearChangeGroup();
-
             this.SendDebug("Requesting all named components and controls");
+
             this.commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
 
             if (Controls.Count() > 0)
@@ -332,7 +331,6 @@ namespace QscQsys
                     commandQueue.Enqueue(JsonConvert.SerializeObject(addComponents));
                 }
             }
-            
             this.SendCreateChangeGroup();
         }
 
@@ -397,15 +395,14 @@ namespace QscQsys
                             var data = this.RxData.ToString().Substring(0, Pos);
                             var garbage = this.RxData.Remove(0, Pos + 1); // remove data from COM buffer
 
-                            if (data.Contains("\"params\":{\"Id\":\"1\",\"Changes\":[]}") || data.Length < 3)
-                                return;
+                            if (!data.Contains("jsonrpc\":\"2.0\",\"method\":\"ChangeGroup.Poll\",\"params\":{\"Id\":\"1\",\"Changes\":[]}}") && data.Length > 3)
+                            {
+                                if (this.debug)
+                                    this.SendDebug(string.Format("Received from core and dequeue to parse: {0}", data));
 
-                            if (this.debug)
-                                this.SendDebug(string.Format("Received from core and dequeue to parse: {0}", data));
-                           
-                            this.ParseInternalResponse(data);
+                                this.ParseInternalResponse(data);
+                            }
                         }
-
                         this.busy = false;
                     }
                 }
