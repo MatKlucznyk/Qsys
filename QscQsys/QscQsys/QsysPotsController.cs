@@ -66,13 +66,13 @@ namespace QscQsys
             switch (e.Name)
             {
                 case "call_offhook":
-                    if (e.Data == 1)
+                    if (e.Value == 1)
                     {
                         hookState = true;
                         QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerOffHook, cName, true, 1, "1"));
                         QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCurrentlyCalling, cName, true, currentlyCalling.Length, currentlyCalling));
                     }
-                    else if (e.Data == 0)
+                    else if (e.Value == 0)
                     {
                         hookState = false;
                         dialString.Remove(0, dialString.Length);
@@ -84,28 +84,28 @@ namespace QscQsys
                     }
                     break;
                 case "call_ringing":
-                    if (e.Data == 1)
+                    if (e.Value == 1)
                     {
                         ringingState = true;
                         QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIsRinging, cName, true, 1, "1"));
                     }
-                    else if (e.Data == 0)
+                    else if (e.Value == 0)
                     {
                         ringingState = false;
                         QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIsRinging, cName, false, 0, "0"));
                     }
                     break;
                 case "call_autoanswer":
-                    autoAnswer = Convert.ToBoolean(e.Data);
-                    QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerAutoAnswerChange, cName, autoAnswer, Convert.ToInt16(e.Data), Convert.ToString(Convert.ToInt16(e.Data))));
+                    autoAnswer = Convert.ToBoolean(e.Value);
+                    QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerAutoAnswerChange, cName, autoAnswer, Convert.ToInt16(e.Value), Convert.ToString(Convert.ToInt16(e.Value))));
                     break;
                 case "call_dnd":
-                    dnd = Convert.ToBoolean(e.Data);
-                    QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDND_Change, cName, dnd, Convert.ToInt16(e.Data), Convert.ToString(Convert.ToInt16(e.Data))));
+                    dnd = Convert.ToBoolean(e.Value);
+                    QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDND_Change, cName, dnd, Convert.ToInt16(e.Value), Convert.ToString(Convert.ToInt16(e.Value))));
                     break;
                 case "call_status":
-                    callStatus = e.SData;
-                    QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCallStatusChange, cName, true, e.SData.Length, e.SData));
+                    callStatus = e.SValue;
+                    QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCallStatusChange, cName, true, e.SValue.Length, e.SValue));
                     break;
                 default:
                     break;

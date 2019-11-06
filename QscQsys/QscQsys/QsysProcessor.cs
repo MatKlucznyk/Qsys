@@ -327,7 +327,7 @@ namespace QscQsys
                                 foreach (var item in Components)
                                 {
                                     if (item.Key.Name == changeResult.Component)
-                                        item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.String));
+                                        item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String));
                                 }
                             }
                             else if(changeResult.Name != null)
@@ -335,7 +335,7 @@ namespace QscQsys
                                 foreach (var item in Controls)
                                 {
                                     if (item.Key.Name.Contains(changeResult.Name))
-                                        item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.String));
+                                        item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String));
                                 }
                             }
                         }
@@ -363,11 +363,11 @@ namespace QscQsys
                                         ComponentProperties prop;
                                         if ((prop = props.Find(x => x.Name == "max_gain")) != null)
                                         {
-                                            item.Value.Fire(new QsysInternalEventsArgs("max_gain", Convert.ToDouble(prop.Value), string.Empty));
+                                            item.Value.Fire(new QsysInternalEventsArgs("max_gain", Convert.ToDouble(prop.Value), 0, string.Empty));
                                         }
                                         if ((prop = props.Find(x => x.Name == "min_gain")) != null)
                                         {
-                                            item.Value.Fire(new QsysInternalEventsArgs("min_gain", Convert.ToDouble(prop.Value), string.Empty));
+                                            item.Value.Fire(new QsysInternalEventsArgs("min_gain", Convert.ToDouble(prop.Value), 0, string.Empty));
                                         }
                                     }
                                 }

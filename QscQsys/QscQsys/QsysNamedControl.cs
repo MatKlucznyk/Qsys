@@ -44,14 +44,14 @@ namespace QscQsys
 
             if (max > 0)
             {
-                intValue = (int)Math.Round((65535 / (max - min)) * (e.Data + (min * (-1))));
+                intValue = (int)Math.Round((65535 / (max - min)) * (e.Value + (min * (-1))));
             }
             else
             {
-                intValue = (int)e.Data;
+                intValue = (int)e.Value;
             }
 
-            QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(e.Data), intValue, e.SData));
+            QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(e.Value), intValue, e.SValue));
         }
 
         public void SetInteger(int value)

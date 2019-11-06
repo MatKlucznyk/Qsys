@@ -126,6 +126,7 @@ namespace QscQsys
         public string Name { get; set; }
         public string String { get; set; }
         public double Value { get; set; }
+        public double Position { get; set; }
     }
 
     public class ComponentChange
@@ -186,6 +187,7 @@ namespace QscQsys
     {
         public string Name { get; set; }
         public double Value { get; set; }
+        public double Position { get; set; }
     }
 
     public class SetCrossPointMute

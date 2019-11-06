@@ -45,7 +45,7 @@ namespace QscQsys
         {
             if (e.Name == crossName && newCrossPointValueChange != null)
             {
-                newCrossPointValueChange(Convert.ToUInt16(e.Data));
+                newCrossPointValueChange(Convert.ToUInt16(e.Value));
             }
         }
 

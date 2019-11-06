@@ -40,14 +40,16 @@ namespace QscQsys
     internal class QsysInternalEventsArgs : EventArgs
     {
         public string Name;
-        public double Data;
-        public string SData;
+        public double Value;
+        public double Position;
+        public string SValue;
 
-        public QsysInternalEventsArgs(string name, double data, string sData)
+        public QsysInternalEventsArgs(string name, double data, double position, string sData)
         {
             this.Name = name;
-            this.Data = data;
-            this.SData = sData;
+            this.Value = data;
+            this.Position = position;
+            this.SValue = sData;
 
         }
     }

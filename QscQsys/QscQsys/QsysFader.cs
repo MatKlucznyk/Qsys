@@ -53,20 +53,20 @@ namespace QscQsys
         {
             if (e.Name == "gain")
             {
-                if (e.Data >= min && e.Data <= max)
+                if (e.Value >= min && e.Value <= max)
                 {
-                    currentLvl = (int)Math.Round((65535 / (max - min)) * (e.Data + (min * (-1))));
+                    currentLvl = (int)Math.Round((65535 / (max - min)) * (e.Value + (min * (-1))));
                     QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.GainChange, cName, true, currentLvl, currentLvl.ToString()));
                 }
             }
             else if (e.Name == "mute")
             {
-                if (e.Data == 1)
+                if (e.Value == 1)
                 {
                     QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.MuteChange, cName, true, 1, "true"));
                     currentMute = true;
                 }
-                else if (e.Data == 0)
+                else if (e.Value == 0)
                 {
                     QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.MuteChange, cName, false, 0, "false"));
                     currentMute = false;
@@ -74,11 +74,11 @@ namespace QscQsys
             }
             else if (e.Name == "max_gain")
             {
-                max = e.Data;
+                max = e.Value;
             }
             else if (e.Name == "min_gain")
             {
-                min = e.Data;
+                min = e.Value;
             }
         }
 
