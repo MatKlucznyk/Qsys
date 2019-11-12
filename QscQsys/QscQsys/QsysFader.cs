@@ -53,11 +53,14 @@ namespace QscQsys
         {
             if (e.Name == "gain")
             {
-                if (e.Value >= min && e.Value <= max)
+                /*if (e.Value >= min && e.Value <= max)
                 {
                     currentLvl = (int)Math.Round((65535 / (max - min)) * (e.Value + (min * (-1))));
                     QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.GainChange, cName, true, currentLvl, currentLvl.ToString()));
-                }
+                }*/
+
+                currentLvl = (int)Math.Round(QsysProcessor.ScaleUp(e.Position));
+                QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.GainChange, cName, true, currentLvl, currentLvl.ToString()));
             }
             else if (e.Name == "mute")
             {
@@ -102,12 +105,12 @@ namespace QscQsys
                 ComponentSetValue volume = new ComponentSetValue();
 
                 volume.Name = "gain";
-                volume.Value = Math.Round((newValue / (65535 / (max - min))) + min);
+                volume.Position = QsysProcessor.ScaleDown(newValue);
 
                 newVolumeChange.Params.Controls = new List<ComponentSetValue>();
                 newVolumeChange.Params.Controls.Add(volume);
 
-                QsysProcessor.Enqueue(JsonConvert.SerializeObject(newVolumeChange));
+                QsysProcessor.Enqueue(JsonConvert.SerializeObject(newVolumeChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
         }
 
@@ -135,7 +138,7 @@ namespace QscQsys
                 newMuteChange.Params.Controls = new List<ComponentSetValue>();
                 newMuteChange.Params.Controls.Add(mute);
 
-                QsysProcessor.Enqueue(JsonConvert.SerializeObject(newMuteChange));
+                QsysProcessor.Enqueue(JsonConvert.SerializeObject(newMuteChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
         }
     }

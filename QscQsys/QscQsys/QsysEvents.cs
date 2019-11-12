@@ -174,6 +174,7 @@ namespace QscQsys
     {
         IsRegistered = 1,
         NewCommand = 2,
-        IsConnected = 3
+        IsConnected = 3,
+        NewCoreStatus = 4
     }
 }

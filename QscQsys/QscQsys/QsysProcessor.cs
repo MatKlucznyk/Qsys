@@ -26,6 +26,10 @@ namespace QscQsys
         private static bool isInitialized;
         private static bool isDisposed;
         private static bool debug;
+        private static bool isRedundant;
+        private static bool isEmulator;
+
+        private static string designName;
 
         //internal static Dictionary<string, InternalEvents> Controls = new Dictionary<string, InternalEvents>();
         internal static Dictionary<Component, InternalEvents> Components = new Dictionary<Component, InternalEvents>();
@@ -65,6 +69,9 @@ namespace QscQsys
                             addControl.ComponentParams = new AddComponentToChangeGroupParams();
                             addControl.ComponentParams.Component = component;
                             commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
+
+                            if(debug)
+                                CrestronConsole.PrintLine("Registered {0} Component", component.Name);
                         }
                     }
                 }
@@ -73,7 +80,8 @@ namespace QscQsys
             }
             catch (Exception e)
             {
-                ErrorLog.Error("Error registering QsysClient to the QsysProcessor: {0}", e.Message);
+                if(debug)
+                    ErrorLog.Error("Error registering QsysClient to the QsysProcessor: {0}", e.Message);
                 return false;
             }
         }
@@ -98,6 +106,9 @@ namespace QscQsys
                             addControl.ControlParams.Controls = new List<string>();
                             addControl.ControlParams.Controls.Add(control.Name);
                             commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
+
+                            if (debug)
+                                CrestronConsole.PrintLine("Registered {0} Control", control.Name);
                         }
                     }
                 }
@@ -106,7 +117,8 @@ namespace QscQsys
             }
             catch (Exception e)
             {
-                ErrorLog.Error("Error registering QsysClient to the QsysProcessor: {0}", e.Message);
+                if(debug)
+                    ErrorLog.Error("Error registering QsysClient to the QsysProcessor: {0}", e.Message);
                 return false;
             }
         }
@@ -120,15 +132,26 @@ namespace QscQsys
                     if(!SimplClients.ContainsKey(id))
                     {
                         SimplClients.Add(id, new SimplEvents());
+
+                        if (debug)
+                            CrestronConsole.PrintLine("Registered {0} SimplClient", id);
                     }
                 }
                 return true;
             }
             catch(Exception e)
             {
+                if (debug)
+                    ErrorLog.Error("Error registering SimplClient to the QsysProcessor: {0}", e.Message);
                 return false;
             }
         }
+
+        public static bool IsRedundant { get { return isRedundant; } }
+
+        public static bool IsEmulator { get { return isEmulator; } }
+
+        public static string DesignName { get { return designName; } }
         
         /// <summary>
         /// Initialzes all methods that are required to setup the class. Connection is established on port 1702.
@@ -137,7 +160,8 @@ namespace QscQsys
         {
             if (!isInitialized)
             {
-                ErrorLog.Notice("QsysProcessor is initializing.");
+                if(debug)
+                    ErrorLog.Notice("QsysProcessor is initializing.");
                 commandQueue = new CrestronQueue<string>();
                 responseQueue = new CrestronQueue<string>();
                 commandQueueTimer = new CTimer(CommandQueueDequeue, null, 0, 50);
@@ -154,6 +178,11 @@ namespace QscQsys
         public static void Debug(ushort value)
         {
             debug = Convert.ToBoolean(value);
+
+            if (debug)
+                CrestronConsole.PrintLine("********Qsys Debug Mode Active********");
+            else
+                CrestronConsole.PrintLine("********Qsys Debug Mode Disabled********");
         }
 
         static void client_ResponseString(string response, int id)
@@ -165,7 +194,8 @@ namespace QscQsys
         {
             if (status == 2 && !IsConnected)
             {
-                ErrorLog.Notice("QsysProcessor is connected.");
+                if(debug)
+                    ErrorLog.Notice("QsysProcessor is connected.");
                 IsConnected = true;
                 foreach (var item in SimplClients)
                 {
@@ -174,7 +204,7 @@ namespace QscQsys
 
                 CrestronEnvironment.Sleep(1500);
 
-                commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
+                //commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
 
                 AddComoponentToChangeGroup addComponent;
 
@@ -204,7 +234,8 @@ namespace QscQsys
 
                 heartbeatTimer = new CTimer(SendHeartbeat, null, 0, 15000);
 
-                ErrorLog.Notice("QsysProcessor is initialized.");
+                if(debug)
+                    ErrorLog.Notice("QsysProcessor is initialized.");
                 isInitialized = true;
 
                 foreach (var item in SimplClients)
@@ -214,7 +245,8 @@ namespace QscQsys
             }
             else if(IsConnected && status != 2)
             {
-                ErrorLog.Error("QsysProcessor disconnected!");
+                if(debug)
+                    ErrorLog.Error("QsysProcessor disconnected!");
                 IsConnected = false;
                 isInitialized = false;
                 heartbeatTimer.Dispose();
@@ -286,6 +318,9 @@ namespace QscQsys
                             var data = RxData.ToString().Substring(0, Pos);
                             var garbage = RxData.Remove(0, Pos + 1); // remove data from COM buffer
 
+                            if (debug)
+                                CrestronConsole.PrintLine("Response found ** {0} **", data);
+
                             ParseInternalResponse(data);
                         }
 
@@ -295,7 +330,8 @@ namespace QscQsys
                 catch (Exception e)
                 {
                     busy = false;
-                    ErrorLog.Exception(e.Message, e);
+                    if (debug)
+                        ErrorLog.Error("Error in QsysProcessor ResponseQueueDequeue: {0}", e.Message);
                 }
 
                 //ParseInternalResponse(responseQueue.Dequeue());
@@ -342,6 +378,32 @@ namespace QscQsys
                     }
                     else if (returnString.Contains("EngineStatus"))
                     {
+                        if (response["params"] != null)
+                        {
+                            JToken engineStatus = response["params"];
+
+                            if (engineStatus["DesignName"] != null)
+                            {
+                                designName = engineStatus["DesignName"].ToString();
+                                
+                                
+                            }
+
+                            if (engineStatus["IsRedundant"] != null)
+                            {
+                                isRedundant = Convert.ToBoolean(engineStatus["IsRedundant"].ToString());
+                            }
+
+                            if (engineStatus["IsEmulator"] != null)
+                            {
+                                isEmulator = Convert.ToBoolean(engineStatus["IsEmulator"].ToString());
+                            }
+
+                            foreach (var item in SimplClients)
+                            {
+                                item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.NewCoreStatus, string.Empty, 1));
+                            }
+                        }
                     }
                     else if (returnString.Contains("Properties"))
                     {
@@ -377,7 +439,8 @@ namespace QscQsys
                 }
                 catch (Exception e)
                 {
-                    //ErrorLog.Error("Error is QsysProcessor: {0}:\r\n{1}", e.Message, returnString);
+                    if(debug)
+                        ErrorLog.Error("Error in QsysProcessor ParseInternalResponse: {0}:\r\n{1}", e.Message, returnString);
                 }
             }
         }
@@ -403,6 +466,20 @@ namespace QscQsys
             catch (Exception e)
             {
             }
+        }
+
+        internal static double ScaleUp(double level)
+        {
+            double scaleLevel = level;
+            double levelScaled = (scaleLevel * 65535.0);
+            return levelScaled;
+        }
+
+        internal static double ScaleDown(double level)
+        {
+            double scaleLevel = level;
+            double levelScaled = (scaleLevel / 65535.0);
+            return levelScaled;
         }
     }
 }

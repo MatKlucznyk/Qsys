@@ -117,7 +117,7 @@ public override object FunctionMain (  object __obj__ )
         // RegisterDelegate( BOOLEANCONTROL , NEWNAMEDCONTROLCHANGE , NEWBOOLEANCHANGE ) 
         BOOLEANCONTROL .newNamedControlChange  = NEWBOOLEANCHANGE; ; 
         __context__.SourceCodeLine = 42;
-        BOOLEANCONTROL . Initialize ( NAMEDCONTROLNAME  .ToString(), (short)( 0 ), (short)( 0 )) ; 
+        BOOLEANCONTROL . Initialize ( NAMEDCONTROLNAME  .ToString(), (ushort)( 0 )) ; 
         
         
     }

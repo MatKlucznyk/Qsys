@@ -62,7 +62,7 @@ namespace QscQsys;
         // class events
 
         // class functions
-        FUNCTION Initialize ( STRING name , SIGNED_INTEGER max , SIGNED_INTEGER min );
+        FUNCTION Initialize ( STRING name , INTEGER isInteger );
         FUNCTION SetInteger ( INTEGER value );
         FUNCTION SetString ( STRING value );
         FUNCTION SetBoolean ( INTEGER value );
@@ -119,6 +119,7 @@ namespace QscQsys;
         // class delegates
         delegate FUNCTION IsRegistered ( INTEGER value );
         delegate FUNCTION IsConnected ( INTEGER value );
+        delegate FUNCTION CoreStatus ( SIMPLSHARPSTRING designName , INTEGER isRedundant , INTEGER isEmulator );
 
         // class events
 
@@ -134,6 +135,7 @@ namespace QscQsys;
         // class properties
         DelegateProperty IsRegistered onIsRegistered;
         DelegateProperty IsConnected onIsConnected;
+        DelegateProperty CoreStatus onNewCoreStatus;
     };
 
      class QsysFaderSimpl 
@@ -518,7 +520,6 @@ namespace QscQsys;
 
         // class properties
         STRING Name[];
-        SIGNED_LONG_INTEGER Value;
     };
 
      class ControlStringParams 
@@ -793,6 +794,7 @@ namespace QscQsys;
         static SIGNED_LONG_INTEGER IsRegistered;
         static SIGNED_LONG_INTEGER NewCommand;
         static SIGNED_LONG_INTEGER IsConnected;
+        static SIGNED_LONG_INTEGER NewCoreStatus;
     };
 
      class QsysMatrixMixerSimpl 
@@ -833,5 +835,6 @@ namespace QscQsys;
         INTEGER __class_id__;
 
         // class properties
+        STRING DesignName[];
     };
 

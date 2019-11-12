@@ -54,7 +54,7 @@ namespace QscQsys
             newInputSelectedChange.Params.Controls = new List<ComponentSetValue>();
             newInputSelectedChange.Params.Controls.Add(inputSelected);
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(newInputSelectedChange));
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(newInputSelectedChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
 
         private void QsysRouter_OnNewEvent(object sender, QsysInternalEventsArgs e)

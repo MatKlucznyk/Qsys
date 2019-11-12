@@ -29,7 +29,7 @@ namespace QscQsys
             loadSnapshot.Params.Controls = new List<ComponentSetValue>();
             loadSnapshot.Params.Controls.Add(load);
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(loadSnapshot));
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(loadSnapshot, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
 
         public void SaveSnapshot(int number)
@@ -45,7 +45,7 @@ namespace QscQsys
             saveSnapshot.Params.Controls = new List<ComponentSetValue>();
             saveSnapshot.Params.Controls.Add(save);
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(saveSnapshot));
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(saveSnapshot, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
     }
 }

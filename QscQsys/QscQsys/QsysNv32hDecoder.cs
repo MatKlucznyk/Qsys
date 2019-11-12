@@ -52,7 +52,7 @@ namespace QscQsys
         {
             ComponentChange inputChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "hdmi_out_0_select_index", Value = source } } } };
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(inputChange));
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(inputChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
     }
 }

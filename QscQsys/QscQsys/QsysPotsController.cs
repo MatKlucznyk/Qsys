@@ -130,7 +130,7 @@ namespace QscQsys
                 pinPad.Params.Controls = new List<ComponentSetValue>();
                 pinPad.Params.Controls.Add(pinPadSetValue);
 
-                QsysProcessor.Enqueue(JsonConvert.SerializeObject(pinPad));
+                QsysProcessor.Enqueue(JsonConvert.SerializeObject(pinPad, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
 
             QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString()));
@@ -169,7 +169,7 @@ namespace QscQsys
             dialNumber.Params.Controls = new List<ComponentSetValueString>();
             dialNumber.Params.Controls.Add(dialStringSetValue);
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(dialNumber));
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(dialNumber, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
 
             ComponentChange dial = new ComponentChange();
             dial.Params = new ComponentChangeParams();
@@ -183,7 +183,7 @@ namespace QscQsys
             dial.Params.Controls = new List<ComponentSetValue>();
             dial.Params.Controls.Add(dialSetValue);
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(dial));
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(dial, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
 
         public void Dial(string number)
@@ -204,7 +204,7 @@ namespace QscQsys
             dialNumber.Params.Controls = new List<ComponentSetValueString>();
             dialNumber.Params.Controls.Add(dialStringSetValue);
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(dialNumber));
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(dialNumber, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
 
             ComponentChange dial = new ComponentChange();
             dial.Params = new ComponentChangeParams();
@@ -218,7 +218,7 @@ namespace QscQsys
             dial.Params.Controls = new List<ComponentSetValue>();
             dial.Params.Controls.Add(dialSetValue);
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(dial));
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(dial, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
 
         public void Disconnect()
@@ -235,7 +235,7 @@ namespace QscQsys
             disconnect.Params.Controls = new List<ComponentSetValue>();
             disconnect.Params.Controls.Add(disconnectValue);
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(disconnect));
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(disconnect, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
 
         public void Redial()
@@ -263,7 +263,7 @@ namespace QscQsys
 
             aAnswer.Params.Controls = new List<ComponentSetValue>() { aAsnwerValue };
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(aAnswer));
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(aAnswer, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
 
         public void DndToggle()
@@ -274,7 +274,7 @@ namespace QscQsys
 
             d.Params.Controls = new List<ComponentSetValue>() { dValue };
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(d));
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(d, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
     }
 }

@@ -174,7 +174,16 @@ namespace QscQsys
     public class ControlIntegerParams
     {
         public string Name { get; set; }
-        public int Value { get; set; }
+        [JsonProperty(Required = Required.Default)]
+        public double? Value { get; set; }
+        [JsonProperty(Required = Required.Default)]
+        public double? Position { get; set; }
+
+        public ControlIntegerParams()
+        {
+            this.Value = null;
+            this.Position = null;
+        }
     }
 
     public class ControlStringParams
@@ -186,8 +195,16 @@ namespace QscQsys
     public class ComponentSetValue
     {
         public string Name { get; set; }
-        public double Value { get; set; }
-        public double Position { get; set; }
+        [JsonProperty(Required = Required.Default)]
+        public double? Value { get; set; } 
+        [JsonProperty(Required = Required.Default)]
+        public double? Position { get; set; }
+
+        public ComponentSetValue()
+        {
+            this.Value = null;
+            this.Position = null;
+        }
     }
 
     public class SetCrossPointMute

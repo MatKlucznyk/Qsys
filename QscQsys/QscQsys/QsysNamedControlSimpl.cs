@@ -13,9 +13,10 @@ namespace QscQsys
 
         private QsysNamedControl namedControl;
 
-        public void Initialize(string name, short max, short min)
+        public void Initialize(string name, ushort isInteger)
         {
-            namedControl = new QsysNamedControl(name, max, min);
+            namedControl = new QsysNamedControl(name);
+            namedControl.IsInteger = isInteger;
             namedControl.QsysNamedControlEvent += new EventHandler<QsysEventsArgs>(namedControl_QsysNamedControlEvent);
         }
 

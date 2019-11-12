@@ -11,19 +11,16 @@ namespace QscQsys
     {
         private string cName;
         private bool registered;
-        private double max;
-        private double min;
 
         public event EventHandler<QsysEventsArgs> QsysNamedControlEvent;
 
         public string ComponentName { get { return cName; } }
         public bool IsRegistered { get { return registered; } }
+        public ushort IsInteger { get; set; }
 
-        public QsysNamedControl(string Name, int Max, int Min)
+        public QsysNamedControl(string Name)
         {
             cName = Name;
-            max = Max;
-            min = Min;
 
             Control control = new Control();
 
@@ -40,27 +37,28 @@ namespace QscQsys
         //add event handling
         private void Control_OnNewEvent(object o, QsysInternalEventsArgs e)
         {
+
             int intValue;
 
-            if (max > 0)
+            if (IsInteger == 0)
             {
-                intValue = (int)Math.Round((65535 / (max - min)) * (e.Value + (min * (-1))));
+                QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(e.Value), Convert.ToUInt16(e.Value), e.SValue));
             }
             else
             {
-                intValue = (int)e.Value;
-            }
+                intValue = (int)Math.Round(QsysProcessor.ScaleUp(e.Position));
 
-            QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(e.Value), intValue, e.SValue));
+                QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(intValue), intValue, Convert.ToString(e.Position)));
+            }
         }
 
         public void SetInteger(int value)
         {
-            double newValue = Math.Round((value / (65535 / (max - min))) + min);
+            double newValue = QsysProcessor.ScaleDown(value);
 
-            ControlIntegerChange integer = new ControlIntegerChange() { Params = new ControlIntegerParams() { Name = cName, Value = Convert.ToInt16(newValue) } };
+            ControlIntegerChange integer = new ControlIntegerChange() { Params = new ControlIntegerParams() { Name = cName, Position = newValue } };
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(integer));
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(integer, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
 
         public void SetString(string value)
@@ -74,7 +72,7 @@ namespace QscQsys
         {
             ControlIntegerChange boolean = new ControlIntegerChange() { Params = new ControlIntegerParams() { Name = cName, Value = value } };
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(boolean));
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(boolean, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
     }
 }

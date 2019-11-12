@@ -8,7 +8,6 @@ analog_input SetIntegerValue;
 analog_Output IntegerValue;
 
 string_parameter  _skip_, NamedControlName[100];
-signed_integer_parameter MaxValue, MinValue;
 
 QsysNamedControlSimpl integerControl;
 
@@ -38,5 +37,5 @@ callback function NewIntegerChange(integer value, string x)
 function Main()
 {
     RegisterDelegate(integerControl, newNamedControlChange, NewIntegerChange);
-    integerControl.Initialize(NamedControlName, MaxValue, MinValue);
+    integerControl.Initialize(NamedControlName, 1);
 }

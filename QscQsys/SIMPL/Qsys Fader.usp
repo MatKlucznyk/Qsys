@@ -54,10 +54,17 @@ Threadsafe Change Volume
 {
     integer x;
 
-    While(x != volume)
+    if(Volume = 0)
     {
-        x = Volume;
-        fader.Volume(x);
+        fader.Volume(0);
+    }
+    else 
+    {
+        While(x != volume)
+        {
+            x = Volume;
+            fader.Volume(x);
+        }
     }
 }
 
