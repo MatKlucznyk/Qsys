@@ -21,6 +21,9 @@ namespace UserModule_QSYS_PROCESSOR
         Crestron.Logos.SplusObjects.DigitalInput INITIALIZE;
         Crestron.Logos.SplusObjects.DigitalOutput ISINITIALIZED;
         Crestron.Logos.SplusObjects.DigitalOutput ISCONNECTED;
+        Crestron.Logos.SplusObjects.DigitalOutput ISREDUNDANT;
+        Crestron.Logos.SplusObjects.DigitalOutput ISEMULATOR;
+        Crestron.Logos.SplusObjects.StringOutput DESIGNNAME;
         StringParameter ID;
         StringParameter HOST;
         UShortParameter PORT;
@@ -35,17 +38,17 @@ namespace UserModule_QSYS_PROCESSOR
             {
                 SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
                 
-                __context__.SourceCodeLine = 19;
+                __context__.SourceCodeLine = 21;
                 while ( Functions.TestForTrue  ( ( Functions.Not( WAITTILLSTART ))  ) ) 
                     { 
-                    __context__.SourceCodeLine = 19;
+                    __context__.SourceCodeLine = 21;
                     } 
                 
-                __context__.SourceCodeLine = 21;
-                PROCESSOR . Debug ( (ushort)( DEBUGMODE  .Value )) ; 
-                __context__.SourceCodeLine = 22;
-                PROCESSOR . Register ( ID  .ToString()) ; 
                 __context__.SourceCodeLine = 23;
+                PROCESSOR . Debug ( (ushort)( DEBUGMODE  .Value )) ; 
+                __context__.SourceCodeLine = 24;
+                PROCESSOR . Register ( ID  .ToString()) ; 
+                __context__.SourceCodeLine = 25;
                  QsysProcessor.Initialize(  HOST  .ToString() , (ushort)( PORT  .Value ) )  ;  
  
                 
@@ -63,16 +66,16 @@ namespace UserModule_QSYS_PROCESSOR
         {
             SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
             
-            __context__.SourceCodeLine = 28;
+            __context__.SourceCodeLine = 30;
             if ( Functions.TestForTrue  ( ( Functions.BoolToInt (VALUE == 1))  ) ) 
                 {
-                __context__.SourceCodeLine = 29;
+                __context__.SourceCodeLine = 31;
                 ISINITIALIZED  .Value = (ushort) ( 1 ) ; 
                 }
             
             else 
                 {
-                __context__.SourceCodeLine = 31;
+                __context__.SourceCodeLine = 33;
                 ISINITIALIZED  .Value = (ushort) ( 0 ) ; 
                 }
             
@@ -88,19 +91,37 @@ namespace UserModule_QSYS_PROCESSOR
         {
             SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
             
-            __context__.SourceCodeLine = 36;
+            __context__.SourceCodeLine = 38;
             if ( Functions.TestForTrue  ( ( Functions.BoolToInt (VALUE == 1))  ) ) 
                 {
-                __context__.SourceCodeLine = 37;
+                __context__.SourceCodeLine = 39;
                 ISCONNECTED  .Value = (ushort) ( 1 ) ; 
                 }
             
             else 
                 {
-                __context__.SourceCodeLine = 39;
+                __context__.SourceCodeLine = 41;
                 ISCONNECTED  .Value = (ushort) ( 0 ) ; 
                 }
             
+            
+            
+        }
+        finally { ObjectFinallyHandler(); }
+        }
+        
+    public void NEWCORESTATUS ( SimplSharpString DNAME , ushort REDUNDANT , ushort EMULATOR ) 
+        { 
+        try
+        {
+            SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
+            
+            __context__.SourceCodeLine = 46;
+            DESIGNNAME  .UpdateValue ( DNAME  .ToString()  ) ; 
+            __context__.SourceCodeLine = 47;
+            ISREDUNDANT  .Value = (ushort) ( REDUNDANT ) ; 
+            __context__.SourceCodeLine = 48;
+            ISEMULATOR  .Value = (ushort) ( EMULATOR ) ; 
             
             
         }
@@ -113,15 +134,18 @@ namespace UserModule_QSYS_PROCESSOR
         {
             SplusExecutionContext __context__ = SplusFunctionMainStartCode();
             
-            __context__.SourceCodeLine = 44;
+            __context__.SourceCodeLine = 53;
             // RegisterDelegate( PROCESSOR , ONISREGISTERED , NEWISREGISTERED ) 
             PROCESSOR .onIsRegistered  = NEWISREGISTERED; ; 
-            __context__.SourceCodeLine = 45;
+            __context__.SourceCodeLine = 54;
             // RegisterDelegate( PROCESSOR , ONISCONNECTED , NEWISCONNECTED ) 
             PROCESSOR .onIsConnected  = NEWISCONNECTED; ; 
-            __context__.SourceCodeLine = 47;
+            __context__.SourceCodeLine = 55;
+            // RegisterDelegate( PROCESSOR , ONNEWCORESTATUS , NEWCORESTATUS ) 
+            PROCESSOR .onNewCoreStatus  = NEWCORESTATUS; ; 
+            __context__.SourceCodeLine = 57;
             WaitForInitializationComplete ( ) ; 
-            __context__.SourceCodeLine = 49;
+            __context__.SourceCodeLine = 59;
             WAITTILLSTART = (ushort) ( 1 ) ; 
             
             
@@ -146,6 +170,15 @@ namespace UserModule_QSYS_PROCESSOR
         
         ISCONNECTED = new Crestron.Logos.SplusObjects.DigitalOutput( ISCONNECTED__DigitalOutput__, this );
         m_DigitalOutputList.Add( ISCONNECTED__DigitalOutput__, ISCONNECTED );
+        
+        ISREDUNDANT = new Crestron.Logos.SplusObjects.DigitalOutput( ISREDUNDANT__DigitalOutput__, this );
+        m_DigitalOutputList.Add( ISREDUNDANT__DigitalOutput__, ISREDUNDANT );
+        
+        ISEMULATOR = new Crestron.Logos.SplusObjects.DigitalOutput( ISEMULATOR__DigitalOutput__, this );
+        m_DigitalOutputList.Add( ISEMULATOR__DigitalOutput__, ISEMULATOR );
+        
+        DESIGNNAME = new Crestron.Logos.SplusObjects.StringOutput( DESIGNNAME__AnalogSerialOutput__, this );
+        m_StringOutputList.Add( DESIGNNAME__AnalogSerialOutput__, DESIGNNAME );
         
         PORT = new UShortParameter( PORT__Parameter__, this );
         m_ParameterList.Add( PORT__Parameter__, PORT );
@@ -183,6 +216,9 @@ namespace UserModule_QSYS_PROCESSOR
     const uint INITIALIZE__DigitalInput__ = 0;
     const uint ISINITIALIZED__DigitalOutput__ = 0;
     const uint ISCONNECTED__DigitalOutput__ = 1;
+    const uint ISREDUNDANT__DigitalOutput__ = 2;
+    const uint ISEMULATOR__DigitalOutput__ = 3;
+    const uint DESIGNNAME__AnalogSerialOutput__ = 0;
     const uint ID__Parameter__ = 10;
     const uint HOST__Parameter__ = 11;
     const uint PORT__Parameter__ = 12;

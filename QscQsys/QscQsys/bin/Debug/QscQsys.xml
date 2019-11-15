@@ -27,7 +27,7 @@
             Event args for Q-Sys events.
             </summary>
         </member>
-        <member name="M:QscQsys.QsysEventsArgs.#ctor(QscQsys.eQscEventIds,System.String,System.Boolean,System.Int32,System.String)">
+        <member name="M:QscQsys.QsysEventsArgs.#ctor(QscQsys.eQscEventIds,System.String,System.Boolean,System.Int32,System.String,System.Collections.Generic.List{QscQsys.ListBoxChoice})">
             <summary>
             Default constructor for QsysEventArgs.
             </summary>

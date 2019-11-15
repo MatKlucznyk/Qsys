@@ -39,5 +39,5 @@ callback function NewBooleanChange(integer value, string x)
 function Main()
 {
     RegisterDelegate(booleanControl, newNamedControlChange, NewBooleanChange);
-    booleanControl.Initialize(NamedControlName, 0, 0);
+    booleanControl.Initialize(NamedControlName, 0);
 }

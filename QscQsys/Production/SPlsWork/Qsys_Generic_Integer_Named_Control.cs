@@ -21,8 +21,6 @@ namespace UserModule_QSYS_GENERIC_INTEGER_NAMED_CONTROL
         Crestron.Logos.SplusObjects.AnalogInput SETINTEGERVALUE;
         Crestron.Logos.SplusObjects.AnalogOutput INTEGERVALUE;
         StringParameter NAMEDCONTROLNAME;
-        ShortParameter MAXVALUE;
-        ShortParameter MINVALUE;
         QscQsys.QsysNamedControlSimpl INTEGERCONTROL;
         object SETINTEGERVALUE_OnChange_0 ( Object __EventInfo__ )
         
@@ -34,23 +32,23 @@ namespace UserModule_QSYS_GENERIC_INTEGER_NAMED_CONTROL
                 ushort X = 0;
                 
                 
-                __context__.SourceCodeLine = 19;
+                __context__.SourceCodeLine = 18;
                 if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SETINTEGERVALUE  .UshortValue == 0))  ) ) 
                     { 
-                    __context__.SourceCodeLine = 21;
+                    __context__.SourceCodeLine = 20;
                     INTEGERCONTROL . SetInteger ( (ushort)( 0 )) ; 
                     } 
                 
                 else 
                     { 
-                    __context__.SourceCodeLine = 25;
+                    __context__.SourceCodeLine = 24;
                     while ( Functions.TestForTrue  ( ( Functions.BoolToInt (X != SETINTEGERVALUE  .UshortValue))  ) ) 
                         { 
-                        __context__.SourceCodeLine = 27;
+                        __context__.SourceCodeLine = 26;
                         X = (ushort) ( SETINTEGERVALUE  .UshortValue ) ; 
-                        __context__.SourceCodeLine = 28;
+                        __context__.SourceCodeLine = 27;
                         INTEGERCONTROL . SetInteger ( (ushort)( X )) ; 
-                        __context__.SourceCodeLine = 25;
+                        __context__.SourceCodeLine = 24;
                         } 
                     
                     } 
@@ -70,7 +68,7 @@ namespace UserModule_QSYS_GENERIC_INTEGER_NAMED_CONTROL
         {
             SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
             
-            __context__.SourceCodeLine = 35;
+            __context__.SourceCodeLine = 34;
             INTEGERVALUE  .Value = (ushort) ( VALUE ) ; 
             
             
@@ -84,11 +82,11 @@ namespace UserModule_QSYS_GENERIC_INTEGER_NAMED_CONTROL
         {
             SplusExecutionContext __context__ = SplusFunctionMainStartCode();
             
-            __context__.SourceCodeLine = 40;
+            __context__.SourceCodeLine = 39;
             // RegisterDelegate( INTEGERCONTROL , NEWNAMEDCONTROLCHANGE , NEWINTEGERCHANGE ) 
             INTEGERCONTROL .newNamedControlChange  = NEWINTEGERCHANGE; ; 
-            __context__.SourceCodeLine = 41;
-            INTEGERCONTROL . Initialize ( NAMEDCONTROLNAME  .ToString(), (short)( MAXVALUE  .Value ), (short)( MINVALUE  .Value )) ; 
+            __context__.SourceCodeLine = 40;
+            INTEGERCONTROL . Initialize ( NAMEDCONTROLNAME  .ToString(), (ushort)( 1 )) ; 
             
             
         }
@@ -109,12 +107,6 @@ namespace UserModule_QSYS_GENERIC_INTEGER_NAMED_CONTROL
         
         INTEGERVALUE = new Crestron.Logos.SplusObjects.AnalogOutput( INTEGERVALUE__AnalogSerialOutput__, this );
         m_AnalogOutputList.Add( INTEGERVALUE__AnalogSerialOutput__, INTEGERVALUE );
-        
-        MAXVALUE = new ShortParameter( MAXVALUE__Parameter__, this );
-        m_ParameterList.Add( MAXVALUE__Parameter__, MAXVALUE );
-        
-        MINVALUE = new ShortParameter( MINVALUE__Parameter__, this );
-        m_ParameterList.Add( MINVALUE__Parameter__, MINVALUE );
         
         NAMEDCONTROLNAME = new StringParameter( NAMEDCONTROLNAME__Parameter__, this );
         m_ParameterList.Add( NAMEDCONTROLNAME__Parameter__, NAMEDCONTROLNAME );
@@ -143,8 +135,6 @@ namespace UserModule_QSYS_GENERIC_INTEGER_NAMED_CONTROL
     const uint SETINTEGERVALUE__AnalogSerialInput__ = 0;
     const uint INTEGERVALUE__AnalogSerialOutput__ = 0;
     const uint NAMEDCONTROLNAME__Parameter__ = 10;
-    const uint MAXVALUE__Parameter__ = 11;
-    const uint MINVALUE__Parameter__ = 12;
     
     [SplusStructAttribute(-1, true, false)]
     public class SplusNVRAM : SplusStructureBase

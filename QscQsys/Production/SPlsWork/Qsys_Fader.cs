@@ -154,13 +154,24 @@ object VOLUME_OnChange_5 ( Object __EventInfo__ )
         
         
         __context__.SourceCodeLine = 57;
-        while ( Functions.TestForTrue  ( ( Functions.BoolToInt (X != VOLUME  .UshortValue))  ) ) 
+        if ( Functions.TestForTrue  ( ( Functions.BoolToInt (VOLUME  .UshortValue == 0))  ) ) 
             { 
             __context__.SourceCodeLine = 59;
-            X = (ushort) ( VOLUME  .UshortValue ) ; 
-            __context__.SourceCodeLine = 60;
-            FADER . Volume ( (ushort)( X )) ; 
-            __context__.SourceCodeLine = 57;
+            FADER . Volume ( (ushort)( 0 )) ; 
+            } 
+        
+        else 
+            { 
+            __context__.SourceCodeLine = 63;
+            while ( Functions.TestForTrue  ( ( Functions.BoolToInt (X != VOLUME  .UshortValue))  ) ) 
+                { 
+                __context__.SourceCodeLine = 65;
+                X = (ushort) ( VOLUME  .UshortValue ) ; 
+                __context__.SourceCodeLine = 66;
+                FADER . Volume ( (ushort)( X )) ; 
+                __context__.SourceCodeLine = 63;
+                } 
+            
             } 
         
         
@@ -190,9 +201,9 @@ public void ONVOLUMECHANGE ( ushort VALUE )
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 70;
+        __context__.SourceCodeLine = 77;
         CURRENTVOLUME = (ushort) ( VALUE ) ; 
-        __context__.SourceCodeLine = 71;
+        __context__.SourceCodeLine = 78;
         VOLUMEVALUE  .Value = (ushort) ( CURRENTVOLUME ) ; 
         
         
@@ -206,7 +217,7 @@ public void ONMUTECHANGE ( ushort VALUE )
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 76;
+        __context__.SourceCodeLine = 83;
         
             {
             int __SPLS_TMPVAR__SWTCH_1__ = ((int)VALUE);
@@ -214,17 +225,17 @@ public void ONMUTECHANGE ( ushort VALUE )
                 { 
                 if  ( Functions.TestForTrue  (  ( __SPLS_TMPVAR__SWTCH_1__ == ( 1) ) ) ) 
                     { 
-                    __context__.SourceCodeLine = 80;
+                    __context__.SourceCodeLine = 87;
                     MUTEISOFF  .Value = (ushort) ( 0 ) ; 
-                    __context__.SourceCodeLine = 81;
+                    __context__.SourceCodeLine = 88;
                     MUTEISON  .Value = (ushort) ( 1 ) ; 
                     } 
                 
                 else if  ( Functions.TestForTrue  (  ( __SPLS_TMPVAR__SWTCH_1__ == ( 0) ) ) ) 
                     { 
-                    __context__.SourceCodeLine = 85;
+                    __context__.SourceCodeLine = 92;
                     MUTEISOFF  .Value = (ushort) ( 1 ) ; 
-                    __context__.SourceCodeLine = 86;
+                    __context__.SourceCodeLine = 93;
                     MUTEISON  .Value = (ushort) ( 0 ) ; 
                     } 
                 
@@ -245,16 +256,16 @@ public override object FunctionMain (  object __obj__ )
     {
         SplusExecutionContext __context__ = SplusFunctionMainStartCode();
         
-        __context__.SourceCodeLine = 93;
+        __context__.SourceCodeLine = 100;
         // RegisterDelegate( PROCESSOR , ONISREGISTERED , ONINITIALIZATIONCOMPLETE ) 
         PROCESSOR .onIsRegistered  = ONINITIALIZATIONCOMPLETE; ; 
-        __context__.SourceCodeLine = 94;
+        __context__.SourceCodeLine = 101;
         // RegisterDelegate( FADER , NEWVOLUMECHANGE , ONVOLUMECHANGE ) 
         FADER .newVolumeChange  = ONVOLUMECHANGE; ; 
-        __context__.SourceCodeLine = 95;
+        __context__.SourceCodeLine = 102;
         // RegisterDelegate( FADER , NEWMUTECHANGE , ONMUTECHANGE ) 
         FADER .newMuteChange  = ONMUTECHANGE; ; 
-        __context__.SourceCodeLine = 96;
+        __context__.SourceCodeLine = 103;
         FADER . Initialize ( COMPONENTNAME  .ToString()) ; 
         
         

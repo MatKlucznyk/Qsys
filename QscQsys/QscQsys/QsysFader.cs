@@ -60,18 +60,18 @@ namespace QscQsys
                 }*/
 
                 currentLvl = (int)Math.Round(QsysProcessor.ScaleUp(e.Position));
-                QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.GainChange, cName, true, currentLvl, currentLvl.ToString()));
+                QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.GainChange, cName, true, currentLvl, currentLvl.ToString(), null));
             }
             else if (e.Name == "mute")
             {
                 if (e.Value == 1)
                 {
-                    QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.MuteChange, cName, true, 1, "true"));
+                    QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.MuteChange, cName, true, 1, "true", null));
                     currentMute = true;
                 }
                 else if (e.Value == 0)
                 {
-                    QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.MuteChange, cName, false, 0, "false"));
+                    QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.MuteChange, cName, false, 0, "false", null));
                     currentMute = false;
                 }
             }

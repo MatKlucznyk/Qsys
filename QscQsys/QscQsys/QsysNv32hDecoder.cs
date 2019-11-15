@@ -45,7 +45,7 @@ namespace QscQsys
         {
             currentSource = Convert.ToInt16(e.Value);
 
-            QsysNv32hDecoderEvent(this, new QsysEventsArgs(eQscEventIds.Nv32hDecoderInputChange, cName, Convert.ToBoolean(currentSource), currentSource, currentSource.ToString()));
+            QsysNv32hDecoderEvent(this, new QsysEventsArgs(eQscEventIds.Nv32hDecoderInputChange, cName, Convert.ToBoolean(currentSource), currentSource, currentSource.ToString(), null));
         }
 
         public void ChangeInput(int source)

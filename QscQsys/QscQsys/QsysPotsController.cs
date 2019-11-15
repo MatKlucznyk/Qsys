@@ -19,6 +19,7 @@ namespace QscQsys
         private string currentlyCalling;
         private string lastCalled;
         private string callStatus;
+        private List<ListBoxChoice> recentCalls;
 
         public event EventHandler<QsysEventsArgs> QsysPotsControllerEvent;
 
@@ -32,15 +33,17 @@ namespace QscQsys
         public string CurrentlyCalling { get { return currentlyCalling; } }
         public string LastNumberCalled { get { return lastCalled; } }
         public string CallStatus { get { return callStatus; } }
+        public List<ListBoxChoice> RecentCalls { get { return recentCalls; } }
 
         public QsysPotsController(string Name)
         {
             cName = Name;
+            recentCalls = new List<ListBoxChoice>();
 
             Component component = new Component();
             component.Name = Name;
             List<ControlName> names = new List<ControlName>();
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i <= 5 ; i++)
             {
                 names.Add(new ControlName());
             }
@@ -49,6 +52,7 @@ namespace QscQsys
             names[2].Name = "call_autoanswer";
             names[3].Name = "call_dnd";
             names[4].Name = "call_status";
+            names[5].Name = "recent_calls";
 
 
             component.Controls = names;
@@ -69,43 +73,53 @@ namespace QscQsys
                     if (e.Value == 1)
                     {
                         hookState = true;
-                        QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerOffHook, cName, true, 1, "1"));
-                        QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCurrentlyCalling, cName, true, currentlyCalling.Length, currentlyCalling));
+                        QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerOffHook, cName, true, 1, "1", null));
+                        QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCurrentlyCalling, cName, true, currentlyCalling.Length, currentlyCalling, null));
                     }
                     else if (e.Value == 0)
                     {
                         hookState = false;
                         dialString.Remove(0, dialString.Length);
-                        QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerOffHook, cName, false, 0, "0"));
+                        QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerOffHook, cName, false, 0, "0", null));
                         lastCalled = currentlyCalling;
                         currentlyCalling = string.Empty;
-                        QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCurrentlyCalling, cName, false, currentlyCalling.Length, currentlyCalling));
-                        QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, false, 0, dialString.ToString()));
+                        QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCurrentlyCalling, cName, false, currentlyCalling.Length, currentlyCalling, null));
+                        QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, false, 0, dialString.ToString(), null));
                     }
                     break;
                 case "call_ringing":
                     if (e.Value == 1)
                     {
                         ringingState = true;
-                        QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIsRinging, cName, true, 1, "1"));
+                        QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIsRinging, cName, true, 1, "1", null));
                     }
                     else if (e.Value == 0)
                     {
                         ringingState = false;
-                        QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIsRinging, cName, false, 0, "0"));
+                        QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIsRinging, cName, false, 0, "0", null));
                     }
                     break;
                 case "call_autoanswer":
                     autoAnswer = Convert.ToBoolean(e.Value);
-                    QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerAutoAnswerChange, cName, autoAnswer, Convert.ToInt16(e.Value), Convert.ToString(Convert.ToInt16(e.Value))));
+                    QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerAutoAnswerChange, cName, autoAnswer, Convert.ToInt16(e.Value), Convert.ToString(Convert.ToInt16(e.Value)), null));
                     break;
                 case "call_dnd":
                     dnd = Convert.ToBoolean(e.Value);
-                    QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDND_Change, cName, dnd, Convert.ToInt16(e.Value), Convert.ToString(Convert.ToInt16(e.Value))));
+                    QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDND_Change, cName, dnd, Convert.ToInt16(e.Value), Convert.ToString(Convert.ToInt16(e.Value)), null));
                     break;
                 case "call_status":
                     callStatus = e.SValue;
-                    QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCallStatusChange, cName, true, e.SValue.Length, e.SValue));
+                    QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCallStatusChange, cName, true, e.SValue.Length, e.SValue, null));
+                    break;
+                case "recent_calls":
+                    recentCalls.Clear();
+                    List<string> choices = e.Choices;
+                    foreach (var choice in choices)
+                    {
+                        var newChoice = JsonConvert.DeserializeObject<ListBoxChoice>(choice);
+                        recentCalls.Add(newChoice);
+                    }
+                    QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerRecentCallsChange, cName, Convert.ToBoolean(recentCalls.Count), recentCalls.Count, recentCalls.Count.ToString(), recentCalls));
                     break;
                 default:
                     break;
@@ -133,21 +147,21 @@ namespace QscQsys
                 QsysProcessor.Enqueue(JsonConvert.SerializeObject(pinPad, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
 
-            QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString()));
+            QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString(), null));
         }
 
         public void NumPadDelete()
         {
             dialString.Remove(dialString.Length - 1, 1);
 
-            QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString()));
+            QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString(), null));
         }
 
         public void NumPadClear()
         {
             dialString.Remove(0, dialString.Length);
 
-            QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString()));
+            QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString(), null));
         }
 
         public void Dial()
@@ -155,7 +169,7 @@ namespace QscQsys
             currentlyCalling = dialString.ToString();
             dialString.Remove(0, dialString.Length);
 
-            QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, false, 0, string.Empty));
+            QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, false, 0, string.Empty, null));
 
             ComponentChangeString dialNumber = new ComponentChangeString();
             dialNumber.Params = new ComponentChangeParamsString();
@@ -188,9 +202,9 @@ namespace QscQsys
 
         public void Dial(string number)
         {
-            currentlyCalling = number;
+            currentlyCalling = dialString.ToString() + number;
 
-            QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, false, 0, string.Empty));
+            QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, false, 0, string.Empty, null));
 
             ComponentChangeString dialNumber = new ComponentChangeString();
             dialNumber.Params = new ComponentChangeParamsString();
@@ -217,6 +231,13 @@ namespace QscQsys
 
             dial.Params.Controls = new List<ComponentSetValue>();
             dial.Params.Controls.Add(dialSetValue);
+
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(dial, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public void Connect()
+        {
+            ComponentChange dial = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "call_connect", Value = 1 } } } };
 
             QsysProcessor.Enqueue(JsonConvert.SerializeObject(dial, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
@@ -275,6 +296,17 @@ namespace QscQsys
             d.Params.Controls = new List<ComponentSetValue>() { dValue };
 
             QsysProcessor.Enqueue(JsonConvert.SerializeObject(d, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public void SelectRecentCall(int index)
+        {
+            if (recentCalls.Count >= index)
+            {
+                dialString.Remove(0, dialString.Length);
+                dialString.Append(recentCalls[index - 1].Text);
+
+                QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, Convert.ToBoolean(recentCalls[index - 1].Text.Length), index - 1, recentCalls[index - 1].Text, recentCalls));
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Crestron.SimplSharp;
 
@@ -14,6 +15,7 @@ namespace QscQsys
         public bool BooleanValue;
         public int IntegerValue;
         public string StringValue;
+        public List<ListBoxChoice> ListValue;
 
         /// <summary>
         /// Default constructor for QsysEventArgs.
@@ -23,13 +25,14 @@ namespace QscQsys
         /// <param name="booleanValue">Boolean value of the event.</param>
         /// <param name="integerValue">Integer value of the event.</param>
         /// <param name="stringValue">String value of the event.</param>
-        public QsysEventsArgs(eQscEventIds eventID, string controlName, bool booleanValue, int integerValue, string stringValue)
+        public QsysEventsArgs(eQscEventIds eventID, string controlName, bool booleanValue, int integerValue, string stringValue, List<ListBoxChoice> listValue)
         {
             this.EventID = eventID;
             this.ControlName = controlName;
             this.BooleanValue = booleanValue;
             this.IntegerValue = integerValue;
             this.StringValue = stringValue;
+            this.ListValue = listValue;
         }
 
     }
@@ -43,13 +46,15 @@ namespace QscQsys
         public double Value;
         public double Position;
         public string SValue;
+        public List<string> Choices;
 
-        public QsysInternalEventsArgs(string name, double data, double position, string sData)
+        public QsysInternalEventsArgs(string name, double data, double position, string sData, List<string> choices)
         {
             this.Name = name;
             this.Value = data;
             this.Position = position;
             this.SValue = sData;
+            this.Choices = choices;
 
         }
     }
@@ -167,7 +172,9 @@ namespace QscQsys
 
         NamedControlChange = 16,
 
-        PotsControllerCallStatusChange = 17
+        PotsControllerCallStatusChange = 17,
+
+        PotsControllerRecentCallsChange = 18
     }
 
     public enum eQscSimplEventIds

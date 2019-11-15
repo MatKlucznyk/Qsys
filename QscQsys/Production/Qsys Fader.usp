@@ -1,6 +1,6 @@
 #SYMBOL_NAME "Qsys Fader"
 
-//#INCLUDEPATH "C:\\Users\\matklucznyk\\Documents\\Crestron Modules\\Modules\\SIMPLSharp Projects\\QscQsys\\QscQsys\\bin\\Debug"
+//#INCLUDEPATH "D:\\Programming\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 Digital_Input MuteOn, MuteOff, MuteToggle, VolumeUp, VolumeDown;
@@ -54,10 +54,17 @@ Threadsafe Change Volume
 {
     integer x;
 
-    While(x != volume)
+    if(Volume = 0)
     {
-        x = Volume;
-        fader.Volume(x);
+        fader.Volume(0);
+    }
+    else 
+    {
+        While(x != volume)
+        {
+            x = Volume;
+            fader.Volume(x);
+        }
     }
 }
 

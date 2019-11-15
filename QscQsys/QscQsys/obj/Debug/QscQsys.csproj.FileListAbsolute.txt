@@ -43,7 +43,6 @@ C:\Users\matklucznyk\Documents\Crestron Modules\Modules\SIMPLSharp Projects\QscQ
 C:\Users\matklucznyk\Documents\Crestron Modules\Modules\SIMPLSharp Projects\QscQsys\QscQsys\obj\Debug\QscQsys.pdb
 D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.dll
 D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.pdb
-D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\ExtensionMethods.dll
 D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\Newtonsoft.Json.Compact.dll
 D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpCustomAttributesInterface.dll
 D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpHelperInterface.dll
@@ -53,3 +52,4 @@ D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj
 D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.dll
 D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.pdb
 D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.xml
+D:\Programming\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpExtensions.dll

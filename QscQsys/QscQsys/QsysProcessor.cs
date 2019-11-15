@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Crestron.SimplSharp;                          				// For Basic SIMPL# Classes
-using Crestron.SimplSharp.CrestronIO;
-using ExtensionMethods;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TCP_Client;
@@ -362,16 +360,30 @@ namespace QscQsys
                             {
                                 foreach (var item in Components)
                                 {
+                                    List<string> choices;
+
+                                    if (changeResult.Choices != null)
+                                        choices = changeResult.Choices.ToList();
+                                    else
+                                        choices = new List<string>();
+
                                     if (item.Key.Name == changeResult.Component)
-                                        item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String));
+                                        item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String, choices));
                                 }
                             }
                             else if(changeResult.Name != null)
                             {
+                                List<string> choices;
+
+                                if (changeResult.Choices != null)
+                                    choices = changeResult.Choices.ToList();
+                                else
+                                    choices = new List<string>();
+
                                 foreach (var item in Controls)
                                 {
                                     if (item.Key.Name.Contains(changeResult.Name))
-                                        item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String));
+                                        item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String, choices));
                                 }
                             }
                         }
@@ -425,11 +437,11 @@ namespace QscQsys
                                         ComponentProperties prop;
                                         if ((prop = props.Find(x => x.Name == "max_gain")) != null)
                                         {
-                                            item.Value.Fire(new QsysInternalEventsArgs("max_gain", Convert.ToDouble(prop.Value), 0, string.Empty));
+                                            //item.Value.Fire(new QsysInternalEventsArgs("max_gain", Convert.ToDouble(prop.Value), 0, string.Empty));
                                         }
                                         if ((prop = props.Find(x => x.Name == "min_gain")) != null)
                                         {
-                                            item.Value.Fire(new QsysInternalEventsArgs("min_gain", Convert.ToDouble(prop.Value), 0, string.Empty));
+                                            //item.Value.Fire(new QsysInternalEventsArgs("min_gain", Convert.ToDouble(prop.Value), 0, string.Empty));
                                         }
                                     }
                                 }

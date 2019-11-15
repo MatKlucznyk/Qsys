@@ -63,7 +63,7 @@ namespace QscQsys
             {
                 CurrentSelectedInput = Convert.ToInt16(e.Value);
 
-                QsysRouterEvent(this, new QsysEventsArgs(eQscEventIds.RouterInputSelected, cName, Convert.ToBoolean(e.Value), Convert.ToInt16(e.Value), e.Value.ToString()));
+                QsysRouterEvent(this, new QsysEventsArgs(eQscEventIds.RouterInputSelected, cName, Convert.ToBoolean(e.Value), Convert.ToInt16(e.Value), e.Value.ToString(), null));
             }
         }
     }

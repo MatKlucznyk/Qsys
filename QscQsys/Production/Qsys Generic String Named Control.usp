@@ -37,5 +37,5 @@ callback function NewStringChange(integer x, string value)
 function Main()
 {
     RegisterDelegate(stringControl, newNamedControlChange, NewStringChange);
-    stringControl.Initialize(NamedControlName, 0, 0);
+    stringControl.Initialize(NamedControlName, 0);
 }

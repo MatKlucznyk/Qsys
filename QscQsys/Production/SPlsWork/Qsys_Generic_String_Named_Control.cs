@@ -87,7 +87,7 @@ namespace UserModule_QSYS_GENERIC_STRING_NAMED_CONTROL
             // RegisterDelegate( STRINGCONTROL , NEWNAMEDCONTROLCHANGE , NEWSTRINGCHANGE ) 
             STRINGCONTROL .newNamedControlChange  = NEWSTRINGCHANGE; ; 
             __context__.SourceCodeLine = 40;
-            STRINGCONTROL . Initialize ( NAMEDCONTROLNAME  .ToString(), (short)( 0 ), (short)( 0 )) ; 
+            STRINGCONTROL . Initialize ( NAMEDCONTROLNAME  .ToString(), (ushort)( 0 )) ; 
             
             
         }

@@ -37,6 +37,7 @@ namespace QscQsys;
          class ComponentChangeString;
          class ComponentChangeParamsString;
          class ComponentSetValueString;
+         class ListBoxChoice;
          class QsysSoftphoneControllerSimpl;
          class QsysMeterSimpl;
          class QsysMeter;
@@ -62,7 +63,7 @@ namespace QscQsys;
         // class events
 
         // class functions
-        FUNCTION Initialize ( STRING name , SIGNED_INTEGER max , SIGNED_INTEGER min );
+        FUNCTION Initialize ( STRING name , INTEGER isInteger );
         FUNCTION SetInteger ( INTEGER value );
         FUNCTION SetString ( STRING value );
         FUNCTION SetBoolean ( INTEGER value );
@@ -86,6 +87,7 @@ namespace QscQsys;
         delegate FUNCTION DialStringEvent ( SIMPLSHARPSTRING dialString );
         delegate FUNCTION CurrentlyCallingEvent ( SIMPLSHARPSTRING currentlyCalling );
         delegate FUNCTION CurrentCallStatus ( SIMPLSHARPSTRING callStatus );
+        delegate FUNCTION RecentCallsEvent ( SIMPLSHARPSTRING item1 , SIMPLSHARPSTRING item2 , SIMPLSHARPSTRING item3 , SIMPLSHARPSTRING item4 , SIMPLSHARPSTRING item5 , SIMPLSHARPSTRING list );
 
         // class events
 
@@ -94,10 +96,14 @@ namespace QscQsys;
         FUNCTION Dial ( STRING number );
         FUNCTION DialWithoutString ();
         FUNCTION NumPad ( STRING number );
+        FUNCTION NumPadDelete ();
+        FUNCTION NumPadClear ();
+        FUNCTION Connect ();
         FUNCTION Disconnect ();
         FUNCTION Redial ();
         FUNCTION AutoAnswerToggle ();
         FUNCTION DndToggle ();
+        FUNCTION SelectRecentCall ( INTEGER index );
         STRING_FUNCTION ToString ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
 
@@ -112,6 +118,7 @@ namespace QscQsys;
         DelegateProperty DialStringEvent onDialStringEvent;
         DelegateProperty CurrentlyCallingEvent onCurrentlyCallingEvent;
         DelegateProperty CurrentCallStatus onCurrentCallStatusChange;
+        DelegateProperty RecentCallsEvent onRecentCallsEvent;
     };
 
      class QsysProcessorSimplInterface 
@@ -119,6 +126,7 @@ namespace QscQsys;
         // class delegates
         delegate FUNCTION IsRegistered ( INTEGER value );
         delegate FUNCTION IsConnected ( INTEGER value );
+        delegate FUNCTION CoreStatus ( SIMPLSHARPSTRING designName , INTEGER isRedundant , INTEGER isEmulator );
 
         // class events
 
@@ -134,6 +142,7 @@ namespace QscQsys;
         // class properties
         DelegateProperty IsRegistered onIsRegistered;
         DelegateProperty IsConnected onIsConnected;
+        DelegateProperty CoreStatus onNewCoreStatus;
     };
 
      class QsysFaderSimpl 
@@ -518,7 +527,6 @@ namespace QscQsys;
 
         // class properties
         STRING Name[];
-        SIGNED_LONG_INTEGER Value;
     };
 
      class ControlStringParams 
@@ -644,6 +652,25 @@ namespace QscQsys;
         STRING Value[];
     };
 
+     class ListBoxChoice 
+    {
+        // class delegates
+
+        // class events
+
+        // class functions
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        STRING Text[];
+        STRING Color[];
+        STRING Icon[];
+    };
+
      class QsysSoftphoneControllerSimpl 
     {
         // class delegates
@@ -654,6 +681,7 @@ namespace QscQsys;
         delegate FUNCTION DialStringEvent ( SIMPLSHARPSTRING dialString );
         delegate FUNCTION CurrentlyCallingEvent ( SIMPLSHARPSTRING currentlyCalling );
         delegate FUNCTION CurrentCallStatus ( SIMPLSHARPSTRING callStatus );
+        delegate FUNCTION RecentCallsEvent ( SIMPLSHARPSTRING item1 , SIMPLSHARPSTRING item2 , SIMPLSHARPSTRING item3 , SIMPLSHARPSTRING item4 , SIMPLSHARPSTRING item5 , SIMPLSHARPSTRING list );
 
         // class events
 
@@ -662,10 +690,14 @@ namespace QscQsys;
         FUNCTION Dial ( STRING number );
         FUNCTION DialWithoutString ();
         FUNCTION NumPad ( STRING number );
+        FUNCTION NumPadDelete ();
+        FUNCTION NumPadClear ();
+        FUNCTION Connect ();
         FUNCTION Disconnect ();
         FUNCTION Redial ();
         FUNCTION AutoAnswerToggle ();
         FUNCTION DndToggle ();
+        FUNCTION SelectRecentCall ( INTEGER index );
         STRING_FUNCTION ToString ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
 
@@ -680,6 +712,7 @@ namespace QscQsys;
         DelegateProperty DialStringEvent onDialStringEvent;
         DelegateProperty CurrentlyCallingEvent onCurrentlyCallingEvent;
         DelegateProperty CurrentCallStatus onCurrentCallStatusChange;
+        DelegateProperty RecentCallsEvent onRecentCallsEvent;
     };
 
      class QsysMeterSimpl 
@@ -786,6 +819,7 @@ namespace QscQsys;
         static SIGNED_LONG_INTEGER MeterUpdate;
         static SIGNED_LONG_INTEGER NamedControlChange;
         static SIGNED_LONG_INTEGER PotsControllerCallStatusChange;
+        static SIGNED_LONG_INTEGER PotsControllerRecentCallsChange;
     };
 
     static class eQscSimplEventIds // enum
@@ -793,6 +827,7 @@ namespace QscQsys;
         static SIGNED_LONG_INTEGER IsRegistered;
         static SIGNED_LONG_INTEGER NewCommand;
         static SIGNED_LONG_INTEGER IsConnected;
+        static SIGNED_LONG_INTEGER NewCoreStatus;
     };
 
      class QsysMatrixMixerSimpl 
@@ -833,5 +868,6 @@ namespace QscQsys;
         INTEGER __class_id__;
 
         // class properties
+        STRING DesignName[];
     };
 

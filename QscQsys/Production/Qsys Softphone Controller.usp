@@ -6,31 +6,29 @@
 #DEFINE_CONSTANT true 1
 #DEFINE_CONSTANT false 0
 
-Digital_Input Dial, Redial, Disconnect, AutoAnswerToggle, DndToggle, _skip_, KeyPad[10,10];
-String_Input DialString[1000];
+Digital_Input Dial, Redial, Connect, Disconnect, AutoAnswerToggle, DndToggle, _skip_, KeyPadDelete, KeyPadClear, KeyPadStar, KeyPadPound, KeyPad[10], _skip_, _skip_, _skip_, _skip_, SelectRecentCall[5,5];
+Analog_Input SelectRecentCallIndex;
 
-Digital_Output Connected, Ringing, _skip_, AutoAnswerStatus, DndStatus;
-String_Output _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_,_skip_,  DialStringOut, CurrentlyCalling, CallStatus;
+Digital_Output Connected, Ringing, _skiP_, _skip_, AutoAnswerStatus, DndStatus;
+String_Output _skip_, _skip_, _skip_, _skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_, CurrentlyCalling, CallStatus, DialStringOut, RecentCallXSig, RecentCalls[5,5];
 
 QsysSoftphoneControllerSimpl softphone;
 
-String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_,_skip_,_skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_, ComponentName[100];
+String_Parameter _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_,_skip_, _skip_, _skip_, _skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_,_skip_,_skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_, ComponentName[100];
 
 Push Dial
 {
-    if(len(DialString))
-    {
-        softphone.Dial(DialString);
-    }
-    else
-    {
-        softphone.DialWithoutString();
-    }
+    softphone.DialWithoutString();
 }
 
 Push Redial
 {
     softphone.Redial();
+}
+
+Push Connect
+{
+    softphone.Connect();
 }
 
 Push Disconnect
@@ -55,6 +53,47 @@ Threadsafe Push KeyPad
     x = GetLastModifiedArrayIndex();
 
     softphone.NumPad(ItoA(x - 1));
+}
+
+Push KeyPadDelete
+{
+    softphone.NumPadDelete();
+}
+
+Push KeyPadClear
+{
+    softphone.NumPadClear();
+}
+
+Push KeyPadStar
+{
+    softphone.NumPad("*");
+}
+
+Push KeyPadPound
+{
+    softphone.NumPad("#");
+}
+
+Threadsafe Push SelectRecentCall
+{
+    integer x;
+
+    x = GetLastModifiedArrayIndex();
+
+    softphone.SelectRecentCall(x);
+}
+
+Threadsafe Change SelectRecentCallIndex
+{
+    integer x;
+
+    while(x != SelectRecentCallIndex)
+    {
+        x = SelectRecentCallIndex;
+
+        softphone.SelectRecentCall(x);
+    }
 }
 
 Callback Function NewOffHookEvent(integer value)
@@ -104,6 +143,16 @@ callback function NewCurrentCallStatusChange(string status)
     CallStatus = status;
 }
 
+callback function NewRecentCallsEvent(string call1, string call2, string call3, string call4, string call5, string xsig)
+{
+    RecentCallXSig = xsig;
+    RecentCalls[1] = call1;
+    RecentCalls[2] = call2;
+    RecentCalls[3] = call3;
+    RecentCalls[4] = call4;
+    RecentCalls[5] = call5;
+}
+
 Function Main()
 {
     RegisterDelegate(softphone, onOffHookEvent, NewOffHookEvent);
@@ -113,5 +162,6 @@ Function Main()
     RegisterDelegate(softphone, onDialStringEvent, NewDialStringEvent);
     RegisterDelegate(softphone, onCurrentlyCallingEvent, NewCurrentlyCallingEvent);
     RegisterDelegate(softphone, onCurrentCallStatusChange, NewCurrentCallStatusChange);
+    RegisterDelegate(softphone, onRecentCallsEvent, NewRecentCallsEvent);
     softphone.Initialize(ComponentName);
 }

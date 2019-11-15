@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Crestron.SimplSharp;
+using Crestron.SimplSharp.SimplSharpExtensions;
 
 namespace QscQsys
 {
@@ -15,6 +16,7 @@ namespace QscQsys
         public delegate void DialStringEvent(SimplSharpString dialString);
         public delegate void CurrentlyCallingEvent(SimplSharpString currentlyCalling);
         public delegate void CurrentCallStatus(SimplSharpString callStatus);
+        public delegate void RecentCallsEvent(SimplSharpString item1, SimplSharpString item2, SimplSharpString item3, SimplSharpString item4, SimplSharpString item5, SimplSharpString list);
         public OffHookEvent onOffHookEvent { get; set; }
         public RingingEvent onRingingEvent { get; set; }
         public AutoAnswerEvent onAutoAnswerEvent { get; set; }
@@ -22,12 +24,16 @@ namespace QscQsys
         public DialStringEvent onDialStringEvent { get; set; }
         public CurrentlyCallingEvent onCurrentlyCallingEvent { get; set; }
         public CurrentCallStatus onCurrentCallStatusChange { get; set; }
+        public RecentCallsEvent onRecentCallsEvent { get; set; }
 
         private QsysPotsController pots;
+
+        private List<string> fullRecentCallList;
 
         public void Initialize(string name)
         {
             pots = new QsysPotsController(name);
+            fullRecentCallList = new List<string>();
             pots.QsysPotsControllerEvent += new EventHandler<QsysEventsArgs>(softphone_QsysPotsControllerEvent);
         }
 
@@ -77,6 +83,46 @@ namespace QscQsys
                     if (onCurrentCallStatusChange != null)
                         onCurrentCallStatusChange(e.StringValue);
                     break;
+                case eQscEventIds.PotsControllerRecentCallsChange:
+                    if (onRecentCallsEvent != null)
+                    {
+                        List<string> calls = new List<string>();
+
+                        foreach (var call in e.ListValue)
+	{
+	    fullRecentCallList.Add(call.Text);	 
+	}
+
+                        if(e.ListValue.Count > 0)
+                            calls.Add(e.ListValue[0].Text);
+                        else
+                            calls.Add(string.Empty);
+
+                        if (e.ListValue.Count > 1)
+                            calls.Add(e.ListValue[1].Text);
+                        else
+                            calls.Add(string.Empty);
+
+                        if (e.ListValue.Count > 2)
+                            calls.Add(e.ListValue[2].Text);
+                        else
+                            calls.Add(string.Empty);
+
+                        if (e.ListValue.Count > 3)
+                            calls.Add(e.ListValue[3].Text);
+                        else
+                            calls.Add(string.Empty);
+
+                        if (e.ListValue.Count > 4)
+                            calls.Add(e.ListValue[4].Text);
+                        else
+                            calls.Add(string.Empty);
+
+                        var encodedBytes = XSig.GetBytes(0, fullRecentCallList.ToArray());
+
+                        onRecentCallsEvent(calls[0], calls[1], calls[2], calls[3], calls[4], Encoding.GetEncoding(28591).GetString(encodedBytes, 0, encodedBytes.Length));
+                    }
+                    break;
                 default:
                     break;
             }
@@ -97,6 +143,21 @@ namespace QscQsys
             pots.NumPad(number);
         }
 
+        public void NumPadDelete()
+        {
+            pots.NumPadDelete();
+        }
+
+        public void NumPadClear()
+        {
+            pots.NumPadClear();
+        }
+
+        public void Connect()
+        {
+            pots.Connect();
+        }
+
         public void Disconnect()
         {
             pots.Disconnect();
@@ -115,6 +176,11 @@ namespace QscQsys
         public void DndToggle()
         {
             pots.DndToggle();
+        }
+
+        public void SelectRecentCall(ushort index)
+        {
+            pots.SelectRecentCall(index);
         }
 
     }

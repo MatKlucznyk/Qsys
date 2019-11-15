@@ -127,6 +127,7 @@ namespace QscQsys
         public string String { get; set; }
         public double Value { get; set; }
         public double Position { get; set; }
+        public IList<string> Choices { get; set; }
     }
 
     public class ComponentChange
@@ -249,5 +250,12 @@ namespace QscQsys
     {
         public string Name { get; set; }
         public string Value { get; set; }
+    }
+
+    public class ListBoxChoice
+    {
+        public string Text { get; set; }
+        public string Color { get; set; }
+        public string Icon { get; set; }
     }
 }
