@@ -174,7 +174,9 @@ namespace QscQsys
 
         PotsControllerCallStatusChange = 17,
 
-        PotsControllerRecentCallsChange = 18
+        PotsControllerRecentCallsChange = 18,
+        
+        PotsControllerDialing = 19
     }
 
     public enum eQscSimplEventIds

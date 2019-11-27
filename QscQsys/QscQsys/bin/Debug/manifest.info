@@ -1,4 +1,4 @@
-﻿MainAssembly=QscQsys.dll:405c8c00923da479e6a8bfbc7b0cbf4b
+﻿MainAssembly=QscQsys.dll:1d85d7cae49432392317b7924a53829e
 MainAssemblyMinFirmwareVersion=1.007.0017
 MainAssemblyResource=QscQsys.xml:fb4e34d6eca7face1c4411f7a11255a1
 MainAssemblyResource=SimplSharpData.dat:820b61c48c8a2cace82957eed4cc377c
@@ -26,6 +26,6 @@ DependencySource=SimplSharpReflectionInterface.dll:e3ff8edbba84ccd7155b9984e6748
 DependencyPath=QscQsys.clz:SimplSharpReflectionInterface.dll
 DependencyMainAssembly=SimplSharpReflectionInterface.dll:e3ff8edbba84ccd7155b9984e67488b2
 ü
-DependencySource=TCPClient.dll:bbfd0b6eb6befeb6524b1ad64f7b7bd9
+DependencySource=TCPClient.dll:4c9e060ab9a80041bce00230ca1d104b
 DependencyPath=QscQsys.clz:TCPClient.dll
-DependencyMainAssembly=TCPClient.dll:bbfd0b6eb6befeb6524b1ad64f7b7bd9
+DependencyMainAssembly=TCPClient.dll:4c9e060ab9a80041bce00230ca1d104b

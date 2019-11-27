@@ -9,7 +9,7 @@
 Digital_Input Dial, Redial, Connect, Disconnect, AutoAnswerToggle, DndToggle, _skip_, KeyPadDelete, KeyPadClear, KeyPadStar, KeyPadPound, KeyPad[10], _skip_, _skip_, _skip_, _skip_, SelectRecentCall[5,5];
 Analog_Input SelectRecentCallIndex;
 
-Digital_Output Connected, Ringing, _skiP_, _skip_, AutoAnswerStatus, DndStatus;
+Digital_Output Connected, Ringing, Dialing, _skip_, AutoAnswerStatus, DndStatus;
 String_Output _skip_, _skip_, _skip_, _skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_, CurrentlyCalling, CallStatus, DialStringOut, RecentCallXSig, RecentCalls[5,5];
 
 QsysSoftphoneControllerSimpl softphone;
@@ -112,6 +112,14 @@ Callback Function NewRingingEvent(integer value)
         Ringing = false;
 }
 
+Callback Function NewDialingEvent(integer value)
+{
+    if(value)
+        Dialing = true;
+    else
+        Dialing = false;
+}
+
 Callback Function NewAutoAnswerEvent(integer value)
 {
     if(value)
@@ -157,6 +165,7 @@ Function Main()
 {
     RegisterDelegate(softphone, onOffHookEvent, NewOffHookEvent);
     RegisterDelegate(softphone, onRingingEvent, NewRingingEvent);
+    RegisterDelegate(softphone, onDialingEvent, NewDialingEvent);
     RegisterDelegate(softphone, onAutoAnswerEvent, NewAutoAnswerEvent);
     RegisterDelegate(softphone, onDndEvent, NewDndEvent);
     RegisterDelegate(softphone, onDialStringEvent, NewDialStringEvent);

@@ -35,6 +35,7 @@ namespace UserModule_QSYS_POTS_CONTROLLER
         Crestron.Logos.SplusObjects.AnalogInput SELECTRECENTCALLINDEX;
         Crestron.Logos.SplusObjects.DigitalOutput CONNECTED;
         Crestron.Logos.SplusObjects.DigitalOutput RINGING;
+        Crestron.Logos.SplusObjects.DigitalOutput DIALING;
         Crestron.Logos.SplusObjects.DigitalOutput AUTOANSWERSTATUS;
         Crestron.Logos.SplusObjects.DigitalOutput DNDSTATUS;
         Crestron.Logos.SplusObjects.StringOutput CURRENTLYCALLING;
@@ -340,7 +341,7 @@ public void NEWRINGINGEVENT ( ushort VALUE )
     finally { ObjectFinallyHandler(); }
     }
     
-public void NEWAUTOANSWEREVENT ( ushort VALUE ) 
+public void NEWDIALINGEVENT ( ushort VALUE ) 
     { 
     try
     {
@@ -350,12 +351,37 @@ public void NEWAUTOANSWEREVENT ( ushort VALUE )
         if ( Functions.TestForTrue  ( ( VALUE)  ) ) 
             {
             __context__.SourceCodeLine = 113;
-            AUTOANSWERSTATUS  .Value = (ushort) ( 1 ) ; 
+            DIALING  .Value = (ushort) ( 1 ) ; 
             }
         
         else 
             {
             __context__.SourceCodeLine = 115;
+            DIALING  .Value = (ushort) ( 0 ) ; 
+            }
+        
+        
+        
+    }
+    finally { ObjectFinallyHandler(); }
+    }
+    
+public void NEWAUTOANSWEREVENT ( ushort VALUE ) 
+    { 
+    try
+    {
+        SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
+        
+        __context__.SourceCodeLine = 120;
+        if ( Functions.TestForTrue  ( ( VALUE)  ) ) 
+            {
+            __context__.SourceCodeLine = 121;
+            AUTOANSWERSTATUS  .Value = (ushort) ( 1 ) ; 
+            }
+        
+        else 
+            {
+            __context__.SourceCodeLine = 123;
             AUTOANSWERSTATUS  .Value = (ushort) ( 0 ) ; 
             }
         
@@ -371,16 +397,16 @@ public void NEWDNDEVENT ( ushort VALUE )
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 120;
+        __context__.SourceCodeLine = 128;
         if ( Functions.TestForTrue  ( ( VALUE)  ) ) 
             {
-            __context__.SourceCodeLine = 121;
+            __context__.SourceCodeLine = 129;
             DNDSTATUS  .Value = (ushort) ( 1 ) ; 
             }
         
         else 
             {
-            __context__.SourceCodeLine = 123;
+            __context__.SourceCodeLine = 131;
             DNDSTATUS  .Value = (ushort) ( 0 ) ; 
             }
         
@@ -396,7 +422,7 @@ public void NEWDIALSTRINGEVENT ( SimplSharpString NEWDIALSTRING )
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 128;
+        __context__.SourceCodeLine = 136;
         DIALSTRINGOUT  .UpdateValue ( NEWDIALSTRING  .ToString()  ) ; 
         
         
@@ -410,7 +436,7 @@ public void NEWCURRENTLYCALLINGEVENT ( SimplSharpString NEWCURRENTLYCALLING )
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 133;
+        __context__.SourceCodeLine = 141;
         CURRENTLYCALLING  .UpdateValue ( NEWCURRENTLYCALLING  .ToString()  ) ; 
         
         
@@ -424,7 +450,7 @@ public void NEWCURRENTCALLSTATUSCHANGE ( SimplSharpString STATUS )
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 138;
+        __context__.SourceCodeLine = 146;
         CALLSTATUS  .UpdateValue ( STATUS  .ToString()  ) ; 
         
         
@@ -438,17 +464,17 @@ public void NEWRECENTCALLSEVENT ( SimplSharpString CALL1 , SimplSharpString CALL
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 143;
+        __context__.SourceCodeLine = 151;
         RECENTCALLXSIG  .UpdateValue ( XSIG  .ToString()  ) ; 
-        __context__.SourceCodeLine = 144;
+        __context__.SourceCodeLine = 152;
         RECENTCALLS [ 1]  .UpdateValue ( CALL1  .ToString()  ) ; 
-        __context__.SourceCodeLine = 145;
+        __context__.SourceCodeLine = 153;
         RECENTCALLS [ 2]  .UpdateValue ( CALL2  .ToString()  ) ; 
-        __context__.SourceCodeLine = 146;
+        __context__.SourceCodeLine = 154;
         RECENTCALLS [ 3]  .UpdateValue ( CALL3  .ToString()  ) ; 
-        __context__.SourceCodeLine = 147;
+        __context__.SourceCodeLine = 155;
         RECENTCALLS [ 4]  .UpdateValue ( CALL4  .ToString()  ) ; 
-        __context__.SourceCodeLine = 148;
+        __context__.SourceCodeLine = 156;
         RECENTCALLS [ 5]  .UpdateValue ( CALL5  .ToString()  ) ; 
         
         
@@ -462,31 +488,34 @@ public override object FunctionMain (  object __obj__ )
     {
         SplusExecutionContext __context__ = SplusFunctionMainStartCode();
         
-        __context__.SourceCodeLine = 153;
+        __context__.SourceCodeLine = 161;
         // RegisterDelegate( POTS , ONOFFHOOKEVENT , NEWOFFHOOKEVENT ) 
         POTS .onOffHookEvent  = NEWOFFHOOKEVENT; ; 
-        __context__.SourceCodeLine = 154;
+        __context__.SourceCodeLine = 162;
         // RegisterDelegate( POTS , ONRINGINGEVENT , NEWRINGINGEVENT ) 
         POTS .onRingingEvent  = NEWRINGINGEVENT; ; 
-        __context__.SourceCodeLine = 155;
+        __context__.SourceCodeLine = 163;
+        // RegisterDelegate( POTS , ONDIALINGEVENT , NEWDIALINGEVENT ) 
+        POTS .onDialingEvent  = NEWDIALINGEVENT; ; 
+        __context__.SourceCodeLine = 164;
         // RegisterDelegate( POTS , ONAUTOANSWEREVENT , NEWAUTOANSWEREVENT ) 
         POTS .onAutoAnswerEvent  = NEWAUTOANSWEREVENT; ; 
-        __context__.SourceCodeLine = 156;
+        __context__.SourceCodeLine = 165;
         // RegisterDelegate( POTS , ONDNDEVENT , NEWDNDEVENT ) 
         POTS .onDndEvent  = NEWDNDEVENT; ; 
-        __context__.SourceCodeLine = 157;
+        __context__.SourceCodeLine = 166;
         // RegisterDelegate( POTS , ONDIALSTRINGEVENT , NEWDIALSTRINGEVENT ) 
         POTS .onDialStringEvent  = NEWDIALSTRINGEVENT; ; 
-        __context__.SourceCodeLine = 158;
+        __context__.SourceCodeLine = 167;
         // RegisterDelegate( POTS , ONCURRENTLYCALLINGEVENT , NEWCURRENTLYCALLINGEVENT ) 
         POTS .onCurrentlyCallingEvent  = NEWCURRENTLYCALLINGEVENT; ; 
-        __context__.SourceCodeLine = 159;
+        __context__.SourceCodeLine = 168;
         // RegisterDelegate( POTS , ONCURRENTCALLSTATUSCHANGE , NEWCURRENTCALLSTATUSCHANGE ) 
         POTS .onCurrentCallStatusChange  = NEWCURRENTCALLSTATUSCHANGE; ; 
-        __context__.SourceCodeLine = 160;
+        __context__.SourceCodeLine = 169;
         // RegisterDelegate( POTS , ONRECENTCALLSEVENT , NEWRECENTCALLSEVENT ) 
         POTS .onRecentCallsEvent  = NEWRECENTCALLSEVENT; ; 
-        __context__.SourceCodeLine = 161;
+        __context__.SourceCodeLine = 170;
         POTS . Initialize ( COMPONENTNAME  .ToString()) ; 
         
         
@@ -552,6 +581,9 @@ public override void LogosSplusInitialize()
     
     RINGING = new Crestron.Logos.SplusObjects.DigitalOutput( RINGING__DigitalOutput__, this );
     m_DigitalOutputList.Add( RINGING__DigitalOutput__, RINGING );
+    
+    DIALING = new Crestron.Logos.SplusObjects.DigitalOutput( DIALING__DigitalOutput__, this );
+    m_DigitalOutputList.Add( DIALING__DigitalOutput__, DIALING );
     
     AUTOANSWERSTATUS = new Crestron.Logos.SplusObjects.DigitalOutput( AUTOANSWERSTATUS__DigitalOutput__, this );
     m_DigitalOutputList.Add( AUTOANSWERSTATUS__DigitalOutput__, AUTOANSWERSTATUS );
@@ -635,8 +667,9 @@ const uint SELECTRECENTCALL__DigitalInput__ = 20;
 const uint SELECTRECENTCALLINDEX__AnalogSerialInput__ = 0;
 const uint CONNECTED__DigitalOutput__ = 0;
 const uint RINGING__DigitalOutput__ = 1;
-const uint AUTOANSWERSTATUS__DigitalOutput__ = 2;
-const uint DNDSTATUS__DigitalOutput__ = 3;
+const uint DIALING__DigitalOutput__ = 2;
+const uint AUTOANSWERSTATUS__DigitalOutput__ = 3;
+const uint DNDSTATUS__DigitalOutput__ = 4;
 const uint CURRENTLYCALLING__AnalogSerialOutput__ = 0;
 const uint CALLSTATUS__AnalogSerialOutput__ = 1;
 const uint DIALSTRINGOUT__AnalogSerialOutput__ = 2;

@@ -167,6 +167,7 @@ namespace QscQsys
 
                 client = new TCPClientDevice();
                 client.ID = 1;
+                client.RepeatConnectionAttempTime = 15000;
                 client.ConnectionStatus += new StatusEventHandler(client_ConnectionStatus);
                 client.ResponseString += new ResponseEventHandler(client_ResponseString);
                 client.Connect(host, port);

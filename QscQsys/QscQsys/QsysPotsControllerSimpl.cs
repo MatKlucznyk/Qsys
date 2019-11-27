@@ -11,6 +11,7 @@ namespace QscQsys
     {
         public delegate void OffHookEvent(ushort value);
         public delegate void RingingEvent(ushort value);
+        public delegate void DialingEvent(ushort value);
         public delegate void AutoAnswerEvent(ushort value);
         public delegate void DndEvent(ushort value);
         public delegate void DialStringEvent(SimplSharpString dialString);
@@ -19,6 +20,7 @@ namespace QscQsys
         public delegate void RecentCallsEvent(SimplSharpString item1, SimplSharpString item2, SimplSharpString item3, SimplSharpString item4, SimplSharpString item5, SimplSharpString list);
         public OffHookEvent onOffHookEvent { get; set; }
         public RingingEvent onRingingEvent { get; set; }
+        public DialingEvent onDialingEvent { get; set; }
         public AutoAnswerEvent onAutoAnswerEvent { get; set; }
         public DndEvent onDndEvent { get; set; }
         public DialStringEvent onDialStringEvent { get; set; }
@@ -89,9 +91,9 @@ namespace QscQsys
                         List<string> calls = new List<string>();
 
                         foreach (var call in e.ListValue)
-	{
-	    fullRecentCallList.Add(call.Text);	 
-	}
+                        {
+                            fullRecentCallList.Add(call.Text);
+                        }
 
                         if(e.ListValue.Count > 0)
                             calls.Add(e.ListValue[0].Text);
@@ -118,10 +120,16 @@ namespace QscQsys
                         else
                             calls.Add(string.Empty);
 
-                        var encodedBytes = XSig.GetBytes(0, fullRecentCallList.ToArray());
+                        var encodedBytes = XSig.GetBytes(1, fullRecentCallList.ToArray());
 
                         onRecentCallsEvent(calls[0], calls[1], calls[2], calls[3], calls[4], Encoding.GetEncoding(28591).GetString(encodedBytes, 0, encodedBytes.Length));
                     }
+                    break;
+                case eQscEventIds.PotsControllerDialing:
+                    if (e.BooleanValue && onDialingEvent != null)
+                        onDialingEvent(1);
+                    else if (onDialingEvent != null)
+                        onDialingEvent(0);
                     break;
                 default:
                     break;

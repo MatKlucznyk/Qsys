@@ -13,6 +13,7 @@ namespace QscQsys
         private bool registered;
         private bool hookState;
         private bool ringingState;
+        private bool dialingState;
         private bool autoAnswer;
         private bool dnd;
         private StringBuilder dialString = new StringBuilder();
@@ -27,6 +28,7 @@ namespace QscQsys
         public bool IsRegistered { get { return registered; } }
         public bool IsOffhook { get { return hookState; } }
         public bool IsRinging { get { return ringingState; } }
+        public bool IsDialing { get { return dialingState; } }
         public bool AutoAnswer { get { return autoAnswer; } }
         public bool DND { get { return dnd; } }
         public string DialString { get { return dialString.ToString(); } }
@@ -110,6 +112,17 @@ namespace QscQsys
                 case "call_status":
                     callStatus = e.SValue;
                     QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCallStatusChange, cName, true, e.SValue.Length, e.SValue, null));
+
+                    if (callStatus.Contains("Dialing") && dialingState == false)
+                    {
+                        dialingState = true;
+                        QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialing, cName, true, 1, "true", null));
+                    }
+                    else if (dialingState == true)
+                    {
+                        dialingState = false;
+                        QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialing, cName, false, 0, "false", null));
+                    }
                     break;
                 case "recent_calls":
                     recentCalls.Clear();

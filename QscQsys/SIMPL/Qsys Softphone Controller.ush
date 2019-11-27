@@ -79,7 +79,7 @@
   OutputSigType1=Digital
   OutputCue2=Ringing
   OutputSigType2=Digital
-  OutputCue3=[~UNUSED~]
+  OutputCue3=Dialing
   OutputSigType3=Digital
   OutputCue4=[~UNUSED~]
   OutputSigType4=Digital

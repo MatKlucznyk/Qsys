@@ -82,6 +82,7 @@ namespace QscQsys;
         // class delegates
         delegate FUNCTION OffHookEvent ( INTEGER value );
         delegate FUNCTION RingingEvent ( INTEGER value );
+        delegate FUNCTION DialingEvent ( INTEGER value );
         delegate FUNCTION AutoAnswerEvent ( INTEGER value );
         delegate FUNCTION DndEvent ( INTEGER value );
         delegate FUNCTION DialStringEvent ( SIMPLSHARPSTRING dialString );
@@ -113,6 +114,7 @@ namespace QscQsys;
         // class properties
         DelegateProperty OffHookEvent onOffHookEvent;
         DelegateProperty RingingEvent onRingingEvent;
+        DelegateProperty DialingEvent onDialingEvent;
         DelegateProperty AutoAnswerEvent onAutoAnswerEvent;
         DelegateProperty DndEvent onDndEvent;
         DelegateProperty DialStringEvent onDialStringEvent;
@@ -676,6 +678,7 @@ namespace QscQsys;
         // class delegates
         delegate FUNCTION OffHookEvent ( INTEGER value );
         delegate FUNCTION RingingEvent ( INTEGER value );
+        delegate FUNCTION DialingEvent ( INTEGER value );
         delegate FUNCTION AutoAnswerEvent ( INTEGER value );
         delegate FUNCTION DndEvent ( INTEGER value );
         delegate FUNCTION DialStringEvent ( SIMPLSHARPSTRING dialString );
@@ -707,6 +710,7 @@ namespace QscQsys;
         // class properties
         DelegateProperty OffHookEvent onOffHookEvent;
         DelegateProperty RingingEvent onRingingEvent;
+        DelegateProperty DialingEvent onDialingEvent;
         DelegateProperty AutoAnswerEvent onAutoAnswerEvent;
         DelegateProperty DndEvent onDndEvent;
         DelegateProperty DialStringEvent onDialStringEvent;
@@ -820,6 +824,7 @@ namespace QscQsys;
         static SIGNED_LONG_INTEGER NamedControlChange;
         static SIGNED_LONG_INTEGER PotsControllerCallStatusChange;
         static SIGNED_LONG_INTEGER PotsControllerRecentCallsChange;
+        static SIGNED_LONG_INTEGER PotsControllerDialing;
     };
 
     static class eQscSimplEventIds // enum
