@@ -12,10 +12,35 @@ Analog_Output _skip_,_skip_,_skip_, VolumeValue;
 QsysProcessorSimplInterface processor;                          
 QsysFaderSimpl fader;
 
-String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, ComponentName[100];
-Integer_Parameter VolumeStep;
+String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, ComponentName[100];                                       
+
+Integer_Parameter VolumeStep, VolumeRepeatTime;
+
+#BEGIN_PARAMETER_PROPERTIES VolumeRepeatTime
+    propValidUnits = unitTime;
+#END_PARAMETER_PROPERTIES
 
 integer currentVolume;
+integer newDirection;
+
+function VolumeRepeat(integer direction)
+{
+	newDirection = direction;
+
+    if(newDirection = 1 && currentVolume <= 65535 - VolumeStep)
+    	fader.Volume(currentVolume + VolumeStep);
+    else if(newDirection = 1 && currentVolume > 65535 - VolumeStep)
+        fader.Volume(65535);
+	else if(newDirection = 0 && currentVolume >= 0 + VolumeStep)
+		fader.Volume(currentVolume - VolumeStep);
+    else if(newDirection = 0 && currentVolume < 0 + VolumeStep)
+        fader.Volume(0);
+
+    wait(VolumeRepeatTime, vRepeat)
+    {
+        VolumeRepeat(newDirection);
+    }
+}
 
 
 Push MuteOn
@@ -42,12 +67,22 @@ Push MuteToggle
 
 Push VolumeUp
 {
-    fader.Volume(currentVolume + VolumeStep);
+    VolumeRepeat(1);
+}
+
+Release VolumeUp
+{
+    CancelWait(vRepeat);
 }
 
 Push VolumeDown
 {
-    fader.Volume(currentVolume - VolumeStep);
+    VolumeRepeat(0);
+}
+
+Release VolumeDown
+{
+    CancelWait(vRepeat);
 }
 
 Threadsafe Change Volume
