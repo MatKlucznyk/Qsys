@@ -1,0 +1,10 @@
+# Crestron directories, files, or patterns not needed by version control
+*.vtz
+*.xexe/
+*.ASV
+*_xweb.c3prj/
+*.sgd*
+*.sm2
+*.sig
+SPlsWork/
+*_archive.zip
