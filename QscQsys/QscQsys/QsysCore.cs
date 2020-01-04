@@ -373,7 +373,6 @@ namespace QscQsys
 
         StringBuilder RxData = new StringBuilder();
         bool busy = false;
-        int Pos = -1;
         private void ResponseQueueDequeue(object _o)
         {
             if (!this.responseQueue.IsEmpty)
@@ -386,16 +385,15 @@ namespace QscQsys
                     if (!this.busy)
                     {
                         this.busy = true;
-                        while (this.RxData.ToString().Contains("\x00"))
+                        while (this.RxData.ToString().Contains("\x00") && this.RxData.ToString().Length > this.RxData.ToString().IndexOf("\x00"))
                         {
-                            this.Pos = this.RxData.ToString().IndexOf("\x00");
-                            var data = this.RxData.ToString().Substring(0, Pos);
-                            var garbage = this.RxData.Remove(0, Pos + 1); // remove data from COM buffer
-
+                            var data = this.RxData.ToString().Substring(0, this.RxData.ToString().IndexOf("\x00"));
+                            this.RxData.Remove(0, this.RxData.ToString().IndexOf("\x00") + 1); // remove data from COM buffer
+                            
                             if (!data.Contains("jsonrpc\":\"2.0\",\"method\":\"ChangeGroup.Poll\",\"params\":{\"Id\":\"1\",\"Changes\":[]}}") && data.Length > 3)
                             {
                                 if (this.debug)
-                                    this.SendDebug(string.Format("Received from core and dequeue to parse: {0}", data));
+                                    this.SendDebug(string.Format("Dequeue to parse: {0}", data));
 
                                 this.ParseInternalResponse(data);
                             }
@@ -406,7 +404,7 @@ namespace QscQsys
                 catch (Exception e)
                 {
                     this.busy = false;
-                    ErrorLog.Exception(e.Message, e);
+                    ErrorLog.Error("Error in QsysProcessor ResponseQueueDequeue: {0}", e.Message);
                 }
             }
         }
@@ -559,6 +557,7 @@ namespace QscQsys
         internal void Enqueue(string _data)
         {
             this.commandQueue.Enqueue(_data);
+
         }
 
         //private static MemoryStream _memStream = new MemoryStream();

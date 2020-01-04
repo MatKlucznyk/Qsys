@@ -55,6 +55,8 @@ namespace QscQsys
             names[1].Name = "call_ringing";
             names[2].Name = "call_autoanswer";
             names[3].Name = "call_dnd";
+            names[4].Name = "call_cid_name";
+            names[5].Name = "call_cid_number";
             component.Controls = names;
 
             if (this.myCore.RegisterNamedComponent(component))
@@ -107,6 +109,13 @@ namespace QscQsys
                     this.dnd = Convert.ToBoolean(_e.changeResult.Value);
                     this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDND_Change, this.componentName, this.dnd, Convert.ToInt16(_e.changeResult.Value), Convert.ToString(Convert.ToInt16(_e.changeResult.Value))));
                     break;
+                case "call_cid_name":
+
+                    break;
+                case "call_cid_number":
+
+                    break;
+
                 default:
                     break;
             }

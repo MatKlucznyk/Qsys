@@ -73,8 +73,8 @@ namespace QscQsys
             if (_e.changeResult.Position != null)
                 this.controlPosition = _e.changeResult.Position;
 
-            if (_e.changeResult.Color != null)
-                ; //later
+            //if (_e.changeResult.Color != null)
+            //    ; //later
 
             if (_e.changeResult.Indeterminate != null)
                 this.controlIndeterminate = _e.changeResult.Indeterminate;
