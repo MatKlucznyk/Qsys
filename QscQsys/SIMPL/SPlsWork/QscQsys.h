@@ -88,7 +88,8 @@ namespace QscQsys;
         delegate FUNCTION DialStringEvent ( SIMPLSHARPSTRING dialString );
         delegate FUNCTION CurrentlyCallingEvent ( SIMPLSHARPSTRING currentlyCalling );
         delegate FUNCTION CurrentCallStatus ( SIMPLSHARPSTRING callStatus );
-        delegate FUNCTION RecentCallsEvent ( SIMPLSHARPSTRING item1 , SIMPLSHARPSTRING item2 , SIMPLSHARPSTRING item3 , SIMPLSHARPSTRING item4 , SIMPLSHARPSTRING item5 , SIMPLSHARPSTRING list );
+        delegate FUNCTION RecentCallsEvent ( SIMPLSHARPSTRING item1 , SIMPLSHARPSTRING item2 , SIMPLSHARPSTRING item3 , SIMPLSHARPSTRING item4 , SIMPLSHARPSTRING item5 );
+        delegate FUNCTION RecentCallListEvent ( SIMPLSHARPSTRING xsig );
 
         // class events
 
@@ -121,6 +122,7 @@ namespace QscQsys;
         DelegateProperty CurrentlyCallingEvent onCurrentlyCallingEvent;
         DelegateProperty CurrentCallStatus onCurrentCallStatusChange;
         DelegateProperty RecentCallsEvent onRecentCallsEvent;
+        DelegateProperty RecentCallListEvent onRecentCallListEvent;
     };
 
      class QsysProcessorSimplInterface 
@@ -684,7 +686,8 @@ namespace QscQsys;
         delegate FUNCTION DialStringEvent ( SIMPLSHARPSTRING dialString );
         delegate FUNCTION CurrentlyCallingEvent ( SIMPLSHARPSTRING currentlyCalling );
         delegate FUNCTION CurrentCallStatus ( SIMPLSHARPSTRING callStatus );
-        delegate FUNCTION RecentCallsEvent ( SIMPLSHARPSTRING item1 , SIMPLSHARPSTRING item2 , SIMPLSHARPSTRING item3 , SIMPLSHARPSTRING item4 , SIMPLSHARPSTRING item5 , SIMPLSHARPSTRING list );
+        delegate FUNCTION RecentCallsEvent ( SIMPLSHARPSTRING item1 , SIMPLSHARPSTRING item2 , SIMPLSHARPSTRING item3 , SIMPLSHARPSTRING item4 , SIMPLSHARPSTRING item5 );
+        delegate FUNCTION RecentCallListEvent ( SIMPLSHARPSTRING xsig );
 
         // class events
 
@@ -717,6 +720,7 @@ namespace QscQsys;
         DelegateProperty CurrentlyCallingEvent onCurrentlyCallingEvent;
         DelegateProperty CurrentCallStatus onCurrentCallStatusChange;
         DelegateProperty RecentCallsEvent onRecentCallsEvent;
+        DelegateProperty RecentCallListEvent onRecentCallListEvent;
     };
 
      class QsysMeterSimpl 
@@ -864,7 +868,6 @@ namespace QscQsys;
         // class functions
         static FUNCTION Initialize ( STRING host , INTEGER port );
         static FUNCTION Debug ( INTEGER value );
-        static FUNCTION Dispose ();
         static FUNCTION ParseResponse ( STRING data );
         STRING_FUNCTION ToString ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
@@ -873,6 +876,7 @@ namespace QscQsys;
         INTEGER __class_id__;
 
         // class properties
+        INTEGER IsDebugMode;
         STRING DesignName[];
     };
 

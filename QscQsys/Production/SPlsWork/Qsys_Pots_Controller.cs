@@ -458,24 +458,36 @@ public void NEWCURRENTCALLSTATUSCHANGE ( SimplSharpString STATUS )
     finally { ObjectFinallyHandler(); }
     }
     
-public void NEWRECENTCALLSEVENT ( SimplSharpString CALL1 , SimplSharpString CALL2 , SimplSharpString CALL3 , SimplSharpString CALL4 , SimplSharpString CALL5 , SimplSharpString XSIG ) 
+public void NEWRECENTCALLSEVENT ( SimplSharpString CALL1 , SimplSharpString CALL2 , SimplSharpString CALL3 , SimplSharpString CALL4 , SimplSharpString CALL5 ) 
     { 
     try
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
         __context__.SourceCodeLine = 151;
-        RECENTCALLXSIG  .UpdateValue ( XSIG  .ToString()  ) ; 
-        __context__.SourceCodeLine = 152;
         RECENTCALLS [ 1]  .UpdateValue ( CALL1  .ToString()  ) ; 
-        __context__.SourceCodeLine = 153;
+        __context__.SourceCodeLine = 152;
         RECENTCALLS [ 2]  .UpdateValue ( CALL2  .ToString()  ) ; 
-        __context__.SourceCodeLine = 154;
+        __context__.SourceCodeLine = 153;
         RECENTCALLS [ 3]  .UpdateValue ( CALL3  .ToString()  ) ; 
-        __context__.SourceCodeLine = 155;
+        __context__.SourceCodeLine = 154;
         RECENTCALLS [ 4]  .UpdateValue ( CALL4  .ToString()  ) ; 
-        __context__.SourceCodeLine = 156;
+        __context__.SourceCodeLine = 155;
         RECENTCALLS [ 5]  .UpdateValue ( CALL5  .ToString()  ) ; 
+        
+        
+    }
+    finally { ObjectFinallyHandler(); }
+    }
+    
+public void NEWRECENTCALLLISTEVENT ( SimplSharpString XSIG ) 
+    { 
+    try
+    {
+        SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
+        
+        __context__.SourceCodeLine = 160;
+        RECENTCALLXSIG  .UpdateValue ( XSIG  .ToString()  ) ; 
         
         
     }
@@ -488,34 +500,37 @@ public override object FunctionMain (  object __obj__ )
     {
         SplusExecutionContext __context__ = SplusFunctionMainStartCode();
         
-        __context__.SourceCodeLine = 161;
+        __context__.SourceCodeLine = 165;
         // RegisterDelegate( POTS , ONOFFHOOKEVENT , NEWOFFHOOKEVENT ) 
         POTS .onOffHookEvent  = NEWOFFHOOKEVENT; ; 
-        __context__.SourceCodeLine = 162;
+        __context__.SourceCodeLine = 166;
         // RegisterDelegate( POTS , ONRINGINGEVENT , NEWRINGINGEVENT ) 
         POTS .onRingingEvent  = NEWRINGINGEVENT; ; 
-        __context__.SourceCodeLine = 163;
+        __context__.SourceCodeLine = 167;
         // RegisterDelegate( POTS , ONDIALINGEVENT , NEWDIALINGEVENT ) 
         POTS .onDialingEvent  = NEWDIALINGEVENT; ; 
-        __context__.SourceCodeLine = 164;
+        __context__.SourceCodeLine = 168;
         // RegisterDelegate( POTS , ONAUTOANSWEREVENT , NEWAUTOANSWEREVENT ) 
         POTS .onAutoAnswerEvent  = NEWAUTOANSWEREVENT; ; 
-        __context__.SourceCodeLine = 165;
+        __context__.SourceCodeLine = 169;
         // RegisterDelegate( POTS , ONDNDEVENT , NEWDNDEVENT ) 
         POTS .onDndEvent  = NEWDNDEVENT; ; 
-        __context__.SourceCodeLine = 166;
+        __context__.SourceCodeLine = 170;
         // RegisterDelegate( POTS , ONDIALSTRINGEVENT , NEWDIALSTRINGEVENT ) 
         POTS .onDialStringEvent  = NEWDIALSTRINGEVENT; ; 
-        __context__.SourceCodeLine = 167;
+        __context__.SourceCodeLine = 171;
         // RegisterDelegate( POTS , ONCURRENTLYCALLINGEVENT , NEWCURRENTLYCALLINGEVENT ) 
         POTS .onCurrentlyCallingEvent  = NEWCURRENTLYCALLINGEVENT; ; 
-        __context__.SourceCodeLine = 168;
+        __context__.SourceCodeLine = 172;
         // RegisterDelegate( POTS , ONCURRENTCALLSTATUSCHANGE , NEWCURRENTCALLSTATUSCHANGE ) 
         POTS .onCurrentCallStatusChange  = NEWCURRENTCALLSTATUSCHANGE; ; 
-        __context__.SourceCodeLine = 169;
+        __context__.SourceCodeLine = 173;
         // RegisterDelegate( POTS , ONRECENTCALLSEVENT , NEWRECENTCALLSEVENT ) 
         POTS .onRecentCallsEvent  = NEWRECENTCALLSEVENT; ; 
-        __context__.SourceCodeLine = 170;
+        __context__.SourceCodeLine = 174;
+        // RegisterDelegate( POTS , ONRECENTCALLLISTEVENT , NEWRECENTCALLLISTEVENT ) 
+        POTS .onRecentCallListEvent  = NEWRECENTCALLLISTEVENT; ; 
+        __context__.SourceCodeLine = 175;
         POTS . Initialize ( COMPONENTNAME  .ToString()) ; 
         
         

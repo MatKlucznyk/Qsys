@@ -146,14 +146,18 @@ callback function NewCurrentCallStatusChange(string status)
     CallStatus = status;
 }
 
-callback function NewRecentCallsEvent(string call1, string call2, string call3, string call4, string call5, string xsig)
+callback function NewRecentCallsEvent(string call1, string call2, string call3, string call4, string call5)
 {
-    RecentCallXSig = xsig;
     RecentCalls[1] = call1;
     RecentCalls[2] = call2;
     RecentCalls[3] = call3;
     RecentCalls[4] = call4;
     RecentCalls[5] = call5;
+}
+
+callback function NewRecentCallListEvent(string xsig)
+{
+        RecentCallXSig = xsig;
 }
 
 Function Main()
@@ -167,5 +171,6 @@ Function Main()
     RegisterDelegate(pots, onCurrentlyCallingEvent, NewCurrentlyCallingEvent);
     RegisterDelegate(pots, onCurrentCallStatusChange, NewCurrentCallStatusChange);
     RegisterDelegate(pots, onRecentCallsEvent, NewRecentCallsEvent);
+    RegisterDelegate(pots, onRecentCallListEvent, NewRecentCallListEvent);
     pots.Initialize(ComponentName);
 }

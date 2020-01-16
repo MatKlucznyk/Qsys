@@ -477,24 +477,36 @@ public void NEWCURRENTCALLSTATUSCHANGE ( SimplSharpString STATUS )
     finally { ObjectFinallyHandler(); }
     }
     
-public void NEWRECENTCALLSEVENT ( SimplSharpString CALL1 , SimplSharpString CALL2 , SimplSharpString CALL3 , SimplSharpString CALL4 , SimplSharpString CALL5 , SimplSharpString XSIG ) 
+public void NEWRECENTCALLSEVENT ( SimplSharpString CALL1 , SimplSharpString CALL2 , SimplSharpString CALL3 , SimplSharpString CALL4 , SimplSharpString CALL5 ) 
     { 
     try
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
         __context__.SourceCodeLine = 156;
-        RECENTCALLXSIG  .UpdateValue ( XSIG  .ToString()  ) ; 
-        __context__.SourceCodeLine = 157;
         RECENTCALLS [ 1]  .UpdateValue ( CALL1  .ToString()  ) ; 
-        __context__.SourceCodeLine = 158;
+        __context__.SourceCodeLine = 157;
         RECENTCALLS [ 2]  .UpdateValue ( CALL2  .ToString()  ) ; 
-        __context__.SourceCodeLine = 159;
+        __context__.SourceCodeLine = 158;
         RECENTCALLS [ 3]  .UpdateValue ( CALL3  .ToString()  ) ; 
-        __context__.SourceCodeLine = 160;
+        __context__.SourceCodeLine = 159;
         RECENTCALLS [ 4]  .UpdateValue ( CALL4  .ToString()  ) ; 
-        __context__.SourceCodeLine = 161;
+        __context__.SourceCodeLine = 160;
         RECENTCALLS [ 5]  .UpdateValue ( CALL5  .ToString()  ) ; 
+        
+        
+    }
+    finally { ObjectFinallyHandler(); }
+    }
+    
+public void NEWRECENTCALLLISTEVENT ( SimplSharpString XSIG ) 
+    { 
+    try
+    {
+        SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
+        
+        __context__.SourceCodeLine = 165;
+        RECENTCALLXSIG  .UpdateValue ( XSIG  .ToString()  ) ; 
         
         
     }
@@ -507,34 +519,37 @@ public override object FunctionMain (  object __obj__ )
     {
         SplusExecutionContext __context__ = SplusFunctionMainStartCode();
         
-        __context__.SourceCodeLine = 166;
+        __context__.SourceCodeLine = 170;
         // RegisterDelegate( SOFTPHONE , ONOFFHOOKEVENT , NEWOFFHOOKEVENT ) 
         SOFTPHONE .onOffHookEvent  = NEWOFFHOOKEVENT; ; 
-        __context__.SourceCodeLine = 167;
+        __context__.SourceCodeLine = 171;
         // RegisterDelegate( SOFTPHONE , ONRINGINGEVENT , NEWRINGINGEVENT ) 
         SOFTPHONE .onRingingEvent  = NEWRINGINGEVENT; ; 
-        __context__.SourceCodeLine = 168;
+        __context__.SourceCodeLine = 172;
         // RegisterDelegate( SOFTPHONE , ONDIALINGEVENT , NEWDIALINGEVENT ) 
         SOFTPHONE .onDialingEvent  = NEWDIALINGEVENT; ; 
-        __context__.SourceCodeLine = 169;
+        __context__.SourceCodeLine = 173;
         // RegisterDelegate( SOFTPHONE , ONAUTOANSWEREVENT , NEWAUTOANSWEREVENT ) 
         SOFTPHONE .onAutoAnswerEvent  = NEWAUTOANSWEREVENT; ; 
-        __context__.SourceCodeLine = 170;
+        __context__.SourceCodeLine = 174;
         // RegisterDelegate( SOFTPHONE , ONDNDEVENT , NEWDNDEVENT ) 
         SOFTPHONE .onDndEvent  = NEWDNDEVENT; ; 
-        __context__.SourceCodeLine = 171;
+        __context__.SourceCodeLine = 175;
         // RegisterDelegate( SOFTPHONE , ONDIALSTRINGEVENT , NEWDIALSTRINGEVENT ) 
         SOFTPHONE .onDialStringEvent  = NEWDIALSTRINGEVENT; ; 
-        __context__.SourceCodeLine = 172;
+        __context__.SourceCodeLine = 176;
         // RegisterDelegate( SOFTPHONE , ONCURRENTLYCALLINGEVENT , NEWCURRENTLYCALLINGEVENT ) 
         SOFTPHONE .onCurrentlyCallingEvent  = NEWCURRENTLYCALLINGEVENT; ; 
-        __context__.SourceCodeLine = 173;
+        __context__.SourceCodeLine = 177;
         // RegisterDelegate( SOFTPHONE , ONCURRENTCALLSTATUSCHANGE , NEWCURRENTCALLSTATUSCHANGE ) 
         SOFTPHONE .onCurrentCallStatusChange  = NEWCURRENTCALLSTATUSCHANGE; ; 
-        __context__.SourceCodeLine = 174;
+        __context__.SourceCodeLine = 178;
         // RegisterDelegate( SOFTPHONE , ONRECENTCALLSEVENT , NEWRECENTCALLSEVENT ) 
         SOFTPHONE .onRecentCallsEvent  = NEWRECENTCALLSEVENT; ; 
-        __context__.SourceCodeLine = 175;
+        __context__.SourceCodeLine = 179;
+        // RegisterDelegate( SOFTPHONE , ONRECENTCALLLISTEVENT , NEWRECENTCALLLISTEVENT ) 
+        SOFTPHONE .onRecentCallListEvent  = NEWRECENTCALLLISTEVENT; ; 
+        __context__.SourceCodeLine = 180;
         SOFTPHONE . Initialize ( COMPONENTNAME  .ToString()) ; 
         
         

@@ -281,19 +281,9 @@ namespace QscQsys
 
         public void AutoAnswerToggle()
         {
-            if (QsysProcessor.IsDebugMode)
-            {
-                CrestronConsole.PrintLine("Current AutoAnswer '{0}', new AutoAnswer '{1}'", autoAnswer, !autoAnswer);
-            }
-
             ComponentChange aAnswer = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName } };
 
             ComponentSetValue aAsnwerValue = new ComponentSetValue() { Name = "call_autoanswer", Value = Convert.ToDouble(!autoAnswer) };
-
-            if (QsysProcessor.IsDebugMode)
-            {
-                CrestronConsole.PrintLine("Sending AutoAnswer '{0}'", aAsnwerValue.Value);
-            }
 
             aAnswer.Params.Controls = new List<ComponentSetValue>() { aAsnwerValue };
 

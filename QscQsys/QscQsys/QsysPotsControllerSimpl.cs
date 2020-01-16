@@ -17,7 +17,8 @@ namespace QscQsys
         public delegate void DialStringEvent(SimplSharpString dialString);
         public delegate void CurrentlyCallingEvent(SimplSharpString currentlyCalling);
         public delegate void CurrentCallStatus(SimplSharpString callStatus);
-        public delegate void RecentCallsEvent(SimplSharpString item1, SimplSharpString item2, SimplSharpString item3, SimplSharpString item4, SimplSharpString item5, SimplSharpString list);
+        public delegate void RecentCallsEvent(SimplSharpString item1, SimplSharpString item2, SimplSharpString item3, SimplSharpString item4, SimplSharpString item5);
+        public delegate void RecentCallListEvent(SimplSharpString xsig);
         public OffHookEvent onOffHookEvent { get; set; }
         public RingingEvent onRingingEvent { get; set; }
         public DialingEvent onDialingEvent { get; set; }
@@ -27,6 +28,7 @@ namespace QscQsys
         public CurrentlyCallingEvent onCurrentlyCallingEvent { get; set; }
         public CurrentCallStatus onCurrentCallStatusChange { get; set; }
         public RecentCallsEvent onRecentCallsEvent { get; set; }
+        public RecentCallListEvent onRecentCallListEvent { get; set; }
 
         private QsysPotsController pots;
 
@@ -120,9 +122,17 @@ namespace QscQsys
                         else
                             calls.Add(string.Empty);
 
-                        var encodedBytes = XSig.GetBytes(1, fullRecentCallList.ToArray());
+                        onRecentCallsEvent(calls[0], calls[1], calls[2], calls[3], calls[4]);
+                    }
+                    if (onRecentCallListEvent != null)
+                    {
+                        List<string> calls = new List<string>();
 
-                        onRecentCallsEvent(calls[0], calls[1], calls[2], calls[3], calls[4], Encoding.GetEncoding(28591).GetString(encodedBytes, 0, encodedBytes.Length));
+                        foreach (var call in calls)
+                        {
+                            var encodedBytes = XSig.GetBytes(calls.IndexOf(call), call);
+                            onRecentCallListEvent(Encoding.GetEncoding(28591).GetString(encodedBytes, 0, encodedBytes.Length));
+                        }
                     }
                     break;
                 case eQscEventIds.PotsControllerDialing:

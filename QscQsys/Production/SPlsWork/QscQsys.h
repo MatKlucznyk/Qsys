@@ -88,7 +88,8 @@ namespace QscQsys;
         delegate FUNCTION DialStringEvent ( SIMPLSHARPSTRING dialString );
         delegate FUNCTION CurrentlyCallingEvent ( SIMPLSHARPSTRING currentlyCalling );
         delegate FUNCTION CurrentCallStatus ( SIMPLSHARPSTRING callStatus );
-        delegate FUNCTION RecentCallsEvent ( SIMPLSHARPSTRING item1 , SIMPLSHARPSTRING item2 , SIMPLSHARPSTRING item3 , SIMPLSHARPSTRING item4 , SIMPLSHARPSTRING item5 , SIMPLSHARPSTRING list );
+        delegate FUNCTION RecentCallsEvent ( SIMPLSHARPSTRING item1 , SIMPLSHARPSTRING item2 , SIMPLSHARPSTRING item3 , SIMPLSHARPSTRING item4 , SIMPLSHARPSTRING item5 );
+        delegate FUNCTION RecentCallListEvent ( SIMPLSHARPSTRING xsig );
 
         // class events
 
@@ -121,6 +122,7 @@ namespace QscQsys;
         DelegateProperty CurrentlyCallingEvent onCurrentlyCallingEvent;
         DelegateProperty CurrentCallStatus onCurrentCallStatusChange;
         DelegateProperty RecentCallsEvent onRecentCallsEvent;
+        DelegateProperty RecentCallListEvent onRecentCallListEvent;
     };
 
      class QsysProcessorSimplInterface 
@@ -684,7 +686,8 @@ namespace QscQsys;
         delegate FUNCTION DialStringEvent ( SIMPLSHARPSTRING dialString );
         delegate FUNCTION CurrentlyCallingEvent ( SIMPLSHARPSTRING currentlyCalling );
         delegate FUNCTION CurrentCallStatus ( SIMPLSHARPSTRING callStatus );
-        delegate FUNCTION RecentCallsEvent ( SIMPLSHARPSTRING item1 , SIMPLSHARPSTRING item2 , SIMPLSHARPSTRING item3 , SIMPLSHARPSTRING item4 , SIMPLSHARPSTRING item5 , SIMPLSHARPSTRING list );
+        delegate FUNCTION RecentCallsEvent ( SIMPLSHARPSTRING item1 , SIMPLSHARPSTRING item2 , SIMPLSHARPSTRING item3 , SIMPLSHARPSTRING item4 , SIMPLSHARPSTRING item5 );
+        delegate FUNCTION RecentCallListEvent ( SIMPLSHARPSTRING xsig );
 
         // class events
 
@@ -717,6 +720,7 @@ namespace QscQsys;
         DelegateProperty CurrentlyCallingEvent onCurrentlyCallingEvent;
         DelegateProperty CurrentCallStatus onCurrentCallStatusChange;
         DelegateProperty RecentCallsEvent onRecentCallsEvent;
+        DelegateProperty RecentCallListEvent onRecentCallListEvent;
     };
 
      class QsysMeterSimpl 
