@@ -877,6 +877,7 @@ namespace QscQsys;
         INTEGER __class_id__;
 
         // class properties
+        INTEGER IsDebugMode;
         STRING DesignName[];
     };
 
