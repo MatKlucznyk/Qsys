@@ -18,8 +18,8 @@ namespace QscQsys
         public DndEvent onDndEvent { get; set; }
         public delegate void DialStringEvent(SimplSharpString dialString);
         public DialStringEvent onDialStringEvent { get; set; }
-        public delegate void CurrentlyCallingEvent(SimplSharpString currentlyCalling); 
-        public CurrentlyCallingEvent onCurrentlyCallingEvent { get; set; }
+        public delegate void CidEvent(SimplSharpString value);
+        public CidEvent onCidEvent { get; set; }
 
         private QsysPotsController pots;
 
@@ -57,9 +57,9 @@ namespace QscQsys
                     if (onDialStringEvent != null)
                         onDialStringEvent(_e.StringValue);
                     break;
-                case eQscEventIds.PotsControllerCurrentlyCalling:
-                    if (onCurrentlyCallingEvent != null)
-                        onCurrentlyCallingEvent(_e.StringValue);
+                case eQscEventIds.PotsControllerCID:
+                    if (onCidEvent != null)
+                        onCidEvent(_e.StringValue);
                     break;
                 case eQscEventIds.RouterInputSelected:
                     break;
@@ -76,29 +76,9 @@ namespace QscQsys
             }
         }
 
-        public void Dial(string _number)
+        public void Connect()
         {
-            this.pots.Dial(_number);
-        }
-
-        public void DialWithoutString()
-        {
-            this.pots.Dial();
-        }
-
-        public void NumPad(string _number)
-        {
-            this.pots.NumPad(_number);
-        }
-
-        public void NumPadClear()
-        {
-            this.pots.NumPadClear();
-        }
-
-        public void NumPadDelete()
-        {
-            this.pots.NumPadDelete();
+            this.pots.Connect();
         }
 
         public void Disconnect()
@@ -106,9 +86,24 @@ namespace QscQsys
             this.pots.Disconnect();
         }
 
-        public void Redial()
+        public void SetDialString(string _dialString)
         {
-            this.pots.Redial();
+            this.pots.SetDialString(_dialString);
+        }
+
+        public void NumPadKey(string _key)
+        {
+            this.pots.NumPadKey(_key);
+        }
+
+        public void NumPadBackspace()
+        {
+            this.pots.NumPadBackspace();
+        }
+
+        public void NumPadClear()
+        {
+            this.pots.NumPadClear();
         }
 
         public void AutoAnswerToggle()
@@ -119,6 +114,15 @@ namespace QscQsys
         public void DndToggle()
         {
             this.pots.DndToggle();
+        }
+
+        public SimplSharpString GetCidNumber()
+        {
+            return this.pots.CidNumber;
+        }
+        public SimplSharpString GetCidName()
+        {
+            return this.pots.CidName;
         }
 
     }

@@ -380,25 +380,19 @@ namespace QscQsys
         bool busy = false;
         private void ResponseQueueDequeue(object _o)
         {
-            if (!this.responseQueue.IsEmpty)
+            if (this.responseQueue.Count > 0)
             {
                 try
                 {
-                    string tmpString = this.responseQueue.Dequeue(); // removes string from queue, blocks until an item is queued
-                    this.RxData.Append(tmpString); //Append received data to the COM buffer
+                    this.RxData.Append(this.responseQueue.Dequeue()); //Append received data to the COM buffer
 
                     if (!this.busy)
                     {
                         this.busy = true;
                         while (this.RxData.ToString().Contains("\x00"))
                         {
-                            var data = this.RxData.ToString().Substring(0, this.RxData.ToString().IndexOf("\x00"));
-
-                            if (this.RxData.Length > this.RxData.ToString().IndexOf("\x00")) // remove data from COM buffer
-                                this.RxData.Remove(0, this.RxData.ToString().IndexOf("\x00")+1);
-
-                            if (data[0] != '{')
-                                data = '{' + data;
+                            string data = this.RxData.ToString().Substring(0, this.RxData.ToString().IndexOf("\x00"));
+                            this.RxData.Remove(0, this.RxData.ToString().IndexOf("\x00") + 1);
 
                             if (!data.Contains("jsonrpc\":\"2.0\",\"method\":\"ChangeGroup.Poll\",\"params\":{\"Id\":\"1\",\"Changes\":[]}}") && data.Length > 3)
                             {
@@ -414,7 +408,9 @@ namespace QscQsys
                 catch (Exception e)
                 {
                     this.busy = false;
-                    ErrorLog.Error("Error in QsysProcessor ResponseQueueDequeue: {0}", e.Message);
+                    //ErrorLog.Error("Error in QsysProcessor ResponseQueueDequeue: {0}", e.Message);
+                    this.SendDebug(String.Format("Error in QsysProcessor ResponseQueueDequeue: \r\n--------MESSAGE---------\r\n{0}\r\n--------TRACE---------\r\n{1}\r\n--------ORIGINAL---------\r\n{2}\r\n---------------------\r\n", e.Message, e.StackTrace, RxData.ToString()));
+                    this.RxData.Remove(0, this.RxData.Length);
                 }
             }
         }

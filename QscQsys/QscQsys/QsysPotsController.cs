@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Crestron.SimplSharp;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace QscQsys
 {
@@ -28,12 +29,13 @@ namespace QscQsys
         public bool AutoAnswer { get { return autoAnswer; } }
         private bool dnd;
         public bool DND { get { return dnd; } }
-        private StringBuilder dialString = new StringBuilder();
+        private string dialString;
         public string DialString { get { return dialString.ToString(); } }
-        private string currentlyCalling;
-        public string CurrentlyCalling { get { return currentlyCalling; } }
-        private string lastCalled;
-        public string LastNumberCalled { get { return lastCalled; } }
+        private string cidName;
+        public string CidName { get { return cidName; } }
+        private string cidNumber;
+        public string CidNumber { get { return cidNumber; } }
+
 
         //Events
         public event EventHandler<QsysEventsArgs> QsysPotsControllerEvent;
@@ -51,9 +53,9 @@ namespace QscQsys
             names.Add(new ControlName { Name = "call_ringing" });
             names.Add(new ControlName { Name = "call_autoanswer" });
             names.Add(new ControlName { Name = "call_dnd" });
+            names.Add(new ControlName { Name = "call_number" });
             names.Add(new ControlName { Name = "call_cid_name" });
             names.Add(new ControlName { Name = "call_cid_number" });
-            names.Add(new ControlName { Name = "call_cid_name" });
             component.Controls = names;
 
             if (this.myCore.RegisterNamedComponent(component))
@@ -73,17 +75,11 @@ namespace QscQsys
                     {
                         this.hookState = true;
                         this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerOffHook, this.componentName, true, 1, "1"));
-                        this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCurrentlyCalling, this.componentName, true, this.currentlyCalling.Length, this.currentlyCalling));
                     }
                     else if (_e.changeResult.Value == 0)
                     {
                         this.hookState = false;
-                        this.dialString.Remove(0, this.dialString.Length);
                         this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerOffHook, this.componentName, false, 0, "0"));
-                        this.lastCalled = this.currentlyCalling;
-                        this.currentlyCalling = string.Empty;
-                        this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCurrentlyCalling, this.componentName, false, this.currentlyCalling.Length, this.currentlyCalling));
-                        this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, this.componentName, false, 0, this.dialString.ToString()));
                     }
                     break;
                 case "call_ringing":
@@ -107,10 +103,16 @@ namespace QscQsys
                     this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDND_Change, this.componentName, this.dnd, Convert.ToInt16(_e.changeResult.Value), Convert.ToString(Convert.ToInt16(_e.changeResult.Value))));
                     break;
                 case "call_cid_name":
-
+                    this.cidName = _e.changeResult.String;
+                    this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCID, this.componentName, false, 0, this.cidName));
                     break;
                 case "call_cid_number":
-
+                    this.cidNumber = _e.changeResult.String;
+                    this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCID, this.componentName, false, 0, this.cidNumber));
+                    break;
+                case "call_number":
+                    this.dialString = _e.changeResult.String;
+                    this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, this.componentName, false, 0, this.dialString));
                     break;
 
                 default:
@@ -118,153 +120,75 @@ namespace QscQsys
             }
         }
 
-        public void NumPad(string _number)
+        public void Connect()
         {
-            this.dialString.Append(_number);
-
-            if (this.hookState)
-            {
-                ComponentChange pinPad = new ComponentChange();
-                pinPad.Params = new ComponentChangeParams();
-                pinPad.Params.Name = this.componentName;
-
-                ComponentSetValue pinPadSetValue = new ComponentSetValue();
-                pinPadSetValue.Name = string.Format("call_pinpad_{0}", _number);
-                pinPadSetValue.Value = 1;
-
-                pinPad.Params.Controls = new List<ComponentSetValue>();
-                pinPad.Params.Controls.Add(pinPadSetValue);
-
-                this.myCore.Enqueue(JsonConvert.SerializeObject(pinPad));
-            }
-
-            this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, this.componentName, true, this.dialString.Length, this.dialString.ToString()));
-        }
-
-        public void NumPadDelete()
-        {
-            this.dialString.Remove(this.dialString.Length - 1, 1);
-
-            this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, this.componentName, true, this.dialString.Length, this.dialString.ToString()));
-        }
-
-        public void NumPadClear()
-        {
-            this.dialString.Remove(0, this.dialString.Length);
-
-            this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, this.componentName, true, this.dialString.Length, this.dialString.ToString()));
-        }
-
-        public void Dial()
-        {
-            this.currentlyCalling = this.dialString.ToString();
-            this.dialString.Remove(0, this.dialString.Length);
-
-            this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, this.componentName, false, 0, string.Empty));
-
-            ComponentChangeString dialNumber = new ComponentChangeString();
-            dialNumber.Params = new ComponentChangeParamsString();
-
-            dialNumber.Params.Name = this.componentName;
-
-            ComponentSetValueString dialStringSetValue = new ComponentSetValueString();
-            dialStringSetValue.Name = "call_number";
-            dialStringSetValue.Value = this.currentlyCalling;
-
-            dialNumber.Params.Controls = new List<ComponentSetValueString>();
-            dialNumber.Params.Controls.Add(dialStringSetValue);
-
-            this.myCore.Enqueue(JsonConvert.SerializeObject(dialNumber));
-
-            ComponentChange dial = new ComponentChange();
-            dial.Params = new ComponentChangeParams();
-
-            dial.Params.Name = this.componentName;
-
-            ComponentSetValue dialSetValue = new ComponentSetValue();
-            dialSetValue.Name = "call_connect";
-            dialSetValue.Value = 1;
-
-            dial.Params.Controls = new List<ComponentSetValue>();
-            dial.Params.Controls.Add(dialSetValue);
-
-            this.myCore.Enqueue(JsonConvert.SerializeObject(dial));
-        }
-
-        public void Dial(string number)
-        {
-            this.currentlyCalling = number;
-
-            this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, this.componentName, false, 0, string.Empty));
-
-            ComponentChangeString dialNumber = new ComponentChangeString();
-            dialNumber.Params = new ComponentChangeParamsString();
-
-            dialNumber.Params.Name = this.componentName;
-
-            ComponentSetValueString dialStringSetValue = new ComponentSetValueString();
-            dialStringSetValue.Name = "call_number";
-            dialStringSetValue.Value = currentlyCalling;
-
-            dialNumber.Params.Controls = new List<ComponentSetValueString>();
-            dialNumber.Params.Controls.Add(dialStringSetValue);
-
-            this.myCore.Enqueue(JsonConvert.SerializeObject(dialNumber));
-
-            ComponentChange dial = new ComponentChange();
-            dial.Params = new ComponentChangeParams();
-
-            dial.Params.Name = this.componentName;
-
-            ComponentSetValue dialSetValue = new ComponentSetValue();
-            dialSetValue.Name = "call_connect";
-            dialSetValue.Value = 1;
-
-            dial.Params.Controls = new List<ComponentSetValue>();
-            dial.Params.Controls.Add(dialSetValue);
-
-            this.myCore.Enqueue(JsonConvert.SerializeObject(dial));
+            ComponentChange cc = new ComponentChange() { Params = new ComponentChangeParams() { Name = this.componentName } };
+            ComponentSetValue ccv = new ComponentSetValue() { Name = "call_connect", Value = 1 };
+            cc.Params.Controls = new List<ComponentSetValue>() { ccv };
+            this.myCore.SendDebug(string.Format("Component {0} :: Connect", this.componentName));
+            this.myCore.Enqueue(JsonConvert.SerializeObject(cc));
         }
 
         public void Disconnect()
         {
-            ComponentChange disconnect = new ComponentChange();
-            disconnect.Params = new ComponentChangeParams();
-
-            disconnect.Params.Name = this.componentName;
-
-            ComponentSetValue disconnectValue = new ComponentSetValue();
-            disconnectValue.Name = "call_disconnect";
-            disconnectValue.Value = 1;
-
-            disconnect.Params.Controls = new List<ComponentSetValue>();
-            disconnect.Params.Controls.Add(disconnectValue);
-
-            this.myCore.Enqueue(JsonConvert.SerializeObject(disconnect));
+            ComponentChange cc = new ComponentChange() { Params = new ComponentChangeParams() { Name = this.componentName } };
+            ComponentSetValue ccv = new ComponentSetValue() { Name = "call_disconnect", Value = 1 };
+            cc.Params.Controls = new List<ComponentSetValue>() { ccv };
+            this.myCore.SendDebug(string.Format("Component {0} :: Disconnect", this.componentName));
+            this.myCore.Enqueue(JsonConvert.SerializeObject(cc));
         }
 
-        public void Redial()
+        public void SetDialString(string _dialString)
         {
-            this.dialString = new StringBuilder();
-            this.dialString.Append(this.lastCalled);
-            this.Dial();
+            ComponentChangeString cc = new ComponentChangeString() { Params = new ComponentChangeParamsString() { Name = this.componentName } };
+            ComponentSetValueString ccv = new ComponentSetValueString { Name = "call_number", Value = _dialString };
+            cc.Params.Controls = new List<ComponentSetValueString>() { ccv };
+            this.myCore.SendDebug(string.Format("Component {0} :: SetDialString - {1}", this.componentName));
+            this.myCore.Enqueue(JsonConvert.SerializeObject(cc));
+        }
+
+        public void NumPadKey(string _key)
+        {
+            ComponentChange cc = new ComponentChange() { Params = new ComponentChangeParams() { Name = this.componentName } };
+            ComponentSetValue ccv = new ComponentSetValue() { Name = string.Format("call_pinpad_{0}", _key), Value = 1 };
+            cc.Params.Controls = new List<ComponentSetValue>() { ccv };
+            this.myCore.SendDebug(string.Format("Component {0} :: NumPadKey {0}", this.componentName, _key));
+            this.myCore.Enqueue(JsonConvert.SerializeObject(cc));
+        }
+
+        public void NumPadBackspace()
+        {
+            ComponentChange cc = new ComponentChange() { Params = new ComponentChangeParams() { Name = this.componentName } };
+            ComponentSetValue ccv = new ComponentSetValue() { Name = "call_backspace", Value = 1 };
+            cc.Params.Controls = new List<ComponentSetValue>() { ccv };
+            this.myCore.SendDebug(string.Format("Component {0} :: NumPadBackspace", this.componentName));
+            this.myCore.Enqueue(JsonConvert.SerializeObject(cc));
+        }
+
+        public void NumPadClear()
+        {
+            ComponentChange cc = new ComponentChange() { Params = new ComponentChangeParams() { Name = this.componentName } };
+            ComponentSetValue ccv = new ComponentSetValue() { Name = "call_clear", Value = 1 };
+            cc.Params.Controls = new List<ComponentSetValue>() { ccv };
+            this.myCore.SendDebug(string.Format("Component {0} :: NumPadClear", this.componentName));
+            this.myCore.Enqueue(JsonConvert.SerializeObject(cc));
         }
 
         public void AutoAnswerToggle()
         {
-            ComponentChange aAnswer = new ComponentChange() { Params = new ComponentChangeParams() { Name = this.componentName } };
-            ComponentSetValue aAsnwerValue = new ComponentSetValue() { Name = "call_autoanswer", Value = Convert.ToDouble(!autoAnswer) };
-            aAnswer.Params.Controls = new List<ComponentSetValue>() { aAsnwerValue };
+            ComponentChange cc = new ComponentChange() { Params = new ComponentChangeParams() { Name = this.componentName } };
+            ComponentSetValue ccv = new ComponentSetValue() { Name = "call_autoanswer", Value = Convert.ToDouble(!autoAnswer) };
+            cc.Params.Controls = new List<ComponentSetValue>() { ccv };
             this.myCore.SendDebug(string.Format("Component {0} :: Setting AutoAnswer '{1}'", this.componentName, this.autoAnswer));
-            this.myCore.Enqueue(JsonConvert.SerializeObject(aAnswer));
+            this.myCore.Enqueue(JsonConvert.SerializeObject(cc));
         }
 
         public void DndToggle()
         {
-            ComponentChange d = new ComponentChange() { Params = new ComponentChangeParams() { Name = this.componentName } };
-            ComponentSetValue dValue = new ComponentSetValue() { Name = "call_dnd", Value = Convert.ToDouble(!this.dnd) };
-            d.Params.Controls = new List<ComponentSetValue>() { dValue };
-            this.myCore.Enqueue(JsonConvert.SerializeObject(d));
+            ComponentChange cc = new ComponentChange() { Params = new ComponentChangeParams() { Name = this.componentName } };
+            ComponentSetValue ccv = new ComponentSetValue() { Name = "call_dnd", Value = Convert.ToDouble(!this.dnd) };
+            cc.Params.Controls = new List<ComponentSetValue>() { ccv };
+            this.myCore.Enqueue(JsonConvert.SerializeObject(cc));
         }
     }
 }

@@ -147,7 +147,7 @@ namespace QscQsys
 
         PotsControllerDialString = 9,
 
-        PotsControllerCurrentlyCalling = 10,
+        PotsControllerCID = 10,
 
         RouterInputSelected = 11,
 
