@@ -47,16 +47,13 @@ namespace QscQsys
             Component component = new Component();
             component.Name = this.componentName;
             List<ControlName> names = new List<ControlName>();
-            for (int i = 0; i < 4; i++)
-            {
-                names.Add(new ControlName());
-            }
-            names[0].Name = "call_offhook";
-            names[1].Name = "call_ringing";
-            names[2].Name = "call_autoanswer";
-            names[3].Name = "call_dnd";
-            names[4].Name = "call_cid_name";
-            names[5].Name = "call_cid_number";
+            names.Add(new ControlName { Name = "call_offhook" });
+            names.Add(new ControlName { Name = "call_ringing" });
+            names.Add(new ControlName { Name = "call_autoanswer" });
+            names.Add(new ControlName { Name = "call_dnd" });
+            names.Add(new ControlName { Name = "call_cid_name" });
+            names.Add(new ControlName { Name = "call_cid_number" });
+            names.Add(new ControlName { Name = "call_cid_name" });
             component.Controls = names;
 
             if (this.myCore.RegisterNamedComponent(component))
