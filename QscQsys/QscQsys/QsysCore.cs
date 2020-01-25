@@ -385,10 +385,15 @@ namespace QscQsys
                     if (!this.busy)
                     {
                         this.busy = true;
-                        while (this.RxData.ToString().Contains("\x00") && this.RxData.ToString().Length > this.RxData.ToString().IndexOf("\x00"))
+                        while (this.RxData.ToString().Contains("\x00"))
                         {
-                            var data = this.RxData.ToString().Substring(0, this.RxData.ToString().IndexOf("\x00"));
-                            this.RxData.Remove(0, this.RxData.ToString().IndexOf("\x00") + 1); // remove data from COM buffer
+                            int ind = this.RxData.ToString().IndexOf("\x00");
+                            var data = this.RxData.ToString().Substring(0, ind);
+
+                            if (data.Length>ind)
+                                this.RxData.Remove(0, this.RxData.ToString().IndexOf("\x00") + 1); // remove data from COM buffer
+                            else
+                                this.RxData.Remove(0, this.RxData.ToString().IndexOf("\x00")); // remove data from COM buffer
                             
                             if (!data.Contains("jsonrpc\":\"2.0\",\"method\":\"ChangeGroup.Poll\",\"params\":{\"Id\":\"1\",\"Changes\":[]}}") && data.Length > 3)
                             {
@@ -550,6 +555,7 @@ namespace QscQsys
                 catch (Exception e)
                 {
                     this.SendDebug(String.Format("Parse internal error: \r\n--------MESSAGE---------\r\n{0}\r\n--------TRACE---------\r\n{1}\r\n--------ORIGINAL---------\r\n{2}\r\n---------------------\r\n", e.Message, e.StackTrace, _returnString));
+                    this.responseQueueTimer = new CTimer(ResponseQueueDequeue, null, 0, 50);
                 }
             }
         }
