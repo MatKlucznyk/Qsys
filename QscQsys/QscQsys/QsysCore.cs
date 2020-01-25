@@ -299,8 +299,8 @@ namespace QscQsys
                 item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsConnected, (SimplSharpString)"true", 1));
             }
 
-            //this.SendDebug("Requesting all named components and controls");
-            //this.commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
+            this.SendDebug("Requesting all named components and controls");
+            this.commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
 
             if (Controls.Count() > 0)
             {
@@ -387,14 +387,14 @@ namespace QscQsys
                         this.busy = true;
                         while (this.RxData.ToString().Contains("\x00"))
                         {
-                            int ind = this.RxData.ToString().IndexOf("\x00");
-                            var data = this.RxData.ToString().Substring(0, ind);
+                            var data = this.RxData.ToString().Substring(0, this.RxData.ToString().IndexOf("\x00"));
 
-                            if (data.Length>ind)
-                                this.RxData.Remove(0, this.RxData.ToString().IndexOf("\x00") + 1); // remove data from COM buffer
-                            else
-                                this.RxData.Remove(0, this.RxData.ToString().IndexOf("\x00")); // remove data from COM buffer
-                            
+                            if (this.RxData.Length > this.RxData.ToString().IndexOf("\x00")) // remove data from COM buffer
+                                this.RxData.Remove(0, this.RxData.ToString().IndexOf("\x00")+1);
+
+                            if (data[0] != '{')
+                                data = '{' + data;
+
                             if (!data.Contains("jsonrpc\":\"2.0\",\"method\":\"ChangeGroup.Poll\",\"params\":{\"Id\":\"1\",\"Changes\":[]}}") && data.Length > 3)
                             {
                                 if (this.debug)
