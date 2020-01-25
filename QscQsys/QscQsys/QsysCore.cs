@@ -270,9 +270,14 @@ namespace QscQsys
 
         void SendCreateChangeGroup()
         {
-            this.SendDebug("Creating change group and registering with the core");
-            this.commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroupAutoPoll()));
-        }
+            if (Controls.Count() > 0 || Components.Count() > 0)
+            {
+                this.SendDebug("Creating change group and registering with the core");
+                this.commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroupAutoPoll()));
+            }
+            else
+                this.SendDebug("Not Creating change group due to no named controls or components");
+        } 
         void SendClearChangeGroup()
         {
             this.SendDebug("Clearing change group within core");
