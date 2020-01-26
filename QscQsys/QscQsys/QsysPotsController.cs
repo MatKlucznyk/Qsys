@@ -24,7 +24,9 @@ namespace QscQsys
         private bool hookState;
         public bool IsOffhook { get { return hookState; } }
         private bool ringingState;
-        public bool IsRinging { get { return ringingState; } }
+        private string progressState;
+        private bool incomingCall;
+        public bool IncomingCall { get { return incomingCall; } }
         private bool autoAnswer;
         public bool AutoAnswer { get { return autoAnswer; } }
         private bool dnd;
@@ -56,6 +58,7 @@ namespace QscQsys
             names.Add(new ControlName { Name = "call_number" });
             names.Add(new ControlName { Name = "call_cid_name" });
             names.Add(new ControlName { Name = "call_cid_number" });
+            names.Add(new ControlName { Name = "call_status" });
             component.Controls = names;
 
             if (this.myCore.RegisterNamedComponent(component))
@@ -84,15 +87,10 @@ namespace QscQsys
                     break;
                 case "call_ringing":
                     if (_e.changeResult.Value == 1)
-                    {
                         this.ringingState = true;
-                        this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIsRinging, this.componentName, true, 1, "1"));
-                    }
-                    else if (_e.changeResult.Value == 0)
-                    {
+                    else
                         this.ringingState = false;
-                        this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIsRinging, this.componentName, false, 0, "0"));
-                    }
+                    CallStatusLogic();
                     break;
                 case "call_autoanswer":
                     this.autoAnswer = Convert.ToBoolean(_e.changeResult.Value);
@@ -108,15 +106,34 @@ namespace QscQsys
                     break;
                 case "call_cid_number":
                     this.cidNumber = _e.changeResult.String;
-                    this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCID, this.componentName, false, 0, this.cidNumber));
+                    this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCID, this.componentName, false, 1, this.cidNumber));
                     break;
                 case "call_number":
                     this.dialString = _e.changeResult.String;
                     this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, this.componentName, false, 0, this.dialString));
                     break;
+                case "call_status":
+                    this.progressState = _e.changeResult.String;
+                    CallStatusLogic();
+                    break;
+
 
                 default:
                     break;
+            }
+        }
+
+        private void CallStatusLogic()
+        {
+            if (this.ringingState && progressState.ToLower().Contains("incoming"))
+            {
+                incomingCall = true;
+                this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIncomingCall, this.componentName, incomingCall, 1, "1"));
+            }
+            else
+            {
+                incomingCall = false;
+                this.QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIncomingCall, this.componentName, incomingCall, 0, "0"));
             }
         }
 

@@ -63,7 +63,7 @@
   InputSigType19=Digital
   OutputCue1=Connected
   OutputSigType1=Digital
-  OutputCue2=Ringing
+  OutputCue2=Incoming_Call
   OutputSigType2=Digital
   OutputCue3=[~UNUSED~]
   OutputSigType3=Digital

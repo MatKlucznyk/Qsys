@@ -9,7 +9,7 @@
 Digital_Input Connect, Disconnect, Auto_Answer_Toggle, Dnd_Toggle, _skip_, Keypad_Backspace, Keypad_Clear, KeyPad_0, KeyPad_1, KeyPad_2, KeyPad_3, KeyPad_4, KeyPad_5, KeyPad_6, KeyPad_7, KeyPad_8, KeyPad_9, KeyPad_Hash, KeyPad_Star;
 String_Input Dial_String[255];
 
-Digital_Output Connected, Ringing, _skip_, Auto_Answer_Status, Dnd_Status;
+Digital_Output Connected, Incoming_Call, _skip_, Auto_Answer_Status, Dnd_Status;
 String_Output _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_,_skip_,  Dial_String_Out, CID_Name, CID_Number;
 
 QsysSoftphoneControllerSimpl phone;
@@ -112,12 +112,12 @@ Callback Function NewOffHookEvent(integer value)
         Connected = false;
 }
 
-Callback Function NewRingingEvent(integer value)
+Callback Function NewIncomingCallEvent(integer value)
 {
     if(value)
-        Ringing = true;
+        Incoming_Call = true;
     else
-        Ringing = false;
+        Incoming_Call = false;
 }
 
 Callback Function NewAutoAnswerEvent(integer value)
@@ -141,19 +141,24 @@ Callback Function NewDialStringEvent(string newDialString)
     Dial_String_Out = newDialString;
 }
 
-Callback Function NewCidEvent(string _cid)
+Callback Function NewCidNameEvent(string _cid)
 {
-    CID_Name = phone.GetCidName();
-    CID_Number = phone.GetCidNumber();
+    CID_Name = _cid;
+}
+
+Callback Function NewCidNumberEvent(string _cid)
+{
+    CID_Number = _cid;
 }
 
 Function Main()
 {
     RegisterDelegate(phone, onOffHookEvent, NewOffHookEvent);
-    RegisterDelegate(phone, onRingingEvent, NewRingingEvent);
+    RegisterDelegate(phone, onIncomingCallEvent, NewIncomingCallEvent);
     RegisterDelegate(phone, onAutoAnswerEvent, NewAutoAnswerEvent);
     RegisterDelegate(phone, onDndEvent, NewDndEvent);
     RegisterDelegate(phone, onDialStringEvent, NewDialStringEvent);
-    RegisterDelegate(phone, onCidEvent, NewCidEvent);
+    RegisterDelegate(phone, onCidNameEvent, NewCidNameEvent);
+    RegisterDelegate(phone, onCidNumberEvent, NewCidNumberEvent);
     phone.Initialize(CoreID, ComponentName);
 }

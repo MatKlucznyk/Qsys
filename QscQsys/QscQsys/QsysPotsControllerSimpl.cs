@@ -10,16 +10,18 @@ namespace QscQsys
     {
         public delegate void OffHookEvent(ushort value);
         public OffHookEvent onOffHookEvent { get; set; }
-        public delegate void RingingEvent(ushort value);
-        public RingingEvent onRingingEvent { get; set; }
+        public delegate void IncomingCallEvent(ushort value);
+        public IncomingCallEvent onIncomingCallEvent { get; set; }
         public delegate void AutoAnswerEvent(ushort value);
         public AutoAnswerEvent onAutoAnswerEvent { get; set; }
         public delegate void DndEvent(ushort value);
         public DndEvent onDndEvent { get; set; }
         public delegate void DialStringEvent(SimplSharpString dialString);
         public DialStringEvent onDialStringEvent { get; set; }
-        public delegate void CidEvent(SimplSharpString value);
-        public CidEvent onCidEvent { get; set; }
+        public delegate void CidNameEvent(SimplSharpString value);
+        public CidNameEvent onCidNameEvent { get; set; }
+        public delegate void CidNumberEvent(SimplSharpString value);
+        public CidNumberEvent onCidNumberEvent { get; set; }
 
         private QsysPotsController pots;
 
@@ -49,17 +51,25 @@ namespace QscQsys
                     if (onOffHookEvent != null)
                         onOffHookEvent(Convert.ToUInt16(_e.NumberValue));
                     break;
-                case eQscEventIds.PotsControllerIsRinging:
-                    if (onRingingEvent != null)
-                        onRingingEvent(Convert.ToUInt16(_e.NumberValue));
+                case eQscEventIds.PotsControllerIncomingCall:
+                    if (onIncomingCallEvent != null)
+                        onIncomingCallEvent(Convert.ToUInt16(_e.BooleanValue));
                     break;
                 case eQscEventIds.PotsControllerDialString:
                     if (onDialStringEvent != null)
                         onDialStringEvent(_e.StringValue);
                     break;
                 case eQscEventIds.PotsControllerCID:
-                    if (onCidEvent != null)
-                        onCidEvent(_e.StringValue);
+                    if (_e.NumberValue == 0) //name
+                    {
+                        if (onCidNameEvent != null)
+                            onCidNameEvent(_e.StringValue);
+                    }
+                    if (_e.NumberValue == 1) //number
+                    {
+                        if (onCidNumberEvent != null)
+                            onCidNumberEvent(_e.StringValue);
+                    }
                     break;
                 case eQscEventIds.RouterInputSelected:
                     break;
