@@ -270,9 +270,14 @@ namespace QscQsys
 
         void SendCreateChangeGroup()
         {
-            this.SendDebug("Creating change group and registering with the core");
-            this.commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroupAutoPoll()));
-        }
+            if (Controls.Count() > 0 || Components.Count() > 0)
+            {
+                this.SendDebug("Creating change group and registering with the core");
+                this.commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroupAutoPoll()));
+            }
+            else
+                this.SendDebug("Not Creating change group due to no named controls or components");
+        } 
         void SendClearChangeGroup()
         {
             this.SendDebug("Clearing change group within core");
@@ -299,8 +304,8 @@ namespace QscQsys
                 item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsConnected, (SimplSharpString)"true", 1));
             }
 
-            //this.SendDebug("Requesting all named components and controls");
-            //this.commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
+            this.SendDebug("Requesting all named components and controls");
+            this.commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
 
             if (Controls.Count() > 0)
             {
@@ -375,26 +380,20 @@ namespace QscQsys
         bool busy = false;
         private void ResponseQueueDequeue(object _o)
         {
-            if (!this.responseQueue.IsEmpty)
+            if (this.responseQueue.Count > 0)
             {
                 try
                 {
-                    string tmpString = this.responseQueue.Dequeue(); // removes string from queue, blocks until an item is queued
-                    this.RxData.Append(tmpString); //Append received data to the COM buffer
+                    this.RxData.Append(this.responseQueue.Dequeue()); //Append received data to the COM buffer
 
                     if (!this.busy)
                     {
                         this.busy = true;
                         while (this.RxData.ToString().Contains("\x00"))
                         {
-                            int ind = this.RxData.ToString().IndexOf("\x00");
-                            var data = this.RxData.ToString().Substring(0, ind);
+                            string data = this.RxData.ToString().Substring(0, this.RxData.ToString().IndexOf("\x00"));
+                            this.RxData.Remove(0, this.RxData.ToString().IndexOf("\x00") + 1);
 
-                            if (data.Length>ind)
-                                this.RxData.Remove(0, this.RxData.ToString().IndexOf("\x00") + 1); // remove data from COM buffer
-                            else
-                                this.RxData.Remove(0, this.RxData.ToString().IndexOf("\x00")); // remove data from COM buffer
-                            
                             if (!data.Contains("jsonrpc\":\"2.0\",\"method\":\"ChangeGroup.Poll\",\"params\":{\"Id\":\"1\",\"Changes\":[]}}") && data.Length > 3)
                             {
                                 if (this.debug)
@@ -409,7 +408,9 @@ namespace QscQsys
                 catch (Exception e)
                 {
                     this.busy = false;
-                    ErrorLog.Error("Error in QsysProcessor ResponseQueueDequeue: {0}", e.Message);
+                    //ErrorLog.Error("Error in QsysProcessor ResponseQueueDequeue: {0}", e.Message);
+                    this.SendDebug(String.Format("Error in QsysProcessor ResponseQueueDequeue: \r\n--------MESSAGE---------\r\n{0}\r\n--------TRACE---------\r\n{1}\r\n--------ORIGINAL---------\r\n{2}\r\n---------------------\r\n", e.Message, e.StackTrace, RxData.ToString()));
+                    this.RxData.Remove(0, this.RxData.Length);
                 }
             }
         }

@@ -6,67 +6,103 @@
 #DEFINE_CONSTANT true 1
 #DEFINE_CONSTANT false 0
 
-Digital_Input Dial, Redial, Disconnect, AutoAnswerToggle, DndToggle, _skip_, KeypadDelete, KeypadClear, KeyPad[10,10];
-String_Input DialString[1000];
+Digital_Input Connect, Disconnect, Auto_Answer_Toggle, Dnd_Toggle, _skip_, Keypad_Backspace, Keypad_Clear, KeyPad_0, KeyPad_1, KeyPad_2, KeyPad_3, KeyPad_4, KeyPad_5, KeyPad_6, KeyPad_7, KeyPad_8, KeyPad_9, KeyPad_Hash, KeyPad_Star;
+String_Input Dial_String[255];
 
-Digital_Output Connected, Ringing, _skip_, AutoAnswerStatus, DndStatus;
-String_Output _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_,_skip_,  DialStringOut, CurrentlyCalling;
+Digital_Output Connected, Incoming_Call, _skip_, Auto_Answer_Status, Dnd_Status;
+String_Output _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_,_skip_,  Dial_String_Out, CID_Name, CID_Number;
 
-QsysSoftphoneControllerSimpl softphone;
+QsysSoftphoneControllerSimpl phone;
 
-String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_,_skip_,_skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, ComponentName[100];
+String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_,_skip_,_skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, ComponentName[100];
 integer_parameter CoreID;
 
-Push Dial
+Push Connect
 {
-    if(len(DialString))
-    {
-        softphone.Dial(DialString);
-    }
-    else
-    {
-        softphone.DialWithoutString();
-    }
-}
-
-Push Redial
-{
-    softphone.Redial();
+    phone.Connect();
 }
 
 Push Disconnect
 {
-    softphone.Disconnect();
+    phone.Disconnect();
 }
 
-Push AutoAnswerToggle
+change Dial_String
 {
-    softphone.AutoAnswerToggle();
+    phone.SetDialString(Dial_String);
 }
 
-Push DndToggle
+Push KeyPad_0
 {
-    softphone.DndToggle();
+    phone.NumPadKey("0");
 }
-
-Threadsafe Push KeyPad
+Push KeyPad_1
 {
-    integer x;
-
-    x = GetLastModifiedArrayIndex();
-
-    softphone.NumPad(ItoA(x - 1));
+    phone.NumPadKey("1");
 }
-
-Threadsafe Push KeypadDelete
+Push KeyPad_2
 {
-    softphone.NumPadDelete();
+    phone.NumPadKey("2");
+}
+Push KeyPad_3
+{
+    phone.NumPadKey("3");
+}
+Push KeyPad_4
+{
+    phone.NumPadKey("4");
+}
+Push KeyPad_5
+{
+    phone.NumPadKey("5");
+}
+Push KeyPad_6
+{
+    phone.NumPadKey("6");
+}
+Push KeyPad_7
+{
+    phone.NumPadKey("7");
+}
+Push KeyPad_8
+{
+    phone.NumPadKey("8");
+}
+Push KeyPad_9
+{
+    phone.NumPadKey("9");
+}
+Push KeyPad_Hash
+{
+    phone.NumPadKey("#");
+}
+Push KeyPad_Star
+{
+    phone.NumPadKey("*");
 }
 
-Threadsafe Push KeypadClear
+Push Keypad_Backspace
 {
-    softphone.NumPadClear();
+    phone.NumPadBackspace();
 }
+
+Push Keypad_Clear
+{
+    phone.NumPadClear();
+}
+
+
+Push Auto_Answer_Toggle
+{
+    phone.AutoAnswerToggle();
+}
+
+Push Dnd_Toggle
+{
+    phone.DndToggle();
+}
+
+
 
 Callback Function NewOffHookEvent(integer value)
 {
@@ -76,47 +112,53 @@ Callback Function NewOffHookEvent(integer value)
         Connected = false;
 }
 
-Callback Function NewRingingEvent(integer value)
+Callback Function NewIncomingCallEvent(integer value)
 {
     if(value)
-        Ringing = true;
+        Incoming_Call = true;
     else
-        Ringing = false;
+        Incoming_Call = false;
 }
 
 Callback Function NewAutoAnswerEvent(integer value)
 {
     if(value)
-        AutoAnswerStatus = true;
+        Auto_Answer_Status = true;
     else
-        AutoAnswerStatus = false;
+        Auto_Answer_Status = false;
 }
 
 Callback Function NewDndEvent(integer value)
 {
     if(value)
-        DndStatus = true;
+        Dnd_Status = true;
     else
-        DndStatus = false;
+        Dnd_Status = false;
 }
 
 Callback Function NewDialStringEvent(string newDialString)
 {
-    DialStringOut = newDialString;
+    Dial_String_Out = newDialString;
 }
 
-Callback Function NewCurrentlyCallingEvent(string newCurrentlyCalling)
+Callback Function NewCidNameEvent(string _cid)
 {
-    CurrentlyCalling = newCurrentlyCalling;
+    CID_Name = _cid;
+}
+
+Callback Function NewCidNumberEvent(string _cid)
+{
+    CID_Number = _cid;
 }
 
 Function Main()
 {
-    RegisterDelegate(softphone, onOffHookEvent, NewOffHookEvent);
-    RegisterDelegate(softphone, onRingingEvent, NewRingingEvent);
-    RegisterDelegate(softphone, onAutoAnswerEvent, NewAutoAnswerEvent);
-    RegisterDelegate(softphone, onDndEvent, NewDndEvent);
-    RegisterDelegate(softphone, onDialStringEvent, NewDialStringEvent);
-    RegisterDelegate(softphone, onCurrentlyCallingEvent, NewCurrentlyCallingEvent);
-    softphone.Initialize(CoreID, ComponentName);
+    RegisterDelegate(phone, onOffHookEvent, NewOffHookEvent);
+    RegisterDelegate(phone, onIncomingCallEvent, NewIncomingCallEvent);
+    RegisterDelegate(phone, onAutoAnswerEvent, NewAutoAnswerEvent);
+    RegisterDelegate(phone, onDndEvent, NewDndEvent);
+    RegisterDelegate(phone, onDialStringEvent, NewDialStringEvent);
+    RegisterDelegate(phone, onCidNameEvent, NewCidNameEvent);
+    RegisterDelegate(phone, onCidNumberEvent, NewCidNumberEvent);
+    phone.Initialize(CoreID, ComponentName);
 }

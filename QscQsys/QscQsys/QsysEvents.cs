@@ -143,11 +143,11 @@ namespace QscQsys
 
         PotsControllerOffHook = 7,
 
-        PotsControllerIsRinging = 8,
+        PotsControllerIncomingCall = 8,
 
         PotsControllerDialString = 9,
 
-        PotsControllerCurrentlyCalling = 10,
+        PotsControllerCID = 10,
 
         RouterInputSelected = 11,
 
