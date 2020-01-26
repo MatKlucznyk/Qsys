@@ -31,9 +31,9 @@ namespace QscQsys
         public bool DND { get { return dnd; } }
         private string dialString;
         public string DialString { get { return dialString.ToString(); } }
-        private string cidName;
+        private string cidName = "";
         public string CidName { get { return cidName; } }
-        private string cidNumber;
+        private string cidNumber = "";
         public string CidNumber { get { return cidNumber; } }
 
 
