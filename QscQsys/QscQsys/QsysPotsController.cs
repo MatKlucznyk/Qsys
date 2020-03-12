@@ -306,9 +306,16 @@ namespace QscQsys
             if (recentCalls.Count >= index)
             {
                 dialString.Remove(0, dialString.Length);
-                dialString.Append(recentCalls[index - 1].Text);
 
-                QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, Convert.ToBoolean(recentCalls[index - 1].Text.Length), index - 1, recentCalls[index - 1].Text, recentCalls));
+                var call = recentCalls[index - 1].Text;
+
+                if (call.Contains(' '))
+                {
+                    call = call.Remove(call.IndexOf(' '), call.Length - call.IndexOf(' '));
+                }
+                dialString.Append(call);
+
+                QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, Convert.ToBoolean(call.Length), call.Length, call, recentCalls));
             }
         }
     }

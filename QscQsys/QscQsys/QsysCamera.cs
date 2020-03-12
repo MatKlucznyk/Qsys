@@ -104,6 +104,22 @@ namespace QscQsys
             QsysProcessor.Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
 
+        public void RecallHome()
+        {
+            ComponentChange cameraChange = new ComponentChange();
+            cameraChange.Params = new ComponentChangeParams();
+            cameraChange.Params.Name = cName;
+
+            ComponentSetValue camera = new ComponentSetValue();
+            camera.Name = "preset_home_load";
+            camera.Value = 1;
+
+            cameraChange.Params.Controls = new List<ComponentSetValue>();
+            cameraChange.Params.Controls.Add(camera);
+
+            QsysProcessor.Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
         public enum PtzTypes
         {
             Up = 1,

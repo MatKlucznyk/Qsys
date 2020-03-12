@@ -1,0 +1,56 @@
+#SYMBOL_NAME "Qsys Camera"
+
+#INCLUDEPATH "D:\\Programming\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
+#USER_SIMPLSHARP_LIBRARY "QscQsys" 
+
+Digital_Input TiltUp, TiltDown, PanLeft, PanRight, _skip_, RecallHome;
+
+String_Parameter _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, ComponentName[100];
+
+QsysCameraSimpl camera;
+
+Push TiltUp
+{
+    camera.TiltUp();
+}
+Release TiltUp
+{
+    camera.StopTiltUp();
+}
+
+Push TiltDown
+{
+    camera.TiltDown();
+}
+Release TiltDown
+{
+    camera.StopTiltDown();
+}
+
+Push PanLeft
+{
+    camera.PanLeft();
+}
+Release PanLeft
+{
+    camera.StopPanLeft();
+}
+
+Push PanRight
+{
+    camera.PanRight();
+}
+Release PanRight
+{
+    camera.StopPanRight();
+}
+
+Push RecallHome
+{
+    camera.RecallHome();
+}
+
+Function Main()
+{
+    camera.Initialize(ComponentName);
+}

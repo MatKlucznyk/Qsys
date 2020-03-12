@@ -4,6 +4,152 @@
         <name>SimplSharpReflectionInterface</name>
     </assembly>
     <members>
+        <member name="T:SandboxServices.SandboxService">
+            <summary>
+            Class SandboxService.
+            </summary>
+        </member>
+        <member name="M:SandboxServices.SandboxService.Initialize">
+            <summary>
+             This is just to get the class initialized
+            </summary>
+        </member>
+        <member name="M:SandboxServices.SandboxService.IsTypeBlackListed(System.String,System.String)">
+            <summary>
+            Determines whether type is black listed within the specified namespace.
+            </summary>
+            <param name="namespaceName">Name of the namespace.</param>
+            <param name="typeName">Name of the type.</param>
+            <returns>true if type is black listed; otherwise, false.</returns>
+        </member>
+        <member name="M:SandboxServices.SandboxService.IsTypeBlackListedInternal(System.String,System.String)">
+            <summary>
+            Determines whether type is black listed within the specified namespace.
+            </summary>
+            <param name="namespaceName">Name of the namespace.</param>
+            <param name="typeName">Name of the type.</param>
+            <returns>true if type is black listed; otherwise, false.</returns>
+        </member>
+        <member name="M:SandboxServices.SandboxService.IsBlackListed(System.Reflection.Assembly)">
+            <summary>
+            Determines whether assembly is black listed
+            </summary>
+            <param name="assemblyName">Name of the assembly.</param>
+            <returns>true if assembly is black listed; otherwise, false.</returns>
+        </member>
+        <member name="M:SandboxServices.SandboxService.IsBlackListedInternal(System.Reflection.Assembly)">
+            <summary>
+            Determines whether assembly is black listed
+            </summary>
+            <param name="assemblyName">Name of the assembly.</param>
+            <returns>true if assembly is black listed; otherwise, false.</returns>
+        </member>
+        <member name="M:SandboxServices.SandboxService.IsBlackListed(System.Reflection.ConstructorInfo)">
+            <summary>
+            Determines whether constructor is black listed. if ConstructorBlackListAttribute is 
+            not available, check for ClassBlackListAttribute. if ClassBlackListAttribute is 
+            also not available, check for AssemblyBlackListAttribute
+            </summary>
+            <param name="constructorName">Name of the constructor.</param>
+            <returns>true if constructor is black listed; otherwise, false.</returns>
+        </member>
+        <member name="M:SandboxServices.SandboxService.IsBlackListedInternal(System.Reflection.ConstructorInfo)">
+            <summary>
+            Determines whether constructor is black listed. if ConstructorBlackListAttribute is 
+            not available, check for ClassBlackListAttribute. if ClassBlackListAttribute is 
+            also not available, check for AssemblyBlackListAttribute
+            </summary>
+            <param name="constructorName">Name of the constructor.</param>
+            <returns>true if constructor is black listed; otherwise, false.</returns>
+        </member>
+        <member name="M:SandboxServices.SandboxService.IsBlackListed(System.Reflection.MethodBase)">
+            <summary>
+            Determines whether method is black listed. if MethodbaseBlackListAttribute is 
+            not available, check for ClassBlackListAttribute. if ClassBlackListAttribute 
+            is also not available, check for AssemblyBlackListAttribute
+            </summary>
+            <param name="methodBaseName">Name of the method.</param>
+            <returns>true if method is black listed; otherwise, false.</returns>
+        </member>
+        <member name="M:SandboxServices.SandboxService.IsBlackListedInternal(System.Reflection.MethodBase)">
+            <summary>
+            Determines whether method is black listed. if MethodbaseBlackListAttribute is 
+            not available, check for ClassBlackListAttribute. if ClassBlackListAttribute 
+            is also not available, check for AssemblyBlackListAttribute
+            </summary>
+            <param name="methodBaseName">Name of the method.</param>
+            <returns>true if method is black listed; otherwise, false.</returns>
+        </member>
+        <member name="M:SandboxServices.SandboxService.IsBlackListed(Crestron.SandboxCustomAttributes.BlackListOptions)">
+            <summary>
+            Determines whether blackListAttributes is black listed for SimplSharp or SIMPL Windows program
+            </summary>
+            <param name="blackListAttributes">BlackList Attributes.</param>
+            <returns>true if black listed; otherwise, false.</returns>
+        </member>
+        <member name="M:SandboxServices.SandboxService.IsBlackListedInternal(Crestron.SandboxCustomAttributes.BlackListOptions)">
+            <summary>
+            Determines whether blackListAttributes is black listed for SimplSharp or SIMPL Windows program
+            </summary>
+            <param name="blackListAttributes">BlackList Attributes.</param>
+            <returns>true if black listed; otherwise, false.</returns>
+        </member>
+        <member name="M:SandboxServices.SandboxService.SanitizeBindingFlags(System.Type,Crestron.SimplSharp.Reflection.BindingFlags)">
+            <summary>
+            Sanitizes the Binding Flags for sandboxing.  Desired restrictions are assigned via BindingFlagsBlackListAttribute on the assembly.
+            </summary>
+            <exception cref="T:Crestron.SimplSharp.Reflection.RestrictionViolationException">not allowed in Crestron's sandbox due to sandbox restrictions.</exception>
+            <param name="typeVal">Type.</param>
+            <param name="flagsVal">BindingFlags.</param>
+            <returns>BindingFlags adjusted to comply with BindingFlagsBlackListAttribute restrictions of the assembly.</returns>
+        </member>
+        <member name="M:SandboxServices.SandboxService.SanitizeBindingFlagsInternal(System.Type,Crestron.SimplSharp.Reflection.BindingFlags)">
+            <summary>
+            Sanitizes the Binding Flags for sandboxing.  Desired restrictions are assigned via BindingFlagsBlackListAttribute on the assembly.
+            </summary>
+            <exception cref="T:Crestron.SimplSharp.Reflection.RestrictionViolationException">not allowed in Crestron's sandbox due to sandbox restrictions.</exception>
+            <param name="typeVal">Type.</param>
+            <param name="flagsVal">BindingFlags.</param>
+            <returns>BindingFlags adjusted to comply with BindingFlagsBlackListAttribute restrictions of the assembly.</returns>
+        </member>
+        <member name="M:SandboxServices.SandboxService.IsBlackListedClassOrAssembly(System.Type)">
+            <summary>
+            Determines whether class is black listed. Checks for ClassBlackListAttribute. if 
+            ClassBlackListAttribute is not available, check for AssemblyBlackListAttribute
+            </summary>
+            <param name="typename">the type</param>
+            <returns></returns>
+        </member>
+        <member name="M:SandboxServices.SandboxService.IsBlackListedClassOrAssemblyInternal(System.Type)">
+            <summary>
+            Determines whether class is black listed. Checks for ClassBlackListAttribute. if 
+            ClassBlackListAttribute is not available, check for AssemblyBlackListAttribute
+            </summary>
+            <param name="typename">the type</param>
+            <returns></returns>
+        </member>
+        <member name="T:Crestron.SimplSharp.Reflection.RestrictionViolationException">
+            <summary>
+            Exception thrown when a method/assembly is not allowed in the Crestron sandbox due to sandbox restrictions.
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.Reflection.RestrictionViolationException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the RestrictionViolationException class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Crestron.SimplSharp.Reflection.RestrictionViolationException.#ctor">
+            <summary>
+            Initializes a new instance of the RestrictionViolationException class.
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.Reflection.RestrictionViolationException.Message">
+            <summary>
+            Gets a message that describes the current exception.
+            </summary>
+            <returns>The error message that explains the reason for the exception, or an empty string("").</returns>
+        </member>
         <member name="T:Crestron.SimplSharp.Reflection.AmbiguousMatchException">
             <summary>
             Class AmbiguousMatchException.
@@ -8884,152 +9030,6 @@
             </summary> 
             <param name="type">Instance to return the type of.</param> 
             <returns>The Crestron.CType instance that represents the exact runtime crestron type of the current instance.</returns>  
-        </member>
-        <member name="T:SandboxServices.SandboxService">
-            <summary>
-            Class SandboxService.
-            </summary>
-        </member>
-        <member name="M:SandboxServices.SandboxService.Initialize">
-            <summary>
-             This is just to get the class initialized
-            </summary>
-        </member>
-        <member name="M:SandboxServices.SandboxService.IsTypeBlackListed(System.String,System.String)">
-            <summary>
-            Determines whether type is black listed within the specified namespace.
-            </summary>
-            <param name="namespaceName">Name of the namespace.</param>
-            <param name="typeName">Name of the type.</param>
-            <returns>true if type is black listed; otherwise, false.</returns>
-        </member>
-        <member name="M:SandboxServices.SandboxService.IsTypeBlackListedInternal(System.String,System.String)">
-            <summary>
-            Determines whether type is black listed within the specified namespace.
-            </summary>
-            <param name="namespaceName">Name of the namespace.</param>
-            <param name="typeName">Name of the type.</param>
-            <returns>true if type is black listed; otherwise, false.</returns>
-        </member>
-        <member name="M:SandboxServices.SandboxService.IsBlackListed(System.Reflection.Assembly)">
-            <summary>
-            Determines whether assembly is black listed
-            </summary>
-            <param name="assemblyName">Name of the assembly.</param>
-            <returns>true if assembly is black listed; otherwise, false.</returns>
-        </member>
-        <member name="M:SandboxServices.SandboxService.IsBlackListedInternal(System.Reflection.Assembly)">
-            <summary>
-            Determines whether assembly is black listed
-            </summary>
-            <param name="assemblyName">Name of the assembly.</param>
-            <returns>true if assembly is black listed; otherwise, false.</returns>
-        </member>
-        <member name="M:SandboxServices.SandboxService.IsBlackListed(System.Reflection.ConstructorInfo)">
-            <summary>
-            Determines whether constructor is black listed. if ConstructorBlackListAttribute is 
-            not available, check for ClassBlackListAttribute. if ClassBlackListAttribute is 
-            also not available, check for AssemblyBlackListAttribute
-            </summary>
-            <param name="constructorName">Name of the constructor.</param>
-            <returns>true if constructor is black listed; otherwise, false.</returns>
-        </member>
-        <member name="M:SandboxServices.SandboxService.IsBlackListedInternal(System.Reflection.ConstructorInfo)">
-            <summary>
-            Determines whether constructor is black listed. if ConstructorBlackListAttribute is 
-            not available, check for ClassBlackListAttribute. if ClassBlackListAttribute is 
-            also not available, check for AssemblyBlackListAttribute
-            </summary>
-            <param name="constructorName">Name of the constructor.</param>
-            <returns>true if constructor is black listed; otherwise, false.</returns>
-        </member>
-        <member name="M:SandboxServices.SandboxService.IsBlackListed(System.Reflection.MethodBase)">
-            <summary>
-            Determines whether method is black listed. if MethodbaseBlackListAttribute is 
-            not available, check for ClassBlackListAttribute. if ClassBlackListAttribute 
-            is also not available, check for AssemblyBlackListAttribute
-            </summary>
-            <param name="methodBaseName">Name of the method.</param>
-            <returns>true if method is black listed; otherwise, false.</returns>
-        </member>
-        <member name="M:SandboxServices.SandboxService.IsBlackListedInternal(System.Reflection.MethodBase)">
-            <summary>
-            Determines whether method is black listed. if MethodbaseBlackListAttribute is 
-            not available, check for ClassBlackListAttribute. if ClassBlackListAttribute 
-            is also not available, check for AssemblyBlackListAttribute
-            </summary>
-            <param name="methodBaseName">Name of the method.</param>
-            <returns>true if method is black listed; otherwise, false.</returns>
-        </member>
-        <member name="M:SandboxServices.SandboxService.IsBlackListed(Crestron.SandboxCustomAttributes.BlackListOptions)">
-            <summary>
-            Determines whether blackListAttributes is black listed for SimplSharp or SIMPL Windows program
-            </summary>
-            <param name="blackListAttributes">BlackList Attributes.</param>
-            <returns>true if black listed; otherwise, false.</returns>
-        </member>
-        <member name="M:SandboxServices.SandboxService.IsBlackListedInternal(Crestron.SandboxCustomAttributes.BlackListOptions)">
-            <summary>
-            Determines whether blackListAttributes is black listed for SimplSharp or SIMPL Windows program
-            </summary>
-            <param name="blackListAttributes">BlackList Attributes.</param>
-            <returns>true if black listed; otherwise, false.</returns>
-        </member>
-        <member name="M:SandboxServices.SandboxService.SanitizeBindingFlags(System.Type,Crestron.SimplSharp.Reflection.BindingFlags)">
-            <summary>
-            Sanitizes the Binding Flags for sandboxing.  Desired restrictions are assigned via BindingFlagsBlackListAttribute on the assembly.
-            </summary>
-            <exception cref="T:Crestron.SimplSharp.Reflection.RestrictionViolationException">not allowed in Crestron's sandbox due to sandbox restrictions.</exception>
-            <param name="typeVal">Type.</param>
-            <param name="flagsVal">BindingFlags.</param>
-            <returns>BindingFlags adjusted to comply with BindingFlagsBlackListAttribute restrictions of the assembly.</returns>
-        </member>
-        <member name="M:SandboxServices.SandboxService.SanitizeBindingFlagsInternal(System.Type,Crestron.SimplSharp.Reflection.BindingFlags)">
-            <summary>
-            Sanitizes the Binding Flags for sandboxing.  Desired restrictions are assigned via BindingFlagsBlackListAttribute on the assembly.
-            </summary>
-            <exception cref="T:Crestron.SimplSharp.Reflection.RestrictionViolationException">not allowed in Crestron's sandbox due to sandbox restrictions.</exception>
-            <param name="typeVal">Type.</param>
-            <param name="flagsVal">BindingFlags.</param>
-            <returns>BindingFlags adjusted to comply with BindingFlagsBlackListAttribute restrictions of the assembly.</returns>
-        </member>
-        <member name="M:SandboxServices.SandboxService.IsBlackListedClassOrAssembly(System.Type)">
-            <summary>
-            Determines whether class is black listed. Checks for ClassBlackListAttribute. if 
-            ClassBlackListAttribute is not available, check for AssemblyBlackListAttribute
-            </summary>
-            <param name="typename">the type</param>
-            <returns></returns>
-        </member>
-        <member name="M:SandboxServices.SandboxService.IsBlackListedClassOrAssemblyInternal(System.Type)">
-            <summary>
-            Determines whether class is black listed. Checks for ClassBlackListAttribute. if 
-            ClassBlackListAttribute is not available, check for AssemblyBlackListAttribute
-            </summary>
-            <param name="typename">the type</param>
-            <returns></returns>
-        </member>
-        <member name="T:Crestron.SimplSharp.Reflection.RestrictionViolationException">
-            <summary>
-            Exception thrown when a method/assembly is not allowed in the Crestron sandbox due to sandbox restrictions.
-            </summary>
-        </member>
-        <member name="M:Crestron.SimplSharp.Reflection.RestrictionViolationException.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the RestrictionViolationException class.
-            </summary>
-            <param name="message">The message.</param>
-        </member>
-        <member name="M:Crestron.SimplSharp.Reflection.RestrictionViolationException.#ctor">
-            <summary>
-            Initializes a new instance of the RestrictionViolationException class.
-            </summary>
-        </member>
-        <member name="P:Crestron.SimplSharp.Reflection.RestrictionViolationException.Message">
-            <summary>
-            Gets a message that describes the current exception.
-            </summary>
-            <returns>The error message that explains the reason for the exception, or an empty string("").</returns>
         </member>
     </members>
 </doc>
