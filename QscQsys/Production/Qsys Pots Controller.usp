@@ -1,6 +1,6 @@
 #SYMBOL_NAME "Qsys Pots Controller"
 
-//#INCLUDEPATH "D:\\Programming\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
+//#INCLUDEPATH "D:\\Programming\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys" 
 
 #DEFINE_CONSTANT true 1
@@ -9,7 +9,7 @@
 Digital_Input Dial, Redial, Connect, Disconnect, AutoAnswerToggle, DndToggle, _skip_, KeyPadDelete, KeyPadClear, KeyPadStar, KeyPadPound, KeyPad[10], _skip_, _skip_, _skip_, _skip_, SelectRecentCall[5,5];
 Analog_Input SelectRecentCallIndex;
 
-Digital_Output Connected, Ringing, Dialing, _skip_, AutoAnswerStatus, DndStatus;
+Digital_Output Connected, Ringing, Dialing, IncomingCall, AutoAnswerStatus, DndStatus;
 String_Output _skip_, _skip_, _skip_, _skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_, CurrentlyCalling, CallStatus, DialStringOut, RecentCallXSig, RecentCalls[5,5];
 
 QsysPotsControllerSimpl pots;
@@ -58,6 +58,11 @@ Threadsafe Push KeyPad
 Push KeyPadDelete
 {
     pots.NumPadDelete();
+}
+
+Push KeyPadClear
+{
+    pots.NumPadClear();
 }
 
 Push KeyPadStar
@@ -160,6 +165,14 @@ callback function NewRecentCallListEvent(string xsig)
         RecentCallXSig = xsig;
 }
 
+callback function NewIncomingCallEvent(integer value)
+{
+    if(value)
+        IncomingCall = true;
+    else
+        IncomingCall = false;
+}
+
 Function Main()
 {
     RegisterDelegate(pots, onOffHookEvent, NewOffHookEvent);
@@ -172,5 +185,6 @@ Function Main()
     RegisterDelegate(pots, onCurrentCallStatusChange, NewCurrentCallStatusChange);
     RegisterDelegate(pots, onRecentCallsEvent, NewRecentCallsEvent);
     RegisterDelegate(pots, onRecentCallListEvent, NewRecentCallListEvent);
+    RegisterDelegate(pots, onIncomingCallEvent, NewIncomingCallEvent);
     pots.Initialize(ComponentName);
 }

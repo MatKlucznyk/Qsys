@@ -21933,7 +21933,8 @@
         <member name="P:Crestron.SimplSharp.Net.Http.HttpIncomingRequestResponse.ContentBytes">
             <summary>
             Returns the HTTP body in the form of a byte array.
-            <exception>Unexpected end of response - Content Length does not match length read.</exception>
+            <exception cref="T:Crestron.SimplSharp.CrestronIO.EndOfStreamException">The stream unexpected ended.</exception>
+            <exception cref="T:Crestron.SimplSharp.CrestronIO.IOException">Error reading HTTP chunk data.</exception>
             </summary>
         </member>
         <member name="P:Crestron.SimplSharp.Net.Http.HttpIncomingRequestResponse.ContentStream">
@@ -21947,6 +21948,8 @@
         <member name="P:Crestron.SimplSharp.Net.Http.HttpIncomingRequestResponse.ContentString">
             <summary>
             Returns the HTTP body in form of a String object.
+            <exception cref="T:Crestron.SimplSharp.CrestronIO.EndOfStreamException">The stream unexpected ended.</exception>
+            <exception cref="T:Crestron.SimplSharp.CrestronIO.IOException">Error reading HTTP chunk data.</exception>
             </summary>
         </member>
         <member name="P:Crestron.SimplSharp.Net.Http.HttpIncomingRequestResponse.HasContentLength">
@@ -22754,7 +22757,7 @@
             Add the specified device's unique name to this program's table.
             </summary>
             <param name="deviceUuid">Unique name for this device reporting object.</param>
-            <exception cref="T:System.ArgumentException">The specified <see cref="!:deviceUuid"/> is already in use in the application.</exception>
+            <exception cref="T:System.ArgumentException">The specified "deviceUuid" is already in use in the application.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.Reporting.SimplSharpDeviceReportingSupport.RemoveDeviceUuid(System.String)">
             <summary>
@@ -22780,7 +22783,8 @@
             <param name="deviceUuid">The universally unique identifier for this device driver. The cloud services will register this ID for communication.</param>
             <param name="userObject">User settable object that will be passed into the specified DeviceReportingCallback. Can be 'null'.</param>
             <param name="callbackForUpdates">When the cloud service sends a device update, the callback will be triggered with an object containing information. Can be 'null' if no feedback is needed.</param>
-            <exception cref="T:System.ArgumentException">The specified <see cref="!:deviceUuid"/> is already in use in the application.</exception>
+            <exception cref="T:System.ArgumentException">The specified "deviceUuid" is already in use in the application.</exception>
+            <exception cref="T:System.NotSupportedException">This version of firmware does not support JsonDb feature.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.Reporting.SimplSharpDeviceReporting`1.SendUpdate(`0)">
             <summary>
@@ -22798,6 +22802,18 @@
         <member name="M:Crestron.SimplSharp.Reporting.SimplSharpDeviceReporting`1.Dispose">
             <summary>
             Dispose of this device reporting object. This will unregister the devices UUID with the cloud services.
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.Reporting.SimplSharpDeviceReporting`1.Dispose(System.Boolean)">
+            <summary>
+            Dispose implementation method.
+            </summary>
+            <param name="disposing">'true' means called from Dispose(). 'false' means this was called by the finalizer.
+            <para>Under the 'false' case, do not remove the device from the cloud.</para></param>
+        </member>
+        <member name="M:Crestron.SimplSharp.Reporting.SimplSharpDeviceReporting`1.Finalize">
+            <summary>
+            Destructor for this class.
             </summary>
         </member>
         <member name="P:Crestron.SimplSharp.Reporting.SimplSharpDeviceReporting`1.DeviceUuid">
@@ -32283,191 +32299,6 @@
                  This property is not supported on this stream.
             </exception>
         </member>
-        <member name="T:Crestron.SimplSharp.eSaveType">
-            <summary>
-            Used in Set to make data persistant or not
-            </summary>
-        </member>
-        <member name="F:Crestron.SimplSharp.eSaveType.NotStored">
-            <summary>
-            New value will be published to subscribers but not stored
-            </summary>
-        </member>
-        <member name="F:Crestron.SimplSharp.eSaveType.DataStored">
-            <summary>
-            New value will be published to subscribers and stored non-volatilely
-            </summary>
-        </member>
-        <member name="T:Crestron.SimplSharp.eCrestronStoreResult">
-            <summary>
-            Results of method calls
-            </summary>
-        </member>
-        <member name="F:Crestron.SimplSharp.eCrestronStoreResult.Success">
-            <summary>
-            Success
-            </summary>
-        </member>
-        <member name="F:Crestron.SimplSharp.eCrestronStoreResult.FailureUnspecified">
-            <summary>
-            General error
-            </summary>
-        </member>
-        <member name="F:Crestron.SimplSharp.eCrestronStoreResult.FailureInvalidKey">
-            <summary>
-            Key is invalid
-            </summary>
-        </member>
-        <member name="F:Crestron.SimplSharp.eCrestronStoreResult.FailureValueTooBig">
-            <summary>
-            Buffer is not big enough
-            </summary>
-        </member>
-        <member name="F:Crestron.SimplSharp.eCrestronStoreResult.FailureInvalidJson">
-            <summary>
-            Invalid JSON
-            </summary>
-        </member>
-        <member name="F:Crestron.SimplSharp.eCrestronStoreResult.FailureTimeout">
-            <summary>
-            Timeout
-            </summary>
-        </member>
-        <member name="F:Crestron.SimplSharp.eCrestronStoreResult.FailureNotImplemented">
-            <summary>
-            Feature not implemented
-            </summary>
-        </member>
-        <member name="F:Crestron.SimplSharp.eCrestronStoreResult.FailureNotConnected">
-            <summary>
-            Not connected
-            </summary>
-        </member>
-        <member name="F:Crestron.SimplSharp.eCrestronStoreResult.FailureSetProxyError">
-            <summary>
-            Set proxy error
-            </summary>
-        </member>
-        <member name="F:Crestron.SimplSharp.eCrestronStoreResult.FailureJsonSet">
-            <summary>
-            Json set
-            </summary>
-        </member>
-        <member name="F:Crestron.SimplSharp.eCrestronStoreResult.FailureJsonPublish">
-            <summary>
-            Json publish
-            </summary>
-        </member>
-        <member name="F:Crestron.SimplSharp.eCrestronStoreResult.FailureNullReply">
-            <summary>
-            Null reply
-            </summary>
-        </member>
-        <member name="F:Crestron.SimplSharp.eCrestronStoreResult.FailureErrorReply">
-            <summary>
-            Error reply
-            </summary>
-        </member>
-        <member name="F:Crestron.SimplSharp.eCrestronStoreResult.FailureUnexpectedReplyType">
-            <summary>
-            Unexpected reply type
-            </summary>
-        </member>
-        <member name="F:Crestron.SimplSharp.eCrestronStoreResult.FailureNullObject">
-            <summary>
-            Null object
-            </summary>
-        </member>
-        <member name="F:Crestron.SimplSharp.eCrestronStoreResult.FailureGetProxyError">
-            <summary>
-            Get proxy error
-            </summary>
-        </member>
-        <member name="T:Crestron.SimplSharp.CrestronStoreCallback">
-            <summary>
-            Delegate for subscribing to data item updates
-            </summary>
-            <param name="json">The new value</param>
-        </member>
-        <member name="T:Crestron.SimplSharp.CrestronStore">
-            <summary>
-            Provides an interface to the Crestron Data Store.
-            </summary>
-        </member>
-        <member name="M:Crestron.SimplSharp.CrestronStore.#cctor">
-            <summary>
-            Creates an interface to the Crestron Data Store for the life of the host process.
-            </summary>
-            <exception cref="T:System.NotSupportedException">This version of firmware does not support CrestronStore feature.</exception>
-        </member>
-        <member name="M:Crestron.SimplSharp.CrestronStore.Set(System.String)">
-            <summary>
-            Change the value of a data item in the data store.
-            <para>The entire json object will be written, overwriting any existing values; stored non-volatilely</para>
-            </summary>
-            <param name="json">json object to be stored</param> 
-            <returns>See <see cref="T:Crestron.SimplSharp.eCrestronStoreResult"/></returns>
-            <exception cref="T:System.NotSupportedException">This version of firmware does not support CrestronStore feature.</exception>
-        </member>
-        <member name="M:Crestron.SimplSharp.CrestronStore.Set(System.String,System.Boolean,Crestron.SimplSharp.eSaveType)">
-            <summary>
-            Change the value of a data item in the data store
-            </summary>
-            <param name="json">json object to be stored</param>
-            <param name="partial">true: entire json object will be written, overwriting any existing values; 
-            false: update existing object with members in the json being written</param>
-            <param name="save">Indicates if the json should be stored non-volatilely</param>
-            <returns>See <see cref="T:Crestron.SimplSharp.eCrestronStoreResult"/></returns>
-            <exception cref="T:System.NotSupportedException">This version of firmware does not support CrestronStore feature.</exception>
-        </member>
-        <member name="M:Crestron.SimplSharp.CrestronStore.Get(System.String,Crestron.SimplSharp.eCrestronStoreResult@)">
-            <summary>
-            Retrieve a data item from the data store
-            just the matching sub-object will be returned
-            </summary>
-            <param name="json">json which specifies which item to get</param>
-            <param name="result">The return code for the request</param>
-            <returns>The json of the data item requested</returns>
-            <exception cref="T:System.NotSupportedException">This version of firmware does not support CrestronStore feature.</exception>
-        </member>
-        <member name="M:Crestron.SimplSharp.CrestronStore.Get(System.String,System.Boolean,System.UInt32@,Crestron.SimplSharp.eCrestronStoreResult@)">
-            <summary>
-            Retrieve a data item from the data store
-            </summary>
-            <param name="json">json which specifies which item to get</param>
-            <param name="partial">true: entire json object will be retrieved; 
-            false: just the matching sub-object will be returned</param>
-            <param name="jsonSize">The number of returned bytes</param>
-            <param name="result">The return code for the request</param>
-            <returns>The json of the data item requested</returns>
-            <exception cref="T:System.NotSupportedException">This version of firmware does not support CrestronStore feature.</exception>
-        </member>
-        <member name="M:Crestron.SimplSharp.CrestronStore.Subscribe(System.String,Crestron.SimplSharp.CrestronStoreCallback)">
-            <summary>
-            Register to receive notification when a json object is changed
-            </summary>
-            <param name="json">json object to subscribe to</param>
-            <param name="cb">Callback to register this object with</param>
-            <returns>See <see cref="T:Crestron.SimplSharp.eCrestronStoreResult"/></returns>
-            <exception cref="T:System.NotSupportedException">This version of firmware does not support CrestronStore feature.</exception>
-        </member>
-        <member name="M:Crestron.SimplSharp.CrestronStore.Unsubscribe(System.String)">
-            <summary>
-            Stop receiving notifications when the specified object is changed
-            </summary>
-            <param name="json">The object to unsubscribe from</param>
-            <returns>See <see cref="T:Crestron.SimplSharp.eCrestronStoreResult"/></returns>
-            <exception cref="T:System.NotSupportedException">This version of firmware does not support CrestronStore feature.</exception>
-        </member>
-        <member name="M:Crestron.SimplSharp.CrestronStore.IgnoreOwnSets(System.Boolean)">
-            <summary>
-            Specifies if this client should have it's subscribed callback invoked from it's own sets
-            </summary>
-            <param name="ignore">false: Client will receive a callback for all subscribed object sets, even those initiated by this cresstore instance;
-            true: Client will NOT receive callbacks for it's own sets to subscribed objects.  </param>
-            <returns>See <see cref="T:Crestron.SimplSharp.eCrestronStoreResult"/></returns>
-            <exception cref="T:System.NotSupportedException">This version of firmware does not support CrestronStore feature.</exception>
-        </member>
         <member name="T:Crestron.SimplSharp.CrestronLogger.LoggerModeEnum">
             <summary>
             Enumeration of the Logger Modes available for the Crestron Logger. Logical OR'ing of the modes is allowed. 
@@ -38668,7 +38499,8 @@
             <param name="disableSSL">'true' will disable SSL, 'false' will not change the state of SSL.</param>
             <param name="clearUserInformation">'true' will remove all users from the system, 'false' current user accounts will remain untouched on the system.</param>
             <returns>Result enumeration to determine if the operation was successful or not.</returns>
-            <exception cref="T:System.NotSupportedException">This method is currently not supported.</exception>
+            <exception cref="T:System.NotSupportedException">This method is currently not supported.
+            <para>If the API is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</para></exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronAuthentication.Authentication.AddToken(Crestron.SimplSharp.CrestronAuthentication.Authentication.UserToken)">
             <summary>
@@ -39041,20 +38873,21 @@
             <returns> Returns 'true' if user authentication state is changed.</returns>
             <exception cref="T:System.NotSupportedException">The method is not currently supported</exception>
         </member>
-        <member name="M:Crestron.SimplSharp.CrestronAuthentication.Authentication.IsUserPageAuthEnabledCSOnLinux">
+        <member name="M:Crestron.SimplSharp.CrestronAuthentication.Authentication.IsUserPageAuthEnabledInternal">
             <summary>
-            Internal method to get the enabled or disabled status of user authentication on linux.
+            Internal method to get the enabled or disabled status of user authentication.
             </summary>
             <returns>'true' if user authentication is enabled else 'false'.</returns>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronAuthentication.Authentication.IsUserPageAuthEnabled">
             <summary> Internal method to get the enabled or disabled status of user authentication. </summary>
             <returns> Returns 'false' if user authentication is disabled, 'true' if user authentication is enabled.</returns>
-            <exception cref="T:System.NotSupportedException">The method is not currently supported</exception>
+            <exception cref="T:System.NotSupportedException">The method is not currently supported.
+            <para>If minimum firmware version requirement is not satisfied.</para></exception>
         </member>
-        <member name="M:Crestron.SimplSharp.CrestronAuthentication.Authentication.IsForcedAuthModeOnCSOnLinux">
+        <member name="M:Crestron.SimplSharp.CrestronAuthentication.Authentication.IsForcedAuthModeOnInternal">
             <summary>
-            Internal method to check whether forced authentication is enabled or not on linux
+            Internal method to check whether forced authentication is enabled or not.
             </summary>
             <returns>'true' if Forced authentication is enabled else 'false'.</returns>
         </member>
@@ -39063,19 +38896,43 @@
             <returns> Returns 'false' if forced authentication is disabled, 'true' if forced authentication is enabled.</returns>
             <exception cref="T:System.NotSupportedException">The method is not currently supported</exception>
         </member>
+        <member name="M:Crestron.SimplSharp.CrestronAuthentication.Authentication.QueryFirmwareSupport(Crestron.SimplSharp.CrestronAuthentication.Authentication.eFirmwareFeature,System.Version@)">
+            <summary> Get the minimum supported firmware version for a feature.</summary>
+            <param name="paramFeature"> Feature or method defined in <see cref="T:Crestron.SimplSharp.CrestronAuthentication.Authentication.eFirmwareFeature"/>.</param> 
+            <param name="paramMinFirmwareFeatureSupportedVersion"> Passed as reference to get back the minimum firmware version that is supported by the feature.</param> 
+            <returns> 'true' if the feature is supported in current version. Else 'false'.</returns>
+            <exception cref="T:System.NotSupportedException">The method is not currently supported.</exception>
+        </member>
         <member name="M:Crestron.SimplSharp.CrestronAuthentication.Authentication.SetUserPageAuthentication(Crestron.SimplSharp.CrestronAuthentication.Authentication.UserToken,System.Boolean)">
             <summary> Method to enable or disable user page authentication. </summary>
             <param name="paramUserToken"> User token obtained using "GetAuthenticationToken" method passed </param> 
             <param name="paramState"> 'false' for disabling and 'true' for enabling user page authentication. </param>
-            <returns> Returns 'true' if state is set successfully. </returns>
+            <returns> Returns 'true' if user authentication state is changed successfully to the state mentioned in <see cref="!:paramState"/>.</returns>
             <exception cref="T:System.InvalidOperationException">Authentication or Forced Authentication is not currently enabled on the controller.</exception>
             <exception cref="T:System.ArgumentException">Invalid token passed to this method.</exception>
             <exception cref="T:Crestron.SimplSharp.CrestronAuthentication.Authentication.PrivilegeException">Higher privileges are required to use this method.</exception>
-            <remarks>The minimum firmware version required for this method is 1.602.0002.</remarks>
+            <exception cref="T:System.NotSupportedException">If the API is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.
+            <para>If minimum firmware version requirement is not satisfied.</para></exception>
+            <remarks>The minimum firmware version required for this method is 1.602.0002 for 3-Series devices and 2.4361.02171 for 4-Series devices.</remarks>
         </member>
         <member name="P:Crestron.SimplSharp.CrestronAuthentication.Authentication.Enabled">
             <summary>
             Flag indicating the current state of authentication
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.CrestronAuthentication.Authentication.UserPageAuthEnabled">
+            <summary>
+            Flag indicating the current state of user page authentication.
+            <returns> Returns 'false' if user page authentication is disabled, 'true' if user page authentication is enabled.</returns>
+            <exception cref="T:System.NotSupportedException">The method is not currently supported.
+            <para>If minimum firmware version requirement is not satisfied.</para></exception>
+            <remarks>The minimum firmware version required for this method is 1.602.0002 for 3-Series devices and 2.4361.02171 for 4-Series devices.</remarks>
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.CrestronAuthentication.Authentication.AdministratorExist">
+            <summary>
+            Flag indicating whether atleast one user with Administrator privilege exist in this system.
+            <returns> Returns 'true' if atleast one user with Administrator privilege exist in this system, else 'false'.</returns>
             </summary>
         </member>
         <member name="P:Crestron.SimplSharp.CrestronAuthentication.Authentication.InCloudSync">
@@ -39158,6 +39015,16 @@
         <member name="P:Crestron.SimplSharp.CrestronAuthentication.Authentication.PasswordRules.SpecialCharacterRequired">
             <summary>
             Flag to indicate that the password must contain atleast one special character.
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.CrestronAuthentication.Authentication.eFirmwareFeature">
+            <summary>
+            Enumeration that goes as input to the method <see cref="M:Crestron.SimplSharp.CrestronAuthentication.Authentication.QueryFirmwareSupport(Crestron.SimplSharp.CrestronAuthentication.Authentication.eFirmwareFeature,System.Version@)"/> to check the minimum version supported by feature/method. 
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.eFirmwareFeature.UserPageAuthentication">
+            <summary>
+            User page authentication.
             </summary>
         </member>
         <member name="T:Crestron.SimplSharp.CrestronAuthentication.Authentication.UserToken">
@@ -43523,6 +43390,239 @@
             </summary>
             <param name="message">The message.</param>
             <param name="innerException">The inner exception.</param>
+        </member>
+        <member name="T:Crestron.SimplSharp.JsonDb">
+            <summary>
+            Provides an interface to the control system's JSON Database.
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.JsonDb.#cctor">
+            <summary>
+            Creates an interface to the native JsonDb for this process.
+            </summary>
+            <exception cref="T:System.NotSupportedException">This version of firmware does not support JsonDb feature.</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.JsonDb.SetLoggingLevel(Crestron.SimplSharp.JsonDb.eLoggingLevel)">
+            <summary>
+            Set the logging level of libraries this class interfaces with. 
+            </summary>
+            <param name="loggingLevel">Logging level to set for the internal libraries this class consumes.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">Logging level parameter is not one of the levels defined in <see cref="T:Crestron.SimplSharp.JsonDb.eLoggingLevel"/>.</exception>
+            <exception cref="T:System.NotSupportedException">This version of firmware does not support JsonDb feature.</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.JsonDb.Set(System.String)">
+            <summary>
+            Set the value of a JSON object in the database.
+            <para>The is the same as calling <see cref="M:Crestron.SimplSharp.JsonDb.Set(System.String,System.Boolean,Crestron.SimplSharp.JsonDb.eSaveType)"/>, with partial set to true and <see cref="F:Crestron.SimplSharp.JsonDb.eSaveType.DataStored"/> as parameters.</para>
+            </summary>
+            <param name="json">JSON object to be stored.</param> 
+            <returns>See <see cref="T:Crestron.SimplSharp.JsonDb.eJsonDbResult"/></returns>
+            <exception cref="T:System.NotSupportedException">This version of firmware does not support JsonDb feature.</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.JsonDb.Set(System.String,System.Boolean,Crestron.SimplSharp.JsonDb.eSaveType)">
+            <summary>
+            Set the value of a JSON object in the database.
+            </summary>
+            <param name="json">JSON object to be stored.</param>
+            <param name="partial">false: entire JSON object will be written, overwriting any existing values;
+            <para> true: update existing object with members in the JSON being written. (typical)</para>
+            </param>
+            <param name="save">Indicates if the json should be stored non-volatilely. Typically set to <see cref="F:Crestron.SimplSharp.JsonDb.eSaveType.DataStored"/>.</param>
+            <returns>See <see cref="T:Crestron.SimplSharp.JsonDb.eJsonDbResult"/></returns>
+            <exception cref="T:System.NotSupportedException">This version of firmware does not support JsonDb feature.</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.JsonDb.Get(System.String,Crestron.SimplSharp.JsonDb.eJsonDbResult@)">
+            <summary>
+            Retrieve a data item from the database.
+            <para>This would be the same as calling <see cref="M:Crestron.SimplSharp.JsonDb.Get(System.String,System.Boolean,Crestron.SimplSharp.JsonDb.eJsonDbResult@)"/> with a false for the second parameter.</para>
+            </summary>
+            <param name="jsonObj">JSON which specifies which item to get.</param>
+            <param name="result">The return code for the request.</param>
+            <returns>The JSON of the data item requested, if it was found.</returns>
+            <exception cref="T:System.NotSupportedException">This version of firmware does not support JsonDb feature.</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.JsonDb.Get(System.String,System.Boolean,Crestron.SimplSharp.JsonDb.eJsonDbResult@)">
+            <summary>
+             Retrieve a data item from the database.
+            </summary>
+            <param name="jsonObj">JSON which specifies which item to get.</param>
+            <param name="partial">When set false, the entire json object (full hierarchy) will be retrieved; otherwise only the matching sub-object will be returned.</param>
+            <param name="result">The return code for the request.</param>
+            <returns>The JSON of the data item requested. On failure, <see cref="F:System.String.Empty"/> is returned.</returns>
+            <exception cref="T:System.NotSupportedException">This version of firmware does not support JsonDb feature.</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.JsonDb.Subscribe(System.String,Crestron.SimplSharp.JsonDb.JsonDbCallback)">
+            <summary>
+            Method to allow for subscriptions to changes made to JSON objects in the database.
+            <para>Adjust the setting <see cref="M:Crestron.SimplSharp.JsonDb.IgnoreOwnSets(System.Boolean)"/> as needed for this process.</para>
+            </summary>
+            <param name="subscription">JSON object to subscribe to in the database.</param>
+            <param name="callback">Callback that will be triggered when a change is received from the database.</param>
+            <returns>See <see cref="T:Crestron.SimplSharp.JsonDb.eJsonDbResult"/></returns>
+            <exception cref="T:System.NotSupportedException">This version of firmware does not support JsonDb feature.</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.JsonDb.Unsubscribe(System.String)">
+            <summary>
+            Method to remove the subscription for object changes in the database.
+            </summary>
+            <param name="json">JSON object to unsubscribe from.</param>
+            <returns>See <see cref="T:Crestron.SimplSharp.JsonDb.eJsonDbResult"/></returns>
+            <exception cref="T:System.NotSupportedException">This version of firmware does not support JsonDb feature.</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.JsonDb.IgnoreOwnSets(System.Boolean)">
+            <summary>
+            Method to set the database to not trigger subscriptions for objects when the set comes from this process.
+            </summary>
+            <param name="ignore">false: Trigger callback methods for sets issued from this process;
+            <para> true:  Ignore sets to database objects made from this process.</para></param>
+            <returns>See <see cref="T:Crestron.SimplSharp.JsonDb.eJsonDbResult"/></returns>
+            <exception cref="T:System.NotSupportedException">This version of firmware does not support JsonDb feature.</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.JsonDb.Shutdown">
+            <summary>
+            Method to force close the JsonDb connection for this process. 
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.JsonDb.Supported">
+            <summary>
+            Returns True if JsonDb is supported on this firmware.
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.JsonDb.JsonDbCallback">
+            <summary>
+            Delegate for subscribing to data item updates
+            </summary>
+            <param name="json">The new value</param>
+        </member>
+        <member name="T:Crestron.SimplSharp.JsonDb.eSaveType">
+            <summary>
+            Used in <see cref="M:Crestron.SimplSharp.JsonDb.Set(System.String,System.Boolean,Crestron.SimplSharp.JsonDb.eSaveType)"/> to make data persistant or not
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eSaveType.NotStored">
+            <summary>
+            New value will be published to subscribers but not stored
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eSaveType.DataStored">
+            <summary>
+            New value will be published to subscribers and stored non-volatilely
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.JsonDb.eJsonDbResult">
+            <summary>
+            Dstabase operation results enumeration.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eJsonDbResult.Success">
+            <summary>
+            Success
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eJsonDbResult.FailureUnspecified">
+            <summary>
+            General error
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eJsonDbResult.FailureInvalidKey">
+            <summary>
+            Key is invalid or Multiple Subscriptions to the same JSON object attempted.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eJsonDbResult.FailureValueTooBig">
+            <summary>
+            Buffer is not big enough
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eJsonDbResult.FailureInvalidJson">
+            <summary>
+            Invalid JSON
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eJsonDbResult.FailureTimeout">
+            <summary>
+            Timeout
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eJsonDbResult.FailureNotImplemented">
+            <summary>
+            Feature not implemented
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eJsonDbResult.FailureNotConnected">
+            <summary>
+            Not connected
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eJsonDbResult.FailureSetProxyError">
+            <summary>
+            Set proxy error
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eJsonDbResult.FailureJsonSet">
+            <summary>
+            Json set
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eJsonDbResult.FailureJsonPublish">
+            <summary>
+            Json publish
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eJsonDbResult.FailureNullReply">
+            <summary>
+            Null reply
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eJsonDbResult.FailureErrorReply">
+            <summary>
+            Error reply
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eJsonDbResult.FailureUnexpectedReplyType">
+            <summary>
+            Unexpected reply type
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eJsonDbResult.FailureNullObject">
+            <summary>
+            Null object
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eJsonDbResult.FailureGetProxyError">
+            <summary>
+            Get proxy error
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.JsonDb.eLoggingLevel">
+            <summary>
+            Enumeration to define the supported logging levels of the database.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eLoggingLevel.Error">
+            <summary>
+            Show error messages.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eLoggingLevel.Warning">
+            <summary>
+            Show waring and error messages.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eLoggingLevel.Notice">
+            <summary>
+            Show error, warning, and notice messages.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eLoggingLevel.Info">
+            <summary>
+            Show error, warning, notice, and info messages.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eLoggingLevel.Ok">
+            <summary>
+            Show all error types.
+            </summary>
         </member>
         <member name="T:Crestron.SimplSharp.Net.Http.HttpClient">
             <summary>

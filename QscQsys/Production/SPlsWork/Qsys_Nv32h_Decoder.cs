@@ -9,7 +9,7 @@ using Crestron.Logos.SplusLibrary;
 using Crestron.Logos.SplusObjects;
 using Crestron.SimplSharp;
 using QscQsys;
-using ExtensionMethods;
+using Crestron.SimplSharp.SimplSharpExtensions;
 using TCP_Client;
 
 namespace UserModule_QSYS_NV32H_DECODER
@@ -87,8 +87,6 @@ namespace UserModule_QSYS_NV32H_DECODER
     
     public override void LogosSplusInitialize()
     {
-        SocketInfo __socketinfo__ = new SocketInfo( 1, this );
-        InitialParametersClass.ResolveHostName = __socketinfo__.ResolveHostName;
         _SplusNVRAM = new SplusNVRAM( this );
         
         SOURCE = new Crestron.Logos.SplusObjects.AnalogInput( SOURCE__AnalogSerialInput__, this );

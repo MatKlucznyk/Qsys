@@ -9,7 +9,7 @@ using Crestron.Logos.SplusLibrary;
 using Crestron.Logos.SplusObjects;
 using Crestron.SimplSharp;
 using QscQsys;
-using ExtensionMethods;
+using Crestron.SimplSharp.SimplSharpExtensions;
 using TCP_Client;
 
 namespace UserModule_QSYS_GENERIC_BOOLEAN_NAMED_CONTROL
@@ -128,8 +128,6 @@ public override object FunctionMain (  object __obj__ )
 
 public override void LogosSplusInitialize()
 {
-    SocketInfo __socketinfo__ = new SocketInfo( 1, this );
-    InitialParametersClass.ResolveHostName = __socketinfo__.ResolveHostName;
     _SplusNVRAM = new SplusNVRAM( this );
     
     SETBOOLEANSTATEON = new Crestron.Logos.SplusObjects.DigitalInput( SETBOOLEANSTATEON__DigitalInput__, this );

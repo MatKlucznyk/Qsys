@@ -81,7 +81,7 @@
   OutputSigType2=Digital
   OutputCue3=Dialing
   OutputSigType3=Digital
-  OutputCue4=[~UNUSED~]
+  OutputCue4=IncomingCall
   OutputSigType4=Digital
   OutputCue5=AutoAnswerStatus
   OutputSigType5=Digital

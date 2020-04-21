@@ -176,7 +176,13 @@ namespace QscQsys
 
         PotsControllerRecentCallsChange = 18,
         
-        PotsControllerDialing = 19
+        PotsControllerDialing = 19,
+
+        PotsControllerIncomingCall = 20,
+
+        RoomCombinerWallStateChange = 21,
+        
+        RoomCombinerCombinedStateChange = 22
     }
 
     public enum eQscSimplEventIds

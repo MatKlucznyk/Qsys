@@ -33,8 +33,14 @@
   InputSigType4=Digital
   InputCue5=[~UNUSED~]
   InputSigType5=Digital
-  InputCue6=RecallHome
+  InputCue6=ZoomIn
   InputSigType6=Digital
+  InputCue7=ZoomOut
+  InputSigType7=Digital
+  InputCue8=[~UNUSED~]
+  InputSigType8=Digital
+  InputCue9=RecallHome
+  InputSigType9=Digital
   ParamCue1=[Reference Name]
   ParamCue2=[~UNUSED~]
   ParamSigType2=Constant
@@ -48,18 +54,24 @@
   ParamSigType6=Constant
   ParamCue7=[~UNUSED~]
   ParamSigType7=Constant
-  ParamCue8=ComponentName
-  ParamSigType8=String
-  MinVariableInputs=6
-  MaxVariableInputs=6
+  ParamCue8=[~UNUSED~]
+  ParamSigType8=Constant
+  ParamCue9=[~UNUSED~]
+  ParamSigType9=Constant
+  ParamCue10=[~UNUSED~]
+  ParamSigType10=Constant
+  ParamCue11=ComponentName
+  ParamSigType11=String
+  MinVariableInputs=9
+  MaxVariableInputs=9
   MinVariableInputsList2=0
   MaxVariableInputsList2=0
   MinVariableOutputs=0
   MaxVariableOutputs=0
   MinVariableOutputsList2=0
   MaxVariableOutputsList2=0
-  MinVariableParams=7
-  MaxVariableParams=7
+  MinVariableParams=10
+  MaxVariableParams=10
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
@@ -74,8 +86,8 @@
   CompilerParamCode5=14
   NumFixedParams=1
   Pp1=1
-  Pp8=8
-  MPp=8
+  Pp11=11
+  MPp=11
   NVStorage=10
   ParamSigType1=String
   SmplCInputCue1=o#
@@ -96,7 +108,7 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=8
+  H=11
   Tp=1
   HD=False
   NoS=False

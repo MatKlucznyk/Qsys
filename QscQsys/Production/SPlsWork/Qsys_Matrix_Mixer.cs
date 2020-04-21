@@ -9,7 +9,7 @@ using Crestron.Logos.SplusLibrary;
 using Crestron.Logos.SplusObjects;
 using Crestron.SimplSharp;
 using QscQsys;
-using ExtensionMethods;
+using Crestron.SimplSharp.SimplSharpExtensions;
 using TCP_Client;
 
 namespace UserModule_QSYS_MATRIX_MIXER
@@ -115,8 +115,6 @@ public override object FunctionMain (  object __obj__ )
 
 public override void LogosSplusInitialize()
 {
-    SocketInfo __socketinfo__ = new SocketInfo( 1, this );
-    InitialParametersClass.ResolveHostName = __socketinfo__.ResolveHostName;
     _SplusNVRAM = new SplusNVRAM( this );
     
     MUTEON = new Crestron.Logos.SplusObjects.DigitalInput( MUTEON__DigitalInput__, this );

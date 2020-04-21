@@ -3,9 +3,9 @@
 #INCLUDEPATH "D:\\Programming\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys" 
 
-Digital_Input TiltUp, TiltDown, PanLeft, PanRight, _skip_, RecallHome;
+Digital_Input TiltUp, TiltDown, PanLeft, PanRight, _skip_, ZoomIn, ZoomOut, _skip_, RecallHome;
 
-String_Parameter _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, ComponentName[100];
+String_Parameter _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, ComponentName[100];
 
 QsysCameraSimpl camera;
 
@@ -43,6 +43,26 @@ Push PanRight
 Release PanRight
 {
     camera.StopPanRight();
+}
+
+Push ZoomIn
+{
+    camera.ZoomIn();
+}
+
+Release ZoomIn
+{
+    camera.StopZoomIn();
+}
+
+Push ZoomOut
+{
+    camera.ZoomOut();
+}
+
+Release ZoomOut
+{
+    camera.StopZoomOut();
 }
 
 Push RecallHome

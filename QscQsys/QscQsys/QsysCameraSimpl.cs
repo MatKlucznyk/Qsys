@@ -55,6 +55,26 @@ namespace QscQsys
             camera.StopPTZ(QsysCamera.PtzTypes.Right);
         }
 
+        public void ZoomIn()
+        {
+            camera.StartPTZ(QsysCamera.PtzTypes.ZoomIn);
+        }
+
+        public void StopZoomIn()
+        {
+            camera.StopPTZ(QsysCamera.PtzTypes.ZoomIn);
+        }
+
+        public void ZoomOut()
+        {
+            camera.StartPTZ(QsysCamera.PtzTypes.ZoomOut);
+        }
+
+        public void StopZoomOut()
+        {
+            camera.StopPTZ(QsysCamera.PtzTypes.ZoomOut);
+        }
+
         public void RecallHome()
         {
             camera.RecallHome();

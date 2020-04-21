@@ -9,7 +9,7 @@ using Crestron.Logos.SplusLibrary;
 using Crestron.Logos.SplusObjects;
 using Crestron.SimplSharp;
 using QscQsys;
-using ExtensionMethods;
+using Crestron.SimplSharp.SimplSharpExtensions;
 using TCP_Client;
 
 namespace UserModule_QSYS_GENERIC_STRING_NAMED_CONTROL
@@ -99,8 +99,6 @@ namespace UserModule_QSYS_GENERIC_STRING_NAMED_CONTROL
     
     public override void LogosSplusInitialize()
     {
-        SocketInfo __socketinfo__ = new SocketInfo( 1, this );
-        InitialParametersClass.ResolveHostName = __socketinfo__.ResolveHostName;
         _SplusNVRAM = new SplusNVRAM( this );
         
         SETSTRINGVALUE = new Crestron.Logos.SplusObjects.StringInput( SETSTRINGVALUE__AnalogSerialInput__, 255, this );

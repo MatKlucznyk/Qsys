@@ -8,6 +8,7 @@ namespace QscQsys;
          class QsysPotsControllerSimpl;
          class QsysSoftphoneControllerSimpl;
          class QsysProcessorSimplInterface;
+         class QsysRoomCombinerSimpl;
          class QsysNv32hDecoder;
          class QsysProcessor;
          class QsysNamedControl;
@@ -18,6 +19,7 @@ namespace QscQsys;
          class QsysCameraSimpl;
          class QsysSnapshotSimpl;
          class QsysMatrixMixer;
+         class QsysRoomCombiner;
          class QsysEventsArgs;
          class SimplEventArgs;
          class SimplEvents;
@@ -81,6 +83,7 @@ namespace QscQsys;
         delegate FUNCTION OffHookEvent ( INTEGER value );
         delegate FUNCTION RingingEvent ( INTEGER value );
         delegate FUNCTION DialingEvent ( INTEGER value );
+        delegate FUNCTION IncomingCallEvent ( INTEGER value );
         delegate FUNCTION AutoAnswerEvent ( INTEGER value );
         delegate FUNCTION DndEvent ( INTEGER value );
         delegate FUNCTION DialStringEvent ( SIMPLSHARPSTRING dialString );
@@ -96,6 +99,7 @@ namespace QscQsys;
         FUNCTION Dial ( STRING number );
         FUNCTION DialWithoutString ();
         FUNCTION NumPad ( STRING number );
+        FUNCTION NumString ( STRING number );
         FUNCTION NumPadDelete ();
         FUNCTION NumPadClear ();
         FUNCTION Connect ();
@@ -114,6 +118,7 @@ namespace QscQsys;
         DelegateProperty OffHookEvent onOffHookEvent;
         DelegateProperty RingingEvent onRingingEvent;
         DelegateProperty DialingEvent onDialingEvent;
+        DelegateProperty IncomingCallEvent onIncomingCallEvent;
         DelegateProperty AutoAnswerEvent onAutoAnswerEvent;
         DelegateProperty DndEvent onDndEvent;
         DelegateProperty DialStringEvent onDialStringEvent;
@@ -129,6 +134,7 @@ namespace QscQsys;
         delegate FUNCTION OffHookEvent ( INTEGER value );
         delegate FUNCTION RingingEvent ( INTEGER value );
         delegate FUNCTION DialingEvent ( INTEGER value );
+        delegate FUNCTION IncomingCallEvent ( INTEGER value );
         delegate FUNCTION AutoAnswerEvent ( INTEGER value );
         delegate FUNCTION DndEvent ( INTEGER value );
         delegate FUNCTION DialStringEvent ( SIMPLSHARPSTRING dialString );
@@ -144,6 +150,7 @@ namespace QscQsys;
         FUNCTION Dial ( STRING number );
         FUNCTION DialWithoutString ();
         FUNCTION NumPad ( STRING number );
+        FUNCTION NumString ( STRING number );
         FUNCTION NumPadDelete ();
         FUNCTION NumPadClear ();
         FUNCTION Connect ();
@@ -162,6 +169,7 @@ namespace QscQsys;
         DelegateProperty OffHookEvent onOffHookEvent;
         DelegateProperty RingingEvent onRingingEvent;
         DelegateProperty DialingEvent onDialingEvent;
+        DelegateProperty IncomingCallEvent onIncomingCallEvent;
         DelegateProperty AutoAnswerEvent onAutoAnswerEvent;
         DelegateProperty DndEvent onDndEvent;
         DelegateProperty DialStringEvent onDialStringEvent;
@@ -193,6 +201,28 @@ namespace QscQsys;
         DelegateProperty IsRegistered onIsRegistered;
         DelegateProperty IsConnected onIsConnected;
         DelegateProperty CoreStatus onNewCoreStatus;
+    };
+
+     class QsysRoomCombinerSimpl 
+    {
+        // class delegates
+        delegate FUNCTION WallStateChange ( INTEGER wall , INTEGER value );
+        delegate FUNCTION RoomCombinedChange ( INTEGER room , INTEGER value );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING name , INTEGER walls , INTEGER rooms );
+        FUNCTION SetWall ( INTEGER wall , INTEGER value );
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty WallStateChange onWallStateChange;
+        DelegateProperty RoomCombinedChange onRoomCombinedChange;
     };
 
     static class QsysProcessor 
@@ -263,6 +293,10 @@ namespace QscQsys;
         FUNCTION StopPanLeft ();
         FUNCTION PanRight ();
         FUNCTION StopPanRight ();
+        FUNCTION ZoomIn ();
+        FUNCTION StopZoomIn ();
+        FUNCTION ZoomOut ();
+        FUNCTION StopZoomOut ();
         FUNCTION RecallHome ();
         STRING_FUNCTION ToString ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
@@ -330,6 +364,9 @@ namespace QscQsys;
         static SIGNED_LONG_INTEGER PotsControllerCallStatusChange;
         static SIGNED_LONG_INTEGER PotsControllerRecentCallsChange;
         static SIGNED_LONG_INTEGER PotsControllerDialing;
+        static SIGNED_LONG_INTEGER PotsControllerIncomingCall;
+        static SIGNED_LONG_INTEGER RoomCombinerWallStateChange;
+        static SIGNED_LONG_INTEGER RoomCombinerCombinedStateChange;
     };
 
     static class eQscSimplEventIds // enum

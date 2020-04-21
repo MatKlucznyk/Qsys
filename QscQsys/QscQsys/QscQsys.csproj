@@ -95,6 +95,8 @@
     <Compile Include="QsysEvents.cs" />
     <Compile Include="QsysFader.cs" />
     <Compile Include="QsysProcessorSimpl.cs" />
+    <Compile Include="QsysRoomCombiner.cs" />
+    <Compile Include="QsysRoomCombinerSimpl.cs" />
     <Compile Include="QsysRouter.cs" />
     <Compile Include="QsysRouterSimpl.cs" />
     <Compile Include="QsysSnapshot.cs" />

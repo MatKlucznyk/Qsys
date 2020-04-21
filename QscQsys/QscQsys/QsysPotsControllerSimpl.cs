@@ -12,6 +12,7 @@ namespace QscQsys
         public delegate void OffHookEvent(ushort value);
         public delegate void RingingEvent(ushort value);
         public delegate void DialingEvent(ushort value);
+        public delegate void IncomingCallEvent(ushort value);
         public delegate void AutoAnswerEvent(ushort value);
         public delegate void DndEvent(ushort value);
         public delegate void DialStringEvent(SimplSharpString dialString);
@@ -22,6 +23,7 @@ namespace QscQsys
         public OffHookEvent onOffHookEvent { get; set; }
         public RingingEvent onRingingEvent { get; set; }
         public DialingEvent onDialingEvent { get; set; }
+        public IncomingCallEvent onIncomingCallEvent { get; set; }
         public AutoAnswerEvent onAutoAnswerEvent { get; set; }
         public DndEvent onDndEvent { get; set; }
         public DialStringEvent onDialStringEvent { get; set; }
@@ -141,6 +143,12 @@ namespace QscQsys
                     else if (onDialingEvent != null)
                         onDialingEvent(0);
                     break;
+                case eQscEventIds.PotsControllerIncomingCall:
+                    if (e.BooleanValue && onIncomingCallEvent != null)
+                        onIncomingCallEvent(1);
+                    else if (onIncomingCallEvent != null)
+                        onIncomingCallEvent(0);
+                    break;
                 default:
                     break;
             }
@@ -159,6 +167,11 @@ namespace QscQsys
         public void NumPad(string number)
         {
             pots.NumPad(number);
+        }
+
+        public void NumString(string number)
+        {
+            pots.NumString(number);
         }
 
         public void NumPadDelete()

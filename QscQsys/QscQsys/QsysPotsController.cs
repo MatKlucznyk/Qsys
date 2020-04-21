@@ -14,6 +14,7 @@ namespace QscQsys
         private bool hookState;
         private bool ringingState;
         private bool dialingState;
+        private bool incomingCall;
         private bool autoAnswer;
         private bool dnd;
         private StringBuilder dialString = new StringBuilder();
@@ -29,6 +30,7 @@ namespace QscQsys
         public bool IsOffhook { get { return hookState; } }
         public bool IsRinging { get { return ringingState; } }
         public bool IsDialing { get { return dialingState; } }
+        public bool IsIncomingCall { get { return incomingCall; } }
         public bool AutoAnswer { get { return autoAnswer; } }
         public bool DND { get { return dnd; } }
         public string DialString { get { return dialString.ToString(); } }
@@ -121,7 +123,19 @@ namespace QscQsys
                     else if (dialingState == true)
                     {
                         dialingState = false;
+                        
                         QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialing, cName, false, 0, "false", null));
+                    }
+
+                    if (callStatus.Contains("Incoming Call"))
+                    {
+                        incomingCall = true;
+                        QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIncomingCall, cName, true, 1, "true", null));
+                    }
+                    else if (incomingCall == true)
+                    {
+                        incomingCall = false;
+                        QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIncomingCall, cName, false, 0, "false", null));
                     }
                     break;
                 case "recent_calls":
@@ -163,18 +177,33 @@ namespace QscQsys
             QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString(), null));
         }
 
+        public void NumString(string number)
+        {
+            if (!hookState)
+            {
+                dialString.Append(number);
+                QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString(), null));
+            }
+        }
+
         public void NumPadDelete()
         {
-            dialString.Remove(dialString.Length - 1, 1);
+            if (dialString.Length > 0)
+            {
+                dialString.Remove(dialString.Length - 1, 1);
 
-            QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString(), null));
+                QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString(), null));
+            }
         }
 
         public void NumPadClear()
         {
-            dialString.Remove(0, dialString.Length);
+            if (dialString.Length > 0)
+            {
+                dialString.Remove(0, dialString.Length);
 
-            QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString(), null));
+                QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString(), null));
+            }
         }
 
         public void Dial()

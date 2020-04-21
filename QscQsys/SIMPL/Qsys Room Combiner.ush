@@ -6,30 +6,33 @@
   Sgntr=UserSPlus
   RelVrs=1
   IntStrVrs=1
-  SPlusVrs=4.05.01
+  SPlusVrs=4.04.01
   CrossCplrVrs=1.3
 [END]
 [BEGIN]
   ObjTp=Hd
+  IncludePath1=D:\\Programming\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug
 [END]
 [BEGIN]
   ObjTp=Symbol
   Exclusions=1,19,20,21,88,89,167,168,179,213,214,215,216,217,225,226,248,249,266,267,310,362,378,380,405,407,408,409,478,522,537,554,586,590,611,624,718,756,767,830,841,842,854,883,955,1032,1062,1079,1128,1129,1134,1140,1157,1158,1195,1199,1220,1221,1222,1223,1299,1348,1349,1439,1472,1473,1499,1746,1803,1975,2229,2354,2514,2523,2532,2706,2707,3235,3236,3427,3454,3567,3568,3601,3602,3708,3902,3903,3912,3918,3925,3926,4206,4207,
   Exclusions_CDS=5
-  Inclusions_CDS=6,7
-  Name=Qsys Generic Boolean Named Control
-  SmplCName=Qsys Generic Boolean Named Control.usp
+  Inclusions_CDS=6
+  Name=Qsys Room Combiner
+  SmplCName=Qsys Room Combiner.usp
   Code=1
   SysRev5=4.000
   SMWRev=3.00.00
-  InputCue1=SetBooleanStateOn
+  InputCue1=WallOpen[#]
   InputSigType1=Digital
-  InputCue2=SetBooleanStateOff
-  InputSigType2=Digital
-  InputCue3=ToggleBooleanState
-  InputSigType3=Digital
-  OutputCue1=BooleanState
+  OutputCue1=WallOpenState[1]
   OutputSigType1=Digital
+  OutputCue2=WallOpenState[2]
+  OutputSigType2=Digital
+  OutputCue3=WallOpenState[3]
+  OutputSigType3=Digital
+  OutputCue4=RoomCombined[#]
+  OutputSigType4=Digital
   ParamCue1=[Reference Name]
   ParamCue2=[~UNUSED~]
   ParamSigType2=Constant
@@ -37,18 +40,30 @@
   ParamSigType3=Constant
   ParamCue4=[~UNUSED~]
   ParamSigType4=Constant
-  ParamCue5=NamedControlName
-  ParamSigType5=String
-  MinVariableInputs=3
+  ParamCue5=[~UNUSED~]
+  ParamSigType5=Constant
+  ParamCue6=[~UNUSED~]
+  ParamSigType6=Constant
+  ParamCue7=[~UNUSED~]
+  ParamSigType7=Constant
+  ParamCue8=[~UNUSED~]
+  ParamSigType8=Constant
+  ParamCue9=ComponentName
+  ParamSigType9=String
+  ParamCue10=TotalWalls
+  ParamSigType10=Constant
+  ParamCue11=TotalRooms
+  ParamSigType11=Constant
+  MinVariableInputs=1
   MaxVariableInputs=3
   MinVariableInputsList2=0
   MaxVariableInputsList2=0
-  MinVariableOutputs=1
-  MaxVariableOutputs=1
+  MinVariableOutputs=4
+  MaxVariableOutputs=7
   MinVariableOutputsList2=0
   MaxVariableOutputsList2=0
-  MinVariableParams=4
-  MaxVariableParams=4
+  MinVariableParams=10
+  MaxVariableParams=10
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
@@ -63,17 +78,19 @@
   CompilerParamCode5=14
   NumFixedParams=1
   Pp1=1
-  Pp5=5
-  MPp=5
+  Pp9=9
+  Pp10=10
+  Pp11=11
+  MPp=11
   NVStorage=10
   ParamSigType1=String
   SmplCInputCue1=o#
   SmplCOutputCue1=i#
   SmplCInputList2Cue1=an#
   SmplCOutputList2Cue1=ai#
-  SPlus2CompiledName=S2_Qsys_Generic_Boolean_Named_Control
+  SPlus2CompiledName=S2_Qsys_Room_Combiner
   SymJam=NonExclusive
-  FileName=Qsys Generic Boolean Named Control.ush
+  FileName=Qsys Room Combiner.ush
   SIMPLPlusModuleEncoding=0
   clz1=QscQsys
 [END]
@@ -85,9 +102,33 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=5
+  H=9
   Tp=1
   HD=False
   NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=10
+  Tp=1
+  HD=False
+  Sgn=0
+  Lng=False
+  NF=63
+  NoS=True
+  DNF=1
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=11
+  Tp=1
+  HD=False
+  Sgn=0
+  Lng=False
+  NF=63
+  NoS=True
+  DNF=1
   VVS=0
 [END]

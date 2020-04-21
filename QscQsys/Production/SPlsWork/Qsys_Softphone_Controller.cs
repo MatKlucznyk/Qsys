@@ -36,6 +36,7 @@ namespace UserModule_QSYS_SOFTPHONE_CONTROLLER
         Crestron.Logos.SplusObjects.DigitalOutput CONNECTED;
         Crestron.Logos.SplusObjects.DigitalOutput RINGING;
         Crestron.Logos.SplusObjects.DigitalOutput DIALING;
+        Crestron.Logos.SplusObjects.DigitalOutput INCOMINGCALL;
         Crestron.Logos.SplusObjects.DigitalOutput AUTOANSWERSTATUS;
         Crestron.Logos.SplusObjects.DigitalOutput DNDSTATUS;
         Crestron.Logos.SplusObjects.StringOutput CURRENTLYCALLING;
@@ -513,43 +514,71 @@ public void NEWRECENTCALLLISTEVENT ( SimplSharpString XSIG )
     finally { ObjectFinallyHandler(); }
     }
     
+public void NEWINCOMINGCALLEVENT ( ushort VALUE ) 
+    { 
+    try
+    {
+        SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
+        
+        __context__.SourceCodeLine = 170;
+        if ( Functions.TestForTrue  ( ( VALUE)  ) ) 
+            {
+            __context__.SourceCodeLine = 171;
+            INCOMINGCALL  .Value = (ushort) ( 1 ) ; 
+            }
+        
+        else 
+            {
+            __context__.SourceCodeLine = 173;
+            INCOMINGCALL  .Value = (ushort) ( 0 ) ; 
+            }
+        
+        
+        
+    }
+    finally { ObjectFinallyHandler(); }
+    }
+    
 public override object FunctionMain (  object __obj__ ) 
     { 
     try
     {
         SplusExecutionContext __context__ = SplusFunctionMainStartCode();
         
-        __context__.SourceCodeLine = 170;
+        __context__.SourceCodeLine = 178;
         // RegisterDelegate( SOFTPHONE , ONOFFHOOKEVENT , NEWOFFHOOKEVENT ) 
         SOFTPHONE .onOffHookEvent  = NEWOFFHOOKEVENT; ; 
-        __context__.SourceCodeLine = 171;
+        __context__.SourceCodeLine = 179;
         // RegisterDelegate( SOFTPHONE , ONRINGINGEVENT , NEWRINGINGEVENT ) 
         SOFTPHONE .onRingingEvent  = NEWRINGINGEVENT; ; 
-        __context__.SourceCodeLine = 172;
+        __context__.SourceCodeLine = 180;
         // RegisterDelegate( SOFTPHONE , ONDIALINGEVENT , NEWDIALINGEVENT ) 
         SOFTPHONE .onDialingEvent  = NEWDIALINGEVENT; ; 
-        __context__.SourceCodeLine = 173;
+        __context__.SourceCodeLine = 181;
         // RegisterDelegate( SOFTPHONE , ONAUTOANSWEREVENT , NEWAUTOANSWEREVENT ) 
         SOFTPHONE .onAutoAnswerEvent  = NEWAUTOANSWEREVENT; ; 
-        __context__.SourceCodeLine = 174;
+        __context__.SourceCodeLine = 182;
         // RegisterDelegate( SOFTPHONE , ONDNDEVENT , NEWDNDEVENT ) 
         SOFTPHONE .onDndEvent  = NEWDNDEVENT; ; 
-        __context__.SourceCodeLine = 175;
+        __context__.SourceCodeLine = 183;
         // RegisterDelegate( SOFTPHONE , ONDIALSTRINGEVENT , NEWDIALSTRINGEVENT ) 
         SOFTPHONE .onDialStringEvent  = NEWDIALSTRINGEVENT; ; 
-        __context__.SourceCodeLine = 176;
+        __context__.SourceCodeLine = 184;
         // RegisterDelegate( SOFTPHONE , ONCURRENTLYCALLINGEVENT , NEWCURRENTLYCALLINGEVENT ) 
         SOFTPHONE .onCurrentlyCallingEvent  = NEWCURRENTLYCALLINGEVENT; ; 
-        __context__.SourceCodeLine = 177;
+        __context__.SourceCodeLine = 185;
         // RegisterDelegate( SOFTPHONE , ONCURRENTCALLSTATUSCHANGE , NEWCURRENTCALLSTATUSCHANGE ) 
         SOFTPHONE .onCurrentCallStatusChange  = NEWCURRENTCALLSTATUSCHANGE; ; 
-        __context__.SourceCodeLine = 178;
+        __context__.SourceCodeLine = 186;
         // RegisterDelegate( SOFTPHONE , ONRECENTCALLSEVENT , NEWRECENTCALLSEVENT ) 
         SOFTPHONE .onRecentCallsEvent  = NEWRECENTCALLSEVENT; ; 
-        __context__.SourceCodeLine = 179;
+        __context__.SourceCodeLine = 187;
         // RegisterDelegate( SOFTPHONE , ONRECENTCALLLISTEVENT , NEWRECENTCALLLISTEVENT ) 
         SOFTPHONE .onRecentCallListEvent  = NEWRECENTCALLLISTEVENT; ; 
-        __context__.SourceCodeLine = 180;
+        __context__.SourceCodeLine = 188;
+        // RegisterDelegate( SOFTPHONE , ONINCOMINGCALLEVENT , NEWINCOMINGCALLEVENT ) 
+        SOFTPHONE .onIncomingCallEvent  = NEWINCOMINGCALLEVENT; ; 
+        __context__.SourceCodeLine = 189;
         SOFTPHONE . Initialize ( COMPONENTNAME  .ToString()) ; 
         
         
@@ -562,8 +591,6 @@ public override object FunctionMain (  object __obj__ )
 
 public override void LogosSplusInitialize()
 {
-    SocketInfo __socketinfo__ = new SocketInfo( 1, this );
-    InitialParametersClass.ResolveHostName = __socketinfo__.ResolveHostName;
     _SplusNVRAM = new SplusNVRAM( this );
     
     DIAL = new Crestron.Logos.SplusObjects.DigitalInput( DIAL__DigitalInput__, this );
@@ -618,6 +645,9 @@ public override void LogosSplusInitialize()
     
     DIALING = new Crestron.Logos.SplusObjects.DigitalOutput( DIALING__DigitalOutput__, this );
     m_DigitalOutputList.Add( DIALING__DigitalOutput__, DIALING );
+    
+    INCOMINGCALL = new Crestron.Logos.SplusObjects.DigitalOutput( INCOMINGCALL__DigitalOutput__, this );
+    m_DigitalOutputList.Add( INCOMINGCALL__DigitalOutput__, INCOMINGCALL );
     
     AUTOANSWERSTATUS = new Crestron.Logos.SplusObjects.DigitalOutput( AUTOANSWERSTATUS__DigitalOutput__, this );
     m_DigitalOutputList.Add( AUTOANSWERSTATUS__DigitalOutput__, AUTOANSWERSTATUS );
@@ -703,8 +733,9 @@ const uint SELECTRECENTCALLINDEX__AnalogSerialInput__ = 0;
 const uint CONNECTED__DigitalOutput__ = 0;
 const uint RINGING__DigitalOutput__ = 1;
 const uint DIALING__DigitalOutput__ = 2;
-const uint AUTOANSWERSTATUS__DigitalOutput__ = 3;
-const uint DNDSTATUS__DigitalOutput__ = 4;
+const uint INCOMINGCALL__DigitalOutput__ = 3;
+const uint AUTOANSWERSTATUS__DigitalOutput__ = 4;
+const uint DNDSTATUS__DigitalOutput__ = 5;
 const uint CURRENTLYCALLING__AnalogSerialOutput__ = 0;
 const uint CALLSTATUS__AnalogSerialOutput__ = 1;
 const uint DIALSTRINGOUT__AnalogSerialOutput__ = 2;

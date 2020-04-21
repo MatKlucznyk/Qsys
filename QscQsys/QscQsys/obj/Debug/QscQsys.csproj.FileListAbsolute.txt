@@ -64,3 +64,14 @@ D:\Programming\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qs
 D:\Programming\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\ResolveAssemblyReference.cache
 D:\Programming\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.dll
 D:\Programming\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.pdb
+C:\Users\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.dll
+C:\Users\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.pdb
+C:\Users\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\Newtonsoft.Json.Compact.dll
+C:\Users\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpCustomAttributesInterface.dll
+C:\Users\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpExtensions.dll
+C:\Users\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpHelperInterface.dll
+C:\Users\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpReflectionInterface.dll
+C:\Users\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\TCPClient.dll
+C:\Users\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.dll
+C:\Users\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.pdb
