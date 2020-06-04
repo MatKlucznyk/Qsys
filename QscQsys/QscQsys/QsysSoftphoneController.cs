@@ -8,10 +8,6 @@ namespace QscQsys
 {
     public class QsysSoftphoneController : QsysPotsController
     {
-        public QsysSoftphoneController(string name)
-            : base(name)
-        {
-        }
 
     }
 }

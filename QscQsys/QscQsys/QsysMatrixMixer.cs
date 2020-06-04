@@ -10,11 +10,23 @@ namespace QscQsys
     public class QsysMatrixMixer
     {
         private string cName;
+        private string coreId;
         private bool registered;
 
-        public QsysMatrixMixer(string name)
+        public void Initialize(string coreId, string Name)
         {
-            this.cName = name;
+            this.cName = Name;
+            this.coreId = coreId;
+
+            QsysCoreManager.CoreAdded += new EventHandler<CoreAddedEventArgs>(QsysCoreManager_CoreAdded);
+        }
+
+        void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs e)
+        {
+            if (!registered && e.CoreId == coreId)
+            {
+                registered = true;
+            }
         }
 
         /// <summary>
@@ -25,14 +37,12 @@ namespace QscQsys
         /// <param name="value">The value of the crosspoint mute.</param>
         public void SetCrossPointMute(string inputs, string outputs, bool value)
         {
-            SetCrossPointMute set = new SetCrossPointMute();
-            set.Params = new SetCrossPointMuteParams();
-            set.Params.Name = cName;
-            set.Params.Inputs = inputs;
-            set.Params.Outputs = outputs;
-            set.Params.Value = value;
+            if (registered)
+            {
+                SetCrossPointMute set = new SetCrossPointMute() { Params = new SetCrossPointMuteParams() { Name = cName, Inputs = inputs, Outputs = outputs, Value = value } };
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(set));
+                QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(set));
+            }
         }
     }
 }

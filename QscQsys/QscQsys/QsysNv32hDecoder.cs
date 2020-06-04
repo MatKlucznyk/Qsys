@@ -9,10 +9,13 @@ namespace QscQsys
 {
     public class QsysNv32hDecoder
     {
+        public delegate void Nv32hDecoderInputChange(ushort input);
+        public Nv32hDecoderInputChange newNv32hDecoderInputChange { get; set; }
+
         private string cName;
+        private string coreId;
         private bool registered;
         private int currentSource;
-        private bool isComponent;
 
         public event EventHandler<QsysEventsArgs> QsysNv32hDecoderEvent;
 
@@ -20,24 +23,36 @@ namespace QscQsys
         public bool IsRegistered { get { return registered; } }
         public int CurrentSource { get { return currentSource; } }
 
-        public QsysNv32hDecoder(string Name)
+        public void Initialize(string coreId, string Name)
         {
+            QsysCoreManager.CoreAdded += new EventHandler<CoreAddedEventArgs>(QsysCoreManager_CoreAdded);
             cName = Name;
+            this.coreId = coreId;
 
-            Component component = new Component();
-            component.Name = Name;
-            List<ControlName> names = new List<ControlName>();
-            names.Add(new ControlName());
-            names[0].Name = "hdmi_out_0_select_index";
+            if(!registered)
+                RegisterWithCore();
+        }
 
-            component.Controls = names;
-
-            if (QsysProcessor.RegisterComponent(component))
+        void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs e)
+        {
+            if (!registered && e.CoreId == coreId)
             {
-                QsysProcessor.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
+                RegisterWithCore();
+            }
+        }
 
-                registered = true;
-                isComponent = true;
+        private void RegisterWithCore()
+        {
+            if (QsysCoreManager.Cores.ContainsKey(coreId))
+            {
+                Component component = new Component(){Name = cName, Controls = new List<ControlName>(){new ControlName(){Name = "hdmi_out_0_select_index"}}};
+
+                if (QsysCoreManager.Cores[coreId].RegisterComponent(component))
+                {
+                    QsysCoreManager.Cores[coreId].Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
+
+                    registered = true;
+                }
             }
         }
 
@@ -46,13 +61,19 @@ namespace QscQsys
             currentSource = Convert.ToInt16(e.Value);
 
             QsysNv32hDecoderEvent(this, new QsysEventsArgs(eQscEventIds.Nv32hDecoderInputChange, cName, Convert.ToBoolean(currentSource), currentSource, currentSource.ToString(), null));
+
+            if (newNv32hDecoderInputChange != null)
+                newNv32hDecoderInputChange(Convert.ToUInt16(currentSource));
         }
 
         public void ChangeInput(int source)
         {
-            ComponentChange inputChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "hdmi_out_0_select_index", Value = source } } } };
+            if (registered)
+            {
+                ComponentChange inputChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "hdmi_out_0_select_index", Value = source } } } };
 
-            QsysProcessor.Enqueue(JsonConvert.SerializeObject(inputChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(inputChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+            }
         }
     }
 }

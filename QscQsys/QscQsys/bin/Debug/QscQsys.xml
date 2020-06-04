@@ -57,38 +57,38 @@
             <param name="outputs">The output channels.</param>
             <param name="value">The value of the crosspoint mute.</param>
         </member>
-        <member name="T:QscQsys.QsysProcessor">
+        <member name="T:QscQsys.QsysCore">
             <summary>
-            Static processor for Q-Sys Cores.
+            processor for Q-Sys Cores.
             </summary>
         </member>
-        <member name="M:QscQsys.QsysProcessor.Initialize(System.String,System.UInt16)">
+        <member name="M:QscQsys.QsysCore.Initialize(System.String,System.String,System.UInt16)">
             <summary>
             Initialzes all methods that are required to setup the class. Connection is established on port 1702.
             </summary>
         </member>
-        <member name="M:QscQsys.QsysProcessor.Dispose">
+        <member name="M:QscQsys.QsysCore.Dispose">
             <summary>
             Cleans up all resources.
             </summary>
         </member>
-        <member name="M:QscQsys.QsysProcessor.ParseResponse(System.String)">
+        <member name="M:QscQsys.QsysCore.ParseResponse(System.String)">
             <summary>
             Parse response from Q-Sys Core.
             </summary>
             <param name="data"></param>
         </member>
-        <member name="P:QscQsys.QsysProcessor.IsInitialized">
+        <member name="P:QscQsys.QsysCore.IsInitialized">
             <summary>
             Processor initialzation state.
             </summary>
         </member>
-        <member name="P:QscQsys.QsysProcessor.IsDisposed">
+        <member name="P:QscQsys.QsysCore.IsDisposed">
             <summary>
             Processor disposed state.
             </summary>
         </member>
-        <member name="M:QscQsys.QsysFader.#ctor(System.String)">
+        <member name="M:QscQsys.QsysFader.Initialize(System.String,System.String)">
             <summary>
             Default constructor for a QsysFader
             </summary>

@@ -7,6 +7,7 @@ using Crestron.SimplSharp.SimplSharpExtensions;
 
 namespace QscQsys
 {
+    /*
     public class QsysPotsControllerSimpl
     {
         public delegate void OffHookEvent(ushort value);
@@ -215,4 +216,5 @@ namespace QscQsys
         }
 
     }
+     */
 }

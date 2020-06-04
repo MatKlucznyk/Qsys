@@ -6,13 +6,18 @@ namespace QscQsys
 {
     public class QsysFader
     {
+        public delegate void VolumeChange(ushort value);
+        public delegate void MuteChange(ushort value);
+        public VolumeChange newVolumeChange { get; set; }
+        public MuteChange newMuteChange { get; set; }
+
         private string cName;
         private bool registered;
         private bool currentMute;
         private int currentLvl;
-        private bool isComponent;
         private double max;
         private double min;
+        private string coreId;
 
         public event EventHandler<QsysEventsArgs> QsysFaderEvent;
 
@@ -25,27 +30,37 @@ namespace QscQsys
         /// Default constructor for a QsysFader
         /// </summary>
         /// <param name="Name">The component name of the gain.</param>
-        public QsysFader(string Name)
+        public void Initialize(string coreId, string Name)
         {
+            QsysCoreManager.CoreAdded += new EventHandler<CoreAddedEventArgs>(QsysCoreManager_CoreAdded);
             cName = Name;
 
-            Component component = new Component();
-            component.Name = Name;
-            List<ControlName> names = new List<ControlName>();
-            names.Add(new ControlName());
-            names.Add(new ControlName());
-            names[0].Name = "gain";
-            names[1].Name = "mute";
+            this.coreId = coreId;
 
+            if (!registered)
+                RegisterWithCore();
+        }
 
-            component.Controls = names;
-
-            if (QsysProcessor.RegisterComponent(component))
+        private void RegisterWithCore()
+        {
+            if (QsysCoreManager.Cores.ContainsKey(coreId))
             {
-                QsysProcessor.Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
+                Component component = new Component() { Name = cName, Controls = new List<ControlName>() { new ControlName() { Name = "gain" }, new ControlName() { Name = "mute" } } };
 
-                registered = true;
-                isComponent = true;
+                if (QsysCoreManager.Cores[coreId].RegisterComponent(component))
+                {
+                    QsysCoreManager.Cores[coreId].Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
+
+                    registered = true;
+                }
+            }
+        }
+
+        private void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs e)
+        {
+            if (!registered && e.CoreId == coreId)
+            {
+                RegisterWithCore();
             }
         }
 
@@ -59,8 +74,11 @@ namespace QscQsys
                     QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.GainChange, cName, true, currentLvl, currentLvl.ToString()));
                 }*/
 
-                currentLvl = (int)Math.Round(QsysProcessor.ScaleUp(e.Position));
+                currentLvl = (int)Math.Round(QsysCoreManager.ScaleUp(e.Position));
                 QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.GainChange, cName, true, currentLvl, currentLvl.ToString(), null));
+
+                if (newVolumeChange != null)
+                    newVolumeChange((ushort)currentLvl);
             }
             else if (e.Name == "mute")
             {
@@ -74,6 +92,9 @@ namespace QscQsys
                     QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.MuteChange, cName, false, 0, "false", null));
                     currentMute = false;
                 }
+
+                if (newMuteChange != null)
+                    newMuteChange((ushort)e.Value);
             }
             else if (e.Name == "max_gain")
             {
@@ -93,25 +114,17 @@ namespace QscQsys
         /// <param name="value">The volume level to set to.</param>
         public void Volume(int value)
         {
-            while (newValue != value)
+            if (registered)
             {
-                ComponentChange newVolumeChange = new ComponentChange();
-                newVolumeChange.Params = new ComponentChangeParams();
-                newValue = value;
+                ComponentChange newVolumeChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "gain", Position = QsysCoreManager.ScaleDown(value) } } } };
 
-                newVolumeChange.Params.Name = cName;
-                
-
-                ComponentSetValue volume = new ComponentSetValue();
-
-                volume.Name = "gain";
-                volume.Position = QsysProcessor.ScaleDown(newValue);
-
-                newVolumeChange.Params.Controls = new List<ComponentSetValue>();
-                newVolumeChange.Params.Controls.Add(volume);
-
-                QsysProcessor.Enqueue(JsonConvert.SerializeObject(newVolumeChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(newVolumeChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
+        }
+
+        public void Volume(ushort value)
+        {
+            this.Volume((int)value);
         }
 
         /// <summary>
@@ -120,25 +133,28 @@ namespace QscQsys
         /// <param name="value">The state to set the mute.</param>
         public void Mute(bool value)
         {
-            if (currentMute != value)
+            if (currentMute != value && registered)
             {
-                ComponentChange newMuteChange = new ComponentChange();
-                newMuteChange.Params = new ComponentChangeParams();
+                var intValue = Convert.ToInt16(value);
 
-                newMuteChange.Params.Name = cName;
+                ComponentChange newMuteChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "mute", Value = intValue } } } };
 
-                ComponentSetValue mute = new ComponentSetValue();
-                mute.Name = "mute";
+                QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(newMuteChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+            }
+        }
 
-                if (value)
-                    mute.Value = 1;
-                else
-                    mute.Value = 0;
-
-                newMuteChange.Params.Controls = new List<ComponentSetValue>();
-                newMuteChange.Params.Controls.Add(mute);
-
-                QsysProcessor.Enqueue(JsonConvert.SerializeObject(newMuteChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        public void Mute(ushort value)
+        {
+            switch (value)
+            {
+                case (0):
+                    this.Mute(false);
+                    break;
+                case (1):
+                    this.Mute(true);
+                    break;
+                default:
+                    break;
             }
         }
     }

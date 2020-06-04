@@ -6,6 +6,7 @@ using Crestron.SimplSharp;
 
 namespace QscQsys
 {
+    /*
     public class QsysCameraSimpl
     {
         private QsysCamera camera;
@@ -79,5 +80,5 @@ namespace QscQsys
         {
             camera.RecallHome();
         }
-    }
+    }*/
 }

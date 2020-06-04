@@ -126,6 +126,16 @@ namespace QscQsys
         }
     }
 
+    internal class CoreAddedEventArgs : EventArgs
+    {
+        public string CoreId;
+
+        public CoreAddedEventArgs(string coreId)
+        {
+            this.CoreId = coreId;
+        }
+    }
+
     /// <summary>
     /// Event IDs.
     /// </summary>
