@@ -13,7 +13,7 @@ namespace QscQsys
         private string coreId;
         private bool registered;
 
-        public void Intialize(string coreId, string name)
+        public void Initialize(string coreId, string name)
         {
             this.cName = name;
             this.coreId = coreId;

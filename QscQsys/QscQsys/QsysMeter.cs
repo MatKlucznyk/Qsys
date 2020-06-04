@@ -18,7 +18,7 @@ namespace QscQsys
 
         public event EventHandler<QsysEventsArgs> QsysMeterEvent;
 
-        public void Intialize(string coreId, string name, int index)
+        public void Initialize(string coreId, string name, int index)
         {
             QsysCoreManager.CoreAdded += new EventHandler<CoreAddedEventArgs>(QsysCoreManager_CoreAdded);
 

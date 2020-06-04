@@ -15,18 +15,19 @@ namespace QscQsys
         private string cName;
         private string coreId;
         private bool registered;
+        private bool isInteger;
 
         public event EventHandler<QsysEventsArgs> QsysNamedControlEvent;
 
         public string ComponentName { get { return cName; } }
         public bool IsRegistered { get { return registered; } }
-        public ushort IsInteger { get; set; }
 
-        public void Initialize(string coreId, string Name)
+        public void Initialize(string coreId, string Name, ushort type)
         {
             QsysCoreManager.CoreAdded += new EventHandler<CoreAddedEventArgs>(QsysCoreManager_CoreAdded);
             cName = Name;
             this.coreId = coreId;
+            isInteger = Convert.ToBoolean(type);
 
             if (!registered)
                 RegisterWithCore();
@@ -61,19 +62,22 @@ namespace QscQsys
 
             int intValue;
 
-            if (IsInteger == 0)
+            if (!isInteger)
             {
                 QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(e.Value), Convert.ToUInt16(e.Value), e.SValue, null));
+
+                if (newNamedControlChange != null)
+                    newNamedControlChange(Convert.ToUInt16(e.Value), e.SValue);
             }
             else
             {
                 intValue = (int)Math.Round(QsysCoreManager.ScaleUp(e.Position));
 
                 QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(intValue), intValue, Convert.ToString(e.Position), null));
-            }
 
-            if (newNamedControlChange != null)
-                newNamedControlChange(Convert.ToUInt16(e.Value), e.SValue);
+                if (newNamedControlChange != null)
+                    newNamedControlChange(Convert.ToUInt16(intValue), intValue.ToString());
+            } 
         }
 
         public void SetInteger(int value)

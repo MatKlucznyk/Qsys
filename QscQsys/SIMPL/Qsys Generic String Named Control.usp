@@ -1,15 +1,15 @@
 #SYMBOL_NAME "Qsys Generic String Named Control"
 
-#INCLUDEPATH "D:\\Programming\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
+#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 string_input SetStringValue[255];
 
 string_Output StringValue;
 
-string_parameter  _skip_, NamedControlName[100];
+string_parameter  _skip_, CoreID[100], NamedControlName[100];
 
-QsysNamedControlSimpl stringControl;
+QsysNamedControl stringControl;
 
 threadsafe change SetStringValue
 {
@@ -37,5 +37,5 @@ callback function NewStringChange(integer x, string value)
 function Main()
 {
     RegisterDelegate(stringControl, newNamedControlChange, NewStringChange);
-    stringControl.Initialize(NamedControlName, 0);
+    stringControl.Initialize(CoreID, NamedControlName, 0);
 }

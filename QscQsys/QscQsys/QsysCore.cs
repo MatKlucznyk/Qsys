@@ -14,12 +14,12 @@ namespace QscQsys
     /// </summary>
     public class QsysCore
     {
-        public delegate void OnIsRegistered(ushort value);
-        public delegate void OnIsConnected(ushort value);
-        public delegate void OnCoreStatus(SimplSharpString designName, ushort isRedundant, ushort isEmulator);
-        public OnIsRegistered onIsRegistered { get; set; }
-        public OnIsConnected onIsConnected { get; set; }
-        public OnCoreStatus onNewCoreStatus { get; set; }
+        public delegate void IsRegistered(ushort value);
+        public delegate void IsConnectedStatus(ushort value);
+        public delegate void CoreStatus(SimplSharpString designName, ushort isRedundant, ushort isEmulator);
+        public IsRegistered onIsRegistered { get; set; }
+        public IsConnectedStatus onIsConnected { get; set; }
+        public CoreStatus onNewCoreStatus { get; set; }
 
         private CrestronQueue<string> commandQueue;
         private CrestronQueue<string> responseQueue;

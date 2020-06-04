@@ -6,18 +6,18 @@
   Sgntr=UserSPlus
   RelVrs=1
   IntStrVrs=1
-  SPlusVrs=4.04.01
+  SPlusVrs=4.05.01
   CrossCplrVrs=1.3
 [END]
 [BEGIN]
   ObjTp=Hd
-  IncludePath1=D:\\Programming\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug
+  IncludePath1=C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug
 [END]
 [BEGIN]
   ObjTp=Symbol
   Exclusions=1,19,20,21,88,89,167,168,179,213,214,215,216,217,225,226,248,249,266,267,310,362,378,380,405,407,408,409,478,522,537,554,586,590,611,624,718,756,767,830,841,842,854,883,955,1032,1062,1079,1128,1129,1134,1140,1157,1158,1195,1199,1220,1221,1222,1223,1299,1348,1349,1439,1472,1473,1499,1746,1803,1975,2229,2354,2514,2523,2532,2706,2707,3235,3236,3427,3454,3567,3568,3601,3602,3708,3902,3903,3912,3918,3925,3926,4206,4207,
   Exclusions_CDS=5
-  Inclusions_CDS=6
+  Inclusions_CDS=6,7
   Name=Qsys Matrix Mixer
   SmplCName=Qsys Matrix Mixer.usp
   Code=1
@@ -36,12 +36,14 @@
   ParamSigType2=Constant
   ParamCue3=[~UNUSED~]
   ParamSigType3=Constant
-  ParamCue4=ComponentName
+  ParamCue4=CoreID
   ParamSigType4=String
-  ParamCue5=Input
-  ParamSigType5=Constant
-  ParamCue6=Output
+  ParamCue5=ComponentName
+  ParamSigType5=String
+  ParamCue6=Input
   ParamSigType6=Constant
+  ParamCue7=Output
+  ParamSigType7=Constant
   MinVariableInputs=2
   MaxVariableInputs=2
   MinVariableInputsList2=0
@@ -50,8 +52,8 @@
   MaxVariableOutputs=2
   MinVariableOutputsList2=0
   MaxVariableOutputsList2=0
-  MinVariableParams=5
-  MaxVariableParams=5
+  MinVariableParams=6
+  MaxVariableParams=6
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
@@ -69,7 +71,8 @@
   Pp4=4
   Pp5=5
   Pp6=6
-  MPp=6
+  Pp7=7
+  MPp=7
   NVStorage=10
   ParamSigType1=String
   SmplCInputCue1=o#
@@ -101,6 +104,14 @@
   H=5
   Tp=1
   HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=6
+  Tp=1
+  HD=False
   Sgn=0
   Lng=False
   NF=63
@@ -110,7 +121,7 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=6
+  H=7
   Tp=1
   HD=False
   Sgn=0

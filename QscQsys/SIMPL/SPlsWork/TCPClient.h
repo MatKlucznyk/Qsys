@@ -14,8 +14,8 @@ namespace TCP_Client;
         FUNCTION Connect ( STRING host , INTEGER port );
         FUNCTION Disconnect ();
         FUNCTION SendCommand ( STRING command );
-        STRING_FUNCTION ToString ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
 
         // class variables
         INTEGER __class_id__;

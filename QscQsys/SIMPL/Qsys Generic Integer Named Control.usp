@@ -1,15 +1,15 @@
 #SYMBOL_NAME "Qsys Generic Integer Named Control"
 
-#INCLUDEPATH "D:\\Programming\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
+#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 analog_input SetIntegerValue;
 
 analog_Output IntegerValue;
 
-string_parameter  _skip_, NamedControlName[100];
+string_parameter  _skip_, CoreID[100], NamedControlName[100];
 
-QsysNamedControlSimpl integerControl;
+QsysNamedControl integerControl;
 
 threadsafe change SetIntegerValue
 {
@@ -37,5 +37,5 @@ callback function NewIntegerChange(integer value, string x)
 function Main()
 {
     RegisterDelegate(integerControl, newNamedControlChange, NewIntegerChange);
-    integerControl.Initialize(NamedControlName, 1);
+    integerControl.Initialize(CoreID, NamedControlName, 1);
 }
