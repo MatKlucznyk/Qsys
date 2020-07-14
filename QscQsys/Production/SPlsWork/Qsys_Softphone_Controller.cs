@@ -33,6 +33,7 @@ namespace UserModule_QSYS_SOFTPHONE_CONTROLLER
         InOutArray<Crestron.Logos.SplusObjects.DigitalInput> KEYPAD;
         InOutArray<Crestron.Logos.SplusObjects.DigitalInput> SELECTRECENTCALL;
         Crestron.Logos.SplusObjects.AnalogInput SELECTRECENTCALLINDEX;
+        Crestron.Logos.SplusObjects.StringInput DIALSTRING;
         Crestron.Logos.SplusObjects.DigitalOutput CONNECTED;
         Crestron.Logos.SplusObjects.DigitalOutput RINGING;
         Crestron.Logos.SplusObjects.DigitalOutput DIALING;
@@ -44,7 +45,8 @@ namespace UserModule_QSYS_SOFTPHONE_CONTROLLER
         Crestron.Logos.SplusObjects.StringOutput DIALSTRINGOUT;
         Crestron.Logos.SplusObjects.StringOutput RECENTCALLXSIG;
         InOutArray<Crestron.Logos.SplusObjects.StringOutput> RECENTCALLS;
-        QscQsys.QsysSoftphoneControllerSimpl SOFTPHONE;
+        QscQsys.QsysSoftphoneController SOFTPHONE;
+        StringParameter COREID;
         StringParameter COMPONENTNAME;
         object DIAL_OnPush_0 ( Object __EventInfo__ )
         
@@ -54,8 +56,8 @@ namespace UserModule_QSYS_SOFTPHONE_CONTROLLER
             {
                 SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
                 
-                __context__.SourceCodeLine = 21;
-                SOFTPHONE . DialWithoutString ( ) ; 
+                __context__.SourceCodeLine = 22;
+                SOFTPHONE . Dial ( ) ; 
                 
                 
             }
@@ -73,7 +75,7 @@ namespace UserModule_QSYS_SOFTPHONE_CONTROLLER
         {
             SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
             
-            __context__.SourceCodeLine = 26;
+            __context__.SourceCodeLine = 27;
             SOFTPHONE . Redial ( ) ; 
             
             
@@ -92,7 +94,7 @@ object CONNECT_OnPush_2 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 31;
+        __context__.SourceCodeLine = 32;
         SOFTPHONE . Connect ( ) ; 
         
         
@@ -111,7 +113,7 @@ object DISCONNECT_OnPush_3 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 36;
+        __context__.SourceCodeLine = 37;
         SOFTPHONE . Disconnect ( ) ; 
         
         
@@ -130,7 +132,7 @@ object AUTOANSWERTOGGLE_OnPush_4 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 41;
+        __context__.SourceCodeLine = 42;
         SOFTPHONE . AutoAnswerToggle ( ) ; 
         
         
@@ -149,7 +151,7 @@ object DNDTOGGLE_OnPush_5 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 46;
+        __context__.SourceCodeLine = 47;
         SOFTPHONE . DndToggle ( ) ; 
         
         
@@ -170,9 +172,9 @@ object KEYPAD_OnPush_6 ( Object __EventInfo__ )
         ushort X = 0;
         
         
-        __context__.SourceCodeLine = 53;
+        __context__.SourceCodeLine = 54;
         X = (ushort) ( Functions.GetLastModifiedArrayIndex( __SignalEventArg__ ) ) ; 
-        __context__.SourceCodeLine = 55;
+        __context__.SourceCodeLine = 56;
         SOFTPHONE . NumPad ( Functions.ItoA( (int)( (X - 1) ) ) .ToString()) ; 
         
         
@@ -191,7 +193,7 @@ object KEYPADDELETE_OnPush_7 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 60;
+        __context__.SourceCodeLine = 61;
         SOFTPHONE . NumPadDelete ( ) ; 
         
         
@@ -210,7 +212,7 @@ object KEYPADCLEAR_OnPush_8 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 65;
+        __context__.SourceCodeLine = 66;
         SOFTPHONE . NumPadClear ( ) ; 
         
         
@@ -229,7 +231,7 @@ object KEYPADSTAR_OnPush_9 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 70;
+        __context__.SourceCodeLine = 71;
         SOFTPHONE . NumPad ( "*") ; 
         
         
@@ -248,7 +250,7 @@ object KEYPADPOUND_OnPush_10 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 75;
+        __context__.SourceCodeLine = 76;
         SOFTPHONE . NumPad ( "#") ; 
         
         
@@ -269,10 +271,10 @@ object SELECTRECENTCALL_OnPush_11 ( Object __EventInfo__ )
         ushort X = 0;
         
         
-        __context__.SourceCodeLine = 82;
+        __context__.SourceCodeLine = 83;
         X = (ushort) ( Functions.GetLastModifiedArrayIndex( __SignalEventArg__ ) ) ; 
-        __context__.SourceCodeLine = 84;
-        SOFTPHONE . SelectRecentCall ( (ushort)( X )) ; 
+        __context__.SourceCodeLine = 85;
+        SOFTPHONE . SelectRecentCall ( (int)( X )) ; 
         
         
     }
@@ -292,16 +294,40 @@ object SELECTRECENTCALLINDEX_OnChange_12 ( Object __EventInfo__ )
         ushort X = 0;
         
         
-        __context__.SourceCodeLine = 91;
+        __context__.SourceCodeLine = 92;
         while ( Functions.TestForTrue  ( ( Functions.BoolToInt (X != SELECTRECENTCALLINDEX  .UshortValue))  ) ) 
             { 
-            __context__.SourceCodeLine = 93;
+            __context__.SourceCodeLine = 94;
             X = (ushort) ( SELECTRECENTCALLINDEX  .UshortValue ) ; 
-            __context__.SourceCodeLine = 95;
-            SOFTPHONE . SelectRecentCall ( (ushort)( X )) ; 
-            __context__.SourceCodeLine = 91;
+            __context__.SourceCodeLine = 96;
+            SOFTPHONE . SelectRecentCall ( (int)( X )) ; 
+            __context__.SourceCodeLine = 92;
             } 
         
+        
+        
+    }
+    catch(Exception e) { ObjectCatchHandler(e); }
+    finally { ObjectFinallyHandler( __SignalEventArg__ ); }
+    return this;
+    
+}
+
+object DIALSTRING_OnChange_13 ( Object __EventInfo__ )
+
+    { 
+    Crestron.Logos.SplusObjects.SignalEventArgs __SignalEventArg__ = (Crestron.Logos.SplusObjects.SignalEventArgs)__EventInfo__;
+    try
+    {
+        SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
+        CrestronString X;
+        X  = new CrestronString( Crestron.Logos.SplusObjects.CrestronStringEncoding.eEncodingASCII, 100, this );
+        
+        
+        __context__.SourceCodeLine = 104;
+        X  .UpdateValue ( DIALSTRING  ) ; 
+        __context__.SourceCodeLine = 106;
+        SOFTPHONE . NumString ( X .ToString()) ; 
         
         
     }
@@ -317,16 +343,16 @@ public void NEWOFFHOOKEVENT ( ushort VALUE )
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 101;
+        __context__.SourceCodeLine = 111;
         if ( Functions.TestForTrue  ( ( VALUE)  ) ) 
             {
-            __context__.SourceCodeLine = 102;
+            __context__.SourceCodeLine = 112;
             CONNECTED  .Value = (ushort) ( 1 ) ; 
             }
         
         else 
             {
-            __context__.SourceCodeLine = 104;
+            __context__.SourceCodeLine = 114;
             CONNECTED  .Value = (ushort) ( 0 ) ; 
             }
         
@@ -342,16 +368,16 @@ public void NEWRINGINGEVENT ( ushort VALUE )
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 109;
+        __context__.SourceCodeLine = 119;
         if ( Functions.TestForTrue  ( ( VALUE)  ) ) 
             {
-            __context__.SourceCodeLine = 110;
+            __context__.SourceCodeLine = 120;
             RINGING  .Value = (ushort) ( 1 ) ; 
             }
         
         else 
             {
-            __context__.SourceCodeLine = 112;
+            __context__.SourceCodeLine = 122;
             RINGING  .Value = (ushort) ( 0 ) ; 
             }
         
@@ -367,16 +393,16 @@ public void NEWDIALINGEVENT ( ushort VALUE )
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 117;
+        __context__.SourceCodeLine = 127;
         if ( Functions.TestForTrue  ( ( VALUE)  ) ) 
             {
-            __context__.SourceCodeLine = 118;
+            __context__.SourceCodeLine = 128;
             DIALING  .Value = (ushort) ( 1 ) ; 
             }
         
         else 
             {
-            __context__.SourceCodeLine = 120;
+            __context__.SourceCodeLine = 130;
             DIALING  .Value = (ushort) ( 0 ) ; 
             }
         
@@ -392,16 +418,16 @@ public void NEWAUTOANSWEREVENT ( ushort VALUE )
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 125;
+        __context__.SourceCodeLine = 135;
         if ( Functions.TestForTrue  ( ( VALUE)  ) ) 
             {
-            __context__.SourceCodeLine = 126;
+            __context__.SourceCodeLine = 136;
             AUTOANSWERSTATUS  .Value = (ushort) ( 1 ) ; 
             }
         
         else 
             {
-            __context__.SourceCodeLine = 128;
+            __context__.SourceCodeLine = 138;
             AUTOANSWERSTATUS  .Value = (ushort) ( 0 ) ; 
             }
         
@@ -417,16 +443,16 @@ public void NEWDNDEVENT ( ushort VALUE )
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 133;
+        __context__.SourceCodeLine = 143;
         if ( Functions.TestForTrue  ( ( VALUE)  ) ) 
             {
-            __context__.SourceCodeLine = 134;
+            __context__.SourceCodeLine = 144;
             DNDSTATUS  .Value = (ushort) ( 1 ) ; 
             }
         
         else 
             {
-            __context__.SourceCodeLine = 136;
+            __context__.SourceCodeLine = 146;
             DNDSTATUS  .Value = (ushort) ( 0 ) ; 
             }
         
@@ -442,7 +468,7 @@ public void NEWDIALSTRINGEVENT ( SimplSharpString NEWDIALSTRING )
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 141;
+        __context__.SourceCodeLine = 151;
         DIALSTRINGOUT  .UpdateValue ( NEWDIALSTRING  .ToString()  ) ; 
         
         
@@ -456,7 +482,7 @@ public void NEWCURRENTLYCALLINGEVENT ( SimplSharpString NEWCURRENTLYCALLING )
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 146;
+        __context__.SourceCodeLine = 156;
         CURRENTLYCALLING  .UpdateValue ( NEWCURRENTLYCALLING  .ToString()  ) ; 
         
         
@@ -470,7 +496,7 @@ public void NEWCURRENTCALLSTATUSCHANGE ( SimplSharpString STATUS )
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 151;
+        __context__.SourceCodeLine = 161;
         CALLSTATUS  .UpdateValue ( STATUS  .ToString()  ) ; 
         
         
@@ -484,15 +510,15 @@ public void NEWRECENTCALLSEVENT ( SimplSharpString CALL1 , SimplSharpString CALL
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 156;
+        __context__.SourceCodeLine = 166;
         RECENTCALLS [ 1]  .UpdateValue ( CALL1  .ToString()  ) ; 
-        __context__.SourceCodeLine = 157;
+        __context__.SourceCodeLine = 167;
         RECENTCALLS [ 2]  .UpdateValue ( CALL2  .ToString()  ) ; 
-        __context__.SourceCodeLine = 158;
+        __context__.SourceCodeLine = 168;
         RECENTCALLS [ 3]  .UpdateValue ( CALL3  .ToString()  ) ; 
-        __context__.SourceCodeLine = 159;
+        __context__.SourceCodeLine = 169;
         RECENTCALLS [ 4]  .UpdateValue ( CALL4  .ToString()  ) ; 
-        __context__.SourceCodeLine = 160;
+        __context__.SourceCodeLine = 170;
         RECENTCALLS [ 5]  .UpdateValue ( CALL5  .ToString()  ) ; 
         
         
@@ -506,7 +532,7 @@ public void NEWRECENTCALLLISTEVENT ( SimplSharpString XSIG )
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 165;
+        __context__.SourceCodeLine = 175;
         RECENTCALLXSIG  .UpdateValue ( XSIG  .ToString()  ) ; 
         
         
@@ -520,16 +546,16 @@ public void NEWINCOMINGCALLEVENT ( ushort VALUE )
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 170;
+        __context__.SourceCodeLine = 180;
         if ( Functions.TestForTrue  ( ( VALUE)  ) ) 
             {
-            __context__.SourceCodeLine = 171;
+            __context__.SourceCodeLine = 181;
             INCOMINGCALL  .Value = (ushort) ( 1 ) ; 
             }
         
         else 
             {
-            __context__.SourceCodeLine = 173;
+            __context__.SourceCodeLine = 183;
             INCOMINGCALL  .Value = (ushort) ( 0 ) ; 
             }
         
@@ -545,41 +571,41 @@ public override object FunctionMain (  object __obj__ )
     {
         SplusExecutionContext __context__ = SplusFunctionMainStartCode();
         
-        __context__.SourceCodeLine = 178;
+        __context__.SourceCodeLine = 188;
         // RegisterDelegate( SOFTPHONE , ONOFFHOOKEVENT , NEWOFFHOOKEVENT ) 
         SOFTPHONE .onOffHookEvent  = NEWOFFHOOKEVENT; ; 
-        __context__.SourceCodeLine = 179;
+        __context__.SourceCodeLine = 189;
         // RegisterDelegate( SOFTPHONE , ONRINGINGEVENT , NEWRINGINGEVENT ) 
         SOFTPHONE .onRingingEvent  = NEWRINGINGEVENT; ; 
-        __context__.SourceCodeLine = 180;
+        __context__.SourceCodeLine = 190;
         // RegisterDelegate( SOFTPHONE , ONDIALINGEVENT , NEWDIALINGEVENT ) 
         SOFTPHONE .onDialingEvent  = NEWDIALINGEVENT; ; 
-        __context__.SourceCodeLine = 181;
+        __context__.SourceCodeLine = 191;
         // RegisterDelegate( SOFTPHONE , ONAUTOANSWEREVENT , NEWAUTOANSWEREVENT ) 
         SOFTPHONE .onAutoAnswerEvent  = NEWAUTOANSWEREVENT; ; 
-        __context__.SourceCodeLine = 182;
+        __context__.SourceCodeLine = 192;
         // RegisterDelegate( SOFTPHONE , ONDNDEVENT , NEWDNDEVENT ) 
         SOFTPHONE .onDndEvent  = NEWDNDEVENT; ; 
-        __context__.SourceCodeLine = 183;
+        __context__.SourceCodeLine = 193;
         // RegisterDelegate( SOFTPHONE , ONDIALSTRINGEVENT , NEWDIALSTRINGEVENT ) 
         SOFTPHONE .onDialStringEvent  = NEWDIALSTRINGEVENT; ; 
-        __context__.SourceCodeLine = 184;
+        __context__.SourceCodeLine = 194;
         // RegisterDelegate( SOFTPHONE , ONCURRENTLYCALLINGEVENT , NEWCURRENTLYCALLINGEVENT ) 
         SOFTPHONE .onCurrentlyCallingEvent  = NEWCURRENTLYCALLINGEVENT; ; 
-        __context__.SourceCodeLine = 185;
+        __context__.SourceCodeLine = 195;
         // RegisterDelegate( SOFTPHONE , ONCURRENTCALLSTATUSCHANGE , NEWCURRENTCALLSTATUSCHANGE ) 
         SOFTPHONE .onCurrentCallStatusChange  = NEWCURRENTCALLSTATUSCHANGE; ; 
-        __context__.SourceCodeLine = 186;
+        __context__.SourceCodeLine = 196;
         // RegisterDelegate( SOFTPHONE , ONRECENTCALLSEVENT , NEWRECENTCALLSEVENT ) 
         SOFTPHONE .onRecentCallsEvent  = NEWRECENTCALLSEVENT; ; 
-        __context__.SourceCodeLine = 187;
+        __context__.SourceCodeLine = 197;
         // RegisterDelegate( SOFTPHONE , ONRECENTCALLLISTEVENT , NEWRECENTCALLLISTEVENT ) 
         SOFTPHONE .onRecentCallListEvent  = NEWRECENTCALLLISTEVENT; ; 
-        __context__.SourceCodeLine = 188;
+        __context__.SourceCodeLine = 198;
         // RegisterDelegate( SOFTPHONE , ONINCOMINGCALLEVENT , NEWINCOMINGCALLEVENT ) 
         SOFTPHONE .onIncomingCallEvent  = NEWINCOMINGCALLEVENT; ; 
-        __context__.SourceCodeLine = 189;
-        SOFTPHONE . Initialize ( COMPONENTNAME  .ToString()) ; 
+        __context__.SourceCodeLine = 199;
+        SOFTPHONE . Initialize ( COREID  .ToString(), COMPONENTNAME  .ToString()) ; 
         
         
     }
@@ -591,6 +617,8 @@ public override object FunctionMain (  object __obj__ )
 
 public override void LogosSplusInitialize()
 {
+    SocketInfo __socketinfo__ = new SocketInfo( 1, this );
+    InitialParametersClass.ResolveHostName = __socketinfo__.ResolveHostName;
     _SplusNVRAM = new SplusNVRAM( this );
     
     DIAL = new Crestron.Logos.SplusObjects.DigitalInput( DIAL__DigitalInput__, this );
@@ -658,6 +686,9 @@ public override void LogosSplusInitialize()
     SELECTRECENTCALLINDEX = new Crestron.Logos.SplusObjects.AnalogInput( SELECTRECENTCALLINDEX__AnalogSerialInput__, this );
     m_AnalogInputList.Add( SELECTRECENTCALLINDEX__AnalogSerialInput__, SELECTRECENTCALLINDEX );
     
+    DIALSTRING = new Crestron.Logos.SplusObjects.StringInput( DIALSTRING__AnalogSerialInput__, 100, this );
+    m_StringInputList.Add( DIALSTRING__AnalogSerialInput__, DIALSTRING );
+    
     CURRENTLYCALLING = new Crestron.Logos.SplusObjects.StringOutput( CURRENTLYCALLING__AnalogSerialOutput__, this );
     m_StringOutputList.Add( CURRENTLYCALLING__AnalogSerialOutput__, CURRENTLYCALLING );
     
@@ -676,6 +707,9 @@ public override void LogosSplusInitialize()
         RECENTCALLS[i+1] = new Crestron.Logos.SplusObjects.StringOutput( RECENTCALLS__AnalogSerialOutput__ + i, this );
         m_StringOutputList.Add( RECENTCALLS__AnalogSerialOutput__ + i, RECENTCALLS[i+1] );
     }
+    
+    COREID = new StringParameter( COREID__Parameter__, this );
+    m_ParameterList.Add( COREID__Parameter__, COREID );
     
     COMPONENTNAME = new StringParameter( COMPONENTNAME__Parameter__, this );
     m_ParameterList.Add( COMPONENTNAME__Parameter__, COMPONENTNAME );
@@ -698,6 +732,7 @@ public override void LogosSplusInitialize()
         SELECTRECENTCALL[i+1].OnDigitalPush.Add( new InputChangeHandlerWrapper( SELECTRECENTCALL_OnPush_11, true ) );
         
     SELECTRECENTCALLINDEX.OnAnalogChange.Add( new InputChangeHandlerWrapper( SELECTRECENTCALLINDEX_OnChange_12, true ) );
+    DIALSTRING.OnSerialChange.Add( new InputChangeHandlerWrapper( DIALSTRING_OnChange_13, true ) );
     
     _SplusNVRAM.PopulateCustomAttributeList( true );
     
@@ -707,7 +742,7 @@ public override void LogosSplusInitialize()
 
 public override void LogosSimplSharpInitialize()
 {
-    SOFTPHONE  = new QscQsys.QsysSoftphoneControllerSimpl();
+    SOFTPHONE  = new QscQsys.QsysSoftphoneController();
     
     
 }
@@ -730,6 +765,7 @@ const uint KEYPADPOUND__DigitalInput__ = 9;
 const uint KEYPAD__DigitalInput__ = 10;
 const uint SELECTRECENTCALL__DigitalInput__ = 20;
 const uint SELECTRECENTCALLINDEX__AnalogSerialInput__ = 0;
+const uint DIALSTRING__AnalogSerialInput__ = 1;
 const uint CONNECTED__DigitalOutput__ = 0;
 const uint RINGING__DigitalOutput__ = 1;
 const uint DIALING__DigitalOutput__ = 2;
@@ -741,7 +777,8 @@ const uint CALLSTATUS__AnalogSerialOutput__ = 1;
 const uint DIALSTRINGOUT__AnalogSerialOutput__ = 2;
 const uint RECENTCALLXSIG__AnalogSerialOutput__ = 3;
 const uint RECENTCALLS__AnalogSerialOutput__ = 4;
-const uint COMPONENTNAME__Parameter__ = 10;
+const uint COREID__Parameter__ = 10;
+const uint COMPONENTNAME__Parameter__ = 11;
 
 [SplusStructAttribute(-1, true, false)]
 public class SplusNVRAM : SplusStructureBase

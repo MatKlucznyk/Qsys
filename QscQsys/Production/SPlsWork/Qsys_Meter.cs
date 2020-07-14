@@ -19,9 +19,10 @@ namespace UserModule_QSYS_METER
         static CCriticalSection g_criticalSection = new CCriticalSection();
         
         Crestron.Logos.SplusObjects.AnalogOutput METERVALUE;
+        StringParameter COREID;
         StringParameter COMPONENTNAME;
         UShortParameter INDEX;
-        QscQsys.QsysMeterSimpl METER;
+        QscQsys.QsysMeter METER;
         public void NEWMETERUPDATE ( ushort VALUE ) 
             { 
             try
@@ -46,7 +47,7 @@ namespace UserModule_QSYS_METER
                 // RegisterDelegate( METER , ONMETERCHANGE , NEWMETERUPDATE ) 
                 METER .onMeterChange  = NEWMETERUPDATE; ; 
                 __context__.SourceCodeLine = 21;
-                METER . Initialize ( COMPONENTNAME  .ToString(), (ushort)( INDEX  .Value )) ; 
+                METER . Initialize ( COREID  .ToString(), COMPONENTNAME  .ToString(), (int)( INDEX  .Value )) ; 
                 
                 
             }
@@ -58,6 +59,8 @@ namespace UserModule_QSYS_METER
         
         public override void LogosSplusInitialize()
         {
+            SocketInfo __socketinfo__ = new SocketInfo( 1, this );
+            InitialParametersClass.ResolveHostName = __socketinfo__.ResolveHostName;
             _SplusNVRAM = new SplusNVRAM( this );
             
             METERVALUE = new Crestron.Logos.SplusObjects.AnalogOutput( METERVALUE__AnalogSerialOutput__, this );
@@ -65,6 +68,9 @@ namespace UserModule_QSYS_METER
             
             INDEX = new UShortParameter( INDEX__Parameter__, this );
             m_ParameterList.Add( INDEX__Parameter__, INDEX );
+            
+            COREID = new StringParameter( COREID__Parameter__, this );
+            m_ParameterList.Add( COREID__Parameter__, COREID );
             
             COMPONENTNAME = new StringParameter( COMPONENTNAME__Parameter__, this );
             m_ParameterList.Add( COMPONENTNAME__Parameter__, COMPONENTNAME );
@@ -79,7 +85,7 @@ namespace UserModule_QSYS_METER
         
         public override void LogosSimplSharpInitialize()
         {
-            METER  = new QscQsys.QsysMeterSimpl();
+            METER  = new QscQsys.QsysMeter();
             
             
         }
@@ -90,8 +96,9 @@ namespace UserModule_QSYS_METER
         
         
         const uint METERVALUE__AnalogSerialOutput__ = 0;
-        const uint COMPONENTNAME__Parameter__ = 10;
-        const uint INDEX__Parameter__ = 11;
+        const uint COREID__Parameter__ = 10;
+        const uint COMPONENTNAME__Parameter__ = 11;
+        const uint INDEX__Parameter__ = 12;
         
         [SplusStructAttribute(-1, true, false)]
         public class SplusNVRAM : SplusStructureBase

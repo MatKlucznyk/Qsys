@@ -222,8 +222,7 @@ namespace QscQsys
                     break;
                 case "recent_calls":
                     recentCalls.Clear();
-                    List<string> choices = e.Choices;
-                    foreach (var choice in choices)
+                    foreach (var choice in e.Choices)
                     {
                         var newChoice = JsonConvert.DeserializeObject<ListBoxChoice>(choice);
                         recentCalls.Add(newChoice);
@@ -236,9 +235,13 @@ namespace QscQsys
 
                         for (int i = 0; i <= 4; i++)
                         {
-                            if (choices[i] != null)
+                            if (recentCalls.Count > i)
                             {
-                                calls[i] = choices[i];
+                                calls[i] = recentCalls[i].Text;
+                            }
+                            else
+                            {
+                                break;
                             }
                         }
                         onRecentCallsEvent(calls[0], calls[1], calls[2], calls[3], calls[4]);
