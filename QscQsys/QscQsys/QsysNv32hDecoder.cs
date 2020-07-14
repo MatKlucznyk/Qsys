@@ -17,7 +17,7 @@ namespace QscQsys
         private bool registered;
         private int currentSource;
 
-        public event EventHandler<QsysEventsArgs> QsysNv32hDecoderEvent;
+        //public event EventHandler<QsysEventsArgs> QsysNv32hDecoderEvent;
 
         public string ComponentName { get { return cName; } }
         public bool IsRegistered { get { return registered; } }
@@ -60,7 +60,7 @@ namespace QscQsys
         {
             currentSource = Convert.ToInt16(e.Value);
 
-            QsysNv32hDecoderEvent(this, new QsysEventsArgs(eQscEventIds.Nv32hDecoderInputChange, cName, Convert.ToBoolean(currentSource), currentSource, currentSource.ToString(), null));
+            //QsysNv32hDecoderEvent(this, new QsysEventsArgs(eQscEventIds.Nv32hDecoderInputChange, cName, Convert.ToBoolean(currentSource), currentSource, currentSource.ToString(), null));
 
             if (newNv32hDecoderInputChange != null)
                 newNv32hDecoderInputChange(Convert.ToUInt16(currentSource));

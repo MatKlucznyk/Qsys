@@ -16,7 +16,7 @@ namespace QscQsys
         private bool registered;
         private int meterIndex;
 
-        public event EventHandler<QsysEventsArgs> QsysMeterEvent;
+        //public event EventHandler<QsysEventsArgs> QsysMeterEvent;
 
         public void Initialize(string coreId, string name, int index)
         {
@@ -55,7 +55,7 @@ namespace QscQsys
 
         private void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
         {
-            QsysMeterEvent(this, new QsysEventsArgs(eQscEventIds.MeterUpdate, cName, Convert.ToBoolean(e.Value), Convert.ToInt16(e.Value), e.SValue, null));
+            //QsysMeterEvent(this, new QsysEventsArgs(eQscEventIds.MeterUpdate, cName, Convert.ToBoolean(e.Value), Convert.ToInt16(e.Value), e.SValue, null));
 
             if (onMeterChange != null)
                 onMeterChange(Convert.ToUInt16(e.Value));

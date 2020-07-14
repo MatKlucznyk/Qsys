@@ -17,7 +17,7 @@ namespace QscQsys
         private bool registered;
         private bool isInteger;
 
-        public event EventHandler<QsysEventsArgs> QsysNamedControlEvent;
+        //public event EventHandler<QsysEventsArgs> QsysNamedControlEvent;
 
         public string ComponentName { get { return cName; } }
         public bool IsRegistered { get { return registered; } }
@@ -64,7 +64,7 @@ namespace QscQsys
 
             if (!isInteger)
             {
-                QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(e.Value), Convert.ToUInt16(e.Value), e.SValue, null));
+                //QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(e.Value), Convert.ToUInt16(e.Value), e.SValue, null));
 
                 if (newNamedControlChange != null)
                     newNamedControlChange(Convert.ToUInt16(e.Value), e.SValue);
@@ -73,7 +73,7 @@ namespace QscQsys
             {
                 intValue = (int)Math.Round(QsysCoreManager.ScaleUp(e.Position));
 
-                QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(intValue), intValue, Convert.ToString(e.Position), null));
+                //QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(intValue), intValue, Convert.ToString(e.Position), null));
 
                 if (newNamedControlChange != null)
                     newNamedControlChange(Convert.ToUInt16(intValue), intValue.ToString());

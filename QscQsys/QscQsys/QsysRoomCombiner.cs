@@ -20,7 +20,7 @@ namespace QscQsys
         private bool[] wallState;
         private bool[] roomCombined;
 
-        public event EventHandler<QsysEventsArgs> QsysRoomCombinerEvent;
+        //public event EventHandler<QsysEventsArgs> QsysRoomCombinerEvent;
 
         public string ComponentName { get { return cName; } }
         public bool IsRegistered { get { return registered; } }
@@ -83,7 +83,7 @@ namespace QscQsys
 
                 wallState[Convert.ToInt16(wall[1]) - 1] = Convert.ToBoolean(e.Value);
 
-                QsysRoomCombinerEvent(this, new QsysEventsArgs(eQscEventIds.RoomCombinerWallStateChange, cName, Convert.ToBoolean(e.Value), Convert.ToInt16(wall[1]), e.SValue, null));
+                //QsysRoomCombinerEvent(this, new QsysEventsArgs(eQscEventIds.RoomCombinerWallStateChange, cName, Convert.ToBoolean(e.Value), Convert.ToInt16(wall[1]), e.SValue, null));
 
                 if (onWallStateChange != null)
                     onWallStateChange(Convert.ToUInt16(wall[1]), Convert.ToUInt16(e.Value));
@@ -94,7 +94,7 @@ namespace QscQsys
 
                 roomCombined[Convert.ToInt16(room[1]) - 1] = Convert.ToBoolean(e.Value);
 
-                QsysRoomCombinerEvent(this, new QsysEventsArgs(eQscEventIds.RoomCombinerCombinedStateChange, cName, Convert.ToBoolean(e.Value), Convert.ToInt16(room[1]), e.SValue, null));
+                //QsysRoomCombinerEvent(this, new QsysEventsArgs(eQscEventIds.RoomCombinerCombinedStateChange, cName, Convert.ToBoolean(e.Value), Convert.ToInt16(room[1]), e.SValue, null));
 
                 if (onRoomCombinedChange != null)
                     onRoomCombinedChange(Convert.ToUInt16(room[1]), Convert.ToUInt16(e.Value));

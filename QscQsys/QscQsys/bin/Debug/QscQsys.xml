@@ -4,21 +4,6 @@
         <name>QscQsys</name>
     </assembly>
     <members>
-        <member name="T:QscQsys.QsysEventsArgs">
-            <summary>
-            Event args for Q-Sys events.
-            </summary>
-        </member>
-        <member name="M:QscQsys.QsysEventsArgs.#ctor(QscQsys.eQscEventIds,System.String,System.Boolean,System.Int32,System.String,System.Collections.Generic.List{QscQsys.ListBoxChoice})">
-            <summary>
-            Default constructor for QsysEventArgs.
-            </summary>
-            <param name="eventID">The event ID that is associated with the event.</param>
-            <param name="controlName">The control that has triggered the event.</param>
-            <param name="booleanValue">Boolean value of the event.</param>
-            <param name="integerValue">Integer value of the event.</param>
-            <param name="stringValue">String value of the event.</param>
-        </member>
         <member name="T:QscQsys.QsysInternalEventsArgs">
             <summary>
             Used only for internal methods.
@@ -27,26 +12,6 @@
         <member name="T:QscQsys.InternalEvents">
             <summary>
             Used only for internal methods.
-            </summary>
-        </member>
-        <member name="T:QscQsys.eQscEventIds">
-            <summary>
-            Event IDs.
-            </summary>
-        </member>
-        <member name="F:QscQsys.eQscEventIds.NewCommand">
-            <summary>
-            New command event ID.
-            </summary>
-        </member>
-        <member name="F:QscQsys.eQscEventIds.GainChange">
-            <summary>
-            New gain change event ID.
-            </summary>
-        </member>
-        <member name="F:QscQsys.eQscEventIds.MuteChange">
-            <summary>
-            New mute change event ID.
             </summary>
         </member>
         <member name="M:QscQsys.QsysMatrixMixer.SetCrossPointMute(System.String,System.String,System.Boolean)">

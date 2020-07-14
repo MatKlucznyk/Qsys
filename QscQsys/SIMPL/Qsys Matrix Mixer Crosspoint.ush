@@ -18,8 +18,8 @@
   Exclusions=1,19,20,21,88,89,167,168,179,213,214,215,216,217,225,226,248,249,266,267,310,362,378,380,405,407,408,409,478,522,537,554,586,590,611,624,718,756,767,830,841,842,854,883,955,1032,1062,1079,1128,1129,1134,1140,1157,1158,1195,1199,1220,1221,1222,1223,1299,1348,1349,1439,1472,1473,1499,1746,1803,1975,2229,2354,2514,2523,2532,2706,2707,3235,3236,3427,3454,3567,3568,3601,3602,3708,3902,3903,3912,3918,3925,3926,4206,4207,
   Exclusions_CDS=5
   Inclusions_CDS=6,7
-  Name=Qsys Matrix Mixer
-  SmplCName=Qsys Matrix Mixer.usp
+  Name=Qsys Matrix Mixer Crosspoint
+  SmplCName=Qsys Matrix Mixer Crosspoint.usp
   Code=1
   SysRev5=4.000
   SMWRev=3.00.00
@@ -79,9 +79,9 @@
   SmplCOutputCue1=i#
   SmplCInputList2Cue1=an#
   SmplCOutputList2Cue1=ai#
-  SPlus2CompiledName=S2_Qsys_Matrix_Mixer
+  SPlus2CompiledName=S2_Qsys_Matrix_Mixer_Crosspoint
   SymJam=NonExclusive
-  FileName=Qsys Matrix Mixer.ush
+  FileName=Qsys Matrix Mixer Crosspoint.ush
   SIMPLPlusModuleEncoding=0
   clz1=QscQsys
 [END]

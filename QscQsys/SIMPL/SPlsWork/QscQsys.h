@@ -1,10 +1,5 @@
 namespace QscQsys;
         // class declarations
-         class QsysEventsArgs;
-         class SimplEventArgs;
-         class SimplEvents;
-         class eQscEventIds;
-         class eQscSimplEventIds;
          class QsysMatrixMixer;
          class QsysRoomCombiner;
          class QsysCore;
@@ -12,6 +7,7 @@ namespace QscQsys;
          class QsysMeter;
          class QsysSoftphoneController;
          class QsysRouter;
+         class QsysMatrixMixerCrosspoint;
          class GetComponents;
          class ComponentResults;
          class ComponentProperties;
@@ -46,58 +42,6 @@ namespace QscQsys;
          class QsysNamedControl;
          class QsysCamera;
          class PtzTypes;
-         class QsysMatrixMixerCrosspoint;
-     class SimplEvents 
-    {
-        // class delegates
-
-        // class events
-        EventHandler OnNewEvent ( SimplEvents sender, SimplEventArgs e );
-
-        // class functions
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-        STRING_FUNCTION ToString ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
-    };
-
-    static class eQscEventIds // enum
-    {
-        static SIGNED_LONG_INTEGER NewCommand;
-        static SIGNED_LONG_INTEGER GainChange;
-        static SIGNED_LONG_INTEGER MuteChange;
-        static SIGNED_LONG_INTEGER NewMaxGain;
-        static SIGNED_LONG_INTEGER NewMinGain;
-        static SIGNED_LONG_INTEGER CameraStreamChange;
-        static SIGNED_LONG_INTEGER PotsControllerOffHook;
-        static SIGNED_LONG_INTEGER PotsControllerIsRinging;
-        static SIGNED_LONG_INTEGER PotsControllerDialString;
-        static SIGNED_LONG_INTEGER PotsControllerCurrentlyCalling;
-        static SIGNED_LONG_INTEGER RouterInputSelected;
-        static SIGNED_LONG_INTEGER PotsControllerAutoAnswerChange;
-        static SIGNED_LONG_INTEGER PotsControllerDND_Change;
-        static SIGNED_LONG_INTEGER Nv32hDecoderInputChange;
-        static SIGNED_LONG_INTEGER MeterUpdate;
-        static SIGNED_LONG_INTEGER NamedControlChange;
-        static SIGNED_LONG_INTEGER PotsControllerCallStatusChange;
-        static SIGNED_LONG_INTEGER PotsControllerRecentCallsChange;
-        static SIGNED_LONG_INTEGER PotsControllerDialing;
-        static SIGNED_LONG_INTEGER PotsControllerIncomingCall;
-        static SIGNED_LONG_INTEGER RoomCombinerWallStateChange;
-        static SIGNED_LONG_INTEGER RoomCombinerCombinedStateChange;
-    };
-
-    static class eQscSimplEventIds // enum
-    {
-        static SIGNED_LONG_INTEGER IsRegistered;
-        static SIGNED_LONG_INTEGER NewCommand;
-        static SIGNED_LONG_INTEGER IsConnected;
-        static SIGNED_LONG_INTEGER NewCoreStatus;
-    };
-
      class QsysMatrixMixer 
     {
         // class delegates
@@ -122,7 +66,6 @@ namespace QscQsys;
         delegate FUNCTION RoomCombinedChange ( INTEGER room , INTEGER value );
 
         // class events
-        EventHandler QsysRoomCombinerEvent ( QsysRoomCombiner sender, QsysEventsArgs e );
 
         // class functions
         FUNCTION Initialize ( STRING coreId , STRING name , SIGNED_LONG_INTEGER rooms , SIGNED_LONG_INTEGER walls );
@@ -184,7 +127,6 @@ namespace QscQsys;
         delegate FUNCTION RecentCallListEvent ( SIMPLSHARPSTRING xsig );
 
         // class events
-        EventHandler QsysPotsControllerEvent ( QsysPotsController sender, QsysEventsArgs e );
 
         // class functions
         FUNCTION Initialize ( STRING coreId , STRING Name );
@@ -230,7 +172,6 @@ namespace QscQsys;
         delegate FUNCTION MeterChange ( INTEGER meterValue );
 
         // class events
-        EventHandler QsysMeterEvent ( QsysMeter sender, QsysEventsArgs e );
 
         // class functions
         FUNCTION Initialize ( STRING coreId , STRING name , SIGNED_LONG_INTEGER index );
@@ -260,7 +201,6 @@ namespace QscQsys;
         delegate FUNCTION RecentCallListEvent ( SIMPLSHARPSTRING xsig );
 
         // class events
-        EventHandler QsysPotsControllerEvent ( QsysSoftphoneController sender, QsysEventsArgs e );
 
         // class functions
         FUNCTION Initialize ( STRING coreId , STRING Name );
@@ -306,7 +246,6 @@ namespace QscQsys;
         delegate FUNCTION RouterInputChange ( INTEGER input );
 
         // class events
-        EventHandler QsysRouterEvent ( QsysRouter sender, QsysEventsArgs e );
 
         // class functions
         FUNCTION Initialize ( STRING coreId , STRING Name , SIGNED_LONG_INTEGER output );
@@ -321,6 +260,26 @@ namespace QscQsys;
         DelegateProperty RouterInputChange newRouterInputChange;
         STRING ComponentName[];
         SIGNED_LONG_INTEGER CurrentSelectedInput;
+    };
+
+     class QsysMatrixMixerCrosspoint 
+    {
+        // class delegates
+        delegate FUNCTION CrossPointValueChange ( INTEGER value );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING coreId , STRING name , INTEGER input , INTEGER output );
+        FUNCTION SetCrossPoint ( INTEGER value );
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty CrossPointValueChange newCrossPointValueChange;
     };
 
      class GetComponents 
@@ -832,7 +791,6 @@ namespace QscQsys;
         delegate FUNCTION MuteChange ( INTEGER value );
 
         // class events
-        EventHandler QsysFaderEvent ( QsysFader sender, QsysEventsArgs e );
 
         // class functions
         FUNCTION Initialize ( STRING coreId , STRING Name );
@@ -857,7 +815,6 @@ namespace QscQsys;
         delegate FUNCTION Nv32hDecoderInputChange ( INTEGER input );
 
         // class events
-        EventHandler QsysNv32hDecoderEvent ( QsysNv32hDecoder sender, QsysEventsArgs e );
 
         // class functions
         FUNCTION Initialize ( STRING coreId , STRING Name );
@@ -880,7 +837,6 @@ namespace QscQsys;
         delegate FUNCTION NamedControlChange ( INTEGER intData , SIMPLSHARPSTRING stringData );
 
         // class events
-        EventHandler QsysNamedControlEvent ( QsysNamedControl sender, QsysEventsArgs e );
 
         // class functions
         FUNCTION Initialize ( STRING coreId , STRING Name , INTEGER type );
@@ -938,25 +894,5 @@ namespace QscQsys;
         static SIGNED_LONG_INTEGER Right;
         static SIGNED_LONG_INTEGER ZoomIn;
         static SIGNED_LONG_INTEGER ZoomOut;
-    };
-
-     class QsysMatrixMixerCrosspoint 
-    {
-        // class delegates
-        delegate FUNCTION CrossPointValueChange ( INTEGER value );
-
-        // class events
-
-        // class functions
-        FUNCTION Initialize ( STRING coreId , STRING name , INTEGER input , INTEGER output );
-        FUNCTION SetCrossPoint ( INTEGER value );
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-        STRING_FUNCTION ToString ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
-        DelegateProperty CrossPointValueChange newCrossPointValueChange;
     };
 

@@ -229,45 +229,21 @@ namespace QscQsys
                         ErrorLog.Notice("QsysProcessor is connected.");
                     IsConnected = true;
 
+                    if (onIsConnected != null)
+                        onIsConnected(1);
+
                     /*foreach (var item in SimplClients)
                     {
                         item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsConnected, "true", 1));
                     }*/
 
-                    CrestronEnvironment.Sleep(1500);
+                    //CrestronEnvironment.Sleep(1500);
+
+                    CTimer waitForServerToStartTimer = new CTimer(WaitForServerToStart, 1500);
 
                     //commandQueue.Enqueue(JsonConvert.SerializeObject(new GetComponents()));
 
-                    AddComoponentToChangeGroup addComponent;
-
-
-                    foreach (var item in Components)
-                    {
-                        addComponent = new AddComoponentToChangeGroup() { method = "ChangeGroup.AddComponentControl", ComponentParams = new AddComponentToChangeGroupParams() { Component = item.Key } };
-                        commandQueue.Enqueue(JsonConvert.SerializeObject(addComponent));
-                    }
-
-                    AddControlToChangeGroup addControl;
-
-                    foreach (var item in Controls)
-                    {
-                        addControl = new AddControlToChangeGroup() { method = "ChangeGroup.AddControl", ControlParams = new AddControlToChangeGroupParams() { Controls = new List<string>() { item.Key.Name } } };
-                        commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
-                    }
-
-                    commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
-
-                    if (heartbeatTimer != null)
-                    {
-                        heartbeatTimer.Stop();
-                        heartbeatTimer.Dispose();
-                    }
-
-                    heartbeatTimer = new CTimer(SendHeartbeat, null, 0, 15000);
-
-                    if (debug == 1 || debug == 2)
-                        ErrorLog.Notice("QsysProcessor is initialized.");
-                    isInitialized = true;
+                    
 
                     /*foreach (var item in SimplClients)
                     {
@@ -282,6 +258,12 @@ namespace QscQsys
                     isInitialized = false;
                     heartbeatTimer.Dispose();
 
+                    if (onIsRegistered != null)
+                        onIsRegistered(0);
+
+                    if (onIsConnected != null)
+                        onIsConnected(0);
+
                     /*foreach (var item in SimplClients)
                     {
                         item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsRegistered, "false", 0));
@@ -292,6 +274,43 @@ namespace QscQsys
             catch (Exception e)
             {
             }
+        }
+
+        private void WaitForServerToStart(object o)
+        {
+            AddComoponentToChangeGroup addComponent;
+
+
+            foreach (var item in Components)
+            {
+                addComponent = new AddComoponentToChangeGroup() { method = "ChangeGroup.AddComponentControl", ComponentParams = new AddComponentToChangeGroupParams() { Component = item.Key } };
+                commandQueue.Enqueue(JsonConvert.SerializeObject(addComponent));
+            }
+
+            AddControlToChangeGroup addControl;
+
+            foreach (var item in Controls)
+            {
+                addControl = new AddControlToChangeGroup() { method = "ChangeGroup.AddControl", ControlParams = new AddControlToChangeGroupParams() { Controls = new List<string>() { item.Key.Name } } };
+                commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
+            }
+
+            commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
+
+            if (heartbeatTimer != null)
+            {
+                heartbeatTimer.Stop();
+                heartbeatTimer.Dispose();
+            }
+
+            heartbeatTimer = new CTimer(SendHeartbeat, null, 0, 15000);
+
+            if (debug == 1 || debug == 2)
+                ErrorLog.Notice("QsysProcessor is initialized.");
+            isInitialized = true;
+
+            if (onIsRegistered != null)
+                onIsRegistered(1);
         }
 
         private void SendHeartbeat(object o)
@@ -456,6 +475,9 @@ namespace QscQsys
                             {
                                 isEmulator = Convert.ToBoolean(engineStatus["IsEmulator"].ToString());
                             }
+
+                            if (onNewCoreStatus != null)
+                                onNewCoreStatus(designName, Convert.ToUInt16(isRedundant), Convert.ToUInt16(isEmulator));
 
                             /*foreach (var item in SimplClients)
                             {

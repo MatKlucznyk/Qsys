@@ -19,7 +19,7 @@ namespace QscQsys
         private double min;
         private string coreId;
 
-        public event EventHandler<QsysEventsArgs> QsysFaderEvent;
+        //public event EventHandler<QsysEventsArgs> QsysFaderEvent;
 
         public string ComponentName { get { return cName; } }
         public bool IsRegistered { get { return registered; } }
@@ -75,7 +75,7 @@ namespace QscQsys
                 }*/
 
                 currentLvl = (int)Math.Round(QsysCoreManager.ScaleUp(e.Position));
-                QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.GainChange, cName, true, currentLvl, currentLvl.ToString(), null));
+                //QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.GainChange, cName, true, currentLvl, currentLvl.ToString(), null));
 
                 if (newVolumeChange != null)
                     newVolumeChange((ushort)currentLvl);
@@ -84,12 +84,12 @@ namespace QscQsys
             {
                 if (e.Value == 1)
                 {
-                    QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.MuteChange, cName, true, 1, "true", null));
+                    //QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.MuteChange, cName, true, 1, "true", null));
                     currentMute = true;
                 }
                 else if (e.Value == 0)
                 {
-                    QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.MuteChange, cName, false, 0, "false", null));
+                    //QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.MuteChange, cName, false, 0, "false", null));
                     currentMute = false;
                 }
 

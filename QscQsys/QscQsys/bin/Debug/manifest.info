@@ -1,6 +1,6 @@
-﻿MainAssembly=QscQsys.dll:a27b1a46c3fe05e471d823dffe7be811
+﻿MainAssembly=QscQsys.dll:126cb5e358be4094bf6fdd258d0a4007
 MainAssemblyMinFirmwareVersion=1.007.0017
-MainAssemblyResource=QscQsys.xml:f0e2d31ce0482cc89d1f30283adbd9c1
+MainAssemblyResource=QscQsys.xml:9b536d2dea915c4097d971eb04157d21
 MainAssemblyResource=SimplSharpData.dat:820b61c48c8a2cace82957eed4cc377c
 MainAssemblyResource=SimplSharpData.dat.der:bf862965c00f3e6ec535e4e00e82d30c
 MainAssemblyResource=SimplSharpData.dat:820b61c48c8a2cace82957eed4cc377c

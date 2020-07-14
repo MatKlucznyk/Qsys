@@ -43,5 +43,5 @@ Function Main()
 {
     RegisterDelegate(combiner, onWallStateChange, NewWallStateChange);
     RegisterDelegate(combiner, onRoomCombinedChange, NewRoomCombinedStateChanged);
-    combiner.Initialize(CoreID, ComponentName, TotalWalls, TotalRooms);
+    combiner.Initialize(CoreID, ComponentName, TotalRooms, TotalWalls);
 }

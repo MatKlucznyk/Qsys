@@ -17,7 +17,7 @@ namespace QscQsys
         private bool registered;
         private int myOutput;
 
-        public event EventHandler<QsysEventsArgs> QsysRouterEvent;
+        //public event EventHandler<QsysEventsArgs> QsysRouterEvent;
 
         public string ComponentName { get { return cName; } }
         public bool IsRegistered { get { return registered; } }
@@ -91,7 +91,7 @@ namespace QscQsys
             {
                 CurrentSelectedInput = Convert.ToInt16(e.Value);
 
-                QsysRouterEvent(this, new QsysEventsArgs(eQscEventIds.RouterInputSelected, cName, Convert.ToBoolean(e.Value), Convert.ToInt16(e.Value), e.Value.ToString(), null));
+                //QsysRouterEvent(this, new QsysEventsArgs(eQscEventIds.RouterInputSelected, cName, Convert.ToBoolean(e.Value), Convert.ToInt16(e.Value), e.Value.ToString(), null));
 
                 if (newRouterInputChange != null)
                     newRouterInputChange(Convert.ToUInt16(e.Value));

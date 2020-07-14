@@ -79,7 +79,6 @@
   <ItemGroup>
     <Compile Include="Json.cs" />
     <Compile Include="QsysCamera.cs" />
-    <Compile Include="QsysCameraSimpl.cs" />
     <Compile Include="QsysCoreManager.cs" />
     <Compile Include="QsysMatrixMixer.cs" />
     <Compile Include="QsysMatrixMixerCrosspoint.cs" />
