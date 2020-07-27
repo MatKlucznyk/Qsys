@@ -20,8 +20,9 @@ namespace UserModule_QSYS_NV32H_DECODER
         
         Crestron.Logos.SplusObjects.AnalogInput SOURCE;
         Crestron.Logos.SplusObjects.AnalogOutput CURRENTSOURCE;
+        StringParameter COREID;
         StringParameter COMPONENTNAME;
-        QscQsys.QsysNv32hDecoderSimpl DECODER;
+        QscQsys.QsysNv32hDecoder DECODER;
         object SOURCE_OnChange_0 ( Object __EventInfo__ )
         
             { 
@@ -38,7 +39,7 @@ namespace UserModule_QSYS_NV32H_DECODER
                     __context__.SourceCodeLine = 20;
                     X = (ushort) ( SOURCE  .UshortValue ) ; 
                     __context__.SourceCodeLine = 22;
-                    DECODER . ChangeSource ( (ushort)( X )) ; 
+                    DECODER . ChangeInput ( (int)( X )) ; 
                     __context__.SourceCodeLine = 18;
                     } 
                 
@@ -75,7 +76,7 @@ namespace UserModule_QSYS_NV32H_DECODER
             // RegisterDelegate( DECODER , NEWNV32HDECODERINPUTCHANGE , ONINPUTCHANGE ) 
             DECODER .newNv32hDecoderInputChange  = ONINPUTCHANGE; ; 
             __context__.SourceCodeLine = 34;
-            DECODER . Initialize ( COMPONENTNAME  .ToString()) ; 
+            DECODER . Initialize ( COREID  .ToString(), COMPONENTNAME  .ToString()) ; 
             
             
         }
@@ -87,6 +88,8 @@ namespace UserModule_QSYS_NV32H_DECODER
     
     public override void LogosSplusInitialize()
     {
+        SocketInfo __socketinfo__ = new SocketInfo( 1, this );
+        InitialParametersClass.ResolveHostName = __socketinfo__.ResolveHostName;
         _SplusNVRAM = new SplusNVRAM( this );
         
         SOURCE = new Crestron.Logos.SplusObjects.AnalogInput( SOURCE__AnalogSerialInput__, this );
@@ -94,6 +97,9 @@ namespace UserModule_QSYS_NV32H_DECODER
         
         CURRENTSOURCE = new Crestron.Logos.SplusObjects.AnalogOutput( CURRENTSOURCE__AnalogSerialOutput__, this );
         m_AnalogOutputList.Add( CURRENTSOURCE__AnalogSerialOutput__, CURRENTSOURCE );
+        
+        COREID = new StringParameter( COREID__Parameter__, this );
+        m_ParameterList.Add( COREID__Parameter__, COREID );
         
         COMPONENTNAME = new StringParameter( COMPONENTNAME__Parameter__, this );
         m_ParameterList.Add( COMPONENTNAME__Parameter__, COMPONENTNAME );
@@ -109,7 +115,7 @@ namespace UserModule_QSYS_NV32H_DECODER
     
     public override void LogosSimplSharpInitialize()
     {
-        DECODER  = new QscQsys.QsysNv32hDecoderSimpl();
+        DECODER  = new QscQsys.QsysNv32hDecoder();
         
         
     }
@@ -121,7 +127,8 @@ namespace UserModule_QSYS_NV32H_DECODER
     
     const uint SOURCE__AnalogSerialInput__ = 0;
     const uint CURRENTSOURCE__AnalogSerialOutput__ = 0;
-    const uint COMPONENTNAME__Parameter__ = 10;
+    const uint COREID__Parameter__ = 10;
+    const uint COMPONENTNAME__Parameter__ = 11;
     
     [SplusStructAttribute(-1, true, false)]
     public class SplusNVRAM : SplusStructureBase

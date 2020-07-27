@@ -44,7 +44,8 @@ namespace UserModule_QSYS_POTS_CONTROLLER
         Crestron.Logos.SplusObjects.StringOutput DIALSTRINGOUT;
         Crestron.Logos.SplusObjects.StringOutput RECENTCALLXSIG;
         InOutArray<Crestron.Logos.SplusObjects.StringOutput> RECENTCALLS;
-        QscQsys.QsysPotsControllerSimpl POTS;
+        QscQsys.QsysPotsController POTS;
+        StringParameter COREID;
         StringParameter COMPONENTNAME;
         object DIAL_OnPush_0 ( Object __EventInfo__ )
         
@@ -55,7 +56,7 @@ namespace UserModule_QSYS_POTS_CONTROLLER
                 SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
                 
                 __context__.SourceCodeLine = 21;
-                POTS . DialWithoutString ( ) ; 
+                POTS . Dial ( ) ; 
                 
                 
             }
@@ -272,7 +273,7 @@ object SELECTRECENTCALL_OnPush_11 ( Object __EventInfo__ )
         __context__.SourceCodeLine = 82;
         X = (ushort) ( Functions.GetLastModifiedArrayIndex( __SignalEventArg__ ) ) ; 
         __context__.SourceCodeLine = 84;
-        POTS . SelectRecentCall ( (ushort)( X )) ; 
+        POTS . SelectRecentCall ( (int)( X )) ; 
         
         
     }
@@ -298,7 +299,7 @@ object SELECTRECENTCALLINDEX_OnChange_12 ( Object __EventInfo__ )
             __context__.SourceCodeLine = 93;
             X = (ushort) ( SELECTRECENTCALLINDEX  .UshortValue ) ; 
             __context__.SourceCodeLine = 95;
-            POTS . SelectRecentCall ( (ushort)( X )) ; 
+            POTS . SelectRecentCall ( (int)( X )) ; 
             __context__.SourceCodeLine = 91;
             } 
         
@@ -579,7 +580,7 @@ public override object FunctionMain (  object __obj__ )
         // RegisterDelegate( POTS , ONINCOMINGCALLEVENT , NEWINCOMINGCALLEVENT ) 
         POTS .onIncomingCallEvent  = NEWINCOMINGCALLEVENT; ; 
         __context__.SourceCodeLine = 189;
-        POTS . Initialize ( COMPONENTNAME  .ToString()) ; 
+        POTS . Initialize ( COREID  .ToString(), COMPONENTNAME  .ToString()) ; 
         
         
     }
@@ -591,6 +592,8 @@ public override object FunctionMain (  object __obj__ )
 
 public override void LogosSplusInitialize()
 {
+    SocketInfo __socketinfo__ = new SocketInfo( 1, this );
+    InitialParametersClass.ResolveHostName = __socketinfo__.ResolveHostName;
     _SplusNVRAM = new SplusNVRAM( this );
     
     DIAL = new Crestron.Logos.SplusObjects.DigitalInput( DIAL__DigitalInput__, this );
@@ -677,6 +680,9 @@ public override void LogosSplusInitialize()
         m_StringOutputList.Add( RECENTCALLS__AnalogSerialOutput__ + i, RECENTCALLS[i+1] );
     }
     
+    COREID = new StringParameter( COREID__Parameter__, this );
+    m_ParameterList.Add( COREID__Parameter__, COREID );
+    
     COMPONENTNAME = new StringParameter( COMPONENTNAME__Parameter__, this );
     m_ParameterList.Add( COMPONENTNAME__Parameter__, COMPONENTNAME );
     
@@ -707,7 +713,7 @@ public override void LogosSplusInitialize()
 
 public override void LogosSimplSharpInitialize()
 {
-    POTS  = new QscQsys.QsysPotsControllerSimpl();
+    POTS  = new QscQsys.QsysPotsController();
     
     
 }
@@ -741,7 +747,8 @@ const uint CALLSTATUS__AnalogSerialOutput__ = 1;
 const uint DIALSTRINGOUT__AnalogSerialOutput__ = 2;
 const uint RECENTCALLXSIG__AnalogSerialOutput__ = 3;
 const uint RECENTCALLS__AnalogSerialOutput__ = 4;
-const uint COMPONENTNAME__Parameter__ = 10;
+const uint COREID__Parameter__ = 10;
+const uint COMPONENTNAME__Parameter__ = 11;
 
 [SplusStructAttribute(-1, true, false)]
 public class SplusNVRAM : SplusStructureBase

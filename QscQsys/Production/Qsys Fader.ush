@@ -59,12 +59,14 @@
   ParamSigType6=Constant
   ParamCue7=[~UNUSED~]
   ParamSigType7=Constant
-  ParamCue8=ComponentName
+  ParamCue8=CoreID
   ParamSigType8=String
-  ParamCue9=VolumeStep
-  ParamSigType9=Constant
-  ParamCue10=VolumeRepeatTime
-  ParamSigType10=Time
+  ParamCue9=ComponentName
+  ParamSigType9=String
+  ParamCue10=VolumeStep
+  ParamSigType10=Constant
+  ParamCue11=VolumeRepeatTime
+  ParamSigType11=Time
   MinVariableInputs=5
   MaxVariableInputs=5
   MinVariableInputsList2=1
@@ -73,8 +75,8 @@
   MaxVariableOutputs=2
   MinVariableOutputsList2=4
   MaxVariableOutputsList2=4
-  MinVariableParams=9
-  MaxVariableParams=9
+  MinVariableParams=10
+  MaxVariableParams=10
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
@@ -92,7 +94,8 @@
   Pp8=8
   Pp9=9
   Pp10=10
-  MPp=10
+  Pp11=11
+  MPp=11
   NVStorage=10
   ParamSigType1=String
   SmplCInputCue1=o#
@@ -124,6 +127,14 @@
   H=9
   Tp=1
   HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=10
+  Tp=1
+  HD=False
   Sgn=0
   Lng=False
   NF=63
@@ -133,7 +144,7 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=10
+  H=11
   Tp=1
   HD=False
   Sgn=0

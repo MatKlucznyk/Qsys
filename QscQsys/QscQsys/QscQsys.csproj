@@ -79,30 +79,20 @@
   <ItemGroup>
     <Compile Include="Json.cs" />
     <Compile Include="QsysCamera.cs" />
-    <Compile Include="QsysCameraSimpl.cs" />
-    <Compile Include="QsysFaderSimpl.cs" />
+    <Compile Include="QsysCoreManager.cs" />
     <Compile Include="QsysMatrixMixer.cs" />
-    <Compile Include="QsysMatrixMixerSimpl.cs" />
+    <Compile Include="QsysMatrixMixerCrosspoint.cs" />
     <Compile Include="QsysMeter.cs" />
-    <Compile Include="QsysMeterSimpl.cs" />
-    <Compile Include="QsysNamedControlSimpl.cs" />
     <Compile Include="QsysNv32hDecoder.cs" />
-    <Compile Include="QsysNv32hDecoderSimpl.cs" />
     <Compile Include="QsysPotsController.cs" />
-    <Compile Include="QsysPotsControllerSimpl.cs" />
-    <Compile Include="QsysProcessor.cs" />
+    <Compile Include="QsysCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QsysEvents.cs" />
     <Compile Include="QsysFader.cs" />
-    <Compile Include="QsysProcessorSimpl.cs" />
     <Compile Include="QsysRoomCombiner.cs" />
-    <Compile Include="QsysRoomCombinerSimpl.cs" />
     <Compile Include="QsysRouter.cs" />
-    <Compile Include="QsysRouterSimpl.cs" />
     <Compile Include="QsysSnapshot.cs" />
-    <Compile Include="QsysSnapshotSimpl.cs" />
     <Compile Include="QsysSoftphoneController.cs" />
-    <Compile Include="QsysSoftphoneControllerSimpl.cs" />
     <Compile Include="QsysNamedControl.cs" />
     <None Include="Properties\ControlSystem.cfg" />
   </ItemGroup>

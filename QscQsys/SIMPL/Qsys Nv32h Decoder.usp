@@ -1,15 +1,15 @@
 #SYMBOL_NAME "Qsys Nv32h Decoder"
 
-#INCLUDEPATH "D:\\Programming\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
+#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 analog_input Source;
 
 analog_output CurrentSource;
 
-string_parameter _skip_, ComponentName[100];
+string_parameter _skip_, CoreID[100], ComponentName[100];
 
-QsysNv32hDecoderSimpl decoder;
+QsysNv32hDecoder decoder;
 
 threadsafe change Source
 {
@@ -19,7 +19,7 @@ threadsafe change Source
     {
         x = Source;
 
-        decoder.ChangeSource(x);
+        decoder.ChangeInput(x);
     }
 }
 
@@ -31,5 +31,5 @@ callback function onInputChange(integer newSource)
 function Main()
 {
     RegisterDelegate(decoder, newNv32hDecoderInputChange, onInputChange);
-    decoder.Initialize(ComponentName);
+    decoder.Initialize(CoreID, ComponentName);
 }

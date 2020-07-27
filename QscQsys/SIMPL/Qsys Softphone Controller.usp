@@ -1,6 +1,6 @@
 #SYMBOL_NAME "Qsys Softphone Controller"
 
-#INCLUDEPATH "D:\\Programming\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
+#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys" 
 
 #DEFINE_CONSTANT true 1
@@ -13,13 +13,13 @@ String_Input _skip_, DialString[100];
 Digital_Output Connected, Ringing, Dialing, IncomingCall, AutoAnswerStatus, DndStatus;
 String_Output _skip_, _skip_, _skip_, _skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_, CurrentlyCalling, CallStatus, DialStringOut, RecentCallXSig, RecentCalls[5,5];
 
-QsysSoftphoneControllerSimpl softphone;
+QsysSoftphoneController softphone;
 
-String_Parameter _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_,_skip_, _skip_, _skip_, _skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_,_skip_,_skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_, ComponentName[100];
+String_Parameter _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_,_skip_, _skip_, _skip_, _skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, _skip_,_skip_,_skip_,_skip_,_skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_, CoreID[100], ComponentName[100];
 
 Push Dial
 {
-    softphone.DialWithoutString();
+    softphone.Dial();
 }
 
 Push Redial
@@ -196,5 +196,5 @@ Function Main()
     RegisterDelegate(softphone, onRecentCallsEvent, NewRecentCallsEvent);
     RegisterDelegate(softphone, onRecentCallListEvent, NewRecentCallListEvent);
     RegisterDelegate(softphone, onIncomingCallEvent, NewIncomingCallEvent);
-    softphone.Initialize(ComponentName);
+    softphone.Initialize(CoreID, ComponentName);
 }

@@ -20,10 +20,10 @@ namespace UserModule_QSYS_ROUTER
         
         Crestron.Logos.SplusObjects.AnalogInput INPUT;
         Crestron.Logos.SplusObjects.AnalogOutput INPUTVALUE;
+        StringParameter COREID;
         StringParameter COMPONENTNAME;
         UShortParameter OUTPUTNUMBER;
-        QscQsys.QsysProcessorSimplInterface PROCESSOR;
-        QscQsys.QsysRouterSimpl ROUTER;
+        QscQsys.QsysRouter ROUTER;
         object INPUT_OnChange_0 ( Object __EventInfo__ )
         
             { 
@@ -34,14 +34,14 @@ namespace UserModule_QSYS_ROUTER
                 ushort X = 0;
                 
                 
-                __context__.SourceCodeLine = 19;
+                __context__.SourceCodeLine = 18;
                 while ( Functions.TestForTrue  ( ( Functions.BoolToInt (X != INPUT  .UshortValue))  ) ) 
                     { 
-                    __context__.SourceCodeLine = 21;
+                    __context__.SourceCodeLine = 20;
                     X = (ushort) ( INPUT  .UshortValue ) ; 
-                    __context__.SourceCodeLine = 22;
-                    ROUTER . SelectInput ( (ushort)( X )) ; 
-                    __context__.SourceCodeLine = 19;
+                    __context__.SourceCodeLine = 21;
+                    ROUTER . InputSelect ( (int)( X )) ; 
+                    __context__.SourceCodeLine = 18;
                     } 
                 
                 
@@ -53,25 +53,13 @@ namespace UserModule_QSYS_ROUTER
             
         }
         
-    public void ONINITIALIZATIONCOMPLETE ( ushort VALUE ) 
-        { 
-        try
-        {
-            SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
-            
-            
-            
-        }
-        finally { ObjectFinallyHandler(); }
-        }
-        
     public void ONROUTERINPUTCHANGE ( ushort IN ) 
         { 
         try
         {
             SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
             
-            __context__.SourceCodeLine = 32;
+            __context__.SourceCodeLine = 27;
             INPUTVALUE  .Value = (ushort) ( IN ) ; 
             
             
@@ -85,14 +73,11 @@ namespace UserModule_QSYS_ROUTER
         {
             SplusExecutionContext __context__ = SplusFunctionMainStartCode();
             
-            __context__.SourceCodeLine = 37;
-            // RegisterDelegate( PROCESSOR , ONISREGISTERED , ONINITIALIZATIONCOMPLETE ) 
-            PROCESSOR .onIsRegistered  = ONINITIALIZATIONCOMPLETE; ; 
-            __context__.SourceCodeLine = 38;
+            __context__.SourceCodeLine = 32;
             // RegisterDelegate( ROUTER , NEWROUTERINPUTCHANGE , ONROUTERINPUTCHANGE ) 
             ROUTER .newRouterInputChange  = ONROUTERINPUTCHANGE; ; 
-            __context__.SourceCodeLine = 39;
-            ROUTER . Initialize ( COMPONENTNAME  .ToString(), (ushort)( OUTPUTNUMBER  .Value )) ; 
+            __context__.SourceCodeLine = 33;
+            ROUTER . Initialize ( COREID  .ToString(), COMPONENTNAME  .ToString(), (int)( OUTPUTNUMBER  .Value )) ; 
             
             
         }
@@ -104,6 +89,8 @@ namespace UserModule_QSYS_ROUTER
     
     public override void LogosSplusInitialize()
     {
+        SocketInfo __socketinfo__ = new SocketInfo( 1, this );
+        InitialParametersClass.ResolveHostName = __socketinfo__.ResolveHostName;
         _SplusNVRAM = new SplusNVRAM( this );
         
         INPUT = new Crestron.Logos.SplusObjects.AnalogInput( INPUT__AnalogSerialInput__, this );
@@ -114,6 +101,9 @@ namespace UserModule_QSYS_ROUTER
         
         OUTPUTNUMBER = new UShortParameter( OUTPUTNUMBER__Parameter__, this );
         m_ParameterList.Add( OUTPUTNUMBER__Parameter__, OUTPUTNUMBER );
+        
+        COREID = new StringParameter( COREID__Parameter__, this );
+        m_ParameterList.Add( COREID__Parameter__, COREID );
         
         COMPONENTNAME = new StringParameter( COMPONENTNAME__Parameter__, this );
         m_ParameterList.Add( COMPONENTNAME__Parameter__, COMPONENTNAME );
@@ -129,8 +119,7 @@ namespace UserModule_QSYS_ROUTER
     
     public override void LogosSimplSharpInitialize()
     {
-        PROCESSOR  = new QscQsys.QsysProcessorSimplInterface();
-        ROUTER  = new QscQsys.QsysRouterSimpl();
+        ROUTER  = new QscQsys.QsysRouter();
         
         
     }
@@ -142,8 +131,9 @@ namespace UserModule_QSYS_ROUTER
     
     const uint INPUT__AnalogSerialInput__ = 0;
     const uint INPUTVALUE__AnalogSerialOutput__ = 0;
-    const uint COMPONENTNAME__Parameter__ = 10;
-    const uint OUTPUTNUMBER__Parameter__ = 11;
+    const uint COREID__Parameter__ = 10;
+    const uint COMPONENTNAME__Parameter__ = 11;
+    const uint OUTPUTNUMBER__Parameter__ = 12;
     
     [SplusStructAttribute(-1, true, false)]
     public class SplusNVRAM : SplusStructureBase

@@ -1,25 +1,13 @@
 namespace QscQsys;
         // class declarations
-         class QsysPotsControllerSimpl;
-         class QsysSoftphoneControllerSimpl;
-         class QsysSnapshotSimpl;
-         class QsysFaderSimpl;
-         class QsysCameraSimpl;
-         class QsysEventsArgs;
-         class SimplEventArgs;
-         class SimplEvents;
-         class eQscEventIds;
-         class eQscSimplEventIds;
          class QsysMatrixMixer;
          class QsysRoomCombiner;
-         class QsysNamedControlSimpl;
-         class QsysProcessor;
+         class QsysCore;
          class QsysPotsController;
-         class QsysMeterSimpl;
          class QsysMeter;
          class QsysSoftphoneController;
          class QsysRouter;
-         class QsysRouterSimpl;
+         class QsysMatrixMixerCrosspoint;
          class GetComponents;
          class ComponentResults;
          class ComponentProperties;
@@ -49,127 +37,19 @@ namespace QscQsys;
          class ComponentSetValueString;
          class ListBoxChoice;
          class QsysSnapshot;
-         class QsysRoomCombinerSimpl;
          class QsysFader;
          class QsysNv32hDecoder;
          class QsysNamedControl;
-         class QsysProcessorSimplInterface;
          class QsysCamera;
          class PtzTypes;
-         class QsysNv32hDecoderSimpl;
-         class QsysMatrixMixerSimpl;
-     class QsysPotsControllerSimpl 
-    {
-        // class delegates
-        delegate FUNCTION OffHookEvent ( INTEGER value );
-        delegate FUNCTION RingingEvent ( INTEGER value );
-        delegate FUNCTION DialingEvent ( INTEGER value );
-        delegate FUNCTION IncomingCallEvent ( INTEGER value );
-        delegate FUNCTION AutoAnswerEvent ( INTEGER value );
-        delegate FUNCTION DndEvent ( INTEGER value );
-        delegate FUNCTION DialStringEvent ( SIMPLSHARPSTRING dialString );
-        delegate FUNCTION CurrentlyCallingEvent ( SIMPLSHARPSTRING currentlyCalling );
-        delegate FUNCTION CurrentCallStatus ( SIMPLSHARPSTRING callStatus );
-        delegate FUNCTION RecentCallsEvent ( SIMPLSHARPSTRING item1 , SIMPLSHARPSTRING item2 , SIMPLSHARPSTRING item3 , SIMPLSHARPSTRING item4 , SIMPLSHARPSTRING item5 );
-        delegate FUNCTION RecentCallListEvent ( SIMPLSHARPSTRING xsig );
-
-        // class events
-
-        // class functions
-        FUNCTION Initialize ( STRING name );
-        FUNCTION Dial ( STRING number );
-        FUNCTION DialWithoutString ();
-        FUNCTION NumPad ( STRING number );
-        FUNCTION NumString ( STRING number );
-        FUNCTION NumPadDelete ();
-        FUNCTION NumPadClear ();
-        FUNCTION Connect ();
-        FUNCTION Disconnect ();
-        FUNCTION Redial ();
-        FUNCTION AutoAnswerToggle ();
-        FUNCTION DndToggle ();
-        FUNCTION SelectRecentCall ( INTEGER index );
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-        STRING_FUNCTION ToString ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
-        DelegateProperty OffHookEvent onOffHookEvent;
-        DelegateProperty RingingEvent onRingingEvent;
-        DelegateProperty DialingEvent onDialingEvent;
-        DelegateProperty IncomingCallEvent onIncomingCallEvent;
-        DelegateProperty AutoAnswerEvent onAutoAnswerEvent;
-        DelegateProperty DndEvent onDndEvent;
-        DelegateProperty DialStringEvent onDialStringEvent;
-        DelegateProperty CurrentlyCallingEvent onCurrentlyCallingEvent;
-        DelegateProperty CurrentCallStatus onCurrentCallStatusChange;
-        DelegateProperty RecentCallsEvent onRecentCallsEvent;
-        DelegateProperty RecentCallListEvent onRecentCallListEvent;
-    };
-
-     class QsysSoftphoneControllerSimpl 
-    {
-        // class delegates
-        delegate FUNCTION OffHookEvent ( INTEGER value );
-        delegate FUNCTION RingingEvent ( INTEGER value );
-        delegate FUNCTION DialingEvent ( INTEGER value );
-        delegate FUNCTION IncomingCallEvent ( INTEGER value );
-        delegate FUNCTION AutoAnswerEvent ( INTEGER value );
-        delegate FUNCTION DndEvent ( INTEGER value );
-        delegate FUNCTION DialStringEvent ( SIMPLSHARPSTRING dialString );
-        delegate FUNCTION CurrentlyCallingEvent ( SIMPLSHARPSTRING currentlyCalling );
-        delegate FUNCTION CurrentCallStatus ( SIMPLSHARPSTRING callStatus );
-        delegate FUNCTION RecentCallsEvent ( SIMPLSHARPSTRING item1 , SIMPLSHARPSTRING item2 , SIMPLSHARPSTRING item3 , SIMPLSHARPSTRING item4 , SIMPLSHARPSTRING item5 );
-        delegate FUNCTION RecentCallListEvent ( SIMPLSHARPSTRING xsig );
-
-        // class events
-
-        // class functions
-        FUNCTION Initialize ( STRING name );
-        FUNCTION Dial ( STRING number );
-        FUNCTION DialWithoutString ();
-        FUNCTION NumPad ( STRING number );
-        FUNCTION NumString ( STRING number );
-        FUNCTION NumPadDelete ();
-        FUNCTION NumPadClear ();
-        FUNCTION Connect ();
-        FUNCTION Disconnect ();
-        FUNCTION Redial ();
-        FUNCTION AutoAnswerToggle ();
-        FUNCTION DndToggle ();
-        FUNCTION SelectRecentCall ( INTEGER index );
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-        STRING_FUNCTION ToString ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
-        DelegateProperty OffHookEvent onOffHookEvent;
-        DelegateProperty RingingEvent onRingingEvent;
-        DelegateProperty DialingEvent onDialingEvent;
-        DelegateProperty IncomingCallEvent onIncomingCallEvent;
-        DelegateProperty AutoAnswerEvent onAutoAnswerEvent;
-        DelegateProperty DndEvent onDndEvent;
-        DelegateProperty DialStringEvent onDialStringEvent;
-        DelegateProperty CurrentlyCallingEvent onCurrentlyCallingEvent;
-        DelegateProperty CurrentCallStatus onCurrentCallStatusChange;
-        DelegateProperty RecentCallsEvent onRecentCallsEvent;
-        DelegateProperty RecentCallListEvent onRecentCallListEvent;
-    };
-
-     class QsysSnapshotSimpl 
+     class QsysMatrixMixer 
     {
         // class delegates
 
         // class events
 
         // class functions
-        FUNCTION Initialize ( STRING name );
-        FUNCTION LoadSnapshot ( INTEGER number );
-        FUNCTION SaveSnapshot ( INTEGER number );
+        FUNCTION Initialize ( STRING coreId , STRING Name );
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
         STRING_FUNCTION ToString ();
 
@@ -179,18 +59,17 @@ namespace QscQsys;
         // class properties
     };
 
-     class QsysFaderSimpl 
+     class QsysRoomCombiner 
     {
         // class delegates
-        delegate FUNCTION VolumeChange ( INTEGER value );
-        delegate FUNCTION MuteChange ( INTEGER value );
+        delegate FUNCTION WallStateChange ( INTEGER wall , INTEGER value );
+        delegate FUNCTION RoomCombinedChange ( INTEGER room , INTEGER value );
 
         // class events
 
         // class functions
-        FUNCTION Initialize ( STRING name );
-        FUNCTION Volume ( INTEGER value );
-        FUNCTION Mute ( INTEGER value );
+        FUNCTION Initialize ( STRING coreId , STRING name , SIGNED_LONG_INTEGER rooms , SIGNED_LONG_INTEGER walls );
+        FUNCTION SetWall ( INTEGER wall , INTEGER value );
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
         STRING_FUNCTION ToString ();
 
@@ -198,31 +77,25 @@ namespace QscQsys;
         INTEGER __class_id__;
 
         // class properties
-        DelegateProperty VolumeChange newVolumeChange;
-        DelegateProperty MuteChange newMuteChange;
+        DelegateProperty WallStateChange onWallStateChange;
+        DelegateProperty RoomCombinedChange onRoomCombinedChange;
+        STRING ComponentName[];
     };
 
-     class QsysCameraSimpl 
+     class QsysCore 
     {
         // class delegates
+        delegate FUNCTION IsRegistered ( INTEGER value );
+        delegate FUNCTION IsConnectedStatus ( INTEGER value );
+        delegate FUNCTION CoreStatus ( SIMPLSHARPSTRING designName , INTEGER isRedundant , INTEGER isEmulator );
 
         // class events
 
         // class functions
-        FUNCTION Initialize ( STRING name );
-        FUNCTION TiltUp ();
-        FUNCTION StopTiltUp ();
-        FUNCTION TiltDown ();
-        FUNCTION StopTiltDown ();
-        FUNCTION PanLeft ();
-        FUNCTION StopPanLeft ();
-        FUNCTION PanRight ();
-        FUNCTION StopPanRight ();
-        FUNCTION ZoomIn ();
-        FUNCTION StopZoomIn ();
-        FUNCTION ZoomOut ();
-        FUNCTION StopZoomOut ();
-        FUNCTION RecallHome ();
+        FUNCTION Initialize ( STRING id , STRING host , INTEGER port );
+        FUNCTION Debug ( INTEGER value );
+        FUNCTION Dispose ();
+        FUNCTION ParseResponse ( STRING data );
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
         STRING_FUNCTION ToString ();
 
@@ -230,104 +103,70 @@ namespace QscQsys;
         INTEGER __class_id__;
 
         // class properties
-    };
-
-     class SimplEvents 
-    {
-        // class delegates
-
-        // class events
-        EventHandler OnNewEvent ( SimplEvents sender, SimplEventArgs e );
-
-        // class functions
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-        STRING_FUNCTION ToString ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
-    };
-
-    static class eQscEventIds // enum
-    {
-        static SIGNED_LONG_INTEGER NewCommand;
-        static SIGNED_LONG_INTEGER GainChange;
-        static SIGNED_LONG_INTEGER MuteChange;
-        static SIGNED_LONG_INTEGER NewMaxGain;
-        static SIGNED_LONG_INTEGER NewMinGain;
-        static SIGNED_LONG_INTEGER CameraStreamChange;
-        static SIGNED_LONG_INTEGER PotsControllerOffHook;
-        static SIGNED_LONG_INTEGER PotsControllerIsRinging;
-        static SIGNED_LONG_INTEGER PotsControllerDialString;
-        static SIGNED_LONG_INTEGER PotsControllerCurrentlyCalling;
-        static SIGNED_LONG_INTEGER RouterInputSelected;
-        static SIGNED_LONG_INTEGER PotsControllerAutoAnswerChange;
-        static SIGNED_LONG_INTEGER PotsControllerDND_Change;
-        static SIGNED_LONG_INTEGER Nv32hDecoderInputChange;
-        static SIGNED_LONG_INTEGER MeterUpdate;
-        static SIGNED_LONG_INTEGER NamedControlChange;
-        static SIGNED_LONG_INTEGER PotsControllerCallStatusChange;
-        static SIGNED_LONG_INTEGER PotsControllerRecentCallsChange;
-        static SIGNED_LONG_INTEGER PotsControllerDialing;
-        static SIGNED_LONG_INTEGER PotsControllerIncomingCall;
-        static SIGNED_LONG_INTEGER RoomCombinerWallStateChange;
-        static SIGNED_LONG_INTEGER RoomCombinerCombinedStateChange;
-    };
-
-    static class eQscSimplEventIds // enum
-    {
-        static SIGNED_LONG_INTEGER IsRegistered;
-        static SIGNED_LONG_INTEGER NewCommand;
-        static SIGNED_LONG_INTEGER IsConnected;
-        static SIGNED_LONG_INTEGER NewCoreStatus;
-    };
-
-     class QsysNamedControlSimpl 
-    {
-        // class delegates
-        delegate FUNCTION NamedControlChange ( INTEGER intData , SIMPLSHARPSTRING stringData );
-
-        // class events
-
-        // class functions
-        FUNCTION Initialize ( STRING name , INTEGER isInteger );
-        FUNCTION SetInteger ( INTEGER value );
-        FUNCTION SetString ( STRING value );
-        FUNCTION SetBoolean ( INTEGER value );
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-        STRING_FUNCTION ToString ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
-        DelegateProperty NamedControlChange newNamedControlChange;
-    };
-
-    static class QsysProcessor 
-    {
-        // class delegates
-
-        // class events
-
-        // class functions
-        static FUNCTION Initialize ( STRING host , INTEGER port );
-        static FUNCTION Debug ( INTEGER value );
-        static FUNCTION Dispose ();
-        static FUNCTION ParseResponse ( STRING data );
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-        STRING_FUNCTION ToString ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
+        DelegateProperty IsRegistered onIsRegistered;
+        DelegateProperty IsConnectedStatus onIsConnected;
+        DelegateProperty CoreStatus onNewCoreStatus;
         INTEGER IsDebugMode;
         STRING DesignName[];
+        STRING CoreId[];
     };
 
-     class QsysMeterSimpl 
+     class QsysPotsController 
+    {
+        // class delegates
+        delegate FUNCTION OffHookEvent ( INTEGER value );
+        delegate FUNCTION RingingEvent ( INTEGER value );
+        delegate FUNCTION DialingEvent ( INTEGER value );
+        delegate FUNCTION IncomingCallEvent ( INTEGER value );
+        delegate FUNCTION AutoAnswerEvent ( INTEGER value );
+        delegate FUNCTION DndEvent ( INTEGER value );
+        delegate FUNCTION DialStringEvent ( SIMPLSHARPSTRING dialString );
+        delegate FUNCTION CurrentlyCallingEvent ( SIMPLSHARPSTRING currentlyCalling );
+        delegate FUNCTION CurrentCallStatus ( SIMPLSHARPSTRING callStatus );
+        delegate FUNCTION RecentCallsEvent ( SIMPLSHARPSTRING item1 , SIMPLSHARPSTRING item2 , SIMPLSHARPSTRING item3 , SIMPLSHARPSTRING item4 , SIMPLSHARPSTRING item5 );
+        delegate FUNCTION RecentCallListEvent ( SIMPLSHARPSTRING xsig );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING coreId , STRING Name );
+        FUNCTION NumPad ( STRING number );
+        FUNCTION NumString ( STRING number );
+        FUNCTION NumPadDelete ();
+        FUNCTION NumPadClear ();
+        FUNCTION Dial ();
+        FUNCTION Connect ();
+        FUNCTION Disconnect ();
+        FUNCTION Redial ();
+        FUNCTION AutoAnswerToggle ();
+        FUNCTION DndToggle ();
+        FUNCTION SelectRecentCall ( SIGNED_LONG_INTEGER index );
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty OffHookEvent onOffHookEvent;
+        DelegateProperty RingingEvent onRingingEvent;
+        DelegateProperty DialingEvent onDialingEvent;
+        DelegateProperty IncomingCallEvent onIncomingCallEvent;
+        DelegateProperty AutoAnswerEvent onAutoAnswerEvent;
+        DelegateProperty DndEvent onDndEvent;
+        DelegateProperty DialStringEvent onDialStringEvent;
+        DelegateProperty CurrentlyCallingEvent onCurrentlyCallingEvent;
+        DelegateProperty CurrentCallStatus onCurrentCallStatusChange;
+        DelegateProperty RecentCallsEvent onRecentCallsEvent;
+        DelegateProperty RecentCallListEvent onRecentCallListEvent;
+        STRING ComponentName[];
+        STRING DialString[];
+        STRING CurrentlyCalling[];
+        STRING LastNumberCalled[];
+        STRING CallStatus[];
+    };
+
+     class QsysMeter 
     {
         // class delegates
         delegate FUNCTION MeterChange ( INTEGER meterValue );
@@ -335,7 +174,7 @@ namespace QscQsys;
         // class events
 
         // class functions
-        FUNCTION Initialize ( STRING name , INTEGER index );
+        FUNCTION Initialize ( STRING coreId , STRING name , SIGNED_LONG_INTEGER index );
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
         STRING_FUNCTION ToString ();
 
@@ -346,7 +185,62 @@ namespace QscQsys;
         DelegateProperty MeterChange onMeterChange;
     };
 
-     class QsysRouterSimpl 
+     class QsysSoftphoneController 
+    {
+        // class delegates
+        delegate FUNCTION OffHookEvent ( INTEGER value );
+        delegate FUNCTION RingingEvent ( INTEGER value );
+        delegate FUNCTION DialingEvent ( INTEGER value );
+        delegate FUNCTION IncomingCallEvent ( INTEGER value );
+        delegate FUNCTION AutoAnswerEvent ( INTEGER value );
+        delegate FUNCTION DndEvent ( INTEGER value );
+        delegate FUNCTION DialStringEvent ( SIMPLSHARPSTRING dialString );
+        delegate FUNCTION CurrentlyCallingEvent ( SIMPLSHARPSTRING currentlyCalling );
+        delegate FUNCTION CurrentCallStatus ( SIMPLSHARPSTRING callStatus );
+        delegate FUNCTION RecentCallsEvent ( SIMPLSHARPSTRING item1 , SIMPLSHARPSTRING item2 , SIMPLSHARPSTRING item3 , SIMPLSHARPSTRING item4 , SIMPLSHARPSTRING item5 );
+        delegate FUNCTION RecentCallListEvent ( SIMPLSHARPSTRING xsig );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING coreId , STRING Name );
+        FUNCTION NumPad ( STRING number );
+        FUNCTION NumString ( STRING number );
+        FUNCTION NumPadDelete ();
+        FUNCTION NumPadClear ();
+        FUNCTION Dial ();
+        FUNCTION Connect ();
+        FUNCTION Disconnect ();
+        FUNCTION Redial ();
+        FUNCTION AutoAnswerToggle ();
+        FUNCTION DndToggle ();
+        FUNCTION SelectRecentCall ( SIGNED_LONG_INTEGER index );
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty OffHookEvent onOffHookEvent;
+        DelegateProperty RingingEvent onRingingEvent;
+        DelegateProperty DialingEvent onDialingEvent;
+        DelegateProperty IncomingCallEvent onIncomingCallEvent;
+        DelegateProperty AutoAnswerEvent onAutoAnswerEvent;
+        DelegateProperty DndEvent onDndEvent;
+        DelegateProperty DialStringEvent onDialStringEvent;
+        DelegateProperty CurrentlyCallingEvent onCurrentlyCallingEvent;
+        DelegateProperty CurrentCallStatus onCurrentCallStatusChange;
+        DelegateProperty RecentCallsEvent onRecentCallsEvent;
+        DelegateProperty RecentCallListEvent onRecentCallListEvent;
+        STRING ComponentName[];
+        STRING DialString[];
+        STRING CurrentlyCalling[];
+        STRING LastNumberCalled[];
+        STRING CallStatus[];
+    };
+
+     class QsysRouter 
     {
         // class delegates
         delegate FUNCTION RouterInputChange ( INTEGER input );
@@ -354,8 +248,8 @@ namespace QscQsys;
         // class events
 
         // class functions
-        FUNCTION Initialize ( STRING name , INTEGER output );
-        FUNCTION SelectInput ( INTEGER input );
+        FUNCTION Initialize ( STRING coreId , STRING Name , SIGNED_LONG_INTEGER output );
+        FUNCTION InputSelect ( SIGNED_LONG_INTEGER input );
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
         STRING_FUNCTION ToString ();
 
@@ -364,6 +258,28 @@ namespace QscQsys;
 
         // class properties
         DelegateProperty RouterInputChange newRouterInputChange;
+        STRING ComponentName[];
+        SIGNED_LONG_INTEGER CurrentSelectedInput;
+    };
+
+     class QsysMatrixMixerCrosspoint 
+    {
+        // class delegates
+        delegate FUNCTION CrossPointValueChange ( INTEGER value );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING coreId , STRING name , INTEGER input , INTEGER output );
+        FUNCTION SetCrossPoint ( INTEGER value );
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty CrossPointValueChange newCrossPointValueChange;
     };
 
      class GetComponents 
@@ -849,17 +765,16 @@ namespace QscQsys;
         STRING Icon[];
     };
 
-     class QsysRoomCombinerSimpl 
+     class QsysSnapshot 
     {
         // class delegates
-        delegate FUNCTION WallStateChange ( INTEGER wall , INTEGER value );
-        delegate FUNCTION RoomCombinedChange ( INTEGER room , INTEGER value );
 
         // class events
 
         // class functions
-        FUNCTION Initialize ( STRING name , INTEGER walls , INTEGER rooms );
-        FUNCTION SetWall ( INTEGER wall , INTEGER value );
+        FUNCTION Initialize ( STRING coreId , STRING name );
+        FUNCTION LoadSnapshot ( INTEGER number );
+        FUNCTION SaveSnapshot ( INTEGER number );
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
         STRING_FUNCTION ToString ();
 
@@ -867,22 +782,20 @@ namespace QscQsys;
         INTEGER __class_id__;
 
         // class properties
-        DelegateProperty WallStateChange onWallStateChange;
-        DelegateProperty RoomCombinedChange onRoomCombinedChange;
     };
 
-     class QsysProcessorSimplInterface 
+     class QsysFader 
     {
         // class delegates
-        delegate FUNCTION IsRegistered ( INTEGER value );
-        delegate FUNCTION IsConnected ( INTEGER value );
-        delegate FUNCTION CoreStatus ( SIMPLSHARPSTRING designName , INTEGER isRedundant , INTEGER isEmulator );
+        delegate FUNCTION VolumeChange ( INTEGER value );
+        delegate FUNCTION MuteChange ( INTEGER value );
 
         // class events
 
         // class functions
-        FUNCTION Register ( STRING id );
-        FUNCTION Debug ( INTEGER value );
+        FUNCTION Initialize ( STRING coreId , STRING Name );
+        FUNCTION Volume ( SIGNED_LONG_INTEGER value );
+        FUNCTION Mute ( INTEGER value );
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
         STRING_FUNCTION ToString ();
 
@@ -890,9 +803,87 @@ namespace QscQsys;
         INTEGER __class_id__;
 
         // class properties
-        DelegateProperty IsRegistered onIsRegistered;
-        DelegateProperty IsConnected onIsConnected;
-        DelegateProperty CoreStatus onNewCoreStatus;
+        DelegateProperty VolumeChange newVolumeChange;
+        DelegateProperty MuteChange newMuteChange;
+        STRING ComponentName[];
+        SIGNED_LONG_INTEGER CurrentVolume;
+    };
+
+     class QsysNv32hDecoder 
+    {
+        // class delegates
+        delegate FUNCTION Nv32hDecoderInputChange ( INTEGER input );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING coreId , STRING Name );
+        FUNCTION ChangeInput ( SIGNED_LONG_INTEGER source );
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty Nv32hDecoderInputChange newNv32hDecoderInputChange;
+        STRING ComponentName[];
+        SIGNED_LONG_INTEGER CurrentSource;
+    };
+
+     class QsysNamedControl 
+    {
+        // class delegates
+        delegate FUNCTION NamedControlChange ( INTEGER intData , SIMPLSHARPSTRING stringData );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING coreId , STRING Name , INTEGER type );
+        FUNCTION SetInteger ( SIGNED_LONG_INTEGER value );
+        FUNCTION SetString ( STRING value );
+        FUNCTION SetBoolean ( SIGNED_LONG_INTEGER value );
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty NamedControlChange newNamedControlChange;
+        STRING ComponentName[];
+    };
+
+     class QsysCamera 
+    {
+        // class delegates
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING coreId , STRING Name );
+        FUNCTION StartPTZ ( PtzTypes type );
+        FUNCTION StopPTZ ( PtzTypes type );
+        FUNCTION RecallHome ();
+        FUNCTION TiltUp ();
+        FUNCTION StopTiltUp ();
+        FUNCTION TiltDown ();
+        FUNCTION StopTiltDown ();
+        FUNCTION PanLeft ();
+        FUNCTION StopPanLeft ();
+        FUNCTION PanRight ();
+        FUNCTION StopPanRight ();
+        FUNCTION ZoomIn ();
+        FUNCTION StopZoomIn ();
+        FUNCTION ZoomOut ();
+        FUNCTION StopZoomOut ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
     };
 
     static class PtzTypes // enum
@@ -903,45 +894,5 @@ namespace QscQsys;
         static SIGNED_LONG_INTEGER Right;
         static SIGNED_LONG_INTEGER ZoomIn;
         static SIGNED_LONG_INTEGER ZoomOut;
-    };
-
-     class QsysNv32hDecoderSimpl 
-    {
-        // class delegates
-        delegate FUNCTION Nv32hDecoderInputChange ( INTEGER input );
-
-        // class events
-
-        // class functions
-        FUNCTION Initialize ( STRING name );
-        FUNCTION ChangeSource ( INTEGER input );
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-        STRING_FUNCTION ToString ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
-        DelegateProperty Nv32hDecoderInputChange newNv32hDecoderInputChange;
-    };
-
-     class QsysMatrixMixerSimpl 
-    {
-        // class delegates
-        delegate FUNCTION CrossPointValueChange ( INTEGER value );
-
-        // class events
-
-        // class functions
-        FUNCTION Initialize ( STRING name , INTEGER input , INTEGER output );
-        FUNCTION SetCrossPoint ( INTEGER value );
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-        STRING_FUNCTION ToString ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
-        DelegateProperty CrossPointValueChange newCrossPointValueChange;
     };
 

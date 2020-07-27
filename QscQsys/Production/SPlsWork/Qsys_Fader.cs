@@ -27,8 +27,8 @@ namespace UserModule_QSYS_FADER
         Crestron.Logos.SplusObjects.DigitalOutput MUTEISON;
         Crestron.Logos.SplusObjects.DigitalOutput MUTEISOFF;
         Crestron.Logos.SplusObjects.AnalogOutput VOLUMEVALUE;
-        QscQsys.QsysProcessorSimplInterface PROCESSOR;
-        QscQsys.QsysFaderSimpl FADER;
+        QscQsys.QsysFader FADER;
+        StringParameter COREID;
         StringParameter COMPONENTNAME;
         UShortParameter VOLUMESTEP;
         UShortParameter VOLUMEREPEATTIME;
@@ -37,40 +37,40 @@ namespace UserModule_QSYS_FADER
         private void VOLUMEREPEAT (  SplusExecutionContext __context__, ushort DIRECTION ) 
             { 
             
-            __context__.SourceCodeLine = 28;
+            __context__.SourceCodeLine = 27;
             NEWDIRECTION = (ushort) ( DIRECTION ) ; 
-            __context__.SourceCodeLine = 30;
+            __context__.SourceCodeLine = 29;
             if ( Functions.TestForTrue  ( ( Functions.BoolToInt ( (Functions.TestForTrue ( Functions.BoolToInt (NEWDIRECTION == 1) ) && Functions.TestForTrue ( Functions.BoolToInt ( CURRENTVOLUME <= (65535 - VOLUMESTEP  .Value) ) )) ))  ) ) 
                 {
-                __context__.SourceCodeLine = 31;
-                FADER . Volume ( (ushort)( (CURRENTVOLUME + VOLUMESTEP  .Value) )) ; 
+                __context__.SourceCodeLine = 30;
+                FADER . Volume ( (int)( (CURRENTVOLUME + VOLUMESTEP  .Value) )) ; 
                 }
             
             else 
                 {
-                __context__.SourceCodeLine = 32;
+                __context__.SourceCodeLine = 31;
                 if ( Functions.TestForTrue  ( ( Functions.BoolToInt ( (Functions.TestForTrue ( Functions.BoolToInt (NEWDIRECTION == 1) ) && Functions.TestForTrue ( Functions.BoolToInt ( CURRENTVOLUME > (65535 - VOLUMESTEP  .Value) ) )) ))  ) ) 
                     {
-                    __context__.SourceCodeLine = 33;
-                    FADER . Volume ( (ushort)( 65535 )) ; 
+                    __context__.SourceCodeLine = 32;
+                    FADER . Volume ( (int)( 65535 )) ; 
                     }
                 
                 else 
                     {
-                    __context__.SourceCodeLine = 34;
+                    __context__.SourceCodeLine = 33;
                     if ( Functions.TestForTrue  ( ( Functions.BoolToInt ( (Functions.TestForTrue ( Functions.BoolToInt (NEWDIRECTION == 0) ) && Functions.TestForTrue ( Functions.BoolToInt ( CURRENTVOLUME >= (0 + VOLUMESTEP  .Value) ) )) ))  ) ) 
                         {
-                        __context__.SourceCodeLine = 35;
-                        FADER . Volume ( (ushort)( (CURRENTVOLUME - VOLUMESTEP  .Value) )) ; 
+                        __context__.SourceCodeLine = 34;
+                        FADER . Volume ( (int)( (CURRENTVOLUME - VOLUMESTEP  .Value) )) ; 
                         }
                     
                     else 
                         {
-                        __context__.SourceCodeLine = 36;
+                        __context__.SourceCodeLine = 35;
                         if ( Functions.TestForTrue  ( ( Functions.BoolToInt ( (Functions.TestForTrue ( Functions.BoolToInt (NEWDIRECTION == 0) ) && Functions.TestForTrue ( Functions.BoolToInt ( CURRENTVOLUME < (0 + VOLUMESTEP  .Value) ) )) ))  ) ) 
                             {
-                            __context__.SourceCodeLine = 37;
-                            FADER . Volume ( (ushort)( 0 )) ; 
+                            __context__.SourceCodeLine = 36;
+                            FADER . Volume ( (int)( 0 )) ; 
                             }
                         
                         }
@@ -79,7 +79,7 @@ namespace UserModule_QSYS_FADER
                 
                 }
             
-            __context__.SourceCodeLine = 39;
+            __context__.SourceCodeLine = 38;
             CreateWait ( "VREPEAT" , VOLUMEREPEATTIME  .Value , VREPEAT_Callback ) ;
             
             }
@@ -94,7 +94,7 @@ namespace UserModule_QSYS_FADER
                 __LocalWait__.RemoveFromList();
                 
             
-            __context__.SourceCodeLine = 41;
+            __context__.SourceCodeLine = 40;
             VOLUMEREPEAT (  __context__ , (ushort)( NEWDIRECTION )) ; 
             
         
@@ -113,7 +113,7 @@ namespace UserModule_QSYS_FADER
         {
             SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
             
-            __context__.SourceCodeLine = 48;
+            __context__.SourceCodeLine = 46;
             FADER . Mute ( (ushort)( 1 )) ; 
             
             
@@ -132,7 +132,7 @@ object MUTEOFF_OnPush_1 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 53;
+        __context__.SourceCodeLine = 51;
         FADER . Mute ( (ushort)( 0 )) ; 
         
         
@@ -151,19 +151,19 @@ object MUTETOGGLE_OnPush_2 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 58;
+        __context__.SourceCodeLine = 56;
         if ( Functions.TestForTrue  ( ( Functions.BoolToInt ( (Functions.TestForTrue ( Functions.Not( MUTEISON  .Value ) ) && Functions.TestForTrue ( MUTEISOFF  .Value )) ))  ) ) 
             { 
-            __context__.SourceCodeLine = 60;
+            __context__.SourceCodeLine = 58;
             FADER . Mute ( (ushort)( 1 )) ; 
             } 
         
         else 
             {
-            __context__.SourceCodeLine = 62;
+            __context__.SourceCodeLine = 60;
             if ( Functions.TestForTrue  ( ( Functions.BoolToInt ( (Functions.TestForTrue ( MUTEISON  .Value ) && Functions.TestForTrue ( Functions.Not( MUTEISOFF  .Value ) )) ))  ) ) 
                 { 
-                __context__.SourceCodeLine = 64;
+                __context__.SourceCodeLine = 62;
                 FADER . Mute ( (ushort)( 0 )) ; 
                 } 
             
@@ -186,7 +186,7 @@ object VOLUMEUP_OnPush_3 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 70;
+        __context__.SourceCodeLine = 68;
         VOLUMEREPEAT (  __context__ , (ushort)( 1 )) ; 
         
         
@@ -205,7 +205,7 @@ object VOLUMEUP_OnRelease_4 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 75;
+        __context__.SourceCodeLine = 73;
         CancelWait ( "VREPEAT" ) ; 
         
         
@@ -224,7 +224,7 @@ object VOLUMEDOWN_OnPush_5 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 80;
+        __context__.SourceCodeLine = 78;
         VOLUMEREPEAT (  __context__ , (ushort)( 0 )) ; 
         
         
@@ -243,7 +243,7 @@ object VOLUMEDOWN_OnRelease_6 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 85;
+        __context__.SourceCodeLine = 83;
         CancelWait ( "VREPEAT" ) ; 
         
         
@@ -264,23 +264,23 @@ object VOLUME_OnChange_7 ( Object __EventInfo__ )
         ushort X = 0;
         
         
-        __context__.SourceCodeLine = 92;
+        __context__.SourceCodeLine = 90;
         if ( Functions.TestForTrue  ( ( Functions.BoolToInt (VOLUME  .UshortValue == 0))  ) ) 
             { 
-            __context__.SourceCodeLine = 94;
-            FADER . Volume ( (ushort)( 0 )) ; 
+            __context__.SourceCodeLine = 92;
+            FADER . Volume ( (int)( 0 )) ; 
             } 
         
         else 
             { 
-            __context__.SourceCodeLine = 98;
+            __context__.SourceCodeLine = 96;
             while ( Functions.TestForTrue  ( ( Functions.BoolToInt (X != VOLUME  .UshortValue))  ) ) 
                 { 
-                __context__.SourceCodeLine = 100;
-                X = (ushort) ( VOLUME  .UshortValue ) ; 
-                __context__.SourceCodeLine = 101;
-                FADER . Volume ( (ushort)( X )) ; 
                 __context__.SourceCodeLine = 98;
+                X = (ushort) ( VOLUME  .UshortValue ) ; 
+                __context__.SourceCodeLine = 99;
+                FADER . Volume ( (int)( X )) ; 
+                __context__.SourceCodeLine = 96;
                 } 
             
             } 
@@ -294,27 +294,15 @@ object VOLUME_OnChange_7 ( Object __EventInfo__ )
     
 }
 
-public void ONINITIALIZATIONCOMPLETE ( ushort VALUE ) 
-    { 
-    try
-    {
-        SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
-        
-        
-        
-    }
-    finally { ObjectFinallyHandler(); }
-    }
-    
 public void ONVOLUMECHANGE ( ushort VALUE ) 
     { 
     try
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 112;
+        __context__.SourceCodeLine = 106;
         CURRENTVOLUME = (ushort) ( VALUE ) ; 
-        __context__.SourceCodeLine = 113;
+        __context__.SourceCodeLine = 107;
         VOLUMEVALUE  .Value = (ushort) ( CURRENTVOLUME ) ; 
         
         
@@ -328,7 +316,7 @@ public void ONMUTECHANGE ( ushort VALUE )
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 118;
+        __context__.SourceCodeLine = 112;
         
             {
             int __SPLS_TMPVAR__SWTCH_1__ = ((int)VALUE);
@@ -336,17 +324,17 @@ public void ONMUTECHANGE ( ushort VALUE )
                 { 
                 if  ( Functions.TestForTrue  (  ( __SPLS_TMPVAR__SWTCH_1__ == ( 1) ) ) ) 
                     { 
-                    __context__.SourceCodeLine = 122;
+                    __context__.SourceCodeLine = 116;
                     MUTEISOFF  .Value = (ushort) ( 0 ) ; 
-                    __context__.SourceCodeLine = 123;
+                    __context__.SourceCodeLine = 117;
                     MUTEISON  .Value = (ushort) ( 1 ) ; 
                     } 
                 
                 else if  ( Functions.TestForTrue  (  ( __SPLS_TMPVAR__SWTCH_1__ == ( 0) ) ) ) 
                     { 
-                    __context__.SourceCodeLine = 127;
+                    __context__.SourceCodeLine = 121;
                     MUTEISOFF  .Value = (ushort) ( 1 ) ; 
-                    __context__.SourceCodeLine = 128;
+                    __context__.SourceCodeLine = 122;
                     MUTEISON  .Value = (ushort) ( 0 ) ; 
                     } 
                 
@@ -367,17 +355,14 @@ public override object FunctionMain (  object __obj__ )
     {
         SplusExecutionContext __context__ = SplusFunctionMainStartCode();
         
-        __context__.SourceCodeLine = 135;
-        // RegisterDelegate( PROCESSOR , ONISREGISTERED , ONINITIALIZATIONCOMPLETE ) 
-        PROCESSOR .onIsRegistered  = ONINITIALIZATIONCOMPLETE; ; 
-        __context__.SourceCodeLine = 136;
+        __context__.SourceCodeLine = 129;
         // RegisterDelegate( FADER , NEWVOLUMECHANGE , ONVOLUMECHANGE ) 
         FADER .newVolumeChange  = ONVOLUMECHANGE; ; 
-        __context__.SourceCodeLine = 137;
+        __context__.SourceCodeLine = 130;
         // RegisterDelegate( FADER , NEWMUTECHANGE , ONMUTECHANGE ) 
         FADER .newMuteChange  = ONMUTECHANGE; ; 
-        __context__.SourceCodeLine = 138;
-        FADER . Initialize ( COMPONENTNAME  .ToString()) ; 
+        __context__.SourceCodeLine = 131;
+        FADER . Initialize ( COREID  .ToString(), COMPONENTNAME  .ToString()) ; 
         
         
     }
@@ -389,6 +374,8 @@ public override object FunctionMain (  object __obj__ )
 
 public override void LogosSplusInitialize()
 {
+    SocketInfo __socketinfo__ = new SocketInfo( 1, this );
+    InitialParametersClass.ResolveHostName = __socketinfo__.ResolveHostName;
     _SplusNVRAM = new SplusNVRAM( this );
     
     MUTEON = new Crestron.Logos.SplusObjects.DigitalInput( MUTEON__DigitalInput__, this );
@@ -424,6 +411,9 @@ public override void LogosSplusInitialize()
     VOLUMEREPEATTIME = new UShortParameter( VOLUMEREPEATTIME__Parameter__, this );
     m_ParameterList.Add( VOLUMEREPEATTIME__Parameter__, VOLUMEREPEATTIME );
     
+    COREID = new StringParameter( COREID__Parameter__, this );
+    m_ParameterList.Add( COREID__Parameter__, COREID );
+    
     COMPONENTNAME = new StringParameter( COMPONENTNAME__Parameter__, this );
     m_ParameterList.Add( COMPONENTNAME__Parameter__, COMPONENTNAME );
     
@@ -446,8 +436,7 @@ public override void LogosSplusInitialize()
 
 public override void LogosSimplSharpInitialize()
 {
-    PROCESSOR  = new QscQsys.QsysProcessorSimplInterface();
-    FADER  = new QscQsys.QsysFaderSimpl();
+    FADER  = new QscQsys.QsysFader();
     
     
 }
@@ -467,9 +456,10 @@ const uint VOLUME__AnalogSerialInput__ = 0;
 const uint MUTEISON__DigitalOutput__ = 0;
 const uint MUTEISOFF__DigitalOutput__ = 1;
 const uint VOLUMEVALUE__AnalogSerialOutput__ = 0;
-const uint COMPONENTNAME__Parameter__ = 10;
-const uint VOLUMESTEP__Parameter__ = 11;
-const uint VOLUMEREPEATTIME__Parameter__ = 12;
+const uint COREID__Parameter__ = 10;
+const uint COMPONENTNAME__Parameter__ = 11;
+const uint VOLUMESTEP__Parameter__ = 12;
+const uint VOLUMEREPEATTIME__Parameter__ = 13;
 
 [SplusStructAttribute(-1, true, false)]
 public class SplusNVRAM : SplusStructureBase

@@ -191,8 +191,10 @@
   ParamSigType31=Constant
   ParamCue32=[~UNUSED~]
   ParamSigType32=Constant
-  ParamCue33=ComponentName
+  ParamCue33=CoreID
   ParamSigType33=String
+  ParamCue34=ComponentName
+  ParamSigType34=String
   MinVariableInputs=30
   MaxVariableInputs=30
   MinVariableInputsList2=1
@@ -201,8 +203,8 @@
   MaxVariableOutputs=6
   MinVariableOutputsList2=24
   MaxVariableOutputsList2=24
-  MinVariableParams=32
-  MaxVariableParams=32
+  MinVariableParams=33
+  MaxVariableParams=33
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
@@ -218,7 +220,8 @@
   NumFixedParams=1
   Pp1=1
   Pp33=33
-  MPp=33
+  Pp34=34
+  MPp=34
   NVStorage=10
   ParamSigType1=String
   SmplCInputCue1=o#
@@ -240,6 +243,14 @@
 [BEGIN]
   ObjTp=Dp
   H=33
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=34
   Tp=1
   HD=False
   NoS=False

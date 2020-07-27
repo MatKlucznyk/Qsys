@@ -21,8 +21,9 @@ namespace UserModule_QSYS_SNAPSHOT_CONTROLLER
         Crestron.Logos.SplusObjects.DigitalInput LOAD;
         Crestron.Logos.SplusObjects.DigitalInput SAVE;
         Crestron.Logos.SplusObjects.AnalogInput NUMBER;
+        StringParameter COREID;
         StringParameter COMPONENTNAME;
-        QscQsys.QsysSnapshotSimpl SNAPSHOT;
+        QscQsys.QsysSnapshot SNAPSHOT;
         object NUMBER_OnChange_0 ( Object __EventInfo__ )
         
             { 
@@ -75,7 +76,7 @@ namespace UserModule_QSYS_SNAPSHOT_CONTROLLER
             SplusExecutionContext __context__ = SplusFunctionMainStartCode();
             
             __context__.SourceCodeLine = 34;
-            SNAPSHOT . Initialize ( COMPONENTNAME  .ToString()) ; 
+            SNAPSHOT . Initialize ( COREID  .ToString(), COMPONENTNAME  .ToString()) ; 
             
             
         }
@@ -87,6 +88,8 @@ namespace UserModule_QSYS_SNAPSHOT_CONTROLLER
     
     public override void LogosSplusInitialize()
     {
+        SocketInfo __socketinfo__ = new SocketInfo( 1, this );
+        InitialParametersClass.ResolveHostName = __socketinfo__.ResolveHostName;
         _SplusNVRAM = new SplusNVRAM( this );
         
         LOAD = new Crestron.Logos.SplusObjects.DigitalInput( LOAD__DigitalInput__, this );
@@ -97,6 +100,9 @@ namespace UserModule_QSYS_SNAPSHOT_CONTROLLER
         
         NUMBER = new Crestron.Logos.SplusObjects.AnalogInput( NUMBER__AnalogSerialInput__, this );
         m_AnalogInputList.Add( NUMBER__AnalogSerialInput__, NUMBER );
+        
+        COREID = new StringParameter( COREID__Parameter__, this );
+        m_ParameterList.Add( COREID__Parameter__, COREID );
         
         COMPONENTNAME = new StringParameter( COMPONENTNAME__Parameter__, this );
         m_ParameterList.Add( COMPONENTNAME__Parameter__, COMPONENTNAME );
@@ -112,7 +118,7 @@ namespace UserModule_QSYS_SNAPSHOT_CONTROLLER
     
     public override void LogosSimplSharpInitialize()
     {
-        SNAPSHOT  = new QscQsys.QsysSnapshotSimpl();
+        SNAPSHOT  = new QscQsys.QsysSnapshot();
         
         
     }
@@ -125,7 +131,8 @@ namespace UserModule_QSYS_SNAPSHOT_CONTROLLER
     const uint LOAD__DigitalInput__ = 0;
     const uint SAVE__DigitalInput__ = 1;
     const uint NUMBER__AnalogSerialInput__ = 0;
-    const uint COMPONENTNAME__Parameter__ = 10;
+    const uint COREID__Parameter__ = 10;
+    const uint COMPONENTNAME__Parameter__ = 11;
     
     [SplusStructAttribute(-1, true, false)]
     public class SplusNVRAM : SplusStructureBase

@@ -88,6 +88,10 @@
   OutputSigType6=Digital
   InputList2Cue1=SelectRecentCallIndex
   InputList2SigType1=Analog
+  InputList2Cue2=[~UNUSED~]
+  InputList2SigType2=Serial
+  InputList2Cue3=DialString
+  InputList2SigType3=Serial
   OutputList2Cue1=[~UNUSED~]
   OutputList2SigType1=Serial
   OutputList2Cue2=[~UNUSED~]
@@ -191,18 +195,24 @@
   ParamSigType31=Constant
   ParamCue32=[~UNUSED~]
   ParamSigType32=Constant
-  ParamCue33=ComponentName
-  ParamSigType33=String
+  ParamCue33=[~UNUSED~]
+  ParamSigType33=Constant
+  ParamCue34=[~UNUSED~]
+  ParamSigType34=Constant
+  ParamCue35=CoreID
+  ParamSigType35=String
+  ParamCue36=ComponentName
+  ParamSigType36=String
   MinVariableInputs=30
   MaxVariableInputs=30
-  MinVariableInputsList2=1
-  MaxVariableInputsList2=1
+  MinVariableInputsList2=3
+  MaxVariableInputsList2=3
   MinVariableOutputs=6
   MaxVariableOutputs=6
   MinVariableOutputsList2=24
   MaxVariableOutputsList2=24
-  MinVariableParams=32
-  MaxVariableParams=32
+  MinVariableParams=35
+  MaxVariableParams=35
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
@@ -217,8 +227,9 @@
   CompilerParamCode5=14
   NumFixedParams=1
   Pp1=1
-  Pp33=33
-  MPp=33
+  Pp35=35
+  Pp36=36
+  MPp=36
   NVStorage=10
   ParamSigType1=String
   SmplCInputCue1=o#
@@ -239,7 +250,15 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=33
+  H=35
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=36
   Tp=1
   HD=False
   NoS=False

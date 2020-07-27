@@ -29,10 +29,12 @@
   ParamCue1=[Reference Name]
   ParamCue2=[~UNUSED~]
   ParamSigType2=Constant
-  ParamCue3=ComponentName
+  ParamCue3=COreID
   ParamSigType3=String
-  ParamCue4=OutputNumber
-  ParamSigType4=Constant
+  ParamCue4=ComponentName
+  ParamSigType4=String
+  ParamCue5=OutputNumber
+  ParamSigType5=Constant
   MinVariableInputs=0
   MaxVariableInputs=0
   MinVariableInputsList2=1
@@ -41,8 +43,8 @@
   MaxVariableOutputs=0
   MinVariableOutputsList2=1
   MaxVariableOutputsList2=1
-  MinVariableParams=3
-  MaxVariableParams=3
+  MinVariableParams=4
+  MaxVariableParams=4
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
@@ -59,7 +61,8 @@
   Pp1=1
   Pp3=3
   Pp4=4
-  MPp=4
+  Pp5=5
+  MPp=5
   NVStorage=10
   ParamSigType1=String
   SmplCInputCue1=o#
@@ -89,6 +92,14 @@
 [BEGIN]
   ObjTp=Dp
   H=4
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=5
   Tp=1
   HD=False
   Sgn=0

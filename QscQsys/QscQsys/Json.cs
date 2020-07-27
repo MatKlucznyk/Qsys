@@ -89,15 +89,25 @@ namespace QscQsys
     }
 
 
-    public class Component
+    public class Component : IEquatable<Component>
     {
         public string Name { get; set; }
         public IList<ControlName> Controls { get; set; }
+
+        public bool Equals(Component other)
+        {
+            return this.Name == other.Name;
+        }
     }
 
-    public class Control
+    public class Control : IEquatable<Control>
     {
         public string Name { get; set; }
+
+        public bool Equals(Control other)
+        {
+            return this.Name == other.Name;
+        }
     }
 
     public class ControlName

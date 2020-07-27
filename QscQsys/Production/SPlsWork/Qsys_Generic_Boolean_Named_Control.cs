@@ -22,8 +22,9 @@ namespace UserModule_QSYS_GENERIC_BOOLEAN_NAMED_CONTROL
         Crestron.Logos.SplusObjects.DigitalInput SETBOOLEANSTATEOFF;
         Crestron.Logos.SplusObjects.DigitalInput TOGGLEBOOLEANSTATE;
         Crestron.Logos.SplusObjects.DigitalOutput BOOLEANSTATE;
+        StringParameter COREID;
         StringParameter NAMEDCONTROLNAME;
-        QscQsys.QsysNamedControlSimpl BOOLEANCONTROL;
+        QscQsys.QsysNamedControl BOOLEANCONTROL;
         object SETBOOLEANSTATEON_OnPush_0 ( Object __EventInfo__ )
         
             { 
@@ -33,7 +34,7 @@ namespace UserModule_QSYS_GENERIC_BOOLEAN_NAMED_CONTROL
                 SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
                 
                 __context__.SourceCodeLine = 18;
-                BOOLEANCONTROL . SetBoolean ( (ushort)( 1 )) ; 
+                BOOLEANCONTROL . SetBoolean ( (int)( 1 )) ; 
                 
                 
             }
@@ -52,7 +53,7 @@ namespace UserModule_QSYS_GENERIC_BOOLEAN_NAMED_CONTROL
             SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
             
             __context__.SourceCodeLine = 23;
-            BOOLEANCONTROL . SetBoolean ( (ushort)( 0 )) ; 
+            BOOLEANCONTROL . SetBoolean ( (int)( 0 )) ; 
             
             
         }
@@ -74,13 +75,13 @@ object TOGGLEBOOLEANSTATE_OnPush_2 ( Object __EventInfo__ )
         if ( Functions.TestForTrue  ( ( BOOLEANSTATE  .Value)  ) ) 
             {
             __context__.SourceCodeLine = 29;
-            BOOLEANCONTROL . SetBoolean ( (ushort)( 0 )) ; 
+            BOOLEANCONTROL . SetBoolean ( (int)( 0 )) ; 
             }
         
         else 
             {
             __context__.SourceCodeLine = 31;
-            BOOLEANCONTROL . SetBoolean ( (ushort)( 1 )) ; 
+            BOOLEANCONTROL . SetBoolean ( (int)( 1 )) ; 
             }
         
         
@@ -116,7 +117,7 @@ public override object FunctionMain (  object __obj__ )
         // RegisterDelegate( BOOLEANCONTROL , NEWNAMEDCONTROLCHANGE , NEWBOOLEANCHANGE ) 
         BOOLEANCONTROL .newNamedControlChange  = NEWBOOLEANCHANGE; ; 
         __context__.SourceCodeLine = 42;
-        BOOLEANCONTROL . Initialize ( NAMEDCONTROLNAME  .ToString(), (ushort)( 0 )) ; 
+        BOOLEANCONTROL . Initialize ( COREID  .ToString(), NAMEDCONTROLNAME  .ToString(), (ushort)( 0 )) ; 
         
         
     }
@@ -128,6 +129,8 @@ public override object FunctionMain (  object __obj__ )
 
 public override void LogosSplusInitialize()
 {
+    SocketInfo __socketinfo__ = new SocketInfo( 1, this );
+    InitialParametersClass.ResolveHostName = __socketinfo__.ResolveHostName;
     _SplusNVRAM = new SplusNVRAM( this );
     
     SETBOOLEANSTATEON = new Crestron.Logos.SplusObjects.DigitalInput( SETBOOLEANSTATEON__DigitalInput__, this );
@@ -141,6 +144,9 @@ public override void LogosSplusInitialize()
     
     BOOLEANSTATE = new Crestron.Logos.SplusObjects.DigitalOutput( BOOLEANSTATE__DigitalOutput__, this );
     m_DigitalOutputList.Add( BOOLEANSTATE__DigitalOutput__, BOOLEANSTATE );
+    
+    COREID = new StringParameter( COREID__Parameter__, this );
+    m_ParameterList.Add( COREID__Parameter__, COREID );
     
     NAMEDCONTROLNAME = new StringParameter( NAMEDCONTROLNAME__Parameter__, this );
     m_ParameterList.Add( NAMEDCONTROLNAME__Parameter__, NAMEDCONTROLNAME );
@@ -158,7 +164,7 @@ public override void LogosSplusInitialize()
 
 public override void LogosSimplSharpInitialize()
 {
-    BOOLEANCONTROL  = new QscQsys.QsysNamedControlSimpl();
+    BOOLEANCONTROL  = new QscQsys.QsysNamedControl();
     
     
 }
@@ -172,7 +178,8 @@ const uint SETBOOLEANSTATEON__DigitalInput__ = 0;
 const uint SETBOOLEANSTATEOFF__DigitalInput__ = 1;
 const uint TOGGLEBOOLEANSTATE__DigitalInput__ = 2;
 const uint BOOLEANSTATE__DigitalOutput__ = 0;
-const uint NAMEDCONTROLNAME__Parameter__ = 10;
+const uint COREID__Parameter__ = 10;
+const uint NAMEDCONTROLNAME__Parameter__ = 11;
 
 [SplusStructAttribute(-1, true, false)]
 public class SplusNVRAM : SplusStructureBase
