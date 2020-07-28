@@ -42,6 +42,7 @@ namespace QscQsys;
          class QsysNamedControl;
          class QsysCamera;
          class PtzTypes;
+         class QsysSignalPresence;
      class QsysMatrixMixer 
     {
         // class delegates
@@ -894,5 +895,36 @@ namespace QscQsys;
         static SIGNED_LONG_INTEGER Right;
         static SIGNED_LONG_INTEGER ZoomIn;
         static SIGNED_LONG_INTEGER ZoomOut;
+    };
+
+     class QsysSignalPresence 
+    {
+        // class delegates
+        delegate FUNCTION SignalPresenceChange ( INTEGER index , INTEGER value );
+        delegate FUNCTION PeakThresholdChange ( SIMPLSHARPSTRING value );
+        delegate FUNCTION HoldTimeChange ( SIMPLSHARPSTRING value );
+        delegate FUNCTION InfiniteHoldChange ( INTEGER value );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING coreId , STRING Name , INTEGER Count );
+        FUNCTION ThresholdIncrement ();
+        FUNCTION ThresholdDecrement ();
+        FUNCTION HoldTimeIncrement ();
+        FUNCTION HoldTimeDecrement ();
+        FUNCTION InfiniteHold ( INTEGER value );
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty SignalPresenceChange newSignalPresenceChange;
+        DelegateProperty PeakThresholdChange newPeakThresholdChange;
+        DelegateProperty HoldTimeChange newHoldTimeChange;
+        DelegateProperty InfiniteHoldChange newInfiniteHoldChange;
+        STRING ComponentName[];
     };
 

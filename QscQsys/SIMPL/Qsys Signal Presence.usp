@@ -1,0 +1,97 @@
+#SYMBOL_NAME "Qsys Signal Presence"
+
+#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+Digital_Input _skiP_, _skiP_, _skiP_, _skiP_, InfiniteHold, PeakThresholdUp, PeakThresholdDown, HoldTimeUp, HoldTimeDown;
+
+Digital_Output SignalPresence1, SignalPresence2, SignalPresence3, SignalPresence4, InfiniteHoldIsOn;
+
+String_Output PeakThreshold, _skip_, HoldTime;
+
+QsysSignalPresence sp;  
+
+String_Parameter _skip_, _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_,_skip_, CoreID[100], ComponentName[100];  
+Integer_Parameter Count;
+
+Push InfiniteHold
+{
+	if(InfiniteHoldIsOn)
+	{
+		sp.InfiniteHold(0);
+	}	   
+	else
+	{
+		sp.InfiniteHold(1);
+	}
+}
+
+Push PeakThresholdUp
+{
+	sp.ThresholdIncrement();
+}
+
+Push PeakThresholdDown
+{
+	sp.ThresholdDecrement();
+}
+
+Push HoldTimeUp
+{
+	sp.HoldTimeIncrement();
+}
+
+Push HoldTimeDown
+{
+	sp.HoldTimeDecrement();
+}
+
+Callback Function onSignalPresenceChange(integer index, integer value)
+{
+	switch(index)
+	{
+		case(1):
+		{
+			SignalPresence1 = value;
+		}
+		case(2):
+		{
+			SignalPresence2 = value;
+		}
+		case(3):
+		{
+			SignalPresence3 = value;
+		}
+		case(4):
+		{
+			SignalPresence4 = value;
+		}
+		Default:
+		{
+		}
+	}
+}
+
+Callback Function onPeakThresholdChange(string value)
+{
+	PeakThreshold = value;
+}
+
+Callback Function onHoldTimeChange(string value)
+{
+	HoldTime = value;
+}
+
+Callback Function onInfiniteHoldChange(integer value)
+{
+	InfiniteHoldIsOn = value;
+}
+
+Function Main()
+{
+	RegisterDelegate(sp, newSignalPresenceChange, onSignalPresenceChange);
+	RegisterDelegate(sp, newPeakThresholdChange, onPeakThresholdChange);
+	RegisterDelegate(sp, newHoldTimeChange, onHoldTimeChange);
+	RegisterDelegate(sp, newInfiniteHoldChange, onInfiniteHoldChange);
+	sp.Initialize(CoreID, ComponentName, Count);
+}
