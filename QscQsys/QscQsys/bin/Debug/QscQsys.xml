@@ -27,7 +27,7 @@
             processor for Q-Sys Cores.
             </summary>
         </member>
-        <member name="M:QscQsys.QsysCore.Initialize(System.String,System.String,System.UInt16)">
+        <member name="M:QscQsys.QsysCore.Initialize(System.String,System.String,System.UInt16,System.String,System.String)">
             <summary>
             Initialzes all methods that are required to setup the class. Connection is established on port 1702.
             </summary>
@@ -36,12 +36,6 @@
             <summary>
             Cleans up all resources.
             </summary>
-        </member>
-        <member name="M:QscQsys.QsysCore.ParseResponse(System.String)">
-            <summary>
-            Parse response from Q-Sys Core.
-            </summary>
-            <param name="data"></param>
         </member>
         <member name="P:QscQsys.QsysCore.IsInitialized">
             <summary>

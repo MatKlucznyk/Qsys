@@ -268,4 +268,24 @@ namespace QscQsys
         public string Color { get; set; }
         public string Icon { get; set; }
     }
+
+    public class Logon
+    {
+        [JsonProperty]
+        static string jsonrpc = "2.0";
+        [JsonProperty]
+        static string id = "crestron";
+        [JsonProperty]
+        static string method = "Logon";
+        [JsonProperty("params")]
+        public LogonParams Params { get; set; }
+    }
+
+    public class LogonParams
+    {
+        [JsonProperty]
+        public string User { get; set; }
+        [JsonProperty]
+        public string Password { get; set; }
+    }
 }

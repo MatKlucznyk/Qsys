@@ -56,9 +56,16 @@ namespace QscQsys
                     }
                 };
 
-                for (int i = 1; i <= count; i++)
+                if (count > 1)
                 {
-                    component.Controls.Add(new ControlName() { Name = string.Format("signal_presence_{0}", i) });
+                    for (int i = 1; i <= count; i++)
+                    {
+                        component.Controls.Add(new ControlName() { Name = string.Format("signal_presence_{0}", i) });
+                    }
+                }
+                else
+                {
+                    component.Controls.Add(new ControlName() { Name = "signal_presence" });
                 }
 
                 if (QsysCoreManager.Cores[coreId].RegisterComponent(component))

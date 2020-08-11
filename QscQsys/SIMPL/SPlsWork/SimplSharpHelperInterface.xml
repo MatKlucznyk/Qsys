@@ -6965,6 +6965,14 @@
             <returns>See <see cref="T:Crestron.SimplSharp.JsonDb.eJsonDbResult"/></returns>
             <exception cref="T:System.NotSupportedException">This version of firmware does not support JsonDb feature.</exception>
         </member>
+        <member name="M:Crestron.SimplSharp.JsonDb.StringToHGlobalUTF8(System.String,System.IntPtr@)">
+            <summary>
+            Takes a string and converts it to UTF-8 and copies it to an IntPtr w/null termination.
+            </summary>
+            <param name="s"></param>
+            <param name="ptr"></param>
+            <returns></returns>
+        </member>
         <member name="M:Crestron.SimplSharp.JsonDb.Get(System.String,Crestron.SimplSharp.JsonDb.eJsonDbResult@)">
             <summary>
             Retrieve a data item from the database.
@@ -33129,6 +33137,11 @@
             Crestron Field Data type enum (byte[])
             </summary>
         </member>
+        <member name="F:Crestron.SimplSharp.CrestronDataStore.CrestronDataStore.CDS_TYPE.Byte">
+            <summary>
+            Crestron Field Data type enum (byte[])
+            </summary>
+        </member>
         <member name="F:Crestron.SimplSharp.CrestronDataStore.CrestronDataStore.CDS_TYPE.Double">
             <summary>
             Crestron Field Data type Enum (Double)
@@ -33378,6 +33391,14 @@
             <param name="value"> local variable to hold the boolean value</param>
             <returns>CDS_ERROR</returns>
         </member>
+        <member name="M:Crestron.SimplSharp.CrestronDataStore.CrestronDataStoreStatic.GetGlobalByteValue(System.String,System.Byte[]@)">
+            <summary>
+            Find the Global record by tag name and return the boolean value.
+            </summary>
+            <param name="tag">boolean's name</param>
+            <param name="value"> local variable to hold the boolean value</param>
+            <returns>CDS_ERROR</returns>
+        </member>
         <member name="M:Crestron.SimplSharp.CrestronDataStore.CrestronDataStoreStatic.GetGlobalUintValue(System.String,System.UInt32@)">
             <summary>
             Find the Global record by tag name and return the unsigned int32 value
@@ -33427,6 +33448,14 @@
             <returns>CDS_ERROR</returns>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronDataStore.CrestronDataStoreStatic.GetLocalBoolValue(System.String,System.Boolean@)">
+            <summary>
+            Find the Local record by tag name and return the Boolean value.
+            </summary>
+            <param name="tag">Booleans's name</param>
+            <param name="value">local variable to hold the boolean value</param>
+            <returns>CDS_ERROR</returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronDataStore.CrestronDataStoreStatic.GetLocalByteValue(System.String,System.Byte[]@)">
             <summary>
             Find the Local record by tag name and return the Boolean value.
             </summary>
@@ -33490,6 +33519,14 @@
             <param name="value">boolean value to store</param>
             <returns>CDS_ERROR</returns>
         </member>
+        <member name="M:Crestron.SimplSharp.CrestronDataStore.CrestronDataStoreStatic.SetGlobalByteValue(System.String,System.Byte[])">
+            <summary>
+             Write/Edit the named Local record with the boolean value
+            </summary>
+            <param name="tag">The boolean's name</param>
+            <param name="value">The boolean value to store</param>
+            <returns>CDS_ERROR</returns>
+        </member>
         <member name="M:Crestron.SimplSharp.CrestronDataStore.CrestronDataStoreStatic.SetGlobalUintValue(System.String,System.UInt32)">
             <summary>
              Write/Edit the named Global record with the unsigned int32 value
@@ -33539,6 +33576,14 @@
             <returns>CDS_ERROR</returns>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronDataStore.CrestronDataStoreStatic.SetLocalBoolValue(System.String,System.Boolean)">
+            <summary>
+             Write/Edit the named Local record with the boolean value
+            </summary>
+            <param name="tag">The boolean's name</param>
+            <param name="value">The boolean value to store</param>
+            <returns>CDS_ERROR</returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronDataStore.CrestronDataStoreStatic.SetLocalByteValue(System.String,System.Byte[])">
             <summary>
              Write/Edit the named Local record with the boolean value
             </summary>
