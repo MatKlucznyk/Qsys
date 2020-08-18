@@ -28,10 +28,12 @@
   OutputSigType1=Digital
   OutputCue2=IsConnected
   OutputSigType2=Digital
-  OutputCue3=IsRedundant
+  OutputCue3=IsLoggedIn
   OutputSigType3=Digital
-  OutputCue4=IsEmulator
+  OutputCue4=IsRedundant
   OutputSigType4=Digital
+  OutputCue5=IsEmulator
+  OutputSigType5=Digital
   OutputList2Cue1=DesignName
   OutputList2SigType1=Serial
   ParamCue1=[Reference Name]
@@ -45,24 +47,30 @@
   ParamSigType5=Constant
   ParamCue6=[~UNUSED~]
   ParamSigType6=Constant
-  ParamCue7=CoreID
-  ParamSigType7=String
-  ParamCue8=Host
+  ParamCue7=[~UNUSED~]
+  ParamSigType7=Constant
+  ParamCue8=CoreID
   ParamSigType8=String
-  ParamCue9=Port
-  ParamSigType9=Constant
-  ParamCue10=DebugMode
+  ParamCue9=Host
+  ParamSigType9=String
+  ParamCue10=Port
   ParamSigType10=Constant
+  ParamCue11=DebugMode
+  ParamSigType11=Constant
+  ParamCue12=Username
+  ParamSigType12=String
+  ParamCue13=Password
+  ParamSigType13=String
   MinVariableInputs=1
   MaxVariableInputs=1
   MinVariableInputsList2=0
   MaxVariableInputsList2=0
-  MinVariableOutputs=4
-  MaxVariableOutputs=4
+  MinVariableOutputs=5
+  MaxVariableOutputs=5
   MinVariableOutputsList2=1
   MaxVariableOutputsList2=1
-  MinVariableParams=9
-  MaxVariableParams=9
+  MinVariableParams=12
+  MaxVariableParams=12
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
@@ -77,11 +85,13 @@
   CompilerParamCode5=14
   NumFixedParams=1
   Pp1=1
-  Pp7=7
   Pp8=8
   Pp9=9
   Pp10=10
-  MPp=10
+  Pp11=11
+  Pp12=12
+  Pp13=13
+  MPp=13
   NVStorage=10
   ParamSigType1=String
   SmplCInputCue1=o#
@@ -102,14 +112,6 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=7
-  Tp=1
-  HD=False
-  NoS=False
-  VVS=0
-[END]
-[BEGIN]
-  ObjTp=Dp
   H=8
   Tp=1
   HD=False
@@ -121,11 +123,7 @@
   H=9
   Tp=1
   HD=False
-  Sgn=0
-  Lng=False
-  NF=63
-  NoS=True
-  DNF=1
+  NoS=False
   VVS=0
 [END]
 [BEGIN]
@@ -138,5 +136,33 @@
   NF=63
   NoS=True
   DNF=1
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=11
+  Tp=1
+  HD=False
+  Sgn=0
+  Lng=False
+  NF=63
+  NoS=True
+  DNF=1
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=12
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=13
+  Tp=1
+  HD=False
+  NoS=False
   VVS=0
 [END]

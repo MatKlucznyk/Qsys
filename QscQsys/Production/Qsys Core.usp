@@ -5,12 +5,13 @@
 
 Digital_Input Initialize;
 
-Digital_Output IsInitialized, IsConnected, IsRedundant, IsEmulator;
+Digital_Output IsInitialized, IsConnected, IsLoggedIn, IsRedundant, IsEmulator;
 
 String_Output DesignName;
 
-String_Parameter _skip_, _skip_, _skip_, _skip_, _skip_, CoreID[100], Host[100];
+String_Parameter _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, CoreID[100], Host[100];
 Integer_Parameter Port, DebugMode;
+string_parameter Username[100], Password[100];
 
 integer waitTillStart;
 
@@ -21,7 +22,7 @@ Push Initialize
 	while(!waitTillStart)
 	{}
 	processor.Debug(DebugMode);
-    processor.Initialize(CoreID, Host, Port);
+    processor.Initialize(CoreID, Host, Port, Username, Password);
 }
 
 Callback Function NewIsRegistered(integer value)
@@ -47,11 +48,19 @@ Callback Function NewCoreStatus(string dName, integer redundant, integer emulato
 	IsEmulator = emulator;
 }
 
+callback function NewIsLoggedIn(integer status)
+{
+	IsLoggedIn = status;
+}
+
 Function Main()
 {
 	RegisterDelegate(processor, onIsRegistered, NewIsRegistered);  
 	RegisterDelegate(processor, onIsConnected, NewIsConnected);
 	RegisterDelegate(processor, onNewCoreStatus, NewCoreStatus);
+	RegisterDelegate(processor, onIsLoggedIn, NewIsLoggedIn);
+	
+	
 	
 	waitTillStart = 1;
 }

@@ -880,7 +880,7 @@ namespace QscQsys;
 
         // class functions
         FUNCTION Initialize ( STRING coreId , STRING Name , INTEGER type );
-        FUNCTION SetInteger ( SIGNED_LONG_INTEGER value );
+        FUNCTION SetInteger ( SIGNED_LONG_INTEGER value , SIGNED_LONG_INTEGER scaled );
         FUNCTION SetString ( STRING value );
         FUNCTION SetBoolean ( SIGNED_LONG_INTEGER value );
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();

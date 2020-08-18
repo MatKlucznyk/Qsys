@@ -8,6 +8,7 @@ analog_input SetIntegerValue;
 analog_Output IntegerValue;
 
 string_parameter  _skip_, CoreID[100], NamedControlName[100];
+integer_parameter Scaled;
 
 QsysNamedControl integerControl;
 
@@ -17,14 +18,14 @@ threadsafe change SetIntegerValue
 
     if(SetIntegerValue = 0)
     {
-        integerControl.SetInteger(0);
+        integerControl.SetInteger(0, Scaled);
     }
     else
     {
         while(x != SetIntegerValue)
         {
             x = SetIntegerValue;
-            integerControl.SetInteger(x);
+            integerControl.SetInteger(x, Scaled);
         }
     }
 }

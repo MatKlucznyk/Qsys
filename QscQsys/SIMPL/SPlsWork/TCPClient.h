@@ -12,6 +12,7 @@ namespace TCP_Client;
 
         // class functions
         FUNCTION Connect ( STRING host , INTEGER port );
+        FUNCTION Reconnect ();
         FUNCTION Disconnect ();
         FUNCTION SendCommand ( STRING command );
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();

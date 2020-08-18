@@ -22,6 +22,7 @@ namespace UserModule_QSYS_GENERIC_INTEGER_NAMED_CONTROL
         Crestron.Logos.SplusObjects.AnalogOutput INTEGERVALUE;
         StringParameter COREID;
         StringParameter NAMEDCONTROLNAME;
+        UShortParameter SCALED;
         QscQsys.QsysNamedControl INTEGERCONTROL;
         object SETINTEGERVALUE_OnChange_0 ( Object __EventInfo__ )
         
@@ -33,23 +34,23 @@ namespace UserModule_QSYS_GENERIC_INTEGER_NAMED_CONTROL
                 ushort X = 0;
                 
                 
-                __context__.SourceCodeLine = 18;
+                __context__.SourceCodeLine = 19;
                 if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SETINTEGERVALUE  .UshortValue == 0))  ) ) 
                     { 
-                    __context__.SourceCodeLine = 20;
-                    INTEGERCONTROL . SetInteger ( (int)( 0 )) ; 
+                    __context__.SourceCodeLine = 21;
+                    INTEGERCONTROL . SetInteger ( (int)( 0 ), (int)( SCALED  .Value )) ; 
                     } 
                 
                 else 
                     { 
-                    __context__.SourceCodeLine = 24;
+                    __context__.SourceCodeLine = 25;
                     while ( Functions.TestForTrue  ( ( Functions.BoolToInt (X != SETINTEGERVALUE  .UshortValue))  ) ) 
                         { 
-                        __context__.SourceCodeLine = 26;
-                        X = (ushort) ( SETINTEGERVALUE  .UshortValue ) ; 
                         __context__.SourceCodeLine = 27;
-                        INTEGERCONTROL . SetInteger ( (int)( X )) ; 
-                        __context__.SourceCodeLine = 24;
+                        X = (ushort) ( SETINTEGERVALUE  .UshortValue ) ; 
+                        __context__.SourceCodeLine = 28;
+                        INTEGERCONTROL . SetInteger ( (int)( X ), (int)( SCALED  .Value )) ; 
+                        __context__.SourceCodeLine = 25;
                         } 
                     
                     } 
@@ -69,7 +70,7 @@ namespace UserModule_QSYS_GENERIC_INTEGER_NAMED_CONTROL
         {
             SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
             
-            __context__.SourceCodeLine = 34;
+            __context__.SourceCodeLine = 35;
             INTEGERVALUE  .Value = (ushort) ( VALUE ) ; 
             
             
@@ -83,10 +84,10 @@ namespace UserModule_QSYS_GENERIC_INTEGER_NAMED_CONTROL
         {
             SplusExecutionContext __context__ = SplusFunctionMainStartCode();
             
-            __context__.SourceCodeLine = 39;
+            __context__.SourceCodeLine = 40;
             // RegisterDelegate( INTEGERCONTROL , NEWNAMEDCONTROLCHANGE , NEWINTEGERCHANGE ) 
             INTEGERCONTROL .newNamedControlChange  = NEWINTEGERCHANGE; ; 
-            __context__.SourceCodeLine = 40;
+            __context__.SourceCodeLine = 41;
             INTEGERCONTROL . Initialize ( COREID  .ToString(), NAMEDCONTROLNAME  .ToString(), (ushort)( 1 )) ; 
             
             
@@ -99,8 +100,6 @@ namespace UserModule_QSYS_GENERIC_INTEGER_NAMED_CONTROL
     
     public override void LogosSplusInitialize()
     {
-        SocketInfo __socketinfo__ = new SocketInfo( 1, this );
-        InitialParametersClass.ResolveHostName = __socketinfo__.ResolveHostName;
         _SplusNVRAM = new SplusNVRAM( this );
         
         SETINTEGERVALUE = new Crestron.Logos.SplusObjects.AnalogInput( SETINTEGERVALUE__AnalogSerialInput__, this );
@@ -108,6 +107,9 @@ namespace UserModule_QSYS_GENERIC_INTEGER_NAMED_CONTROL
         
         INTEGERVALUE = new Crestron.Logos.SplusObjects.AnalogOutput( INTEGERVALUE__AnalogSerialOutput__, this );
         m_AnalogOutputList.Add( INTEGERVALUE__AnalogSerialOutput__, INTEGERVALUE );
+        
+        SCALED = new UShortParameter( SCALED__Parameter__, this );
+        m_ParameterList.Add( SCALED__Parameter__, SCALED );
         
         COREID = new StringParameter( COREID__Parameter__, this );
         m_ParameterList.Add( COREID__Parameter__, COREID );
@@ -140,6 +142,7 @@ namespace UserModule_QSYS_GENERIC_INTEGER_NAMED_CONTROL
     const uint INTEGERVALUE__AnalogSerialOutput__ = 0;
     const uint COREID__Parameter__ = 10;
     const uint NAMEDCONTROLNAME__Parameter__ = 11;
+    const uint SCALED__Parameter__ = 12;
     
     [SplusStructAttribute(-1, true, false)]
     public class SplusNVRAM : SplusStructureBase

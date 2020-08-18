@@ -33,6 +33,8 @@
   ParamSigType3=String
   ParamCue4=NamedControlName
   ParamSigType4=String
+  ParamCue5=Scaled
+  ParamSigType5=Constant
   MinVariableInputs=0
   MaxVariableInputs=0
   MinVariableInputsList2=1
@@ -41,8 +43,8 @@
   MaxVariableOutputs=0
   MinVariableOutputsList2=1
   MaxVariableOutputsList2=1
-  MinVariableParams=3
-  MaxVariableParams=3
+  MinVariableParams=4
+  MaxVariableParams=4
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
@@ -59,7 +61,8 @@
   Pp1=1
   Pp3=3
   Pp4=4
-  MPp=4
+  Pp5=5
+  MPp=5
   NVStorage=10
   ParamSigType1=String
   SmplCInputCue1=o#
@@ -92,5 +95,17 @@
   Tp=1
   HD=False
   NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=5
+  Tp=1
+  HD=False
+  Sgn=0
+  Lng=False
+  NF=63
+  NoS=True
+  DNF=1
   VVS=0
 [END]

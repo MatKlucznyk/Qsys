@@ -80,13 +80,25 @@ namespace QscQsys
             } 
         }
 
-        public void SetInteger(int value)
+        public void SetInteger(int value, int scaled)
         {
             if (registered)
             {
-                double newValue = QsysCoreManager.ScaleDown(value);
+                double newValue;
+                ControlIntegerChange integer;
 
-                ControlIntegerChange integer = new ControlIntegerChange() { Params = new ControlIntegerParams() { Name = cName, Position = newValue } };
+                if (scaled == 1)
+                {
+                    newValue = QsysCoreManager.ScaleDown(value);
+                    integer = new ControlIntegerChange() { Params = new ControlIntegerParams() { Name = cName, Position = newValue } };
+                }
+                else
+                {
+                    newValue = value;
+                    integer = new ControlIntegerChange() { Params = new ControlIntegerParams() { Name = cName, Value = newValue } };
+                }
+
+                 
 
                 QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(integer, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }

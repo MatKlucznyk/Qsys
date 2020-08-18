@@ -30,6 +30,7 @@ namespace QscQsys
         private CTimer commandQueueTimer;
         private CTimer responseQueueTimer;
         private CTimer heartbeatTimer;
+        private CTimer reconnectionWait;
         private TCPClientDevice client;
 
         private bool isInitialized;
@@ -279,10 +280,16 @@ namespace QscQsys
                     if (debug == 1 || debug == 2)
                         ErrorLog.Error("QsysProcessor disconnected!");
 
+                    client.Disconnect();
+
+                    reconnectionWait = new CTimer(StartConnectionAgain, 30000);
+
                     isLoggedIn = false;
                     IsConnected = false;
                     isInitialized = false;
-                    heartbeatTimer.Dispose();
+
+                    if(heartbeatTimer != null)
+                        heartbeatTimer.Dispose();
 
                     if (onIsRegistered != null)
                         onIsRegistered(0);
@@ -299,6 +306,12 @@ namespace QscQsys
                 if (debug == 1 || debug == 2)
                     ErrorLog.Error("Error in QsysProcessor client_ConnectionStatus: {0}", e.Message);
             }
+        }
+
+        private void StartConnectionAgain(object o)
+        {
+            client.Reconnect();
+            reconnectionWait.Dispose();
         }
 
         private void SendHeartbeat(object o)

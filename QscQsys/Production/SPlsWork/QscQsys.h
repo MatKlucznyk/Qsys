@@ -36,6 +36,8 @@ namespace QscQsys;
          class ComponentChangeParamsString;
          class ComponentSetValueString;
          class ListBoxChoice;
+         class Logon;
+         class LogonParams;
          class QsysSnapshot;
          class QsysFader;
          class QsysNv32hDecoder;
@@ -86,6 +88,7 @@ namespace QscQsys;
      class QsysCore 
     {
         // class delegates
+        delegate FUNCTION IsLoggedIn ( INTEGER value );
         delegate FUNCTION IsRegistered ( INTEGER value );
         delegate FUNCTION IsConnectedStatus ( INTEGER value );
         delegate FUNCTION CoreStatus ( SIMPLSHARPSTRING designName , INTEGER isRedundant , INTEGER isEmulator );
@@ -93,10 +96,9 @@ namespace QscQsys;
         // class events
 
         // class functions
-        FUNCTION Initialize ( STRING id , STRING host , INTEGER port );
         FUNCTION Debug ( INTEGER value );
+        FUNCTION Initialize ( STRING id , STRING host , INTEGER port , STRING username , STRING password );
         FUNCTION Dispose ();
-        FUNCTION ParseResponse ( STRING data );
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
         STRING_FUNCTION ToString ();
 
@@ -104,10 +106,12 @@ namespace QscQsys;
         INTEGER __class_id__;
 
         // class properties
+        DelegateProperty IsLoggedIn onIsLoggedIn;
         DelegateProperty IsRegistered onIsRegistered;
         DelegateProperty IsConnectedStatus onIsConnected;
         DelegateProperty CoreStatus onNewCoreStatus;
         INTEGER IsDebugMode;
+        INTEGER MaxLogonAttemps;
         STRING DesignName[];
         STRING CoreId[];
     };
@@ -766,6 +770,41 @@ namespace QscQsys;
         STRING Icon[];
     };
 
+     class Logon 
+    {
+        // class delegates
+
+        // class events
+
+        // class functions
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        LogonParams Params;
+    };
+
+     class LogonParams 
+    {
+        // class delegates
+
+        // class events
+
+        // class functions
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        STRING User[];
+        STRING Password[];
+    };
+
      class QsysSnapshot 
     {
         // class delegates
@@ -841,7 +880,7 @@ namespace QscQsys;
 
         // class functions
         FUNCTION Initialize ( STRING coreId , STRING Name , INTEGER type );
-        FUNCTION SetInteger ( SIGNED_LONG_INTEGER value );
+        FUNCTION SetInteger ( SIGNED_LONG_INTEGER value , SIGNED_LONG_INTEGER scaled );
         FUNCTION SetString ( STRING value );
         FUNCTION SetBoolean ( SIGNED_LONG_INTEGER value );
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
