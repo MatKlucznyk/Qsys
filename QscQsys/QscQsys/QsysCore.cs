@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Crestron.SimplSharp;
-using Crestron.SimplSharp.CrestronIO;
-using ExtensionMethods;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TCP_Client;
@@ -18,61 +17,89 @@ namespace QscQsys
     {
         //Core specific coms
         private int coreID;
+
         private string loginUser;
         private string loginPass;
         private string coreIP = "";
+
         public string getCoreIP { get { return this.coreIP; } }
+
         private int corePort = 0;
         private TCPClientDevice client;
         private bool isConnected = false;
+
         public bool IsConnected { get { return this.isConnected; } }
+
         private bool loginAttempt = false;
         private bool badLogin = false;
+
         public bool BadLogin { get { return this.badLogin; } }
+
         private bool initRun = false;
 
         //Module vars
         private bool debug;
+
         public bool IsDebugMode { get { return this.debug; } }
+
         private bool isInitialized;
         private bool isDisposed;
+
         public bool IsDisposed { get { return this.isDisposed; } }
+
         private bool loggedIn;
+
         public bool IsInitialized { get { return this.isInitialized; } }
-        
 
         //Queues
         private CrestronQueue<string> commandQueue;
+
         private CrestronQueue<string> responseQueue;
 
         //Timers
         private CTimer commandQueueTimer;
+
         private CTimer responseQueueTimer;
         private CTimer heartbeatTimer;
-        
+
         //Core info
         private eCoreState coreState;
+
         public eCoreState CoreState { get { return coreState; } }
+
         private string platform;
+
         public string Platform { get { return platform; } }
+
         private string designName;
+
         public string DesignName { get { return designName; } }
+
         private string designCode;
+
         public string DesignCode { get { return designCode; } }
+
         private bool isRedundant;
+
         public bool IsRedundant { get { return isRedundant; } }
+
         private bool isEmulator;
+
         public bool IsEmulator { get { return isEmulator; } }
+
         private int statusCode;
+
         public int StatusCode { get { return statusCode; } }
+
         private string statusString;
+
         public string StatusString { get { return statusString; } }
 
         //Components & controls & clients
         internal Dictionary<string, InternalEvents> Controls = new Dictionary<string, InternalEvents>();
+
         internal Dictionary<Component, InternalEvents> Components = new Dictionary<Component, InternalEvents>();
         internal Dictionary<string, SimplEvents> SimplClients = new Dictionary<string, SimplEvents>();
-
 
         /// <summary>
         /// Initialize new core
@@ -121,7 +148,6 @@ namespace QscQsys
                 this.client.Connect(this.coreIP, (ushort)this.corePort);
             }
         }
-
 
         internal bool RegisterNamedControl(string _control)
         {
@@ -202,14 +228,14 @@ namespace QscQsys
             {
                 lock (SimplClients)
                 {
-                    if(!SimplClients.ContainsKey(_id))
+                    if (!SimplClients.ContainsKey(_id))
                     {
                         this.SimplClients.Add(_id, new SimplEvents());
                     }
                 }
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return false;
             }
@@ -220,12 +246,12 @@ namespace QscQsys
             this.debug = _value;
         }
 
-        void client_ResponseString(string _response, int _id)
+        private void client_ResponseString(string _response, int _id)
         {
             this.ParseResponse(_response);
         }
 
-        void client_ConnectionStatus(int _status, int _id)
+        private void client_ConnectionStatus(int _status, int _id)
         {
             try
             {
@@ -234,10 +260,9 @@ namespace QscQsys
                     this.isConnected = true;
                     foreach (var item in this.SimplClients)
                     {
-                        item.Value.Fire( new SimplEventArgs(eQscSimplEventIds.IsConnected,(SimplSharpString)"true", 1));
+                        item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsConnected, (SimplSharpString)"true", 1));
                     }
                     CrestronEnvironment.Sleep(1500);
-
                 }
                 else if (this.isConnected && _status != 2)
                 {
@@ -247,7 +272,7 @@ namespace QscQsys
                     this.heartbeatTimer.Dispose();
                     foreach (var item in this.SimplClients)
                     {
-                        item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsRegistered, (SimplSharpString) "false", 0));
+                        item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsRegistered, (SimplSharpString)"false", 0));
                         item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsConnected, (SimplSharpString)"false", 0));
                     }
                 }
@@ -258,7 +283,7 @@ namespace QscQsys
             }
         }
 
-        void SendLogin()
+        private void SendLogin()
         {
             this.SendDebug(string.Format("Qsys - Sending login: {0}:{1}", this.loginUser, this.loginPass));
             CoreLogon logon = new CoreLogon();
@@ -268,7 +293,7 @@ namespace QscQsys
             this.commandQueue.Enqueue(JsonConvert.SerializeObject(logon));
         }
 
-        void SendCreateChangeGroup()
+        private void SendCreateChangeGroup()
         {
             if (Controls.Count() > 0 || Components.Count() > 0)
             {
@@ -277,8 +302,9 @@ namespace QscQsys
             }
             else
                 this.SendDebug("Not Creating change group due to no named controls or components");
-        } 
-        void SendClearChangeGroup()
+        }
+
+        private void SendClearChangeGroup()
         {
             this.SendDebug("Clearing change group within core");
             this.commandQueue.Enqueue(JsonConvert.SerializeObject(new ClearChangeGroup()));
@@ -286,7 +312,6 @@ namespace QscQsys
 
         private void CoreModuleInit()
         {
-
             //Send login if needed
             if (this.loginUser.Length > 0 && this.loginPass.Length > 0)
             {
@@ -359,7 +384,7 @@ namespace QscQsys
                     this.heartbeatTimer.Stop();
                     this.heartbeatTimer.Dispose();
                 }
-                
+
                 this.isDisposed = true;
             }
         }
@@ -378,6 +403,7 @@ namespace QscQsys
 
         StringBuilder RxData = new StringBuilder();
         bool busy = false;
+
         private void ResponseQueueDequeue(object _o)
         {
             if (this.responseQueue.Count > 0)
@@ -489,7 +515,7 @@ namespace QscQsys
                         foreach (var item in SimplClients)
                         {
                             item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.CoreState, "", (ushort)coreState));
-                            item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.Platform, this.platform, 0));     
+                            item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.Platform, this.platform, 0));
                             item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.DesignName, designName, 0));
                             item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.DesignCode, designCode, 0));
                             item.Value.Fire(new SimplEventArgs(eQscSimplEventIds.IsRedundant, Convert.ToString(isRedundant), (ushort)Convert.ToInt16(isRedundant)));
@@ -534,7 +560,7 @@ namespace QscQsys
                             case 7: //Unknown component name
                                 break;
                             case 8: //Unknown control
-                                break; 
+                                break;
                             case 9: //Illegal mixer channel index
                                 break;
                             case 10: //Login required
@@ -564,7 +590,6 @@ namespace QscQsys
         internal void Enqueue(string _data)
         {
             this.commandQueue.Enqueue(_data);
-
         }
 
         //private static MemoryStream _memStream = new MemoryStream();
@@ -589,6 +614,7 @@ namespace QscQsys
                 CrestronConsole.PrintLine("Qsys Core {0} Debug: {1}", this.coreID, _msg);
         }
     }
+
     public enum eCoreState
     {
         Idle = 0,
@@ -596,6 +622,3 @@ namespace QscQsys
         Standby = 2
     }
 }
-
-
- 

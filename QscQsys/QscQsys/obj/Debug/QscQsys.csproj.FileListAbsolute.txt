@@ -57,3 +57,15 @@ C:\Users\WMS\Desktop\Git Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpCusto
 C:\Users\WMS\Desktop\Git Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpHelperInterface.dll
 C:\Users\WMS\Desktop\Git Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpReflectionInterface.dll
 C:\Users\WMS\Desktop\Git Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.xml
+C:\Users\bpeairs\git\git-wms\wms-dev\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.xml
+C:\Users\bpeairs\git\git-wms\wms-dev\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.dll
+C:\Users\bpeairs\git\git-wms\wms-dev\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.pdb
+C:\Users\bpeairs\git\git-wms\wms-dev\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpCustomAttributesInterface.dll
+C:\Users\bpeairs\git\git-wms\wms-dev\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpHelperInterface.dll
+C:\Users\bpeairs\git\git-wms\wms-dev\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpNewtonsoft.dll
+C:\Users\bpeairs\git\git-wms\wms-dev\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpReflectionInterface.dll
+C:\Users\bpeairs\git\git-wms\wms-dev\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpSQLHelperInterface.dll
+C:\Users\bpeairs\git\git-wms\wms-dev\Qsys\QscQsys\QscQsys\bin\Debug\Newtonsoft.Json.Compact.dll
+C:\Users\bpeairs\git\git-wms\wms-dev\Qsys\QscQsys\QscQsys\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\bpeairs\git\git-wms\wms-dev\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.dll
+C:\Users\bpeairs\git\git-wms\wms-dev\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.pdb

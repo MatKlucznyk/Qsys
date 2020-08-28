@@ -4,6 +4,37 @@
         <name>QscQsys</name>
     </assembly>
     <members>
+        <member name="T:QscQsys.EngineStatusResult">
+            <summary>
+            Engine Status
+            </summary>
+        </member>
+        <member name="T:QscQsys.Heartbeat">
+            <summary>
+            Heartbeat
+            </summary>
+        </member>
+        <member name="T:QscQsys.QsysCore">
+            <summary>
+            Qsys Core
+            </summary>
+        </member>
+        <member name="M:QscQsys.QsysCore.Initialize(System.Int32,System.String,System.UInt16,System.String,System.String)">
+            <summary>
+            Initialize new core
+            </summary>
+        </member>
+        <member name="M:QscQsys.QsysCore.Dispose">
+            <summary>
+            Cleans up all resources.
+            </summary>
+        </member>
+        <member name="M:QscQsys.QsysCore.ParseResponse(System.String)">
+            <summary>
+            Parse response from Q-Sys Core.
+            </summary>
+            <param name="data"></param>
+        </member>
         <member name="T:QscQsys.QsysEventsArgs">
             <summary>
             Event args for Q-Sys events.
@@ -49,38 +80,13 @@
             New mute change event ID.
             </summary>
         </member>
-        <member name="T:QscQsys.QsysCore">
+        <member name="M:QscQsys.QsysMatrixMixer.SetCrossPointMute(System.String,System.String,System.Boolean)">
             <summary>
-            Qsys Core
+            Sets a crosspoint mute ex. *=everything, 1 2 3=channels 1, 2, 3,  1-6=channels 1 through 6, 1-8 !3=channels 1 through 8 except 3, * !3-5=everything but 3 through 5
             </summary>
-        </member>
-        <member name="M:QscQsys.QsysCore.Initialize(System.Int32,System.String,System.UInt16,System.String,System.String)">
-            <summary>
-            Initialize new core
-            </summary>
-        </member>
-        <member name="M:QscQsys.QsysCore.Dispose">
-            <summary>
-            Cleans up all resources.
-            </summary>
-        </member>
-        <member name="M:QscQsys.QsysCore.ParseResponse(System.String)">
-            <summary>
-            Parse response from Q-Sys Core.
-            </summary>
-            <param name="data"></param>
-        </member>
-        <member name="M:QscQsys.QsysGainComponent.#ctor(System.Int32,System.String)">
-            <summary>
-            Default constructor for a QsysFader
-            </summary>
-            <param name="Name">The component name of the gain.</param>
-        </member>
-        <member name="M:QscQsys.QsysGainComponent.RampTimeMS(System.Double)">
-            <summary>
-            Sets the QSys ramp time for the gain
-            </summary>
-            <param name="time"></param>
+            <param name="inputs">The input channels.</param>
+            <param name="outputs">The output channels.</param>
+            <param name="value">The value of the crosspoint mute.</param>
         </member>
         <member name="M:QscQsys.QsysNamedControl.#ctor(System.Int32,System.String,QscQsys.eControlType)">
             <summary>
@@ -94,23 +100,17 @@
             </summary>
             <param name="time"></param>
         </member>
-        <member name="T:QscQsys.EngineStatusResult">
+        <member name="M:QscQsys.QsysGainComponent.#ctor(System.Int32,System.String)">
             <summary>
-            Engine Status
+            Default constructor for a QsysFader
             </summary>
+            <param name="Name">The component name of the gain.</param>
         </member>
-        <member name="T:QscQsys.Heartbeat">
+        <member name="M:QscQsys.QsysGainComponent.RampTimeMS(System.Double)">
             <summary>
-            Heartbeat
+            Sets the QSys ramp time for the gain
             </summary>
-        </member>
-        <member name="M:QscQsys.QsysMatrixMixer.SetCrossPointMute(System.String,System.String,System.Boolean)">
-            <summary>
-            Sets a crosspoint mute ex. *=everything, 1 2 3=channels 1, 2, 3,  1-6=channels 1 through 6, 1-8 !3=channels 1 through 8 except 3, * !3-5=everything but 3 through 5
-            </summary>
-            <param name="inputs">The input channels.</param>
-            <param name="outputs">The output channels.</param>
-            <param name="value">The value of the crosspoint mute.</param>
+            <param name="time"></param>
         </member>
     </members>
 </doc>
