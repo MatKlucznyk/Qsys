@@ -92,7 +92,7 @@ namespace QscQsys
                 {
                     Name = cName,
                     Controls = new List<ControlName>(){new ControlName(){Name = "call_offhook"},
-                new ControlName(){Name = "call_ringing"}, new ControlName(){Name = "call_autoanswer"}, new ControlName(){Name = "call_dnd"}, new ControlName(){Name = "call_Status"},
+                new ControlName(){Name = "call_ringing"}, new ControlName(){Name = "call_autoanswer"}, new ControlName(){Name = "call_dnd"}, new ControlName(){Name = "call_status"},
                 new ControlName(){Name = "recent_calls"}}
                 };
 
