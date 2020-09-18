@@ -16284,6 +16284,48 @@
             Get or set the Connection Class in the ConnectionPool
             </summary>
         </member>
+        <member name="T:Crestron.SimplSharp.CrestronThreadPool">
+            <summary>
+            Replacement class of System.Threading.ThreadPool for Mono in 4-series
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronThreadPool.GetMaxThreads(System.Int32@,System.Int32@)">
+            <summary>
+                Retrieves the number of requests to the thread pool that can be active concurrently.
+                All requests above that number remain queued until thread pool threads become
+                available.
+            </summary>
+            <param name="workerThreads"></param>
+            <param name="completionPortThreads"></param>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronThreadPool.QueueUserWorkItem(System.Threading.WaitCallback)">
+            <summary>
+                Queues a method for execution. The method executes when a thread pool thread
+                becomes available.
+            </summary>
+            <param name="callBack"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronThreadPool.QueueUserWorkItem(System.Threading.WaitCallback,System.Object)">
+            <summary>
+                Queues a method for execution, and specifies an object containing data to
+                be used by the method. The method executes when a thread pool thread becomes
+                available.
+            </summary>
+            <param name="callBack"></param>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronThreadPool.SetMaxThreads(System.Int32,System.Int32)">
+            <summary>
+                Sets the number of requests to the thread pool that can be active concurrently.
+                All requests above that number remain queued until thread pool threads become
+                available.
+            </summary>
+            <param name="workerThreads"></param>
+            <param name="completionPortThreads"></param>
+            <returns></returns>
+        </member>
         <member name="T:Crestron.SimplSharp.CrestronXmlLinq.Extensions">
             <summary>
             Provides LINQ to XML extension methods for CrestronXmlLinq
@@ -51557,6 +51599,169 @@
             On firmware versions less then 1.503.0000, this returns the TSID of the device.
             </summary>
         </member>
+        <member name="T:Crestron.SimplSharp.eDeviceSecureBlobStatus">
+            <summary>
+            Crestron Secure Blob Status codes
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eDeviceSecureBlobStatus.Ok">
+            <summary>
+            Success.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eDeviceSecureBlobStatus.InvalidParameter">
+            <summary>
+            A parameter provided is invalid.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eDeviceSecureBlobStatus.NotEnoughRoom">
+            <summary>
+            Not enough size of data buffer on read operation provided
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eDeviceSecureBlobStatus.DeviceUnavailable">
+            <summary>
+            The Secure Blob is not available
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eDeviceSecureBlobStatus.StoreFailure">
+            <summary>
+            An error occured while storing the data.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eDeviceSecureBlobStatus.RetrieveFailure">
+            <summary>
+            An error occured while retrieving the data.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eDeviceSecureBlobStatus.DeleteFailure">
+            <summary>
+            An error occured while deleting the data.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eDeviceSecureBlobStatus.EncryptFailure">
+            <summary>
+            An error occured while encrypting the data.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eDeviceSecureBlobStatus.DecryptFailure">
+            <summary>
+            An error occured while decryping the data.
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.DeviceSecureBlob">
+            <summary>
+            The Secure Blob API that allows encrypting and storing of data.
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.DeviceSecureBlob.DeviceSecureBlobEncrypt(System.IntPtr,System.Byte[],System.IntPtr,System.Byte[],System.IntPtr,System.Byte[],System.IntPtr@,System.Boolean)">
+             Encrypt a blob of data
+             
+             @param[in]     dataSize            -- sizeof unencrypted data
+             @param[in]     dataBuf             -- pointer to unencrypted data buffer
+             @param[in]     supplementalKeySize -- size of supplemental key (optional)
+             @param[in]     supplementalKey     -- supplemental key (optional)
+             @param[in/out] encryptedBufSize    -- sizeof encrypted data buffer
+             @param[in/out] encryptedBuf        -- pointer to encrypted data buffer
+             @param[out]    encryptedDataSize   -- sizeof encrypted data returned by API
+             @param[in]     ownerOnly           -- indicates if the blob can only be decrypted by the current user
+            
+             @return return status code
+            
+             Additional notes:
+              #1 -- The caller of this API is expected to allocate memory all data buffers
+              #2 -- The implementation of this API is expected to generate and save a master key
+                    on the local device.
+             
+        </member>
+        <member name="M:Crestron.SimplSharp.DeviceSecureBlob.DeviceSecureBlobDecrypt(System.IntPtr,System.Byte[],System.IntPtr,System.Byte[],System.IntPtr,System.Byte[],System.IntPtr@,System.Boolean)">
+             Decrypt a blob of data
+             
+             @param[in] encryptedDataSize   -- sizeof encrypted data buffer
+             @param[in] encryptedData       -- pointer to encrypted data buffer
+             @param[in] supplementalKeySize -- size of supplemental key (optional)
+             @param[in] supplementalKey     -- supplemental key (optional)
+             @param[in/out] dataBufSize     -- sizeof unencrypted data buffer
+             @param[in/out] dataBuf         -- pointer to unencrypted data buffer
+             @param[out] dataSize           -- sizeof unencrypted data
+             @param[in] ownerOnly           -- indicates if the blob can only be decrypted by the current user
+            
+             @return return status code
+            
+             Additional notes:
+              #1 -- The caller of this API is expected to allocate memory all data buffers
+              #2 -- The implementation of this API is expected to generate and save a master key
+                    on the local device.
+             
+        </member>
+        <member name="M:Crestron.SimplSharp.DeviceSecureBlob.DeviceSecureBlobEncryptedSize(System.IntPtr)">
+             Get size of encrypted data blob for a given unencrypted data block
+             
+             @param[in] dataSize  -- sizeof unencrypted data blob
+            
+             @return return size of encrypted data blob
+            
+             Additional notes:
+              #1 -- the expected usage of this method would be to retrieve the possible size of
+                    an encrypted data blob for a given size of unencrypted data
+            
+        </member>
+        <member name="M:Crestron.SimplSharp.DeviceSecureBlob.DeviceSecureBlobDecryptedMaxSize(System.IntPtr)">
+             Get size of decrypted data blob for a given encrypted data block
+             
+             @param[in] encryptedDataSize  -- sizeof encrypted data blob
+            
+             @return return size of decrypted data blob
+            
+             Additional notes:
+              #1 -- the expected usage of this method would be to retrieve the possible size of
+                    an decrypted data blob for a given size of encrypted data
+             
+        </member>
+        <member name="M:Crestron.SimplSharp.DeviceSecureBlob.Store(System.String,System.Boolean,System.Byte[],System.Byte[])">
+            <summary>
+            Encrypts the input string given and passes back a base-64 encoded version of the resulting binary data
+            </summary>
+            <param name="tag">Unique string identifier to reference the data</param>
+            <param name="global">Boolean to restrict access</param>
+            <param name="input">Byte[] to be encrypted</param>
+            <param name="key">Optional secure key</param>
+            <returns>A eDeviceSecureBlobStatus value</returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.DeviceSecureBlob.Retrieve(System.String,System.Boolean,System.Byte[],System.Byte[]@)">
+            <summary>
+            Decodes a byte[] represented previously encrypted data and passes back the original text that was encrypted.
+            </summary>
+            <param name="tag">Unique string identifier to reference the data</param>
+            <param name="global">Boolean to restrict access</param>
+            <param name="key">Optional secure key</param>
+            <param name="outData">Byte[] that contains the retrieved data</param>
+            <returns>A eDeviceSecureBlobStatus value</returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.DeviceSecureBlob.Delete(System.String,System.Boolean)">
+            <summary>
+            Deletes a tag from the secure blob.
+            </summary>
+            <param name="tag">Unique string identifier to reference the data</param>
+            <param name="global">Boolean to restrict access</param>
+            <returns>A eDeviceSecureBlobStatus value.</returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.DeviceSecureBlob.Encrypt(System.Byte[],System.Byte[],System.Byte[]@)">
+            <summary>
+            Encrypts data from the provided input array and passes back the encrypted output.
+            </summary>
+            <param name="input">Byte[] that contains the data to be encrypted</param>
+            <param name="key">Optional secure key</param>
+            <param name="output">Byte[] that contains the encrpyed data.</param>
+            <returns></returns>
+        </member>
+        <member name="P:Crestron.SimplSharp.DeviceSecureBlob.Supported">
+            <summary>
+            Returns True if DeviceSecureBlob is supported on this firmware.
+            </summary>
+            <remarks>
+            </remarks>
+        </member>
         <member name="T:Crestron.SimplSharp.CrestronPrintDelegate">
             <summary>
             Delegate callback for printing to the console
@@ -53175,10 +53380,10 @@
             <summary>
             EnableAuthenticationOnCSOnLinux - Enables authentication with the given username and password
             </summary>
-            <param name="userName"> Username</param>
-            <param name="password"> password</param>
+            <param name="userName">Username</param>
+            <param name="password">Password</param>
             <returns>
-            Returns eAuthenticationEnabledDisabledResponse which indicates error/success or reboot required
+            Returns eAuthenticationEnabledDisabledResponse which indicates error/success or reboot required.
             </returns>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronAuthentication.Authentication.Enable(System.String,System.String)">
@@ -53708,6 +53913,61 @@
         <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.eAuthenticationEnabledDisabledResponse.GeneralError">
             <summary>
             Error creating Administrator account or changing the state of authentication.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.eAuthenticationEnabledDisabledResponse.InvalidUserName">
+            <summary>
+            Error indicating that an invalid user name was specified.
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.CrestronAuthentication.Authentication.eNativeAuthenticationReturnCodes">
+            <summary>
+            Enum that lines up with the 4-Series native authentication return codes. 
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.eNativeAuthenticationReturnCodes.GeneralError">
+            <summary>
+            Error creating Administrator account or changing the state of authentication.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.eNativeAuthenticationReturnCodes.Enabled">
+            <summary>
+            Authentication has been enabled successfully.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.eNativeAuthenticationReturnCodes.RebootRequired">
+            <summary>
+            A reboot of the system is required to complete this operation.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.eNativeAuthenticationReturnCodes.UnableToChange">
+            <summary>
+            Based on system settings, the state of authentication can not be changed.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.eNativeAuthenticationReturnCodes.InvalidAdministratorCredentials">
+            <summary>
+            Specified credentials do not match an existing administrator.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.eNativeAuthenticationReturnCodes.ExistingNonAdministratorUser">
+            <summary>
+            Specified user name is not that of an administrator.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.eNativeAuthenticationReturnCodes.InvalidPassword">
+            <summary>
+            The specified password does not match the rules of the system.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.eNativeAuthenticationReturnCodes.InvalidUser">
+            <summary>
+            The specified user does not match the rules of the system.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.eNativeAuthenticationReturnCodes.Disabled">
+            <summary>
+            Authentication has been disabled successfully.
             </summary>
         </member>
         <member name="T:Crestron.SimplSharp.CrestronAuthentication.Authentication.PasswordRules">
