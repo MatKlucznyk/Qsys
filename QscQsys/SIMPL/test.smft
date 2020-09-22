@@ -1,4 +1,0 @@
-<Device Model="RMC3">
-   <Network Type="Cresnet" Id="01"/>
-   <Network Type="Ethernet" Id="02"/>
-</Device>
