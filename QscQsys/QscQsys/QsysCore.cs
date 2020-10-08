@@ -19,10 +19,12 @@ namespace QscQsys
         public delegate void IsRegistered(ushort value);
         public delegate void IsConnectedStatus(ushort value);
         public delegate void CoreStatus(SimplSharpString designName, ushort isRedundant, ushort isEmulator);
+        public delegate void SendingCommand(SimplSharpString command);
         public IsLoggedIn onIsLoggedIn { get; set; }
         public IsRegistered onIsRegistered { get; set; }
         public IsConnectedStatus onIsConnected { get; set; }
         public CoreStatus onNewCoreStatus { get; set; }
+        public SendingCommand onSendingCommand { get; set; }
         #endregion
 
         private CrestronQueue<string> commandQueue;
@@ -41,6 +43,7 @@ namespace QscQsys
         private ushort maxLogonAttempts = 2;
         private bool isRedundant;
         private bool isEmulator;
+        private bool externalConnection;
 
         private string designName;
         private string coreId;
@@ -175,13 +178,15 @@ namespace QscQsys
         /// <summary>
         /// Initialzes all methods that are required to setup the class. Connection is established on port 1702.
         /// </summary>
-        public void Initialize(string id, string host, ushort port, string username, string password)
+        public void Initialize(string id, string host, ushort port, string username, string password, ushort useExternalConnection)
         {
             if (!isInitialized)
             {
                 try
                 {
                     coreId = id;
+
+                    externalConnection = Convert.ToBoolean(useExternalConnection);
 
                     if (username.Length > 0)
                         this.username = username;
@@ -508,6 +513,11 @@ namespace QscQsys
                     ErrorLog.Error("Error in QsysProcessor ParseInternalResponse: {0}:\r\n{1}", e.Message, returnString);
             }
         }
+
+        public void NewExternalResponse(string response)
+        {
+            responseQueue.Enqueue(response);
+        }
         #endregion
 
         #region Command Queue
@@ -530,7 +540,10 @@ namespace QscQsys
                         CrestronConsole.PrintLine("Command sent ** {0} **", data);
                     }
 
-                    client.SendCommand(data + "\x00");
+                    if (!externalConnection)
+                        client.SendCommand(data + "\x00");
+                    else if (onSendingCommand != null)
+                        onSendingCommand(data + "\x00");
                 }
             }
             catch (Exception e)

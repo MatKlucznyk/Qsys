@@ -46,7 +46,7 @@ namespace QscQsys
         [JsonProperty]
         static string Id = "1";
         [JsonProperty]
-        static double Rate = 0.15;
+        static double Rate = 0.10;
     }
 
     public class AddComoponentToChangeGroup

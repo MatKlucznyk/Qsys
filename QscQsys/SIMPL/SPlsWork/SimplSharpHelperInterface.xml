@@ -23546,6 +23546,11 @@
             This is an overloaded class - please add any references to the HiddenDirectories class within this.
             </summary>
         </member>
+        <member name="F:Crestron.SimplSharp.CrestronIO.Program0HiddenDirAndFileSystemHandling.OutsideOfProgramPathAdjustment">
+            <summary>
+            Reference to the function to adjust the path instead of using the standard flow.
+            </summary>
+        </member>
         <member name="M:Crestron.SimplSharp.CrestronIO.Program0HiddenDirAndFileSystemHandling.AdjustPathForMono(System.String@)">
             <summary>
             Adjusts the path for mono.
@@ -23580,6 +23585,12 @@
             </summary>
             <param name="fileToBeDeleted"></param>
             <returns>TRUE for Program 0 always else depends</returns>
+        </member>
+        <member name="T:Crestron.SimplSharp.CrestronIO.Program0HiddenDirAndFileSystemHandling.AdjustingPathDelegate">
+            <summary>
+            Delegate to describe a function that will be used for adjusting paths when running outside of a user application.
+            </summary>
+            <param name="directoryName">Path to adjust.</param>
         </member>
         <member name="T:Crestron.SimplSharp.CrestronIO.FileStream">
             <summary>

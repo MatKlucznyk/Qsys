@@ -92,12 +92,14 @@ namespace QscQsys;
         delegate FUNCTION IsRegistered ( INTEGER value );
         delegate FUNCTION IsConnectedStatus ( INTEGER value );
         delegate FUNCTION CoreStatus ( SIMPLSHARPSTRING designName , INTEGER isRedundant , INTEGER isEmulator );
+        delegate FUNCTION SendingCommand ( SIMPLSHARPSTRING command );
 
         // class events
 
         // class functions
         FUNCTION Debug ( INTEGER value );
-        FUNCTION Initialize ( STRING id , STRING host , INTEGER port , STRING username , STRING password );
+        FUNCTION Initialize ( STRING id , STRING host , INTEGER port , STRING username , STRING password , INTEGER useExternalConnection );
+        FUNCTION NewExternalResponse ( STRING response );
         FUNCTION Dispose ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
         STRING_FUNCTION ToString ();
@@ -110,6 +112,7 @@ namespace QscQsys;
         DelegateProperty IsRegistered onIsRegistered;
         DelegateProperty IsConnectedStatus onIsConnected;
         DelegateProperty CoreStatus onNewCoreStatus;
+        DelegateProperty SendingCommand onSendingCommand;
         INTEGER IsDebugMode;
         INTEGER MaxLogonAttemps;
         STRING DesignName[];

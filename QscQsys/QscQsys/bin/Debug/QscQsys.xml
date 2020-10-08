@@ -27,7 +27,7 @@
             processor for Q-Sys Cores.
             </summary>
         </member>
-        <member name="M:QscQsys.QsysCore.Initialize(System.String,System.String,System.UInt16,System.String,System.String)">
+        <member name="M:QscQsys.QsysCore.Initialize(System.String,System.String,System.UInt16,System.String,System.String,System.UInt16)">
             <summary>
             Initialzes all methods that are required to setup the class. Connection is established on port 1702.
             </summary>
