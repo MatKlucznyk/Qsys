@@ -67,18 +67,22 @@
   ParamSigType8=Constant
   ParamCue9=CoreID
   ParamSigType9=String
-  ParamCue10=Host
+  ParamCue10=TestingHost
   ParamSigType10=String
-  ParamCue11=Port
-  ParamSigType11=Constant
-  ParamCue12=UseExternalConnection
+  ParamCue11=DeploymentHost
+  ParamSigType11=String
+  ParamCue12=Port
   ParamSigType12=Constant
-  ParamCue13=DebugMode
+  ParamCue13=DeploymentMode
   ParamSigType13=Constant
-  ParamCue14=Username
-  ParamSigType14=String
-  ParamCue15=Password
-  ParamSigType15=String
+  ParamCue14=UseExternalConnection
+  ParamSigType14=Constant
+  ParamCue15=DebugMode
+  ParamSigType15=Constant
+  ParamCue16=Username
+  ParamSigType16=String
+  ParamCue17=Password
+  ParamSigType17=String
   MinVariableInputs=1
   MaxVariableInputs=1
   MinVariableInputsList2=6
@@ -87,8 +91,8 @@
   MaxVariableOutputs=5
   MinVariableOutputsList2=2
   MaxVariableOutputsList2=2
-  MinVariableParams=14
-  MaxVariableParams=14
+  MinVariableParams=16
+  MaxVariableParams=16
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
@@ -110,7 +114,9 @@
   Pp13=13
   Pp14=14
   Pp15=15
-  MPp=15
+  Pp16=16
+  Pp17=17
+  MPp=17
   NVStorage=10
   ParamSigType1=String
   SmplCInputCue1=o#
@@ -150,11 +156,7 @@
   H=11
   Tp=1
   HD=False
-  Sgn=0
-  Lng=False
-  NF=63
-  NoS=True
-  DNF=1
+  NoS=False
   VVS=0
 [END]
 [BEGIN]
@@ -186,12 +188,36 @@
   H=14
   Tp=1
   HD=False
-  NoS=False
+  Sgn=0
+  Lng=False
+  NF=63
+  NoS=True
+  DNF=1
   VVS=0
 [END]
 [BEGIN]
   ObjTp=Dp
   H=15
+  Tp=1
+  HD=False
+  Sgn=0
+  Lng=False
+  NF=63
+  NoS=True
+  DNF=1
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=16
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=17
   Tp=1
   HD=False
   NoS=False
