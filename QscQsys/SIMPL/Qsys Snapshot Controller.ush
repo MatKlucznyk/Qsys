@@ -27,6 +27,8 @@
   InputSigType1=Digital
   InputCue2=Save
   InputSigType2=Digital
+  OutputCue1=SnapshotActive[#]
+  OutputSigType1=Digital
   InputList2Cue1=Number
   InputList2SigType1=Analog
   ParamCue1=[Reference Name]
@@ -36,22 +38,32 @@
   ParamSigType3=Constant
   ParamCue4=[~UNUSED~]
   ParamSigType4=Constant
-  ParamCue5=CoreID
-  ParamSigType5=String
-  ParamCue6=ComponentName
-  ParamSigType6=String
-  ParamCue7=Mode,1d,2d
-  ParamSigType7=List
+  ParamCue5=[~UNUSED~]
+  ParamSigType5=Constant
+  ParamCue6=[~UNUSED~]
+  ParamSigType6=Constant
+  ParamCue7=[~UNUSED~]
+  ParamSigType7=Constant
+  ParamCue8=[~UNUSED~]
+  ParamSigType8=Constant
+  ParamCue9=[~UNUSED~]
+  ParamSigType9=Constant
+  ParamCue10=CoreID
+  ParamSigType10=String
+  ParamCue11=ComponentName
+  ParamSigType11=String
+  ParamCue12=Mode,1d,2d
+  ParamSigType12=List
   MinVariableInputs=2
   MaxVariableInputs=2
   MinVariableInputsList2=1
   MaxVariableInputsList2=1
-  MinVariableOutputs=0
-  MaxVariableOutputs=0
+  MinVariableOutputs=8
+  MaxVariableOutputs=8
   MinVariableOutputsList2=0
   MaxVariableOutputsList2=0
-  MinVariableParams=6
-  MaxVariableParams=6
+  MinVariableParams=11
+  MaxVariableParams=11
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
@@ -66,10 +78,10 @@
   CompilerParamCode5=14
   NumFixedParams=1
   Pp1=1
-  Pp5=5
-  Pp6=6
-  Pp7=7
-  MPp=7
+  Pp10=10
+  Pp11=11
+  Pp12=12
+  MPp=12
   NVStorage=10
   ParamSigType1=String
   SmplCInputCue1=o#
@@ -90,7 +102,7 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=5
+  H=10
   Tp=1
   HD=False
   NoS=False
@@ -98,7 +110,7 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=6
+  H=11
   Tp=1
   HD=False
   NoS=False
@@ -106,7 +118,7 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=7
+  H=12
   Tp=1
   HD=False
   Sgn=0
@@ -117,7 +129,7 @@
   VVS=2
   VN=2
   Val1=1d
-  Lbl1=LathRecallSave
+  Lbl1=LatchRecallSave
   Val2=2d
   Lbl2=PulseRecallSave
 [END]

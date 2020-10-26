@@ -6,11 +6,13 @@
 Digital_Input Load, Save;
 Analog_Input Number;
 
-String_Parameter _skip_, _skip_, _skip_, CoreID[100], ComponentName[100];
+Digital_Output SnapshotActive[8,8];
+
+String_Parameter _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, CoreID[100], ComponentName[100];
 Integer_Parameter Mode;
 
 #BEGIN_PARAMETER_PROPERTIES Mode
-    propList = { 1d , "LathRecallSave"} , { 2d , "PulseRecallSave" };
+    propList = { 1d , "LatchRecallSave"} , { 2d , "PulseRecallSave" };
 #END_PARAMETER_PROPERTIES
 
 QsysSnapshot snapshot;
@@ -53,7 +55,23 @@ Push Save
     }
 }
 
+callback function NewRecalledSnapshot(integer ss)
+{
+    SnapshotActive[ss] = ON;
+}
+
+callback function NewUnRecalledSnapshot(integer ss)
+{
+    SnapshotActive[ss] = OFF;
+}
+
 Function Main()
 {
+    RegisterDelegate(snapshot, onRecalledSnapshot, NewRecalledSnapshot);
+    RegisterDelegate(snapshot, onUnrecalledSnapshot, NewUnRecalledSnapshot);
+    
+    
+    
+
     snapshot.Initialize(CoreID, ComponentName);
 }

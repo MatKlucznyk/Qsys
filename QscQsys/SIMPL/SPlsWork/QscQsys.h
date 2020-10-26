@@ -811,6 +811,8 @@ namespace QscQsys;
      class QsysSnapshot 
     {
         // class delegates
+        delegate FUNCTION RecalledSnapshot ( INTEGER snapshot );
+        delegate FUNCTION UnrecalledSnapshot ( INTEGER snapshot );
 
         // class events
 
@@ -825,6 +827,8 @@ namespace QscQsys;
         INTEGER __class_id__;
 
         // class properties
+        DelegateProperty RecalledSnapshot onRecalledSnapshot;
+        DelegateProperty UnrecalledSnapshot onUnrecalledSnapshot;
     };
 
      class QsysFader 
