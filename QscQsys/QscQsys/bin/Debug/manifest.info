@@ -1,4 +1,4 @@
-﻿MainAssembly=QscQsys.dll:f0f35b0b806059daad2d98c67047e2ae
+﻿MainAssembly=QscQsys.dll:29b3a94fc27bdaf85e60fd83c91974c7
 MainAssemblyMinFirmwareVersion=1.007.0017
 MainAssemblyResource=QscQsys.xml:c963b1122052dedf2df2f758e7e8d875
 MainAssemblyResource=SimplSharpData.dat:820b61c48c8a2cace82957eed4cc377c
@@ -34,6 +34,6 @@ DependencySource=SimplSharpSQLHelperInterface.dll:f0c505ddecd8a783d4b75217501cbb
 DependencyPath=QscQsys.clz:SimplSharpSQLHelperInterface.dll
 DependencyMainAssembly=SimplSharpSQLHelperInterface.dll:f0c505ddecd8a783d4b75217501cbb72
 ü
-DependencySource=TCPClient.dll:308ff49a3e023544ddeb833ba1a386bb
+DependencySource=TCPClient.dll:369302e62674a1438eeff0c5ed13da8e
 DependencyPath=QscQsys.clz:TCPClient.dll
-DependencyMainAssembly=TCPClient.dll:308ff49a3e023544ddeb833ba1a386bb
+DependencyMainAssembly=TCPClient.dll:369302e62674a1438eeff0c5ed13da8e
