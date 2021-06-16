@@ -1,4 +1,4 @@
-#SYMBOL_NAME "Qsys Matrix Mixer Driver"
+ #SYMBOL_NAME "Qsys Matrix Mixer Driver"
 
 #INCLUDEPATH "..\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"

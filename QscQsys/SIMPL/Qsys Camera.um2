@@ -57,7 +57,7 @@ SH=8
 Z=100
 P=319
 Ht=1
-Hi=17
+Hi=14
 ]
 [
 ObjTp=Bw
@@ -72,7 +72,7 @@ SH=6
 Z=100
 P=45
 Ht=1
-Hi=17
+Hi=11
 ]
 [
 ObjTp=Symbol
@@ -113,7 +113,7 @@ InputSigType7=Digital
 InputSigType8=Digital|Analog|Serial|String
 InputSigType9=Digital
 InputSigType10=Digital
-InputSigType11=Digital|Analog|Serial|String
+InputSigType11=Digital
 InputSigType12=Digital|Analog|Serial|String
 InputSigType13=Digital
 InputSigType14=Digital
@@ -329,7 +329,7 @@ I8=22
 I10=23
 I11=24
 I12=25
-I14=26
+I14=8
 I16=29
 I17=30
 I18=31
@@ -401,7 +401,6 @@ SgTp=31
 ObjTp=Sg
 H=8
 Nm=[Focus_Auto]
-SgTp=31
 ]
 [
 ObjTp=Sg
@@ -447,11 +446,6 @@ Nm=[Save_Home]
 ObjTp=Sg
 H=25
 Nm=[Save_Privacy_Position]
-]
-[
-ObjTp=Sg
-H=26
-Nm=[AutoFocus_Auto_Toggle]
 ]
 [
 ObjTp=Sg
