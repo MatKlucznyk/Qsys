@@ -12,7 +12,7 @@ namespace QscQsys
     /// <summary>
     /// processor for Q-Sys Cores.
     /// </summary>
-    public class QsysCore
+    public class QsysCore : IDisposable
     {
         #region Delegates
         public delegate void IsLoggedIn(ushort value);
@@ -32,7 +32,7 @@ namespace QscQsys
         private CTimer commandQueueTimer;
         private CTimer responseQueueTimer;
         private CTimer heartbeatTimer;
-        private CTimer reconnectionWait;
+        private CTimer waitForConnection;
         private TCPClientDevice client;
 
         private bool isInitialized;
@@ -208,21 +208,28 @@ namespace QscQsys
                     commandQueueTimer = new CTimer(CommandQueueDequeue, null, 0, 50);
                     responseQueueTimer = new CTimer(ResponseQueueDequeue, null, 0, 50);
 
-                    client = new TCPClientDevice();
-                    client.ID = 1710;
-                    client.ConnectionStatus += new StatusEventHandler(client_ConnectionStatus);
-                    client.ResponseString += new ResponseEventHandler(client_ResponseString);
-                    client.Connect(host, port);
+                    if (useExternalConnection == 0)
+                    {
+                        client = new TCPClientDevice();
+
+                        if (debug > 0)
+                            client.Debug = true;
+
+                        client.ID = id;
+                        client.ConnectionStatus += new StatusEventHandler(client_ConnectionStatus);
+                        client.ResponseString += new ResponseEventHandler(client_ResponseString);
+                        client.Connect(host, port);
+                    }
                 }
                 catch (Exception e)
                 {
-                    if (debug == 1 || debug == 2)
+                    if (debug > 0)
                         ErrorLog.Error("Error in QsysProcessor Iniitialize: {0}", e.Message);
                 }
             }
         }
 
-        private void Init()
+        private void Init(object o)
         {
             AddComoponentToChangeGroup addComponent;
 
@@ -261,12 +268,12 @@ namespace QscQsys
         #endregion
 
         #region TCP Client Events
-        void client_ResponseString(string response, int id)
+        void client_ResponseString(string response, SimplSharpString id)
         {
             responseQueue.Enqueue(response);
         }
 
-        void client_ConnectionStatus(int status, int id)
+        void client_ConnectionStatus(int status, SimplSharpString id)
         {
             try
             {
@@ -274,7 +281,7 @@ namespace QscQsys
                 {
                     IsConnected = true;
 
-                    if (debug == 1 || debug == 2)
+                    if (debug > 0)
                         ErrorLog.Notice("QsysProcessor is connected.");
 
                     if (onIsConnected != null)
@@ -282,12 +289,12 @@ namespace QscQsys
                 }
                 else if (IsConnected && status != 2)
                 {
-                    if (debug == 1 || debug == 2)
+                    if (debug > 0)
                         ErrorLog.Error("QsysProcessor disconnected!");
 
-                    client.Disconnect();
+                    //client.Disconnect();
 
-                    reconnectionWait = new CTimer(StartConnectionAgain, 30000);
+                    //reconnectionWait = new CTimer(StartConnectionAgain, 30000);
 
                     isLoggedIn = false;
                     IsConnected = false;
@@ -308,16 +315,16 @@ namespace QscQsys
             }
             catch (Exception e)
             {
-                if (debug == 1 || debug == 2)
+                if (debug > 0)
                     ErrorLog.Error("Error in QsysProcessor client_ConnectionStatus: {0}", e.Message);
             }
         }
 
-        private void StartConnectionAgain(object o)
+        /*private void StartConnectionAgain(object o)
         {
             client.Reconnect();
             reconnectionWait.Dispose();
-        }
+        }*/
 
         private void SendHeartbeat(object o)
         {
@@ -346,7 +353,7 @@ namespace QscQsys
                         while (RxData.ToString().Contains("\x00"))
                         {
                             Pos = RxData.ToString().IndexOf("\x00");
-                            var data = RxData.ToString().Substring(0, Pos);
+                            var data = RxData.ToString().Substring(0, Pos + 1);
                             var garbage = RxData.Remove(0, Pos + 1); // remove data from COM buffer
 
                             if (debug == 2)
@@ -384,8 +391,8 @@ namespace QscQsys
                                 onIsLoggedIn(1);
                             }
 
-                            Init();
-                        }
+                            waitForConnection = new CTimer(Init, 5000);
+                       }
                     }
                     else
                     {
@@ -477,7 +484,7 @@ namespace QscQsys
                                         onIsLoggedIn(1);
                                     }
 
-                                    Init();
+                                    waitForConnection = new CTimer(Init, 5000);
                                 }
                             }
                         }
@@ -498,7 +505,7 @@ namespace QscQsys
                             }
                             else
                             {
-                                if (debug == 1)
+                                if (debug > 0)
                                 {
                                     ErrorLog.Error("Error in QsysProcessor max logon attempts reached");
                                 }
@@ -509,7 +516,7 @@ namespace QscQsys
             }
             catch (Exception e)
             {
-                if (debug == 1 || debug == 2)
+                if (debug > 0)
                     ErrorLog.Error("Error in QsysProcessor ParseInternalResponse: {0}:\r\n{1}", e.Message, returnString);
             }
         }
@@ -548,7 +555,7 @@ namespace QscQsys
             }
             catch (Exception e)
             {
-                if (debug == 1 || debug == 2)
+                if (debug > 0)
                     ErrorLog.Error("Error in QsysProcessor CommandQueueDequeue: {0}", e.Message);
             }
         }
