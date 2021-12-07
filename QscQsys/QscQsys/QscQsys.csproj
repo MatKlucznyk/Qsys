@@ -71,9 +71,9 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
-    <Reference Include="TCPClient, Version=1.0.0.24784, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TCPClient, Version=1.0.0.27282, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\TCP\Previous Versions\TCPClient.dll</HintPath>
+      <HintPath>..\..\..\TCP\TCPClient\TCPClient\bin\TCPClient.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

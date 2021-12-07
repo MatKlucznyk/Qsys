@@ -7030,6 +7030,19 @@
             Method to force close the JsonDb connection for this process. 
             </summary>
         </member>
+        <member name="M:Crestron.SimplSharp.JsonDb.ReconnectSettings(System.UInt32,System.UInt32)">
+            <summary>
+            Method to set JsonDb reconnect parameters. 
+            </summary>
+            <param name="attempts"> The number of times JsonDb should attempt to reconnect.</param>
+            <param name="delay">How long JsonDb should wait between reconnect attempts.</param>
+        </member>
+        <member name="M:Crestron.SimplSharp.JsonDb.SetTimeout(System.UInt32)">
+            <summary>
+            Method to set JsonDb timeout parameter. 
+            </summary>
+            <param name="timeout"> How long JsonDB should wait to obtain mutex.</param>
+        </member>
         <member name="P:Crestron.SimplSharp.JsonDb.Supported">
             <summary>
             Returns True if JsonDb is supported on this firmware.
@@ -7143,6 +7156,12 @@
         <member name="F:Crestron.SimplSharp.JsonDb.eJsonDbResult.FailureGetProxyError">
             <summary>
             Get proxy error
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.JsonDb.eJsonDbResult.FailureSubscriptionListInUse">
+            <summary>
+            Operation on subscription list attempted while list is in use.
+            <para>Changes to the subscription list are not allowed while the list is in use, such as making a new subscription in a callback.</para>
             </summary>
         </member>
         <member name="T:Crestron.SimplSharp.JsonDb.eLoggingLevel">
