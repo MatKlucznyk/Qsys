@@ -904,14 +904,17 @@ namespace QscQsys;
      class QsysCamera 
     {
         // class delegates
+        delegate FUNCTION PrivacyChange ( INTEGER privacyValue );
 
         // class events
 
         // class functions
-        FUNCTION Initialize ( STRING coreId , STRING Name );
+        FUNCTION Initialize ( STRING coreId , STRING name );
         FUNCTION StartPTZ ( PtzTypes type );
         FUNCTION StopPTZ ( PtzTypes type );
         FUNCTION RecallHome ();
+        FUNCTION SaveHome ();
+        FUNCTION PrivacyToggle ( INTEGER value );
         FUNCTION TiltUp ();
         FUNCTION StopTiltUp ();
         FUNCTION TiltDown ();
@@ -931,6 +934,7 @@ namespace QscQsys;
         INTEGER __class_id__;
 
         // class properties
+        DelegateProperty PrivacyChange onPrivacyChange;
     };
 
     static class PtzTypes // enum

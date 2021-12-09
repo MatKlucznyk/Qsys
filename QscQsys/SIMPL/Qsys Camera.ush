@@ -6,12 +6,11 @@
   Sgntr=UserSPlus
   RelVrs=1
   IntStrVrs=1
-  SPlusVrs=4.05.01
+  SPlusVrs=4.06.00
   CrossCplrVrs=1.3
 [END]
 [BEGIN]
   ObjTp=Hd
-  IncludePath1=C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug
 [END]
 [BEGIN]
   ObjTp=Symbol
@@ -41,6 +40,40 @@
   InputSigType8=Digital
   InputCue9=RecallHome
   InputSigType9=Digital
+  InputCue10=SaveHome
+  InputSigType10=Digital
+  InputCue11=[~UNUSED~]
+  InputSigType11=Digital
+  InputCue12=PrivacyOn
+  InputSigType12=Digital
+  InputCue13=PrivacyOff
+  InputSigType13=Digital
+  InputCue14=PrivacyToggle
+  InputSigType14=Digital
+  OutputCue1=[~UNUSED~]
+  OutputSigType1=Digital
+  OutputCue2=[~UNUSED~]
+  OutputSigType2=Digital
+  OutputCue3=[~UNUSED~]
+  OutputSigType3=Digital
+  OutputCue4=[~UNUSED~]
+  OutputSigType4=Digital
+  OutputCue5=[~UNUSED~]
+  OutputSigType5=Digital
+  OutputCue6=[~UNUSED~]
+  OutputSigType6=Digital
+  OutputCue7=[~UNUSED~]
+  OutputSigType7=Digital
+  OutputCue8=[~UNUSED~]
+  OutputSigType8=Digital
+  OutputCue9=[~UNUSED~]
+  OutputSigType9=Digital
+  OutputCue10=[~UNUSED~]
+  OutputSigType10=Digital
+  OutputCue11=[~UNUSED~]
+  OutputSigType11=Digital
+  OutputCue12=PrivacyIsOn
+  OutputSigType12=Digital
   ParamCue1=[Reference Name]
   ParamCue2=[~UNUSED~]
   ParamSigType2=Constant
@@ -60,20 +93,30 @@
   ParamSigType9=Constant
   ParamCue10=[~UNUSED~]
   ParamSigType10=Constant
-  ParamCue11=CoreID
-  ParamSigType11=String
-  ParamCue12=ComponentName
-  ParamSigType12=String
-  MinVariableInputs=9
-  MaxVariableInputs=9
+  ParamCue11=[~UNUSED~]
+  ParamSigType11=Constant
+  ParamCue12=[~UNUSED~]
+  ParamSigType12=Constant
+  ParamCue13=[~UNUSED~]
+  ParamSigType13=Constant
+  ParamCue14=[~UNUSED~]
+  ParamSigType14=Constant
+  ParamCue15=[~UNUSED~]
+  ParamSigType15=Constant
+  ParamCue16=CoreID
+  ParamSigType16=String
+  ParamCue17=ComponentName
+  ParamSigType17=String
+  MinVariableInputs=14
+  MaxVariableInputs=14
   MinVariableInputsList2=0
   MaxVariableInputsList2=0
-  MinVariableOutputs=0
-  MaxVariableOutputs=0
+  MinVariableOutputs=12
+  MaxVariableOutputs=12
   MinVariableOutputsList2=0
   MaxVariableOutputsList2=0
-  MinVariableParams=11
-  MaxVariableParams=11
+  MinVariableParams=16
+  MaxVariableParams=16
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
@@ -88,9 +131,9 @@
   CompilerParamCode5=14
   NumFixedParams=1
   Pp1=1
-  Pp11=11
-  Pp12=12
-  MPp=12
+  Pp16=16
+  Pp17=17
+  MPp=17
   NVStorage=10
   ParamSigType1=String
   SmplCInputCue1=o#
@@ -111,7 +154,7 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=11
+  H=16
   Tp=1
   HD=False
   NoS=False
@@ -119,7 +162,7 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=12
+  H=17
   Tp=1
   HD=False
   NoS=False

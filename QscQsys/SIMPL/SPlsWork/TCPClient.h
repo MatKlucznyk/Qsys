@@ -13,6 +13,7 @@ namespace TCP_Client;
         // class functions
         FUNCTION Connect ( STRING host , INTEGER port );
         FUNCTION Disconnect ();
+        FUNCTION SendCommandFromSPlus ( SIMPLSHARPSTRING command );
         FUNCTION SendCommand ( STRING command );
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
         STRING_FUNCTION ToString ();

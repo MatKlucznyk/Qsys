@@ -145,17 +145,7 @@ namespace QscQsys
 
         public void Mute(ushort value)
         {
-            switch (value)
-            {
-                case (0):
-                    this.Mute(false);
-                    break;
-                case (1):
-                    this.Mute(true);
-                    break;
-                default:
-                    break;
-            }
+            Mute(Convert.ToBoolean(value));
         }
     }
 }

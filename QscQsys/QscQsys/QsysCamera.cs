@@ -9,13 +9,56 @@ namespace QscQsys
 {
     public class QsysCamera
     {
+        public delegate void PrivacyChange(ushort privacyValue);
+        public PrivacyChange onPrivacyChange { get; set; }
+
         private string cName;
         private string coreId;
+        private bool registered;
+        private bool currentPrivacy;
 
-        public void Initialize(string coreId, string Name)
+        public void Initialize(string coreId, string name)
         {
-            cName = Name;
+            QsysCoreManager.CoreAdded += new EventHandler<CoreAddedEventArgs>(QsysCoreManager_CoreAdded);
+
+            cName = name;
             this.coreId = coreId;
+
+            if (!registered)
+                RegisterWithCore();
+        }
+
+        void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs e)
+        {
+            if (!registered && e.CoreId == coreId)
+            {
+                RegisterWithCore();
+            }
+        }
+
+        private void RegisterWithCore()
+        {
+            if (QsysCoreManager.Cores.ContainsKey(coreId))
+            {
+                Component component = new Component() { Name = cName, Controls = new List<ControlName>() { new ControlName() { Name = string.Format("toggle_privacy") } } };
+
+                if (QsysCoreManager.Cores[coreId].RegisterComponent(component))
+                {
+                    QsysCoreManager.Cores[coreId].Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
+
+                    registered = true;
+                }
+            }
+        }
+
+        private void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
+        {
+            //QsysMeterEvent(this, new QsysEventsArgs(eQscEventIds.MeterUpdate, cName, Convert.ToBoolean(e.Value), Convert.ToInt16(e.Value), e.SValue, null));
+
+            currentPrivacy = Convert.ToBoolean(e.Value);
+
+            if (onPrivacyChange != null)
+                onPrivacyChange(Convert.ToUInt16(e.Value));
         }
 
         public void StartPTZ(PtzTypes type)
@@ -103,6 +146,20 @@ namespace QscQsys
         public void RecallHome()
         {
             ComponentChange cameraChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "preset_home_load", Value = 1 } } } };
+
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public void SaveHome()
+        {
+            ComponentChange cameraChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "preset_home_save_trigger", Value = 1 } } } };
+
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public void PrivacyToggle(ushort value)
+        {
+            ComponentChange cameraChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "toggle_privacy", Value = value } } } };
 
             QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
