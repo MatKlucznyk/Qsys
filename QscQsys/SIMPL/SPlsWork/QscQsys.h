@@ -905,6 +905,19 @@ namespace QscQsys;
     {
         // class delegates
         delegate FUNCTION PrivacyChange ( INTEGER privacyValue );
+        delegate FUNCTION BrightnessChange ( INTEGER brightnessValue );
+        delegate FUNCTION SaturationChange ( INTEGER saturationValue );
+        delegate FUNCTION SharpnessChange ( INTEGER sharpnessValue );
+        delegate FUNCTION ContrastChange ( INTEGER contrastValue );
+        delegate FUNCTION ExposureModeChange ( SIMPLSHARPSTRING mode );
+        delegate FUNCTION IrisChange ( INTEGER irisValue );
+        delegate FUNCTION ApertureChange ( INTEGER apertureValue );
+        delegate FUNCTION GainChange ( INTEGER gainValue );
+        delegate FUNCTION AutoWhiteBalanceSensitivityChange ( SIMPLSHARPSTRING awbSens );
+        delegate FUNCTION AutoWhiteBalanceModeChange ( SIMPLSHARPSTRING awbMode );
+        delegate FUNCTION WhiteBalanceHueChange ( INTEGER hueValue );
+        delegate FUNCTION WhiteBalanceRedGainChange ( INTEGER redGainValue );
+        delegate FUNCTION WhiteBalanceBlueGainChange ( INTEGER blueGainValue );
 
         // class events
 
@@ -915,6 +928,10 @@ namespace QscQsys;
         FUNCTION RecallHome ();
         FUNCTION SaveHome ();
         FUNCTION PrivacyToggle ( INTEGER value );
+        FUNCTION Brightness ( SIGNED_LONG_INTEGER value );
+        FUNCTION Saturation ( SIGNED_LONG_INTEGER value );
+        FUNCTION Sharpness ( SIGNED_LONG_INTEGER value );
+        FUNCTION Contrast ( SIGNED_LONG_INTEGER value );
         FUNCTION TiltUp ();
         FUNCTION StopTiltUp ();
         FUNCTION TiltDown ();
@@ -935,6 +952,19 @@ namespace QscQsys;
 
         // class properties
         DelegateProperty PrivacyChange onPrivacyChange;
+        DelegateProperty BrightnessChange onBrightnessChange;
+        DelegateProperty SaturationChange onSaturationChange;
+        DelegateProperty SharpnessChange onSharpnessChange;
+        DelegateProperty ContrastChange onContrastChange;
+        DelegateProperty ExposureModeChange onExposureModeChange;
+        DelegateProperty IrisChange onIrisChange;
+        DelegateProperty ApertureChange onApertureChange;
+        DelegateProperty GainChange onGainChange;
+        DelegateProperty AutoWhiteBalanceSensitivityChange onAutoWhiteBalanceSensitivityChange;
+        DelegateProperty AutoWhiteBalanceModeChange onAutoWhiteBalanceModeChange;
+        DelegateProperty WhiteBalanceHueChange onWhiteBalanceHueChange;
+        DelegateProperty WhiteBalanceRedGainChange onWhiteBalanceRedGainChange;
+        DelegateProperty WhiteBalanceBlueGainChange onWhiteBalanceBlueGainChange;
     };
 
     static class PtzTypes // enum

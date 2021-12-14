@@ -4,9 +4,11 @@
 #USER_SIMPLSHARP_LIBRARY "QscQsys" 
 
 Digital_Input TiltUp, TiltDown, PanLeft, PanRight, _skip_, ZoomIn, ZoomOut, _skip_, RecallHome, SaveHome, _skip_, PrivacyOn, PrivacyOff, PrivacyToggle;
+Analog_Input _skip_, Brightness, Saturation, Sharpness, Contrast;
 Digital_Output _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, PrivacyIsOn;
+analog_output _skip_, _skip_, _skip_, BrightnessValue, SaturationValue, SharpnessValue, ContrastValue;
 
-String_Parameter _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, CoreID[100], ComponentName[100];
+String_Parameter _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, CoreID[100], ComponentName[100];
 
 QsysCamera camera;
 
@@ -91,14 +93,110 @@ push PrivacyToggle
     camera.PrivacyToggle(!PrivacyIsOn);
 }
 
+threadsafe change Brightness
+{
+    integer x;
+
+    if(Brightness = 0)
+    {
+        camera.Brightness(0);
+    }
+    else
+    {
+        while(x != Brightness)
+        {
+            x = Brightness;
+            camera.Brightness(x);
+        }
+    }
+}
+
+threadsafe change Saturation
+{
+    integer x;
+
+    if(Saturation = 0)
+    {
+        camera.Saturation(0);
+    }
+    else
+    {
+        while(x != Saturation)
+        {
+            x = Saturation;
+            camera.Saturation(x);
+        }
+    }
+}
+
+threadsafe change Sharpness
+{
+    integer x;
+
+    if(Sharpness = 0)
+    {
+        camera.Sharpness(0);
+    }
+    else
+    {
+        while(x != Sharpness)
+        {
+            x = Sharpness;
+            camera.Sharpness(x);
+        }
+    }
+}
+
+threadsafe change Contrast
+{
+    integer x;
+
+    if(Contrast = 0)
+    {
+        camera.Contrast(0);
+    }
+    else
+    {
+        while(x != Contrast)
+        {
+            x = Contrast;
+            camera.Contrast(x);
+        }
+    }
+}
+
 callback function NewPrivacyChange(integer val)
 {
     PrivacyIsOn = val;
 }
 
+callback function NewBrightnessChange(integer val)
+{
+    BrightnessValue = val;
+}
+
+callback function NewSaturationChange(integer val)
+{
+    SaturationValue = val;
+}
+
+callback function NewSharpnessChange(integer val)
+{
+    SharpnessValue = val;
+}
+
+callback function NewContrastChange(integer val)
+{
+    ContrastValue = val;
+}
+
 Function Main()
 {
     RegisterDelegate(camera, onPrivacyChange, NewPrivacyChange);
+    RegisterDelegate(camera, onBrightnessChange, NewBrightnessChange);
+    RegisterDelegate(camera, onSaturationChange, NewSaturationChange);
+    RegisterDelegate(camera, onSharpnessChange, NewSharpnessChange);
+    RegisterDelegate(camera, onContrastChange, NewContrastChange);
 
     camera.Initialize(CoreID, ComponentName);
 }
