@@ -4,11 +4,16 @@
 #USER_SIMPLSHARP_LIBRARY "QscQsys" 
 
 Digital_Input TiltUp, TiltDown, PanLeft, PanRight, _skip_, ZoomIn, ZoomOut, _skip_, RecallHome, SaveHome, _skip_, PrivacyOn, PrivacyOff, PrivacyToggle;
-Analog_Input _skip_, Brightness, Saturation, Sharpness, Contrast;
+Analog_Input _skip_, Brightness, Saturation, Sharpness, Contrast, _skip_, ExposureMode, Iris, Shutter;
+analog_input Gain, _skip_, AutoWhiteBalanceMode, AutoWhiteBalanceSensitivity, WhiteBalanceHue, WhiteBalanceRedGain, WhiteBalanceBlueGain;
 Digital_Output _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, PrivacyIsOn;
 analog_output _skip_, _skip_, _skip_, BrightnessValue, SaturationValue, SharpnessValue, ContrastValue;
+string_output _skip_, ExposureModeValue, IrisValue, ShutterValue;
+analog_output GainValue;
+string_output _skip_, AutoWhiteBalnceModeValue, AutoWhiteBalanceSensitivityValue;
+analog_output WhiteBalanceHueValue, WhiteBalanceRedGainValue, WhiteBalanceBlueGainValue;
 
-String_Parameter _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, CoreID[100], ComponentName[100];
+String_Parameter _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, CoreID[100], ComponentName[100];
 
 QsysCamera camera;
 
@@ -165,6 +170,314 @@ threadsafe change Contrast
     }
 }
 
+threadsafe change ExposureMode
+{
+    if(ExposureMode = 0)
+    {
+        camera.ExposureMode("Auto");
+    }
+    else if(ExposureMode = 1)
+    {
+        camera.ExposureMode("Manual");
+    }
+}
+
+threadsafe change Iris
+{
+    string state[255];
+
+    switch(Iris)
+    {
+        case (0):
+        {
+            state = "Close";
+        }
+        case(1):
+        {
+            state = "f/1.8";
+        }
+        case(2):
+        {
+            state = "f/2.0";
+        }
+        case(3):
+        {
+            state = "f/2.4";
+        }
+        case(4):
+        {
+            state = "f/2.8";
+        }
+        case(5):
+        {
+            state = "f/3.4";
+        }
+        case(6):
+        {
+            state = "f/4.0";
+        }
+        case(7):
+        {
+            state = "f/4.8";
+        }
+        case(8):
+        {
+            state = "f/5.6";
+        }
+        case(9):
+        {
+            state = "f/6.8";
+        }
+        case(10):
+        {
+            state = "f/8.0";
+        }
+        case(11):
+        {
+            state = "f/9.6";
+        }
+        case(12):
+        {
+            state = "f/11.0";
+        }
+        default:
+        {
+            state = "";
+        }
+    }
+
+    if(len(state))
+    {
+        camera.Iris(state);
+    }
+}
+
+threadsafe change Shutter
+{
+    string state[255];
+
+    switch(Shutter)
+    {
+        case (0):
+        {
+            state = "1/30";
+        }
+        case (1):
+        {
+            state = "1/60";
+        }
+        case (2):
+        {
+            state = "1/90";
+        }
+        case (3):
+        {
+            state = "1/100";
+        }
+        case (4):
+        {
+            state = "1/125";
+        }
+        case (5):
+        {
+            state = "1/180";
+        }
+        case (6):
+        {
+            state = "1/250";
+        }
+        case (7):
+        {
+            state = "1/350";
+        }
+        case (8):
+        {
+            state = "1/500";
+        }
+        case (9):
+        {
+            state = "1/725";
+        }
+        case (10):
+        {
+            state = "1/1000";
+        }
+        case (11):
+        {
+            state = "1/1500";
+        }
+        case (12):
+        {
+            state = "1/2000";
+        }
+        case (13):
+        {
+            state = "1/3000";
+        }
+        case (14):
+        {
+            state = "1/4000";
+        }
+        case (15):
+        {
+            state = "1/6000";
+        }
+        case (16):
+        {
+            state = "1/10000";
+        }
+        default:
+        {
+            state = "";
+        }
+    }
+
+    if(len(state))
+    {
+        camera.Shutter(state);
+    }
+}
+
+threadsafe change Gain
+{
+    integer x;
+
+    if(Gain = 0)
+    {
+        camera.Gain(0);
+    }
+    else
+    {
+        while(x != Gain)
+        {
+            x = Gain;
+            camera.Gain(x);
+        }
+    }
+}
+
+threadsafe change AutoWhiteBalanceMode
+{
+    string state[255];
+
+    switch(AutoWhiteBalanceMode)
+    {
+        case (0):
+        {
+            state = "Auto";
+        }
+        case (1):
+        {
+            state = "Indoor/3000K";
+        }
+        case (2):
+        {
+            state = "Outdoor/5000K";
+        }
+        case (3):
+        {
+            state = "Manual";
+        }
+        case (4):
+        {
+            state = "One Push";
+        }
+        default:
+        {
+            state = "";
+        }
+    }
+
+    if(len(state))
+    {
+        camera.AutoWhiteBalanceMode(state);
+    }
+}
+
+threadsafe change AutoWhiteBalanceSensitivity
+{
+    string state[255];
+
+    switch(AutoWhiteBalanceSensitivity)
+    {
+        case (0):
+        {
+            state = "Low";
+        }
+        case (1):
+        {
+            state = "Mid";
+        }
+        case (2):
+        {
+            state = "High";
+        }
+        default:
+        {
+            state = "";
+        }
+    }
+
+    if(len(state))
+    {
+        camera.AutoWhiteBalanceSensitivity(state);
+    }
+}
+
+threadsafe change WhiteBalanceHue
+{
+    integer x;
+
+    if(WhiteBalanceHue = 0)
+    {
+        camera.Hue(0);
+    }
+    else
+    {
+        while(x != WhiteBalanceHue)
+        {
+            x = WhiteBalanceHue;
+            camera.Hue(x);
+        }
+    }
+}
+
+threadsafe change WhiteBalanceRedGain
+{
+    integer x;
+
+    if(WhiteBalanceRedGain = 0)
+    {
+        camera.RedGain(0);
+    }
+    else
+    {
+        while(x != WhiteBalanceRedGain)
+        {
+            x = WhiteBalanceRedGain;
+            camera.RedGain(x);
+        }
+    }
+}
+
+threadsafe change WhiteBalanceBlueGain
+{
+    integer x;
+
+    if(WhiteBalanceBlueGain = 0)
+    {
+        camera.BlueGain(0);
+    }
+    else
+    {
+        while(x != WhiteBalanceBlueGain)
+        {
+            x = WhiteBalanceBlueGain;
+            camera.BlueGain(x);
+        }
+    }
+}
+
 callback function NewPrivacyChange(integer val)
 {
     PrivacyIsOn = val;
@@ -190,6 +503,51 @@ callback function NewContrastChange(integer val)
     ContrastValue = val;
 }
 
+callback function NewExposureModeChange(string val)
+{
+    ExposureModeValue = val;
+}
+
+callback function NewIrisChange(string val)
+{
+    IrisValue = val;
+}
+
+callback function NewShutterChange(string val)
+{
+    ShutterValue = val;
+}
+
+callback function NewGainChange(integer val)
+{
+    GainValue = val;
+}
+
+callback function NewAwbModeChange(string val)
+{
+    AutoWhiteBalnceModeValue = val;
+}
+
+callback function NewAwbSensitivityChange(string val)
+{
+    AutoWhiteBalanceSensitivityValue = val;
+}
+
+callback function NewWbHueChange(integer val)
+{
+    WhiteBalanceHueValue = val;
+}
+
+callback function NewWbRedGainChange(integer val)
+{
+    WhiteBalanceRedGainValue = val;
+}
+
+callback function NewWbBlueGainChange(integer val)
+{
+    WhiteBalanceBlueGainValue = val;
+}
+
 Function Main()
 {
     RegisterDelegate(camera, onPrivacyChange, NewPrivacyChange);
@@ -197,6 +555,15 @@ Function Main()
     RegisterDelegate(camera, onSaturationChange, NewSaturationChange);
     RegisterDelegate(camera, onSharpnessChange, NewSharpnessChange);
     RegisterDelegate(camera, onContrastChange, NewContrastChange);
+    RegisterDelegate(camera, onExposureModeChange, NewExposureModeChange);
+    RegisterDelegate(camera, onIrisChange, NewIrisChange);
+    RegisterDelegate(camera, onShutterChange, NewShutterChange);
+    RegisterDelegate(camera, onGainChange, NewGainChange);
+    RegisterDelegate(camera, onAutoWhiteBalanceSensitivityChange, NewAwbSensitivityChange);
+    RegisterDelegate(camera, onAutoWhiteBalanceModeChange, NewAwbModeChange);
+    RegisterDelegate(camera, onWhiteBalanceHueChange, NewWbHueChange);
+    RegisterDelegate(camera, onWhiteBalanceRedGainChange, NewWbRedGainChange);
+    RegisterDelegate(camera, onWhiteBalanceBlueGainChange, NewWbBlueGainChange);
 
     camera.Initialize(CoreID, ComponentName);
 }

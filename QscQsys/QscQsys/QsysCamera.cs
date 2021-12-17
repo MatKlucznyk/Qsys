@@ -15,8 +15,8 @@ namespace QscQsys
         public delegate void SharpnessChange(ushort sharpnessValue);
         public delegate void ContrastChange(ushort contrastValue);
         public delegate void ExposureModeChange(SimplSharpString mode);
-        public delegate void IrisChange(ushort irisValue);
-        public delegate void ApertureChange(ushort apertureValue);
+        public delegate void IrisChange(SimplSharpString irisValue);
+        public delegate void ShutterChange(SimplSharpString apertureValue);
         public delegate void GainChange(ushort gainValue);
         public delegate void AutoWhiteBalanceSensitivityChange(SimplSharpString awbSens);
         public delegate void AutoWhiteBalanceModeChange(SimplSharpString awbMode);
@@ -30,7 +30,7 @@ namespace QscQsys
         public ContrastChange onContrastChange { get; set; }
         public ExposureModeChange onExposureModeChange { get; set; }
         public IrisChange onIrisChange { get; set; }
-        public ApertureChange onApertureChange { get; set; }
+        public ShutterChange onShutterChange { get; set; }
         public GainChange onGainChange { get; set; }
         public AutoWhiteBalanceSensitivityChange onAutoWhiteBalanceSensitivityChange { get; set; }
         public AutoWhiteBalanceModeChange onAutoWhiteBalanceModeChange { get; set; }
@@ -100,8 +100,6 @@ namespace QscQsys
 
         private void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
         {
-            //QsysMeterEvent(this, new QsysEventsArgs(eQscEventIds.MeterUpdate, cName, Convert.ToBoolean(e.Value), Convert.ToInt16(e.Value), e.SValue, null));
-
             if (e.Name == "toggle_privacy")
             {
                 currentPrivacy = Convert.ToBoolean(e.Value);
@@ -135,6 +133,69 @@ namespace QscQsys
                 if (onContrastChange != null)
                 {
                     onContrastChange((ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
+                }
+            }
+            else if (e.Name == "exp_mode")
+            {
+                if (onExposureModeChange != null)
+                {
+                    onExposureModeChange(e.SValue);
+                }
+            }
+            else if (e.Name == "exp_iris")
+            {
+                if (onIrisChange != null)
+                {
+                    onIrisChange(e.SValue);
+                }
+            }
+            else if (e.Name == "exp_shutter")
+            {
+                if (onShutterChange != null)
+                {
+                    onShutterChange(e.SValue);
+                }
+            }
+            else if (e.Name == "exp_gain")
+            {
+                if (onGainChange != null)
+                {
+                    onGainChange((ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
+                }
+            }
+            else if (e.Name == "wb_awb_sensitivity")
+            {
+                if (onAutoWhiteBalanceSensitivityChange != null)
+                {
+                    onAutoWhiteBalanceSensitivityChange(e.SValue);
+                }
+            }
+            else if (e.Name == "wb_awb_mode")
+            {
+                if (onAutoWhiteBalanceModeChange != null)
+                {
+                    onAutoWhiteBalanceModeChange(e.SValue);
+                }
+            }
+            else if (e.Name == "wb_hue")
+            {
+                if (onWhiteBalanceHueChange != null)
+                {
+                    onWhiteBalanceHueChange((ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
+                }
+            }
+            else if (e.Name == "wb_red_gain")
+            {
+                if (onWhiteBalanceRedGainChange != null)
+                {
+                    onWhiteBalanceRedGainChange((ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
+                }
+            }
+            else if (e.Name == "wb_blue_gain")
+            {
+                if (onWhiteBalanceBlueGainChange != null)
+                {
+                    onWhiteBalanceBlueGainChange((ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
                 }
             }
         }
@@ -249,9 +310,9 @@ namespace QscQsys
 
         public void Brightness(int value)
         {
-            ComponentChange newVolumeChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "img_brightness", Position = QsysCoreManager.ScaleDown(value) } } } };
+            ComponentChange cameraChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "img_brightness", Position = QsysCoreManager.ScaleDown(value) } } } };
 
-            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(newVolumeChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
 
         public void Brightness(ushort value)
@@ -261,9 +322,9 @@ namespace QscQsys
 
         public void Saturation(int value)
         {
-            ComponentChange newVolumeChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "img_saturation", Position = QsysCoreManager.ScaleDown(value) } } } };
+            ComponentChange cameraChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "img_saturation", Position = QsysCoreManager.ScaleDown(value) } } } };
 
-            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(newVolumeChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
 
         public void Saturation(ushort value)
@@ -273,9 +334,9 @@ namespace QscQsys
 
         public void Sharpness(int value)
         {
-            ComponentChange newVolumeChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "img_sharpness", Position = QsysCoreManager.ScaleDown(value) } } } };
+            ComponentChange cameraChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "img_sharpness", Position = QsysCoreManager.ScaleDown(value) } } } };
 
-            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(newVolumeChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
 
         public void Sharpness(ushort value)
@@ -285,14 +346,97 @@ namespace QscQsys
 
         public void Contrast(int value)
         {
-            ComponentChange newVolumeChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "img_contrast", Position = QsysCoreManager.ScaleDown(value) } } } };
+            ComponentChange cameraChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "img_contrast", Position = QsysCoreManager.ScaleDown(value) } } } };
 
-            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(newVolumeChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
 
         public void Contrast(ushort value)
         {
             Contrast((int)value);
+        }
+
+        public void ExposureMode(string value)
+        {
+            ComponentChangeString cameraChange = new ComponentChangeString() { Params = new ComponentChangeParamsString() { Name = cName, Controls = new List<ComponentSetValueString>() { new ComponentSetValueString() { Name = "exp_mode", Value = value } } } };
+
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public void Iris(string value)
+        {
+            ComponentChangeString cameraChange = new ComponentChangeString() { Params = new ComponentChangeParamsString() { Name = cName, Controls = new List<ComponentSetValueString>() { new ComponentSetValueString() { Name = "exp_iris", Value = value } } } };
+
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public void Shutter(string value)
+        {
+            ComponentChangeString cameraChange = new ComponentChangeString() { Params = new ComponentChangeParamsString() { Name = cName, Controls = new List<ComponentSetValueString>() { new ComponentSetValueString() { Name = "exp_shutter", Value = value } } } };
+
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public void Gain(int value)
+        {
+            ComponentChange cameraChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "exp_gain", Position = QsysCoreManager.ScaleDown(value) } } } };
+
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public void Gain(ushort value)
+        {
+            Gain((int)value);
+        }
+
+        public void AutoWhiteBalanceMode(string value)
+        {
+            ComponentChangeString cameraChange = new ComponentChangeString() { Params = new ComponentChangeParamsString() { Name = cName, Controls = new List<ComponentSetValueString>() { new ComponentSetValueString() { Name = "wb_awb_mode", Value = value } } } };
+
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public void AutoWhiteBalanceSensitivity(string value)
+        {
+            ComponentChangeString cameraChange = new ComponentChangeString() { Params = new ComponentChangeParamsString() { Name = cName, Controls = new List<ComponentSetValueString>() { new ComponentSetValueString() { Name = "wb_awb_sensitivity", Value = value } } } };
+
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public void Hue(int value)
+        {
+            ComponentChange cameraChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "wb_hue", Position = QsysCoreManager.ScaleDown(value) } } } };
+
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public void Hue(ushort value)
+        {
+            Hue((int)value);
+        }
+
+        public void RedGain(int value)
+        {
+            ComponentChange cameraChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "wb_red_gain", Position = QsysCoreManager.ScaleDown(value) } } } };
+
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public void RedGain(ushort value)
+        {
+            RedGain((int)value);
+        }
+
+        public void BlueGain(int value)
+        {
+            ComponentChange cameraChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "wb_blue_gain", Position = QsysCoreManager.ScaleDown(value) } } } };
+
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public void BlueGain(ushort value)
+        {
+            BlueGain((int)value);
         }
 
         public void TiltUp()
