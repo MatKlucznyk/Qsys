@@ -274,12 +274,14 @@ namespace QscQsys;
     {
         // class delegates
         delegate FUNCTION CrossPointValueChange ( INTEGER value );
+        delegate FUNCTION CrossPointGainChange ( INTEGER value );
 
         // class events
 
         // class functions
         FUNCTION Initialize ( STRING coreId , STRING name , INTEGER input , INTEGER output );
         FUNCTION SetCrossPoint ( INTEGER value );
+        FUNCTION SetCrossPointGain ( SIGNED_LONG_INTEGER value );
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
         STRING_FUNCTION ToString ();
 
@@ -288,6 +290,7 @@ namespace QscQsys;
 
         // class properties
         DelegateProperty CrossPointValueChange newCrossPointValueChange;
+        DelegateProperty CrossPointGainChange newCrossPointGainChange;
     };
 
      class GetComponents 

@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Crestron.SimplSharp;
+using Newtonsoft.Json;
 
 namespace QscQsys
 {
     public class QsysMatrixMixerCrosspoint
     {
         public delegate void CrossPointValueChange(ushort value);
+        public delegate void CrossPointGainChange(ushort value);
         public CrossPointValueChange newCrossPointValueChange { get; set; }
+        public CrossPointGainChange newCrossPointGainChange { get; set; }
 
         private QsysMatrixMixer mixer;
 
@@ -28,7 +31,7 @@ namespace QscQsys
             this.coreId = coreId;
             Input = input;
             Output = output;
-            crossName = string.Format("input_{0}_output_{1}_mute", input, output);
+            crossName = string.Format("input_{0}_output_{1}_", input, output);
 
             mixer = new QsysMatrixMixer();
             mixer.Initialize(coreId, name);
@@ -49,7 +52,7 @@ namespace QscQsys
         {
             if (QsysCoreManager.Cores.ContainsKey(coreId))
             {
-                Component component = new Component() { Name = cName, Controls = new List<ControlName>() { new ControlName() { Name = crossName } } };
+                Component component = new Component() { Name = cName, Controls = new List<ControlName>() { new ControlName() { Name = string.Format("{0}mute", crossName) }, new ControlName() { Name = string.Format("{0}gain", crossName) } } };
 
                 if (QsysCoreManager.Cores[coreId].RegisterComponent(component))
                 {
@@ -62,12 +65,21 @@ namespace QscQsys
 
         void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
         {
-            if (e.Name == crossName && newCrossPointValueChange != null)
+            if (e.Name == string.Format("{0}mute", crossName))
             {
-                newCrossPointValueChange(Convert.ToUInt16(e.Value));
+                if (newCrossPointValueChange != null)
+                {
+                    newCrossPointValueChange(Convert.ToUInt16(e.Value));
+                }
+            }
+            else if (e.Name == string.Format("{0}gain", crossName))
+            {
+                if (newCrossPointGainChange != null)
+                {
+                    newCrossPointGainChange(Convert.ToUInt16(QsysCoreManager.ScaleUp(e.Position)));
+                }
             }
         }
-
         public void SetCrossPoint(ushort value)
         {
             if (registered)
@@ -84,6 +96,21 @@ namespace QscQsys
                         break;
                 }
             }
+        }
+
+        public void SetCrossPointGain(int value)
+        {
+            if (registered)
+            {
+                ComponentChange newGainChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = string.Format("{0}gain", crossName), Position = QsysCoreManager.ScaleDown(value) } } } };
+
+                QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(newGainChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+            }
+        }
+
+        public void SetCrossPointGain(ushort value)
+        {
+            this.SetCrossPointGain((int)value);
         }
     }
 }
