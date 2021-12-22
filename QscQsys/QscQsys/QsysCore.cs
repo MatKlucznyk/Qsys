@@ -289,6 +289,8 @@ namespace QscQsys
                 }
                 else if (IsConnected && status != 2)
                 {
+                    IsConnected = false;
+
                     if (debug > 0)
                         ErrorLog.Error("QsysProcessor disconnected!");
 
@@ -297,7 +299,6 @@ namespace QscQsys
                     //reconnectionWait = new CTimer(StartConnectionAgain, 30000);
 
                     isLoggedIn = false;
-                    IsConnected = false;
                     isInitialized = false;
 
                     if(heartbeatTimer != null)
@@ -378,7 +379,7 @@ namespace QscQsys
         {
             try
             {
-                if (returnString.Length > 0)
+                if (returnString.Length > 0 && IsConnected)
                 {
                     if (returnString == "{\"jsonrpc\":\"2.0\",\"result\":true,\"id\":\"crestron\"}")
                     {
