@@ -921,6 +921,7 @@ namespace QscQsys;
         delegate FUNCTION WhiteBalanceHueChange ( INTEGER hueValue );
         delegate FUNCTION WhiteBalanceRedGainChange ( INTEGER redGainValue );
         delegate FUNCTION WhiteBalanceBlueGainChange ( INTEGER blueGainValue );
+        delegate FUNCTION AutoFocusChange ( INTEGER value );
 
         // class events
 
@@ -928,6 +929,11 @@ namespace QscQsys;
         FUNCTION Initialize ( STRING coreId , STRING name );
         FUNCTION StartPTZ ( PtzTypes type );
         FUNCTION StopPTZ ( PtzTypes type );
+        FUNCTION AutoFocus ();
+        FUNCTION FocusNear ();
+        FUNCTION FocusNearStop ();
+        FUNCTION FocusFar ();
+        FUNCTION FocusFarStop ();
         FUNCTION RecallHome ();
         FUNCTION SaveHome ();
         FUNCTION PrivacyToggle ( INTEGER value );
@@ -977,6 +983,7 @@ namespace QscQsys;
         DelegateProperty WhiteBalanceHueChange onWhiteBalanceHueChange;
         DelegateProperty WhiteBalanceRedGainChange onWhiteBalanceRedGainChange;
         DelegateProperty WhiteBalanceBlueGainChange onWhiteBalanceBlueGainChange;
+        DelegateProperty AutoFocusChange onAutoFocusChange;
     };
 
     static class PtzTypes // enum

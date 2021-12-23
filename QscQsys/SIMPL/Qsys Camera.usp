@@ -1,19 +1,67 @@
 #SYMBOL_NAME "Qsys Camera"
 
 //#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
-#USER_SIMPLSHARP_LIBRARY "QscQsys" 
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
 
-Digital_Input TiltUp, TiltDown, PanLeft, PanRight, _skip_, ZoomIn, ZoomOut, _skip_, RecallHome, SaveHome, _skip_, PrivacyOn, PrivacyOff, PrivacyToggle;
+#HELP_BEGIN
+Iris Values:
+0 = Close
+1 = f/1.8
+2 = f/2.0
+3 = f/2.4
+4 = f/2.8
+5 = f/3.4
+6 = f/4.0
+7 = f/4.8
+8 = f/5.6
+9 = f/6.8
+10 = f/8.0
+11 = f/9.6
+12 = f/11.0
+
+Shutter Values:
+0 = 1/30
+1 = 1/60
+2 = 1/90
+3 = 1/100
+4 = 1/125
+5 = 1/180
+6 = 1/250
+7 = 1/350
+8 = 1/500
+9 = 1/725
+10 = 1/1000
+11 = 1/1500
+12 = 1/2000
+13 = 1/3000
+14 = 1/4000
+15 = 1/6000
+16 = 1/10000   
+
+Auto White Balance Mode Values:
+0 = Auto
+1 = Indoor/3000K
+2 = Outdoor/5000K
+3 = Manual
+4 = One Push
+
+Auto Wihite Balance Sensitivity Values:
+0 = Low
+1 = Mid
+2 = High
+#HELP_END
+
+Digital_Input TiltUp, TiltDown, PanLeft, PanRight, _skip_, ZoomIn, ZoomOut, _skip_, AutoFocus, FocusNear, FocusFar, _skip_, RecallHome, SaveHome, _skip_, PrivacyOn, PrivacyOff, PrivacyToggle;
 Analog_Input _skip_, Brightness, Saturation, Sharpness, Contrast, _skip_, ExposureMode, Iris, Shutter;
 analog_input Gain, _skip_, AutoWhiteBalanceMode, AutoWhiteBalanceSensitivity, WhiteBalanceHue, WhiteBalanceRedGain, WhiteBalanceBlueGain;
-Digital_Output _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, PrivacyIsOn;
+Digital_Output _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, AutoFocusIsOn, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, PrivacyIsOn;
 analog_output _skip_, _skip_, _skip_, BrightnessValue, SaturationValue, SharpnessValue, ContrastValue;
 string_output _skip_, ExposureModeValue, IrisValue, ShutterValue;
 analog_output GainValue;
 string_output _skip_, AutoWhiteBalnceModeValue, AutoWhiteBalanceSensitivityValue;
 analog_output WhiteBalanceHueValue, WhiteBalanceRedGainValue, WhiteBalanceBlueGainValue;
 
-String_Parameter _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, CoreID[100], ComponentName[100];
+String_Parameter _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, CoreID[100], ComponentName[100];
 
 QsysCamera camera;
 
@@ -66,6 +114,31 @@ Release ZoomIn
 Push ZoomOut
 {
     camera.ZoomOut();
+}
+
+push AutoFocus
+{
+    camera.AutoFocus();
+}
+
+push FocusNear
+{
+    camera.FocusNear();
+}
+
+release FocusNear
+{
+    camera.FocusNearStop();
+}
+
+push FocusFar
+{
+    camera.FocusFar();
+}
+
+release FocusFar
+{
+    camera.FocusFarStop();
 }
 
 Release ZoomOut
@@ -548,6 +621,11 @@ callback function NewWbBlueGainChange(integer val)
     WhiteBalanceBlueGainValue = val;
 }
 
+callback function NewAutoFocusChange(integer val)
+{
+    AutoFocusIsOn = val;
+}
+
 Function Main()
 {
     RegisterDelegate(camera, onPrivacyChange, NewPrivacyChange);
@@ -564,6 +642,7 @@ Function Main()
     RegisterDelegate(camera, onWhiteBalanceHueChange, NewWbHueChange);
     RegisterDelegate(camera, onWhiteBalanceRedGainChange, NewWbRedGainChange);
     RegisterDelegate(camera, onWhiteBalanceBlueGainChange, NewWbBlueGainChange);
+    RegisterDelegate(camera, onAutoFocusChange, NewAutoFocusChange);
 
     camera.Initialize(CoreID, ComponentName);
 }

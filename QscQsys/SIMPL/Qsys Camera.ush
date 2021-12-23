@@ -11,6 +11,15 @@
 [END]
 [BEGIN]
   ObjTp=Hd
+  Cmn1=Iris Values:\\0 = Close\\1 = f/1.8\\2 = f/2.0\\3 = f/2.4\\4 = f/2.
+  Cmn2=8\\5 = f/3.4\\6 = f/4.0\\7 = f/4.8\\8 = f/5.6\\9 = f/6.8\\10 = f/8.
+  Cmn3=0\\11 = f/9.6\\12 = f/11.0\\\\Shutter Values:\\0 = 1/30\\1 = 1/60\\
+  Cmn4=2 = 1/90\\3 = 1/100\\4 = 1/125\\5 = 1/180\\6 = 1/250\\7 = 1/350\\
+  Cmn5=8 = 1/500\\9 = 1/725\\10 = 1/1000\\11 = 1/1500\\12 = 1/2000\\13||1
+  Cmn6== 1/3000\\14 = 1/4000\\15 = 1/6000\\16 = 1/10000   \\\\Auto White||1
+  Cmn7=Balance Mode Values:\\0 = Auto\\1 = Indoor/3000K\\2 = Outdoor/5000K\\
+  Cmn8=3 = Manual\\4 = One Push\\\\Auto Wihite Balance Sensitivity Values:
+  Cmn9=\\0 = Low\\1 = Mid\\2 = High
 [END]
 [BEGIN]
   ObjTp=Symbol
@@ -38,18 +47,26 @@
   InputSigType7=Digital
   InputCue8=[~UNUSED~]
   InputSigType8=Digital
-  InputCue9=RecallHome
+  InputCue9=AutoFocus
   InputSigType9=Digital
-  InputCue10=SaveHome
+  InputCue10=FocusNear
   InputSigType10=Digital
-  InputCue11=[~UNUSED~]
+  InputCue11=FocusFar
   InputSigType11=Digital
-  InputCue12=PrivacyOn
+  InputCue12=[~UNUSED~]
   InputSigType12=Digital
-  InputCue13=PrivacyOff
+  InputCue13=RecallHome
   InputSigType13=Digital
-  InputCue14=PrivacyToggle
+  InputCue14=SaveHome
   InputSigType14=Digital
+  InputCue15=[~UNUSED~]
+  InputSigType15=Digital
+  InputCue16=PrivacyOn
+  InputSigType16=Digital
+  InputCue17=PrivacyOff
+  InputSigType17=Digital
+  InputCue18=PrivacyToggle
+  InputSigType18=Digital
   OutputCue1=[~UNUSED~]
   OutputSigType1=Digital
   OutputCue2=[~UNUSED~]
@@ -66,14 +83,22 @@
   OutputSigType7=Digital
   OutputCue8=[~UNUSED~]
   OutputSigType8=Digital
-  OutputCue9=[~UNUSED~]
+  OutputCue9=AutoFocusIsOn
   OutputSigType9=Digital
   OutputCue10=[~UNUSED~]
   OutputSigType10=Digital
   OutputCue11=[~UNUSED~]
   OutputSigType11=Digital
-  OutputCue12=PrivacyIsOn
+  OutputCue12=[~UNUSED~]
   OutputSigType12=Digital
+  OutputCue13=[~UNUSED~]
+  OutputSigType13=Digital
+  OutputCue14=[~UNUSED~]
+  OutputSigType14=Digital
+  OutputCue15=[~UNUSED~]
+  OutputSigType15=Digital
+  OutputCue16=PrivacyIsOn
+  OutputSigType16=Digital
   InputList2Cue1=[~UNUSED~]
   InputList2SigType1=Analog
   InputList2Cue2=Brightness
@@ -203,20 +228,30 @@
   ParamSigType30=Constant
   ParamCue31=[~UNUSED~]
   ParamSigType31=Constant
-  ParamCue32=CoreID
-  ParamSigType32=String
-  ParamCue33=ComponentName
-  ParamSigType33=String
-  MinVariableInputs=14
-  MaxVariableInputs=14
+  ParamCue32=[~UNUSED~]
+  ParamSigType32=Constant
+  ParamCue33=[~UNUSED~]
+  ParamSigType33=Constant
+  ParamCue34=[~UNUSED~]
+  ParamSigType34=Constant
+  ParamCue35=[~UNUSED~]
+  ParamSigType35=Constant
+  ParamCue36=[~UNUSED~]
+  ParamSigType36=Constant
+  ParamCue37=CoreID
+  ParamSigType37=String
+  ParamCue38=ComponentName
+  ParamSigType38=String
+  MinVariableInputs=18
+  MaxVariableInputs=18
   MinVariableInputsList2=16
   MaxVariableInputsList2=16
-  MinVariableOutputs=12
-  MaxVariableOutputs=12
+  MinVariableOutputs=16
+  MaxVariableOutputs=16
   MinVariableOutputsList2=18
   MaxVariableOutputsList2=18
-  MinVariableParams=32
-  MaxVariableParams=32
+  MinVariableParams=37
+  MaxVariableParams=37
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
@@ -231,9 +266,9 @@
   CompilerParamCode5=14
   NumFixedParams=1
   Pp1=1
-  Pp32=32
-  Pp33=33
-  MPp=33
+  Pp37=37
+  Pp38=38
+  MPp=38
   NVStorage=10
   ParamSigType1=String
   SmplCInputCue1=o#
@@ -254,7 +289,7 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=32
+  H=37
   Tp=1
   HD=False
   NoS=False
@@ -262,7 +297,7 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=33
+  H=38
   Tp=1
   HD=False
   NoS=False

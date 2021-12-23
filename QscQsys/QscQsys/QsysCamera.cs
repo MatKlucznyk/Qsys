@@ -23,6 +23,7 @@ namespace QscQsys
         public delegate void WhiteBalanceHueChange(ushort hueValue);
         public delegate void WhiteBalanceRedGainChange(ushort redGainValue);
         public delegate void WhiteBalanceBlueGainChange(ushort blueGainValue);
+        public delegate void AutoFocusChange(ushort value);
         public PrivacyChange onPrivacyChange { get; set; }
         public BrightnessChange onBrightnessChange { get; set; }
         public SaturationChange onSaturationChange { get; set; }
@@ -37,6 +38,7 @@ namespace QscQsys
         public WhiteBalanceHueChange onWhiteBalanceHueChange { get; set; }
         public WhiteBalanceRedGainChange onWhiteBalanceRedGainChange { get; set; }
         public WhiteBalanceBlueGainChange onWhiteBalanceBlueGainChange { get; set; }
+        public AutoFocusChange onAutoFocusChange { get; set; }
 
         private string cName;
         private string coreId;
@@ -84,7 +86,8 @@ namespace QscQsys
                         new ControlName() { Name = "wb_awb_mode" },
                         new ControlName() { Name = "wb_hue" },
                         new ControlName() { Name = "wb_red_gain" },
-                        new ControlName() { Name = "wb_blue_gain" }
+                        new ControlName() { Name = "wb_blue_gain" },
+                        new ControlName() { Name = "focus_auto" }
 
                     }
                 };
@@ -198,6 +201,13 @@ namespace QscQsys
                     onWhiteBalanceBlueGainChange((ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
                 }
             }
+            else if (e.Name == "focus_auto")
+            {
+                if (onAutoFocusChange != null)
+                {
+                    onAutoFocusChange((ushort)e.Value);
+                }
+            }
         }
 
         public void StartPTZ(PtzTypes type)
@@ -278,6 +288,41 @@ namespace QscQsys
             }
 
             cameraChange.Params.Controls.Add(camera);
+
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public void AutoFocus()
+        {
+            ComponentChange cameraChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "focus_auto", Value = 1 } } } };
+
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public void FocusNear()
+        {
+            ComponentChange cameraChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "focus_near", Value = 1 } } } };
+
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public void FocusNearStop()
+        {
+            ComponentChange cameraChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "focus_near", Value = 0 } } } };
+
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public void FocusFar()
+        {
+            ComponentChange cameraChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "focus_far", Value = 1 } } } };
+
+            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public void FocusFarStop()
+        {
+            ComponentChange cameraChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "focus_far", Value = 0 } } } };
 
             QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(cameraChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
