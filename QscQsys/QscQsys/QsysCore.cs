@@ -435,7 +435,7 @@ namespace QscQsys
 
                                     foreach (var item in Controls)
                                     {
-                                        if (item.Key.Name.Contains(changeResult.Name))
+                                        if (item.Key.Name == changeResult.Name)
                                             item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String, choices));
                                     }
                                 }
