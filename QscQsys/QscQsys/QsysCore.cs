@@ -9,6 +9,15 @@ using TCP_Client;
 
 namespace QscQsys
 {
+    public class SendingCommandEventArgs : EventArgs
+    {
+        public SimplSharpString Comm { get; set;}
+        public SendingCommandEventArgs (SimplSharpString comm)
+        {
+            this.Comm = comm;
+        }
+    }
+
     /// <summary>
     /// processor for Q-Sys Cores.
     /// </summary>
@@ -19,6 +28,8 @@ namespace QscQsys
         public delegate void IsRegistered(ushort value);
         public delegate void IsConnectedStatus(ushort value);
         public delegate void CoreStatus(SimplSharpString designName, ushort isRedundant, ushort isEmulator);
+        public delegate void SendingCommandEventHandler(object sender, SendingCommandEventArgs e);
+        public event EventHandler<SendingCommandEventArgs> SendingCommandEvent;
         public delegate void SendingCommand(SimplSharpString command);
         public IsLoggedIn onIsLoggedIn { get; set; }
         public IsRegistered onIsRegistered { get; set; }
@@ -379,7 +390,7 @@ namespace QscQsys
         {
             try
             {
-                if (returnString.Length > 0 && IsConnected)
+                if (returnString.Length > 0 && ((IsConnected && !externalConnection) || externalConnection))
                 {
                     if (returnString == "{\"jsonrpc\":\"2.0\",\"result\":true,\"id\":\"crestron\"}")
                     {
@@ -443,6 +454,10 @@ namespace QscQsys
                         }
                         else if (returnString.Contains("EngineStatus"))
                         {
+                            if (externalConnection)
+                            {
+                                isLoggedIn = false;
+                            }
                             if (response["params"] != null)
                             {
                                 JToken engineStatus = response["params"];
@@ -550,6 +565,8 @@ namespace QscQsys
 
                     if (!externalConnection)
                         client.SendCommand(data + "\x00");
+                    //else if (SendingCommandEvent != null)
+                    //    SendingCommandEvent(this, new SendingCommandEventArgs(data + "\x00"));
                     else if (onSendingCommand != null)
                         onSendingCommand(data + "\x00");
                 }
@@ -558,6 +575,8 @@ namespace QscQsys
             {
                 if (debug > 0)
                     ErrorLog.Error("Error in QsysProcessor CommandQueueDequeue: {0}", e.Message);
+
+                commandQueue.Clear();
             }
         }
         #endregion

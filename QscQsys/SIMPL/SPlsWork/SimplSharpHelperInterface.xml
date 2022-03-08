@@ -4311,6 +4311,13 @@
             <exception cref="T:System.NotSupportedException">This method is currently not supported.
             <para>If the API is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</para></exception>
         </member>
+        <member name="M:Crestron.SimplSharp.CrestronAuthentication.Authentication.ValidatePassword(System.String,Crestron.SimplSharp.CrestronAuthentication.Authentication.ePasswordRules@,System.String@)">
+            <summary> Validate a password satisfies all system cuurent password rules </summary>
+            <param name="password"> password to qualify </param>
+            <param name="errors"> password check error code return </param>
+            <param name="errorText">Text representation of errors</param>
+            <returns> returns true if successful </returns>
+        </member>
         <member name="M:Crestron.SimplSharp.CrestronAuthentication.Authentication.AddToken(Crestron.SimplSharp.CrestronAuthentication.Authentication.UserToken)">
             <summary>
             Add a new token to the list
@@ -4877,7 +4884,12 @@
         </member>
         <member name="T:Crestron.SimplSharp.CrestronAuthentication.Authentication.PasswordRules">
             <summary>
-            Structure returned from the <see cref="T:Crestron.SimplSharp.CrestronAuthentication.Authentication.PasswordRules"/> to contain the current rules of the system.
+            Structure returned from the <see cref="P:Crestron.SimplSharp.CrestronAuthentication.Authentication.CurrentPasswordRules"/> to contain the current rules of the system.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.PasswordRules.MaxLength">
+            <summary>
+            Maximum length the password can be.
             </summary>
         </member>
         <member name="P:Crestron.SimplSharp.CrestronAuthentication.Authentication.PasswordRules.Length">
@@ -4898,6 +4910,46 @@
         <member name="P:Crestron.SimplSharp.CrestronAuthentication.Authentication.PasswordRules.SpecialCharacterRequired">
             <summary>
             Flag to indicate that the password must contain atleast one special character.
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.CrestronAuthentication.Authentication.ePasswordRules">
+            <summary>
+            Crestron password rules enums for local users
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.ePasswordRules.None">
+            <summary>
+            No rule is enabled
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.ePasswordRules.Length">
+            <summary>
+            Must have min length
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.ePasswordRules.Lower">
+            <summary>
+            Must have lower case character
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.ePasswordRules.Upper">
+            <summary>
+            Must have upper case character
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.ePasswordRules.Digit">
+            <summary>
+            Must have numeric number
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.ePasswordRules.Special">
+            <summary>
+            Must have special character
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CrestronAuthentication.Authentication.ePasswordRules.Allowed">
+            <summary>
+            Must be an allowed character
             </summary>
         </member>
         <member name="T:Crestron.SimplSharp.CrestronAuthentication.Authentication.eFirmwareFeature">
@@ -15086,7 +15138,9 @@
         <member name="M:Crestron.SimplSharp.CrestronSockets.TCPServer.WaitForConnectionsAlways(Crestron.SimplSharp.CrestronSockets.TCPServerClientConnectCallback)">
             <summary>
             Function that accepts all incoming connections and triggers the given callback per connection that is accepted.
-            This will stop running once the Max socket number is reached.
+            Once the server reaches the maximum number of connections as specified by the <see cref="P:Crestron.SimplSharp.CrestronSockets.TCPServer.MaxNumberOfClientSupported"/>, the server will accept the connection
+            but will then disconnect since the maximum count has been reached. The callback will not be invoked in this case. Once the <see cref="P:Crestron.SimplSharp.CrestronSockets.TCPServer.NumberOfClientsConnected"/> 
+            drops below the <see cref="P:Crestron.SimplSharp.CrestronSockets.TCPServer.MaxNumberOfClientSupported"/>, the server will start accpeting connections and the callback will be invoked.
             </summary>
             <param name="clientConnectedCallbackHandler">Customer callback function</param>
             <returns></returns>
@@ -15998,7 +16052,9 @@
         <member name="M:Crestron.SimplSharp.CrestronSockets.SecureTCPServer.WaitForConnectionsAlways(Crestron.SimplSharp.CrestronSockets.SecureTCPServerClientConnectCallback)">
             <summary>
             Function that accepts all incoming connections and triggers the given callback per connection that is accepted.
-            This will stop running once the Max socket number is reached.
+            Once the server reaches the maximum number of connections as specified by the <see cref="P:Crestron.SimplSharp.CrestronSockets.SecureTCPServer.MaxNumberOfClientSupported"/>, the server will accept the connection
+            but will then disconnect since the maximum count has been reached. The callback will not be invoked in this case. Once the <see cref="P:Crestron.SimplSharp.CrestronSockets.SecureTCPServer.NumberOfClientsConnected"/> 
+            drops below the <see cref="P:Crestron.SimplSharp.CrestronSockets.SecureTCPServer.MaxNumberOfClientSupported"/>, the server will start accpeting connections and the callback will be invoked.
             </summary>
             <param name="clientConnectedCallbackHandler">Customer callback function</param>
             <returns></returns>
@@ -27713,6 +27769,15 @@
             <param name="response">The response stream as user data</param>
             <returns>The number of items delivered</returns>
         </member>
+        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.ResponseCallbackFunc2(System.IntPtr,System.Int32,System.Int32,System.IntPtr)">
+            <summary>
+            CallBack Stream for incomming data (response)
+            </summary>
+            <param name="buffer">the data stream</param>
+            <param name="size">size of item</param>
+            <param name="nmemb">the number of items to deliver</param>
+            <returns>The number of items delivered</returns>
+        </member>
         <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.RequestStream(System.IntPtr,System.Int32,System.Int32,System.IntPtr)">
             <summary>
             Callback Function to output the Stream Content
@@ -27763,6 +27828,15 @@
             <param name="response">The response stream as user data</param>
             <returns>The number of items delivered</returns>
         </member>
+        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.HeaderCallbackFunc2(System.IntPtr,System.Int32,System.Int32,System.IntPtr)">
+            <summary>
+            CallBack Stream for incomming data (response)
+            </summary>
+            <param name="buffer">the data stream</param>
+            <param name="size">size of item</param>
+            <param name="nmemb">the number of items to deliver</param>
+            <returns>The number of items delivered</returns>
+        </member>
         <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.StreamWrite(System.Byte[],System.Int32,System.Int32)">
             <summary>
             Send data to the Data Socket Connection until the specified size is reached.
@@ -27800,6 +27874,15 @@
             <param name="size">size of item</param>
             <param name="nmemb">the number of items to deliver</param>
             <param name="request">The request stream as user data</param>
+            <returns>The number of items delivered</returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.RequestCallbackFunc2(System.IntPtr,System.Int32,System.Int32,System.IntPtr)">
+            <summary>
+            CallBack Stream for outgoing data (request)
+            </summary>
+            <param name="buffer">the data stream</param>
+            <param name="size">size of item</param>
+            <param name="nmemb">the number of items to deliver</param>
             <returns>The number of items delivered</returns>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.#cctor">
@@ -28339,7 +28422,7 @@
             87 if invalid parameter was passed.
             </returns>
         </member>
-        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.DispatchRequest(Crestron.SimplSharp.CrestronFileTransferClient.FTCCmdRequest,System.String,System.Object,System.Object)">
+        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.DispatchRequest(Crestron.SimplSharp.CrestronFileTransferClient.FTCCmdRequest,System.String,Crestron.SimplSharp.CrestronIO.Stream,Crestron.SimplSharp.CrestronIO.Stream)">
             <summary>
             Sends a get/put message to the url
             </summary>
@@ -28353,7 +28436,17 @@
             87 if invalid parameter was passed.
             </returns>
         </member>
-        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.DispatchRequest(System.IntPtr,Crestron.SimplSharp.CrestronFileTransferClient.FTCCmdRequest,System.String,System.Object,System.Object)">
+        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.DispatchRequestCF(Crestron.SimplSharp.CrestronFileTransferClient.FTCCmdRequest,System.String,Crestron.SimplSharp.CrestronIO.Stream,Crestron.SimplSharp.CrestronIO.Stream)">
+            <summary>
+            Sends a get/put message to the url
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.DispatchRequestMono(Crestron.SimplSharp.CrestronFileTransferClient.FTCCmdRequest,System.String,Crestron.SimplSharp.CrestronIO.Stream,Crestron.SimplSharp.CrestronIO.Stream)">
+            <summary>
+            Sends a get/put message to the url
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.DispatchRequestCF(System.IntPtr,Crestron.SimplSharp.CrestronFileTransferClient.FTCCmdRequest,System.String,System.Object,System.Object)">
             <summary>
             Sends a get/put message to the url
             </summary>
@@ -28362,6 +28455,15 @@
             <param name="url">The location</param>
             <param name="request">request out stream</param>
             <param name="response">response in stream</param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.DispatchRequestMono(System.IntPtr,Crestron.SimplSharp.CrestronFileTransferClient.FTCCmdRequest,System.String)">
+            <summary>
+            Sends a get/put message to the url
+            </summary>
+            <param name="pFunc">response callback</param>
+            <param name="cmdRequest">The type of action</param>
+            <param name="url">The location</param>
             <returns></returns>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.GetLastClientError">

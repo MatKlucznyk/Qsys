@@ -1,11 +1,10 @@
 #SYMBOL_NAME "Qsys Core"
 
-#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 Digital_Input Initialize;
 
-String_Input _skip_, _skip_, _skip_, _skip_, _skip_, Response[1000];
+Buffer_Input _skip_, _skip_, _skip_, _skip_, _skip_, Response[65534];
 
 Digital_Output IsInitialized, IsConnected, IsLoggedIn, IsRedundant, IsEmulator;
 
@@ -28,11 +27,6 @@ Push Initialize
 		processor.Initialize(CoreID, DeploymentHost, Port, Username, Password, UseExternalConnection);
 	else if(DeploymentMode = 0)
 		processor.Initialize(CoreID, TestingHost, Port, Username, Password, UseExternalConnection);
-}
-
-Change Response
-{
-	processor.NewExternalResponse(Response);
 }
 
 Callback Function NewIsRegistered(integer value)
@@ -65,15 +59,46 @@ callback function NewIsLoggedIn(integer status)
 
 callback function NewSendingCommand(string comm)
 {
-	Command = comm;
+	string tx[65534];
+	
+	tx = comm;
+	Command = tx;
+}
+
+/*EventHandler NewSendingCommandEvent(QsysCore sender, SendingCommandEventArgs e)
+{
+	Command = e.Comm;
+}*/
+
+
+callback GatherEventHandler RxGatherHandler(GatherEventArgs e)
+{
+	try
+	{
+		if(e.Results = 0)
+		{
+			processor.NewExternalResponse(e.RxString);		
+		}
+	}
+	catch
+	{   
+		Trace("RxGatherHandler Exception: %s\n", GetExceptionMessage());
+	}
+	ClearBuffer(e.Input);
+	ReArmGatherAsync(e.Input);
 }
 
 Function Main()
-{
+{    
+    if(GatherAsync("\x00", Response, RxGatherHandler, 500) = -1)
+    {
+    }
+	
 	RegisterDelegate(processor, onIsRegistered, NewIsRegistered);  
 	RegisterDelegate(processor, onIsConnected, NewIsConnected);
 	RegisterDelegate(processor, onNewCoreStatus, NewCoreStatus);
 	RegisterDelegate(processor, onIsLoggedIn, NewIsLoggedIn);
+	//RegisterEvent(processor, SendingCommandEvent, NewSendingCommandEvent);
 	RegisterDelegate(processor, onSendingCommand, NewSendingCommand);
 	
 	

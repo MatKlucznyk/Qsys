@@ -2,6 +2,7 @@ namespace QscQsys;
         // class declarations
          class QsysMatrixMixer;
          class QsysRoomCombiner;
+         class SendingCommandEventArgs;
          class QsysCore;
          class QsysPotsController;
          class QsysMeter;
@@ -95,6 +96,7 @@ namespace QscQsys;
         delegate FUNCTION SendingCommand ( SIMPLSHARPSTRING command );
 
         // class events
+        EventHandler SendingCommandEvent ( QsysCore sender, SendingCommandEventArgs e );
 
         // class functions
         FUNCTION Debug ( INTEGER value );

@@ -6,12 +6,11 @@
   Sgntr=UserSPlus
   RelVrs=1
   IntStrVrs=1
-  SPlusVrs=4.05.01
+  SPlusVrs=4.06.00
   CrossCplrVrs=1.3
 [END]
 [BEGIN]
   ObjTp=Hd
-  IncludePath1=C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug
 [END]
 [BEGIN]
   ObjTp=Symbol
@@ -22,7 +21,7 @@
   SmplCName=Qsys Core.usp
   Code=1
   SysRev5=4.000
-  SMWRev=3.00.00
+  SMWRev=4.04.01
   InputCue1=Initialize
   InputSigType1=Digital
   OutputCue1=IsInitialized
