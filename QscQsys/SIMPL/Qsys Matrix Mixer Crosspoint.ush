@@ -29,7 +29,7 @@
   InputSigType2=Digital
   InputCue3=GainUp
   InputSigType3=Digital
-  InputCue4=gainDown
+  InputCue4=GainDown
   InputSigType4=Digital
   OutputCue1=MuteIsOn
   OutputSigType1=Digital
@@ -79,7 +79,8 @@
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
-  SymbolTree=32
+  SymbolTree=46
+  UserSymTreeName=Qsys
   Hint=
   PdfHelp=
   HelpID= 
@@ -119,7 +120,8 @@
   ObjTp=Dp
   H=7
   Tp=1
-  HD=False
+  HD=True
+  DV=1
   NoS=False
   VVS=0
 [END]

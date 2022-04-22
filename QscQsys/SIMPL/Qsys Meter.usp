@@ -1,3 +1,4 @@
+#CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Meter"
 
 #INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
@@ -7,6 +8,13 @@ Analog_output MeterValue;
 
 string_parameter _skip_, CoreID[100], ComponentName[100];
 integer_parameter Index;
+
+#BEGIN_PARAMETER_PROPERTIES CoreID
+   propValidUnits = unitString;
+   propDefaultUnit = unitString;
+   propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
 
 QsysMeter meter;
 

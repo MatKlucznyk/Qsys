@@ -18080,6 +18080,27 @@
             <remarks>Can only execute commands that specify up to (and including) programmer access level.</remarks>
             <exception cref="T:System.NotSupportedException">Feature is unavailable.</exception>
         </member>
+        <member name="M:Crestron.SimplSharp.ICrestronConsole.SendControlSystemCommand(System.String,System.Text.StringBuilder@)">
+            <summary>
+            Function to allow the user to send a console command and receive a response from the control system.
+            </summary>
+            <param name="commandToSend">The console command to send; end line not needed.</param>
+            <param name="pResponse">The controller's response will be stored here. 'null' on failure.</param>
+            <returns>True/False if the command was sent correctly.</returns>
+            <remarks>Can only execute commands that specify up to (and including) programmer access level.</remarks>
+            <exception cref="T:System.NotSupportedException">Feature is unavailable.</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.ICrestronConsole.SendControlSystemCommand(System.String,System.Text.StringBuilder@,System.UInt32)">
+            <summary>
+            Function to allow the user to send a console command and receive a response from the control system.
+            </summary>
+            <param name="commandToSend">The console command to send; end line not needed.</param>
+            <param name="pResponse">The controller's response will be stored here. 'null' on failure.</param>
+            <param name="timeOutInMsec">Timeout in millisec.</param>
+            <returns>True/False if the command was sent correctly.</returns>
+            <remarks>Can only execute commands that specify up to (and including) programmer access level.</remarks>
+            <exception cref="T:System.NotSupportedException">Feature is unavailable.</exception>
+        </member>
         <member name="M:Crestron.SimplSharp.ICrestronConsole.SendControlSystemCommand(System.String,System.String@,System.UInt32)">
             <summary>
             Function to allow the user to send a console command and receive a response from the control system.
@@ -18203,6 +18224,25 @@
             <returns>True/False if the command was sent correctly.</returns>
             <exception cref="T:System.NotSupportedException">This feature is only available in SIMPL# Pro.</exception>
         </member>
+        <member name="M:Crestron.SimplSharp.CrestronConsole.SendControlSystemCommand(System.String,System.Text.StringBuilder@)">
+            <summary>
+            Function to allow the user to send a console command and receive a response from the control system.
+            </summary>
+            <param name="commandToSend">The console command to send; end line not needed.</param>
+            <param name="pResponse">Reference to a string where the controller's response will be stored.</param>
+            <returns>True/False if the command was sent correctly.</returns>
+            <exception cref="T:System.NotSupportedException">This feature is only available in SIMPL# Pro.</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronConsole.SendControlSystemCommand(System.String,System.Text.StringBuilder@,System.UInt32)">
+            <summary>
+            Function to allow the user to send a console command and receive a response from the control system with timeout override (Only available on Mercury).
+            </summary>
+            <param name="commandToSend">The console command to send; end line not needed.</param>
+            <param name="pResponse">Reference to a string where the controller's response will be stored.</param>
+            <param name="timeOutInMsec">The time out in msec.</param>
+            <returns>True/False if the command was sent correctly.</returns>
+            <exception cref="T:System.NotSupportedException">This feature is only available on Mercury products.</exception>
+        </member>
         <member name="M:Crestron.SimplSharp.CrestronConsole.SendControlSystemCommand(System.String,System.String@,System.UInt32)">
             <summary>
             Function to allow the user to send a console command and receive a response from the control system with timeout override (Only available on Mercury).
@@ -18310,6 +18350,27 @@
             <returns>True/False if the command was sent correctly.</returns>
             <exception cref="T:System.NotSupportedException">Feature is unavailable.</exception>
             <remarks>Can only execute commands that specify up to (and including) programmer access level.</remarks>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronConsoleSupportClass.SendControlSystemCommand(System.String,System.Text.StringBuilder@)">
+            <summary>
+            Function to allow the user to send a console command and receive a response from the control system.
+            </summary>
+            <param name="commandToSend">The console command to send; end line not needed.</param>
+            <param name="pResponse">The controller's response will be stored here. 'null' on failure.</param>
+            <returns>True/False if the command was sent correctly.</returns>
+            <exception cref="T:System.NotSupportedException">Feature is unavailable.</exception>
+            <remarks>Can only execute commands that specify up to (and including) programmer access level.</remarks>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronConsoleSupportClass.SendControlSystemCommand(System.String,System.Text.StringBuilder@,System.UInt32)">
+            <summary>
+            Function to allow the user to send a console command and receive a response from the control system with timeout override (Only available on Mercury).
+            </summary>
+            <param name="commandToSend">The console command to send; end line not needed.</param>
+            <param name="pResponse">The controller's response will be stored here. 'null' on failure.</param>
+            <param name="timeOutInMsec">Timeout in Millisec.</param>
+            <returns>True/False if the command was sent correctly.</returns>
+            <exception cref="T:System.NotSupportedException">Feature is unavailable.</exception>
+            <remarks>Can only execute commands that specify up to (and including) programmer access level. Only supported for Mercury</remarks>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronConsoleSupportClass.SendControlSystemCommand(System.String,System.String@,System.UInt32)">
             <summary>
@@ -19051,7 +19112,7 @@
             <returns>eCresnetDiscoveryReturnValues - enum indicating return value</returns>
             <exception cref="T:System.NotSupportedException">Cresnet is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
         </member>
-        <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.ParseString(System.String@,System.Byte@,System.String@,System.UInt32@,System.String@)">
+        <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.ParseString(System.String@,System.Byte@,System.String@,System.UInt32@,System.String@,System.String@)">
             <summary>
             Method to parse the string...
             this is only used for the ReportCresnet currently and not for PPNDIscover
@@ -19275,6 +19336,16 @@
             <param name="TSID">TSID.</param>
             <param name="versionString">Version number.</param>
         </member>
+        <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.DiscoveredDeviceElement.#ctor(System.Byte,System.String,System.UInt32,System.String,System.String)">
+            <summary>
+            Creates a discovered device element.
+            </summary>
+            <param name="cresnetId">Cresnet ID.</param>
+            <param name="ModelName">Model name.</param>
+            <param name="TSID">TSID.</param>
+            <param name="versionString">Version number.</param>
+            <param name="serialString">Universal Serial Number</param>
+        </member>
         <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.DiscoveredDeviceElement.#ctor(System.Byte,System.Byte,System.String,System.UInt32,System.String)">
             <summary>
             Creates a discovered device element.
@@ -19284,6 +19355,17 @@
             <param name="ModelName">Model name.</param>
             <param name="TSID">TSID.</param>
             <param name="versionString">Version number.</param>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.DiscoveredDeviceElement.#ctor(System.Byte,System.Byte,System.String,System.UInt32,System.String,System.String)">
+            <summary>
+            Creates a discovered device element.
+            </summary>
+            <param name="cresnetId">Cresnet ID.</param>
+            <param name="cresnetBranchId">Branch ID.</param>
+            <param name="ModelName">Model name.</param>
+            <param name="TSID">TSID.</param>
+            <param name="versionString">Version number.</param>
+            <param name="serialString">Universal Serial Number</param>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.DiscoveredDeviceElement.ToString">
             <summary>
@@ -19309,6 +19391,11 @@
         <member name="P:Crestron.SimplSharp.CrestronCresnetHelper.DiscoveredDeviceElement.TouchSettableId">
             <summary>
             Device Touch Settable Identification string 
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.CrestronCresnetHelper.DiscoveredDeviceElement.SerialNumber">
+            <summary>
+            Universal Serial Number of the device 
             </summary>
         </member>
         <member name="P:Crestron.SimplSharp.CrestronCresnetHelper.DiscoveredDeviceElement.Version">

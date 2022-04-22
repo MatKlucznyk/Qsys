@@ -6,7 +6,7 @@
   Sgntr=UserSPlus
   RelVrs=1
   IntStrVrs=1
-  SPlusVrs=4.05.01
+  SPlusVrs=4.06.00
   CrossCplrVrs=1.3
 [END]
 [BEGIN]
@@ -34,8 +34,8 @@
   ParamSigType3=String
   ParamCue4=NamedControlName
   ParamSigType4=String
-  ParamCue5=Scaled
-  ParamSigType5=Constant
+  ParamCue5=Scaled,0d,1d
+  ParamSigType5=List
   MinVariableInputs=0
   MaxVariableInputs=0
   MinVariableInputsList2=1
@@ -49,7 +49,8 @@
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
-  SymbolTree=32
+  SymbolTree=46
+  UserSymTreeName=Qsys
   Hint=
   PdfHelp=
   HelpID= 
@@ -86,7 +87,8 @@
   ObjTp=Dp
   H=3
   Tp=1
-  HD=False
+  HD=True
+  DV=1
   NoS=False
   VVS=0
 [END]
@@ -102,11 +104,17 @@
   ObjTp=Dp
   H=5
   Tp=1
-  HD=False
+  HD=True
+  DV=0d
   Sgn=0
   Lng=False
-  NF=63
+  NF=1
   NoS=True
   DNF=1
-  VVS=0
+  VVS=2
+  VN=2
+  Val1=0d
+  Lbl1=No
+  Val2=1d
+  Lbl2=Yes
 [END]

@@ -20,10 +20,12 @@
   Name=Qsys Core
   SmplCName=Qsys Core.usp
   Code=1
-  SysRev5=4.000
+  SysRev5=4.006
   SMWRev=4.04.01
   InputCue1=Initialize
   InputSigType1=Digital
+  InputCue2=UseExternalConnection
+  InputSigType2=Digital
   OutputCue1=IsInitialized
   OutputSigType1=Digital
   OutputCue2=IsConnected
@@ -34,18 +36,16 @@
   OutputSigType4=Digital
   OutputCue5=IsEmulator
   OutputSigType5=Digital
-  InputList2Cue1=[~UNUSED~]
-  InputList2SigType1=Serial
-  InputList2Cue2=[~UNUSED~]
-  InputList2SigType2=Serial
-  InputList2Cue3=[~UNUSED~]
+  InputList2Cue1=DebugMode
+  InputList2SigType1=Analog
+  InputList2Cue2=DeploymentMode
+  InputList2SigType2=Analog
+  InputList2Cue3=TestingHost
   InputList2SigType3=Serial
-  InputList2Cue4=[~UNUSED~]
+  InputList2Cue4=DeploymentHost
   InputList2SigType4=Serial
-  InputList2Cue5=[~UNUSED~]
+  InputList2Cue5=Response
   InputList2SigType5=Serial
-  InputList2Cue6=Response
-  InputList2SigType6=Serial
   OutputList2Cue1=DesignName
   OutputList2SigType1=Serial
   OutputList2Cue2=Command
@@ -65,38 +65,30 @@
   ParamSigType7=Constant
   ParamCue8=[~UNUSED~]
   ParamSigType8=Constant
-  ParamCue9=CoreID
-  ParamSigType9=String
-  ParamCue10=TestingHost
+  ParamCue9=[~UNUSED~]
+  ParamSigType9=Constant
+  ParamCue10=CoreID
   ParamSigType10=String
-  ParamCue11=DeploymentHost
-  ParamSigType11=String
-  ParamCue12=Port
-  ParamSigType12=Constant
-  ParamCue13=DeploymentMode
-  ParamSigType13=Constant
-  ParamCue14=UseExternalConnection
-  ParamSigType14=Constant
-  ParamCue15=DebugMode
-  ParamSigType15=Constant
-  ParamCue16=Username
-  ParamSigType16=String
-  ParamCue17=Password
-  ParamSigType17=String
-  MinVariableInputs=1
-  MaxVariableInputs=1
-  MinVariableInputsList2=6
-  MaxVariableInputsList2=6
+  ParamCue11=Port
+  ParamSigType11=Constant
+  ParamCue12=Username
+  ParamSigType12=String
+  ParamCue13=Password
+  ParamSigType13=String
+  MinVariableInputs=2
+  MaxVariableInputs=2
+  MinVariableInputsList2=5
+  MaxVariableInputsList2=5
   MinVariableOutputs=5
   MaxVariableOutputs=5
   MinVariableOutputsList2=2
   MaxVariableOutputsList2=2
-  MinVariableParams=16
-  MaxVariableParams=16
+  MinVariableParams=12
+  MaxVariableParams=12
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
-  SymbolTree=32
+  SymbolTree=0
   Hint=
   PdfHelp=
   HelpID= 
@@ -107,16 +99,11 @@
   CompilerParamCode5=14
   NumFixedParams=1
   Pp1=1
-  Pp9=9
   Pp10=10
   Pp11=11
   Pp12=12
   Pp13=13
-  Pp14=14
-  Pp15=15
-  Pp16=16
-  Pp17=17
-  MPp=17
+  MPp=13
   NVStorage=10
   ParamSigType1=String
   SmplCInputCue1=o#
@@ -137,14 +124,6 @@
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=9
-  Tp=1
-  HD=False
-  NoS=False
-  VVS=0
-[END]
-[BEGIN]
-  ObjTp=Dp
   H=10
   Tp=1
   HD=False
@@ -156,7 +135,11 @@
   H=11
   Tp=1
   HD=False
-  NoS=False
+  Sgn=0
+  Lng=False
+  NF=63
+  NoS=True
+  DNF=1
   VVS=0
 [END]
 [BEGIN]
@@ -164,60 +147,12 @@
   H=12
   Tp=1
   HD=False
-  Sgn=0
-  Lng=False
-  NF=63
-  NoS=True
-  DNF=1
-  VVS=0
-[END]
-[BEGIN]
-  ObjTp=Dp
-  H=13
-  Tp=1
-  HD=False
-  Sgn=0
-  Lng=False
-  NF=63
-  NoS=True
-  DNF=1
-  VVS=0
-[END]
-[BEGIN]
-  ObjTp=Dp
-  H=14
-  Tp=1
-  HD=False
-  Sgn=0
-  Lng=False
-  NF=63
-  NoS=True
-  DNF=1
-  VVS=0
-[END]
-[BEGIN]
-  ObjTp=Dp
-  H=15
-  Tp=1
-  HD=False
-  Sgn=0
-  Lng=False
-  NF=63
-  NoS=True
-  DNF=1
-  VVS=0
-[END]
-[BEGIN]
-  ObjTp=Dp
-  H=16
-  Tp=1
-  HD=False
   NoS=False
   VVS=0
 [END]
 [BEGIN]
   ObjTp=Dp
-  H=17
+  H=13
   Tp=1
   HD=False
   NoS=False

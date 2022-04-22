@@ -6,7 +6,7 @@
   Sgntr=UserSPlus
   RelVrs=1
   IntStrVrs=1
-  SPlusVrs=4.05.01
+  SPlusVrs=4.06.00
   CrossCplrVrs=1.3
 [END]
 [BEGIN]
@@ -30,7 +30,7 @@
   ParamCue1=[Reference Name]
   ParamCue2=[~UNUSED~]
   ParamSigType2=Constant
-  ParamCue3=COreID
+  ParamCue3=CoreID
   ParamSigType3=String
   ParamCue4=ComponentName
   ParamSigType4=String
@@ -49,7 +49,8 @@
   Expand=expand_separately
   Expand2=expand_separately
   ProgramTree=Logic
-  SymbolTree=32
+  SymbolTree=46
+  UserSymTreeName=Qsys
   Hint=
   PdfHelp=
   HelpID= 
@@ -86,7 +87,8 @@
   ObjTp=Dp
   H=3
   Tp=1
-  HD=False
+  HD=True
+  DV=1
   NoS=False
   VVS=0
 [END]

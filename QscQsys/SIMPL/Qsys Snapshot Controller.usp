@@ -1,3 +1,4 @@
+#CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Snapshot Controller"
 
 #INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
@@ -14,6 +15,13 @@ Integer_Parameter Mode;
 #BEGIN_PARAMETER_PROPERTIES Mode
     propList = { 1d , "LatchRecallSave"} , { 2d , "PulseRecallSave" };
 #END_PARAMETER_PROPERTIES
+
+#BEGIN_PARAMETER_PROPERTIES CoreID
+   propValidUnits = unitString;
+   propDefaultUnit = unitString;
+   propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
 
 QsysSnapshot snapshot;
 

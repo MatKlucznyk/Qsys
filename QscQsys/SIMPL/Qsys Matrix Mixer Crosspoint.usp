@@ -1,9 +1,10 @@
+#CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Matrix Mixer Crosspoint"
 
 #INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
-Digital_Input MuteOn, MuteOff, GainUp, gainDown;
+Digital_Input MuteOn, MuteOff, GainUp, GainDown;
 Analog_Input Gain;
 Digital_Output MuteIsOn, MuteIsOff;
 Analog_Output _skip_,_skip_, GainValue;
@@ -16,6 +17,13 @@ Integer_Parameter Input, Output, GainStep, GainRepeatTime;
 #BEGIN_PARAMETER_PROPERTIES GainRepeatTime
     propValidUnits = unitTime;
 #END_PARAMETER_PROPERTIES
+
+#BEGIN_PARAMETER_PROPERTIES CoreID
+   propValidUnits = unitString;
+   propDefaultUnit = unitString;
+   propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
 
 integer currentGain;
 integer newDirection;
