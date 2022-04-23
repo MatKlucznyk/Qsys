@@ -78,3 +78,15 @@ C:\Users\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp P
 C:\Users\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\ResolveAssemblyReference.cache
 C:\Users\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.dll
 C:\Users\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.pdb
+D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.xml
+D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.dll
+D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.pdb
+D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpCustomAttributesInterface.dll
+D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpExtensions.dll
+D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpHelperInterface.dll
+D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\TCPClient.dll
+D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpSQLHelperInterface.dll
+D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\Newtonsoft.Json.Compact.dll
+D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\ResolveAssemblyReference.cache
+D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.dll
+D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.pdb

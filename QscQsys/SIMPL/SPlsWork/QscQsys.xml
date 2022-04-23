@@ -14,14 +14,6 @@
             Used only for internal methods.
             </summary>
         </member>
-        <member name="M:QscQsys.QsysMatrixMixer.SetCrossPointMute(System.String,System.String,System.Boolean)">
-            <summary>
-            Sets a crosspoint mute ex. *=everything, 1 2 3=channels 1, 2, 3,  1-6=channels 1 through 6, 1-8 !3=channels 1 through 8 except 3, * !3-5=everything but 3 through 5
-            </summary>
-            <param name="inputs">The input channels.</param>
-            <param name="outputs">The output channels.</param>
-            <param name="value">The value of the crosspoint mute.</param>
-        </member>
         <member name="T:QscQsys.QsysCore">
             <summary>
             processor for Q-Sys Cores.
@@ -46,6 +38,14 @@
             <summary>
             Processor disposed state.
             </summary>
+        </member>
+        <member name="M:QscQsys.QsysMatrixMixer.SetCrossPointMute(System.String,System.String,System.Boolean)">
+            <summary>
+            Sets a crosspoint mute ex. *=everything, 1 2 3=channels 1, 2, 3,  1-6=channels 1 through 6, 1-8 !3=channels 1 through 8 except 3, * !3-5=everything but 3 through 5
+            </summary>
+            <param name="inputs">The input channels.</param>
+            <param name="outputs">The output channels.</param>
+            <param name="value">The value of the crosspoint mute.</param>
         </member>
         <member name="M:QscQsys.QsysFader.Initialize(System.String,System.String)">
             <summary>

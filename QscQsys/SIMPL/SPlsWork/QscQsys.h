@@ -1,14 +1,10 @@
 namespace QscQsys;
         // class declarations
-         class QsysMatrixMixer;
          class QsysRoomCombiner;
-         class SendingCommandEventArgs;
-         class QsysCore;
          class QsysPotsController;
-         class QsysMeter;
          class QsysSoftphoneController;
-         class QsysRouter;
-         class QsysMatrixMixerCrosspoint;
+         class QsysCamera;
+         class PtzTypes;
          class GetComponents;
          class ComponentResults;
          class ComponentProperties;
@@ -39,30 +35,17 @@ namespace QscQsys;
          class ListBoxChoice;
          class Logon;
          class LogonParams;
-         class QsysSnapshot;
-         class QsysFader;
-         class QsysNv32hDecoder;
-         class QsysNamedControl;
-         class QsysCamera;
-         class PtzTypes;
          class QsysSignalPresence;
-     class QsysMatrixMixer 
-    {
-        // class delegates
-
-        // class events
-
-        // class functions
-        FUNCTION Initialize ( STRING coreId , STRING Name );
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-        STRING_FUNCTION ToString ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
-    };
-
+         class QsysSnapshot;
+         class SendingCommandEventArgs;
+         class QsysCore;
+         class QsysNv32hDecoder;
+         class QsysMeter;
+         class QsysNamedControl;
+         class QsysMatrixMixer;
+         class QsysRouter;
+         class QsysFader;
+         class QsysMatrixMixerCrosspoint;
      class QsysRoomCombiner 
     {
         // class delegates
@@ -84,41 +67,6 @@ namespace QscQsys;
         DelegateProperty WallStateChange onWallStateChange;
         DelegateProperty RoomCombinedChange onRoomCombinedChange;
         STRING ComponentName[];
-    };
-
-     class QsysCore 
-    {
-        // class delegates
-        delegate FUNCTION IsLoggedIn ( INTEGER value );
-        delegate FUNCTION IsRegistered ( INTEGER value );
-        delegate FUNCTION IsConnectedStatus ( INTEGER value );
-        delegate FUNCTION CoreStatus ( SIMPLSHARPSTRING designName , INTEGER isRedundant , INTEGER isEmulator );
-        delegate FUNCTION SendingCommand ( SIMPLSHARPSTRING command );
-
-        // class events
-        EventHandler SendingCommandEvent ( QsysCore sender, SendingCommandEventArgs e );
-
-        // class functions
-        FUNCTION Debug ( INTEGER value );
-        FUNCTION Initialize ( STRING id , STRING host , INTEGER port , STRING username , STRING password , INTEGER useExternalConnection );
-        FUNCTION NewExternalResponse ( STRING response );
-        FUNCTION Dispose ();
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-        STRING_FUNCTION ToString ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
-        DelegateProperty IsLoggedIn onIsLoggedIn;
-        DelegateProperty IsRegistered onIsRegistered;
-        DelegateProperty IsConnectedStatus onIsConnected;
-        DelegateProperty CoreStatus onNewCoreStatus;
-        DelegateProperty SendingCommand onSendingCommand;
-        INTEGER IsDebugMode;
-        INTEGER MaxLogonAttemps;
-        STRING DesignName[];
-        STRING CoreId[];
     };
 
      class QsysPotsController 
@@ -176,25 +124,6 @@ namespace QscQsys;
         STRING CallStatus[];
     };
 
-     class QsysMeter 
-    {
-        // class delegates
-        delegate FUNCTION MeterChange ( INTEGER meterValue );
-
-        // class events
-
-        // class functions
-        FUNCTION Initialize ( STRING coreId , STRING name , SIGNED_LONG_INTEGER index );
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-        STRING_FUNCTION ToString ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
-        DelegateProperty MeterChange onMeterChange;
-    };
-
      class QsysSoftphoneController 
     {
         // class delegates
@@ -250,16 +179,64 @@ namespace QscQsys;
         STRING CallStatus[];
     };
 
-     class QsysRouter 
+     class QsysCamera 
     {
         // class delegates
-        delegate FUNCTION RouterInputChange ( INTEGER input );
+        delegate FUNCTION PrivacyChange ( INTEGER privacyValue );
+        delegate FUNCTION BrightnessChange ( INTEGER brightnessValue );
+        delegate FUNCTION SaturationChange ( INTEGER saturationValue );
+        delegate FUNCTION SharpnessChange ( INTEGER sharpnessValue );
+        delegate FUNCTION ContrastChange ( INTEGER contrastValue );
+        delegate FUNCTION ExposureModeChange ( SIMPLSHARPSTRING mode );
+        delegate FUNCTION IrisChange ( SIMPLSHARPSTRING irisValue );
+        delegate FUNCTION ShutterChange ( SIMPLSHARPSTRING apertureValue );
+        delegate FUNCTION GainChange ( INTEGER gainValue );
+        delegate FUNCTION AutoWhiteBalanceSensitivityChange ( SIMPLSHARPSTRING awbSens );
+        delegate FUNCTION AutoWhiteBalanceModeChange ( SIMPLSHARPSTRING awbMode );
+        delegate FUNCTION WhiteBalanceHueChange ( INTEGER hueValue );
+        delegate FUNCTION WhiteBalanceRedGainChange ( INTEGER redGainValue );
+        delegate FUNCTION WhiteBalanceBlueGainChange ( INTEGER blueGainValue );
+        delegate FUNCTION AutoFocusChange ( INTEGER value );
 
         // class events
 
         // class functions
-        FUNCTION Initialize ( STRING coreId , STRING Name , SIGNED_LONG_INTEGER output );
-        FUNCTION InputSelect ( SIGNED_LONG_INTEGER input );
+        FUNCTION Initialize ( STRING coreId , STRING name );
+        FUNCTION StartPTZ ( PtzTypes type );
+        FUNCTION StopPTZ ( PtzTypes type );
+        FUNCTION AutoFocus ();
+        FUNCTION FocusNear ();
+        FUNCTION FocusNearStop ();
+        FUNCTION FocusFar ();
+        FUNCTION FocusFarStop ();
+        FUNCTION RecallHome ();
+        FUNCTION SaveHome ();
+        FUNCTION PrivacyToggle ( INTEGER value );
+        FUNCTION Brightness ( SIGNED_LONG_INTEGER value );
+        FUNCTION Saturation ( SIGNED_LONG_INTEGER value );
+        FUNCTION Sharpness ( SIGNED_LONG_INTEGER value );
+        FUNCTION Contrast ( SIGNED_LONG_INTEGER value );
+        FUNCTION ExposureMode ( STRING value );
+        FUNCTION Iris ( STRING value );
+        FUNCTION Shutter ( STRING value );
+        FUNCTION Gain ( SIGNED_LONG_INTEGER value );
+        FUNCTION AutoWhiteBalanceMode ( STRING value );
+        FUNCTION AutoWhiteBalanceSensitivity ( STRING value );
+        FUNCTION Hue ( SIGNED_LONG_INTEGER value );
+        FUNCTION RedGain ( SIGNED_LONG_INTEGER value );
+        FUNCTION BlueGain ( SIGNED_LONG_INTEGER value );
+        FUNCTION TiltUp ();
+        FUNCTION StopTiltUp ();
+        FUNCTION TiltDown ();
+        FUNCTION StopTiltDown ();
+        FUNCTION PanLeft ();
+        FUNCTION StopPanLeft ();
+        FUNCTION PanRight ();
+        FUNCTION StopPanRight ();
+        FUNCTION ZoomIn ();
+        FUNCTION StopZoomIn ();
+        FUNCTION ZoomOut ();
+        FUNCTION StopZoomOut ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
         STRING_FUNCTION ToString ();
 
@@ -267,32 +244,31 @@ namespace QscQsys;
         INTEGER __class_id__;
 
         // class properties
-        DelegateProperty RouterInputChange newRouterInputChange;
-        STRING ComponentName[];
-        SIGNED_LONG_INTEGER CurrentSelectedInput;
+        DelegateProperty PrivacyChange onPrivacyChange;
+        DelegateProperty BrightnessChange onBrightnessChange;
+        DelegateProperty SaturationChange onSaturationChange;
+        DelegateProperty SharpnessChange onSharpnessChange;
+        DelegateProperty ContrastChange onContrastChange;
+        DelegateProperty ExposureModeChange onExposureModeChange;
+        DelegateProperty IrisChange onIrisChange;
+        DelegateProperty ShutterChange onShutterChange;
+        DelegateProperty GainChange onGainChange;
+        DelegateProperty AutoWhiteBalanceSensitivityChange onAutoWhiteBalanceSensitivityChange;
+        DelegateProperty AutoWhiteBalanceModeChange onAutoWhiteBalanceModeChange;
+        DelegateProperty WhiteBalanceHueChange onWhiteBalanceHueChange;
+        DelegateProperty WhiteBalanceRedGainChange onWhiteBalanceRedGainChange;
+        DelegateProperty WhiteBalanceBlueGainChange onWhiteBalanceBlueGainChange;
+        DelegateProperty AutoFocusChange onAutoFocusChange;
     };
 
-     class QsysMatrixMixerCrosspoint 
+    static class PtzTypes // enum
     {
-        // class delegates
-        delegate FUNCTION CrossPointValueChange ( INTEGER value );
-        delegate FUNCTION CrossPointGainChange ( INTEGER value );
-
-        // class events
-
-        // class functions
-        FUNCTION Initialize ( STRING coreId , STRING name , INTEGER input , INTEGER output );
-        FUNCTION SetCrossPoint ( INTEGER value );
-        FUNCTION SetCrossPointGain ( SIGNED_LONG_INTEGER value );
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-        STRING_FUNCTION ToString ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
-        DelegateProperty CrossPointValueChange newCrossPointValueChange;
-        DelegateProperty CrossPointGainChange newCrossPointGainChange;
+        static SIGNED_LONG_INTEGER Up;
+        static SIGNED_LONG_INTEGER Down;
+        static SIGNED_LONG_INTEGER Left;
+        static SIGNED_LONG_INTEGER Right;
+        static SIGNED_LONG_INTEGER ZoomIn;
+        static SIGNED_LONG_INTEGER ZoomOut;
     };
 
      class GetComponents 
@@ -813,191 +789,6 @@ namespace QscQsys;
         STRING Password[];
     };
 
-     class QsysSnapshot 
-    {
-        // class delegates
-        delegate FUNCTION RecalledSnapshot ( INTEGER snapshot );
-        delegate FUNCTION UnrecalledSnapshot ( INTEGER snapshot );
-
-        // class events
-
-        // class functions
-        FUNCTION Initialize ( STRING coreId , STRING name );
-        FUNCTION LoadSnapshot ( INTEGER number );
-        FUNCTION SaveSnapshot ( INTEGER number );
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-        STRING_FUNCTION ToString ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
-        DelegateProperty RecalledSnapshot onRecalledSnapshot;
-        DelegateProperty UnrecalledSnapshot onUnrecalledSnapshot;
-    };
-
-     class QsysFader 
-    {
-        // class delegates
-        delegate FUNCTION VolumeChange ( INTEGER value );
-        delegate FUNCTION MuteChange ( INTEGER value );
-
-        // class events
-
-        // class functions
-        FUNCTION Initialize ( STRING coreId , STRING Name );
-        FUNCTION Volume ( SIGNED_LONG_INTEGER value );
-        FUNCTION Mute ( INTEGER value );
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-        STRING_FUNCTION ToString ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
-        DelegateProperty VolumeChange newVolumeChange;
-        DelegateProperty MuteChange newMuteChange;
-        STRING ComponentName[];
-        SIGNED_LONG_INTEGER CurrentVolume;
-    };
-
-     class QsysNv32hDecoder 
-    {
-        // class delegates
-        delegate FUNCTION Nv32hDecoderInputChange ( INTEGER input );
-
-        // class events
-
-        // class functions
-        FUNCTION Initialize ( STRING coreId , STRING Name );
-        FUNCTION ChangeInput ( SIGNED_LONG_INTEGER source );
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-        STRING_FUNCTION ToString ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
-        DelegateProperty Nv32hDecoderInputChange newNv32hDecoderInputChange;
-        STRING ComponentName[];
-        SIGNED_LONG_INTEGER CurrentSource;
-    };
-
-     class QsysNamedControl 
-    {
-        // class delegates
-        delegate FUNCTION NamedControlChange ( INTEGER intData , SIMPLSHARPSTRING stringData );
-
-        // class events
-
-        // class functions
-        FUNCTION Initialize ( STRING coreId , STRING Name , INTEGER type );
-        FUNCTION SetInteger ( SIGNED_LONG_INTEGER value , SIGNED_LONG_INTEGER scaled );
-        FUNCTION SetString ( STRING value );
-        FUNCTION SetBoolean ( SIGNED_LONG_INTEGER value );
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-        STRING_FUNCTION ToString ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
-        DelegateProperty NamedControlChange newNamedControlChange;
-        STRING ComponentName[];
-    };
-
-     class QsysCamera 
-    {
-        // class delegates
-        delegate FUNCTION PrivacyChange ( INTEGER privacyValue );
-        delegate FUNCTION BrightnessChange ( INTEGER brightnessValue );
-        delegate FUNCTION SaturationChange ( INTEGER saturationValue );
-        delegate FUNCTION SharpnessChange ( INTEGER sharpnessValue );
-        delegate FUNCTION ContrastChange ( INTEGER contrastValue );
-        delegate FUNCTION ExposureModeChange ( SIMPLSHARPSTRING mode );
-        delegate FUNCTION IrisChange ( SIMPLSHARPSTRING irisValue );
-        delegate FUNCTION ShutterChange ( SIMPLSHARPSTRING apertureValue );
-        delegate FUNCTION GainChange ( INTEGER gainValue );
-        delegate FUNCTION AutoWhiteBalanceSensitivityChange ( SIMPLSHARPSTRING awbSens );
-        delegate FUNCTION AutoWhiteBalanceModeChange ( SIMPLSHARPSTRING awbMode );
-        delegate FUNCTION WhiteBalanceHueChange ( INTEGER hueValue );
-        delegate FUNCTION WhiteBalanceRedGainChange ( INTEGER redGainValue );
-        delegate FUNCTION WhiteBalanceBlueGainChange ( INTEGER blueGainValue );
-        delegate FUNCTION AutoFocusChange ( INTEGER value );
-
-        // class events
-
-        // class functions
-        FUNCTION Initialize ( STRING coreId , STRING name );
-        FUNCTION StartPTZ ( PtzTypes type );
-        FUNCTION StopPTZ ( PtzTypes type );
-        FUNCTION AutoFocus ();
-        FUNCTION FocusNear ();
-        FUNCTION FocusNearStop ();
-        FUNCTION FocusFar ();
-        FUNCTION FocusFarStop ();
-        FUNCTION RecallHome ();
-        FUNCTION SaveHome ();
-        FUNCTION PrivacyToggle ( INTEGER value );
-        FUNCTION Brightness ( SIGNED_LONG_INTEGER value );
-        FUNCTION Saturation ( SIGNED_LONG_INTEGER value );
-        FUNCTION Sharpness ( SIGNED_LONG_INTEGER value );
-        FUNCTION Contrast ( SIGNED_LONG_INTEGER value );
-        FUNCTION ExposureMode ( STRING value );
-        FUNCTION Iris ( STRING value );
-        FUNCTION Shutter ( STRING value );
-        FUNCTION Gain ( SIGNED_LONG_INTEGER value );
-        FUNCTION AutoWhiteBalanceMode ( STRING value );
-        FUNCTION AutoWhiteBalanceSensitivity ( STRING value );
-        FUNCTION Hue ( SIGNED_LONG_INTEGER value );
-        FUNCTION RedGain ( SIGNED_LONG_INTEGER value );
-        FUNCTION BlueGain ( SIGNED_LONG_INTEGER value );
-        FUNCTION TiltUp ();
-        FUNCTION StopTiltUp ();
-        FUNCTION TiltDown ();
-        FUNCTION StopTiltDown ();
-        FUNCTION PanLeft ();
-        FUNCTION StopPanLeft ();
-        FUNCTION PanRight ();
-        FUNCTION StopPanRight ();
-        FUNCTION ZoomIn ();
-        FUNCTION StopZoomIn ();
-        FUNCTION ZoomOut ();
-        FUNCTION StopZoomOut ();
-        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
-        STRING_FUNCTION ToString ();
-
-        // class variables
-        INTEGER __class_id__;
-
-        // class properties
-        DelegateProperty PrivacyChange onPrivacyChange;
-        DelegateProperty BrightnessChange onBrightnessChange;
-        DelegateProperty SaturationChange onSaturationChange;
-        DelegateProperty SharpnessChange onSharpnessChange;
-        DelegateProperty ContrastChange onContrastChange;
-        DelegateProperty ExposureModeChange onExposureModeChange;
-        DelegateProperty IrisChange onIrisChange;
-        DelegateProperty ShutterChange onShutterChange;
-        DelegateProperty GainChange onGainChange;
-        DelegateProperty AutoWhiteBalanceSensitivityChange onAutoWhiteBalanceSensitivityChange;
-        DelegateProperty AutoWhiteBalanceModeChange onAutoWhiteBalanceModeChange;
-        DelegateProperty WhiteBalanceHueChange onWhiteBalanceHueChange;
-        DelegateProperty WhiteBalanceRedGainChange onWhiteBalanceRedGainChange;
-        DelegateProperty WhiteBalanceBlueGainChange onWhiteBalanceBlueGainChange;
-        DelegateProperty AutoFocusChange onAutoFocusChange;
-    };
-
-    static class PtzTypes // enum
-    {
-        static SIGNED_LONG_INTEGER Up;
-        static SIGNED_LONG_INTEGER Down;
-        static SIGNED_LONG_INTEGER Left;
-        static SIGNED_LONG_INTEGER Right;
-        static SIGNED_LONG_INTEGER ZoomIn;
-        static SIGNED_LONG_INTEGER ZoomOut;
-    };
-
      class QsysSignalPresence 
     {
         // class delegates
@@ -1027,5 +818,214 @@ namespace QscQsys;
         DelegateProperty HoldTimeChange newHoldTimeChange;
         DelegateProperty InfiniteHoldChange newInfiniteHoldChange;
         STRING ComponentName[];
+    };
+
+     class QsysSnapshot 
+    {
+        // class delegates
+        delegate FUNCTION RecalledSnapshot ( INTEGER snapshot );
+        delegate FUNCTION UnrecalledSnapshot ( INTEGER snapshot );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING coreId , STRING name );
+        FUNCTION LoadSnapshot ( INTEGER number );
+        FUNCTION SaveSnapshot ( INTEGER number );
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty RecalledSnapshot onRecalledSnapshot;
+        DelegateProperty UnrecalledSnapshot onUnrecalledSnapshot;
+    };
+
+     class QsysCore 
+    {
+        // class delegates
+        delegate FUNCTION IsLoggedIn ( INTEGER value );
+        delegate FUNCTION IsRegistered ( INTEGER value );
+        delegate FUNCTION IsConnectedStatus ( INTEGER value );
+        delegate FUNCTION CoreStatus ( SIMPLSHARPSTRING designName , INTEGER isRedundant , INTEGER isEmulator );
+        delegate FUNCTION SendingCommand ( SIMPLSHARPSTRING command );
+
+        // class events
+        EventHandler SendingCommandEvent ( QsysCore sender, SendingCommandEventArgs e );
+
+        // class functions
+        FUNCTION Debug ( INTEGER value );
+        FUNCTION Initialize ( STRING id , STRING host , INTEGER port , STRING username , STRING password , INTEGER useExternalConnection );
+        FUNCTION NewExternalResponse ( STRING response );
+        FUNCTION Dispose ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty IsLoggedIn onIsLoggedIn;
+        DelegateProperty IsRegistered onIsRegistered;
+        DelegateProperty IsConnectedStatus onIsConnected;
+        DelegateProperty CoreStatus onNewCoreStatus;
+        DelegateProperty SendingCommand onSendingCommand;
+        INTEGER IsDebugMode;
+        INTEGER MaxLogonAttemps;
+        STRING DesignName[];
+        STRING CoreId[];
+    };
+
+     class QsysNv32hDecoder 
+    {
+        // class delegates
+        delegate FUNCTION Nv32hDecoderInputChange ( INTEGER input );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING coreId , STRING Name );
+        FUNCTION ChangeInput ( SIGNED_LONG_INTEGER source );
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty Nv32hDecoderInputChange newNv32hDecoderInputChange;
+        STRING ComponentName[];
+        SIGNED_LONG_INTEGER CurrentSource;
+    };
+
+     class QsysMeter 
+    {
+        // class delegates
+        delegate FUNCTION MeterChange ( INTEGER meterValue );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING coreId , STRING name , SIGNED_LONG_INTEGER index );
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty MeterChange onMeterChange;
+    };
+
+     class QsysNamedControl 
+    {
+        // class delegates
+        delegate FUNCTION NamedControlChange ( INTEGER intData , SIMPLSHARPSTRING stringData );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING coreId , STRING Name , INTEGER type );
+        FUNCTION SetInteger ( SIGNED_LONG_INTEGER value , SIGNED_LONG_INTEGER scaled );
+        FUNCTION SetString ( STRING value );
+        FUNCTION SetBoolean ( SIGNED_LONG_INTEGER value );
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty NamedControlChange newNamedControlChange;
+        STRING ComponentName[];
+    };
+
+     class QsysMatrixMixer 
+    {
+        // class delegates
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING coreId , STRING Name );
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+    };
+
+     class QsysRouter 
+    {
+        // class delegates
+        delegate FUNCTION RouterInputChange ( INTEGER input );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING coreId , STRING Name , SIGNED_LONG_INTEGER output );
+        FUNCTION InputSelect ( SIGNED_LONG_INTEGER input );
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty RouterInputChange newRouterInputChange;
+        STRING ComponentName[];
+        SIGNED_LONG_INTEGER CurrentSelectedInput;
+    };
+
+     class QsysFader 
+    {
+        // class delegates
+        delegate FUNCTION VolumeChange ( INTEGER value );
+        delegate FUNCTION MuteChange ( INTEGER value );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING coreId , STRING Name );
+        FUNCTION Volume ( SIGNED_LONG_INTEGER value );
+        FUNCTION Mute ( INTEGER value );
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty VolumeChange newVolumeChange;
+        DelegateProperty MuteChange newMuteChange;
+        STRING ComponentName[];
+        SIGNED_LONG_INTEGER CurrentVolume;
+    };
+
+     class QsysMatrixMixerCrosspoint 
+    {
+        // class delegates
+        delegate FUNCTION CrossPointValueChange ( INTEGER value );
+        delegate FUNCTION CrossPointGainChange ( INTEGER value );
+
+        // class events
+
+        // class functions
+        FUNCTION Initialize ( STRING coreId , STRING name , INTEGER input , INTEGER output );
+        FUNCTION SetCrossPoint ( INTEGER value );
+        FUNCTION SetCrossPointGain ( SIGNED_LONG_INTEGER value );
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+        STRING_FUNCTION ToString ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        DelegateProperty CrossPointValueChange newCrossPointValueChange;
+        DelegateProperty CrossPointGainChange newCrossPointGainChange;
     };
 

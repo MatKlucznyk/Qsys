@@ -20,7 +20,7 @@
   Name=Qsys Core
   SmplCName=Qsys Core.usp
   Code=1
-  SysRev5=4.000
+  SysRev5=4.006
   SMWRev=4.04.01
   InputCue1=Initialize
   InputSigType1=Digital
