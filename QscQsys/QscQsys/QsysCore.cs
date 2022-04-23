@@ -38,14 +38,14 @@ namespace QscQsys
         public SendingCommand onSendingCommand { get; set; }
         #endregion
 
-        private CrestronQueue<string> commandQueue;
-        private CrestronQueue<string> responseQueue;
+        private readonly CrestronQueue<string> commandQueue = new CrestronQueue<string>();
+        private readonly CrestronQueue<string> responseQueue = new CrestronQueue<string>();
         private CTimer commandQueueTimer;
         private CTimer responseQueueTimer;
         private CTimer heartbeatTimer;
         private CTimer waitForConnection;
         private TCPClientDevice client;
-
+        private readonly object parseLock = new object();
         private bool isInitialized;
         private bool isLoggedIn;
         private bool isDisposed;
@@ -214,8 +214,6 @@ namespace QscQsys
                     if (debug == 1)
                         ErrorLog.Notice("QsysProcessor is initializing.");
 
-                    commandQueue = new CrestronQueue<string>();
-                    responseQueue = new CrestronQueue<string>();
                     commandQueueTimer = new CTimer(CommandQueueDequeue, null, 0, 50);
                     responseQueueTimer = new CTimer(ResponseQueueDequeue, null, 0, 50);
 
@@ -347,7 +345,7 @@ namespace QscQsys
         #region Parsing
         StringBuilder RxData = new StringBuilder();
         bool busy = false;
-        int Pos = -1;
+        //int Pos = -1;
         private void ResponseQueueDequeue(object o)
         {
             try
@@ -355,23 +353,40 @@ namespace QscQsys
                 if (!responseQueue.IsEmpty)
                 {
                     // removes string from queue, blocks until an item is queued
-                    string tmpString = responseQueue.TryToDequeue();
+                    string tmpString = responseQueue.Dequeue();
 
-                    RxData.Append(tmpString); //Append received data to the COM buffer
-
-                    if (!busy && RxData.Length > 0 && RxData.ToString().Contains("\x00"))
+                    lock (parseLock)
+                    {
+                        RxData.Append(tmpString); //Append received data to the COM buffer
+                    }
+                    
+                    if (!busy)
                     {
                         busy = true;
+                        //var data = string.Empty;
+
                         while (RxData.ToString().Contains("\x00"))
                         {
+                            var responseData = string.Empty;
+
+                            lock (parseLock)
+                            {
+                                responseData = RxData.ToString();
+                                var delimeterPos = responseData.IndexOf("\x00");
+                                responseData = responseData.Substring(0, delimeterPos);
+                                RxData.Remove(0, delimeterPos + 1);
+                            }
+
+                            /*
                             Pos = RxData.ToString().IndexOf("\x00");
                             var data = RxData.ToString().Substring(0, Pos + 1);
                             var garbage = RxData.Remove(0, Pos + 1); // remove data from COM buffer
+                             * */
 
                             if (debug == 2)
-                                CrestronConsole.PrintLine("Response found ** {0} **", data);
+                                CrestronConsole.PrintLine("Response found ** {0} **", responseData);
 
-                            ParseInternalResponse(data);
+                            ParseInternalResponse(responseData);
                         }
 
                         busy = false;

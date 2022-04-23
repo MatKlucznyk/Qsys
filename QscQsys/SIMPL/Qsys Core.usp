@@ -23,7 +23,7 @@ integer waitTillStart;
 
 QsysCore processor;
 
-Push Initialize
+threadsafe Push Initialize
 {                
 	while(!waitTillStart)
 	{}
