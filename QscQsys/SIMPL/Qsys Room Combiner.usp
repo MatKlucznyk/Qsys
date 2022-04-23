@@ -1,0 +1,54 @@
+#CATEGORY "46" "Qsys" // Custom
+#SYMBOL_NAME "Qsys Room Combiner"
+
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+Digital_Input WallOpen[3];
+
+Digital_Output WallOpenState[3], RoomCombined[4];
+
+String_Parameter _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, CoreID[100], ComponentName[100];
+Integer_Parameter TotalWalls, TotalRooms;
+
+#BEGIN_PARAMETER_PROPERTIES CoreID
+   propValidUnits = unitString;
+   propDefaultUnit = unitString;
+   propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
+
+QsysRoomCombiner combiner;
+
+Push WallOpen
+{
+    integer x;
+
+    x = GetLastModifiedArrayIndex();
+    combiner.SetWall(x, 1);
+}
+
+Release WallOpen 
+{
+    integer x;
+
+    x = GetLastModifiedArrayIndex();
+    combiner.SetWall(x, 0);
+}
+
+
+callback function NewWallStateChange(string cName, integer wall, integer value)
+{
+    WallOpenState[wall] = value;
+}
+
+callback function NewRoomCombinedStateChanged(string cName, integer room, integer value)
+{
+    RoomCombined[room] = value;
+}
+
+Function Main()
+{
+    RegisterDelegate(combiner, onWallStateChange, NewWallStateChange);
+    RegisterDelegate(combiner, onRoomCombinedChange, NewRoomCombinedStateChanged);
+    combiner.Initialize(CoreID, ComponentName, TotalRooms, TotalWalls);
+}

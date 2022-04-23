@@ -1,0 +1,84 @@
+#CATEGORY "46" "Qsys" // Custom
+#SYMBOL_NAME "Qsys Snapshot Controller"
+
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+Digital_Input Load, Save;
+Analog_Input Number;
+
+Digital_Output SnapshotActive[8,8];
+
+String_Parameter _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, CoreID[100], ComponentName[100];
+Integer_Parameter Mode;
+
+#BEGIN_PARAMETER_PROPERTIES Mode
+    propList = { 1d , "LatchRecallSave"} , { 2d , "PulseRecallSave" };
+#END_PARAMETER_PROPERTIES
+
+#BEGIN_PARAMETER_PROPERTIES CoreID
+   propValidUnits = unitString;
+   propDefaultUnit = unitString;
+   propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
+
+QsysSnapshot snapshot;
+
+Threadsafe Change Number
+{
+    integer x;
+
+    if(Mode = 1)
+    {
+        while(x != Number)
+        {
+            x = Number;
+
+            if(Load)
+            {
+                snapshot.LoadSnapshot(x);
+            }
+            else if (Save)
+            {
+                snapshot.SaveSnapshot(x);
+            }
+        }
+    }
+}
+
+Push Load
+{
+    if(Mode = 2)
+    {
+        snapshot.LoadSnapshot(Number);
+    }
+}
+
+Push Save
+{
+    if(Mode = 2)
+    {
+        snapshot.SaveSnapshot(Number);
+    }
+}
+
+callback function NewRecalledSnapshot(string cName, integer ss)
+{
+    SnapshotActive[ss] = ON;
+}
+
+callback function NewUnRecalledSnapshot(string cName, integer ss)
+{
+    SnapshotActive[ss] = OFF;
+}
+
+Function Main()
+{
+    RegisterDelegate(snapshot, onRecalledSnapshot, NewRecalledSnapshot);
+    RegisterDelegate(snapshot, onUnrecalledSnapshot, NewUnRecalledSnapshot);
+    
+    
+    
+
+    snapshot.Initialize(CoreID, ComponentName);
+}

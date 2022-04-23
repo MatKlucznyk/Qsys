@@ -1,0 +1,48 @@
+#CATEGORY "46" "Qsys" // Custom
+#SYMBOL_NAME "Qsys Generic String Named Control"
+
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+string_input SetStringValue[255];
+
+string_Output StringValue;
+
+string_parameter  _skip_, CoreID[100], NamedControlName[100];
+
+#BEGIN_PARAMETER_PROPERTIES CoreID
+   propValidUnits = unitString;
+   propDefaultUnit = unitString;
+   propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
+
+QsysNamedControl stringControl;
+
+threadsafe change SetStringValue
+{
+    string x[255];
+
+    if(SetStringValue = "")
+    {
+        stringControl.SetString("");
+    }
+    else
+    {
+        while(x != SetStringValue)
+        {
+            x = SetStringValue;
+            stringControl.SetString(x);
+        }
+    }
+}
+
+callback function NewStringChange(string cName, integer x, string value)
+{
+    StringValue = value;
+}
+
+function Main()
+{
+    RegisterDelegate(stringControl, newNamedControlChange, NewStringChange);
+    stringControl.Initialize(CoreID, NamedControlName, 0);
+}

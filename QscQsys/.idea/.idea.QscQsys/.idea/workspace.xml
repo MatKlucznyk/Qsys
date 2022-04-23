@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="651f376e-2b9c-4b00-bdfb-ded3d43828b7" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/Q-Sys Designer File/Test.qsys" beforeDir="false" afterPath="$PROJECT_DIR$/Q-Sys Designer File/Test.qsys" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QscQsys.suo" beforeDir="false" afterPath="$PROJECT_DIR$/QscQsys.suo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QscQsys/QscQsys.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/QscQsys/QscQsys.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QscQsys/QscQsys.projectinfo" beforeDir="false" afterPath="$PROJECT_DIR$/QscQsys/QscQsys.projectinfo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QscQsys/QsysCore.cs" beforeDir="false" afterPath="$PROJECT_DIR$/QscQsys/QsysCore.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QscQsys/bin/Debug/QscQsys.clz" beforeDir="false" afterPath="$PROJECT_DIR$/QscQsys/bin/Debug/QscQsys.clz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QscQsys/bin/Debug/QscQsys.config" beforeDir="false" afterPath="$PROJECT_DIR$/QscQsys/bin/Debug/QscQsys.config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QscQsys/bin/Debug/QscQsys.dll" beforeDir="false" afterPath="$PROJECT_DIR$/QscQsys/bin/Debug/QscQsys.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QscQsys/bin/Debug/QscQsys.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/QscQsys/bin/Debug/QscQsys.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QscQsys/bin/Debug/TCPClient.dll" beforeDir="false" afterPath="$PROJECT_DIR$/QscQsys/bin/Debug/TCPClient.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QscQsys/bin/Debug/manifest.info" beforeDir="false" afterPath="$PROJECT_DIR$/QscQsys/bin/Debug/manifest.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QscQsys/bin/Debug/manifest.ser" beforeDir="false" afterPath="$PROJECT_DIR$/QscQsys/bin/Debug/manifest.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QscQsys/obj/Debug/QscQsys.dll" beforeDir="false" afterPath="$PROJECT_DIR$/QscQsys/obj/Debug/QscQsys.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QscQsys/obj/Debug/QscQsys.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/QscQsys/obj/Debug/QscQsys.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QscQsys/obj/Debug/ResolveAssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/QscQsys/obj/Debug/ResolveAssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/4 Series Test.lpz" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/4 Series Test.lpz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/4 Series Test.lpz.hash" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/4 Series Test.lpz.hash" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/4 Series Test.smw" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/4 Series Test.smw" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/4 Series Test_compiled.zip" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/4 Series Test_compiled.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/QscQsys.clz" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/QscQsys.clz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/QscQsys.dll" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/QscQsys.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/SPlsWork/QscQsys.dll" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/SPlsWork/QscQsys.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/SPlsWork/QscQsys.inf" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/SPlsWork/QscQsys.inf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/SPlsWork/Qsys Fader.inf" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/SPlsWork/Qsys Fader.inf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/SPlsWork/Qsys Generic Boolean Named Control.inf" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/SPlsWork/Qsys Generic Boolean Named Control.inf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/SPlsWork/Qsys Generic Integer Named Control.inf" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/SPlsWork/Qsys Generic Integer Named Control.inf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/SPlsWork/Qsys Generic String Named Control.inf" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/SPlsWork/Qsys Generic String Named Control.inf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/SPlsWork/Qsys Nv32h Decoder.inf" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/SPlsWork/Qsys Nv32h Decoder.inf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/SPlsWork/Qsys Pots Controller.inf" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/SPlsWork/Qsys Pots Controller.inf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/SPlsWork/Qsys Router.inf" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/SPlsWork/Qsys Router.inf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/SPlsWork/Qsys Softphone Controller.inf" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/SPlsWork/Qsys Softphone Controller.inf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/SPlsWork/SimplSharpCustomAttributesInterface.dll" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/SPlsWork/SimplSharpCustomAttributesInterface.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/SPlsWork/SimplSharpExtensions.inf" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/SPlsWork/SimplSharpExtensions.inf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/SPlsWork/SimplSharpHelperInterface.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/SPlsWork/SimplSharpHelperInterface.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/SPlsWork/SimplSharpReflectionInterface.dll" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/SPlsWork/SimplSharpReflectionInterface.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/SPlsWork/TCPClient.dll" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/SPlsWork/TCPClient.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/SPlsWork/TCPClient.h" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/SPlsWork/TCPClient.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/SPlsWork/TCPClient.inf" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/SPlsWork/TCPClient.inf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SIMPL/SPlsWork/Version.ini" beforeDir="false" afterPath="$PROJECT_DIR$/SIMPL/SPlsWork/Version.ini" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1sDpaxqf57ms8o6Mn2qI4CEUGIV" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="651f376e-2b9c-4b00-bdfb-ded3d43828b7" name="Default Changelist" comment="" />
+      <created>1620417083961</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1620417083961</updated>
+      <workItem from="1620417084159" duration="54000" />
+    </task>
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+</project>

@@ -1,0 +1,29 @@
+#CATEGORY "46" "Qsys" // Custom
+#SYMBOL_NAME "Qsys Meter"
+
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+Analog_output MeterValue;
+
+string_parameter _skip_, CoreID[100], ComponentName[100];
+integer_parameter Index;
+
+#BEGIN_PARAMETER_PROPERTIES CoreID
+   propValidUnits = unitString;
+   propDefaultUnit = unitString;
+   propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
+
+QsysMeter meter;
+
+callback function NewMeterUpdate(string cName, integer value)
+{
+    MeterValue = value;
+}
+
+function Main()
+{
+    RegisterDelegate(meter, onMeterChange, NewMeterUpdate);
+    meter.Initialize(CoreID, ComponentName, Index);
+}
