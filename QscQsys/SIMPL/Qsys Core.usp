@@ -1,17 +1,22 @@
+#CATEGORY "0" // Hidden
 #SYMBOL_NAME "Qsys Core"
 
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
-Digital_Input Initialize;
+Digital_Input Initialize, UseExternalConnection;
 
-Buffer_Input _skip_, _skip_, _skip_, _skip_, _skip_, Response[65534];
+analog_input DebugMode, DeploymentMode;
+
+string_input TestingHost[255], DeploymentHost[255];
+
+Buffer_Input Response[65534];
 
 Digital_Output IsInitialized, IsConnected, IsLoggedIn, IsRedundant, IsEmulator;
 
 String_Output DesignName, Command;
 
-String_Parameter _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, CoreID[100], TestingHost[100], DeploymentHost[100];
-Integer_Parameter Port, DeploymentMode, UseExternalConnection, DebugMode;
+String_Parameter _skip_,_skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, CoreID[100];
+Integer_Parameter Port;
 string_parameter Username[100], Password[100];
 
 integer waitTillStart;
@@ -22,11 +27,15 @@ threadsafe Push Initialize
 {                
 	while(!waitTillStart)
 	{}
-	processor.Debug(DebugMode);
 	if(DeploymentMode = 1)
 		processor.Initialize(CoreID, DeploymentHost, Port, Username, Password, UseExternalConnection);
 	else if(DeploymentMode = 0)
 		processor.Initialize(CoreID, TestingHost, Port, Username, Password, UseExternalConnection);
+}
+
+Threadsafe Change DebugMode
+{
+	processor.Debug(DebugMode);
 }
 
 Callback Function NewIsRegistered(integer value)

@@ -1,3 +1,4 @@
+#CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Generic Boolean Named Control"
 
 #INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
@@ -10,6 +11,13 @@ digital_input ToggleBooleanState;
 digital_output BooleanState;
 
 string_parameter  _skip_, _skip_, _skip_, CoreID[100], NamedControlName[100];
+
+#BEGIN_PARAMETER_PROPERTIES CoreID
+   propValidUnits = unitString;
+   propDefaultUnit = unitString;
+   propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
 
 QsysNamedControl booleanControl;
 

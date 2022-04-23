@@ -1,3 +1,4 @@
+#CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Generic Integer Named Control"
 
 #INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
@@ -9,6 +10,22 @@ analog_Output IntegerValue;
 
 string_parameter  _skip_, CoreID[100], NamedControlName[100];
 integer_parameter Scaled;
+
+#BEGIN_PARAMETER_PROPERTIES CoreID
+   propValidUnits = unitString;
+   propDefaultUnit = unitString;
+   propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
+#BEGIN_PARAMETER_PROPERTIES Scaled
+   propValidUnits = unitDecimal;
+   propDefaultUnit = unitDecimal;
+   propDefaultValue = 0d;
+   propList = { 0d , "No" } , { 1d , "Yes" };
+
+#END_PARAMETER_PROPERTIES
+
+
 
 QsysNamedControl integerControl;
 

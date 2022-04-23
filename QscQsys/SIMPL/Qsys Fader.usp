@@ -1,3 +1,4 @@
+#CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Fader"
 
 #INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
@@ -18,6 +19,13 @@ Integer_Parameter VolumeStep, VolumeRepeatTime;
 #BEGIN_PARAMETER_PROPERTIES VolumeRepeatTime
     propValidUnits = unitTime;
 #END_PARAMETER_PROPERTIES
+
+#BEGIN_PARAMETER_PROPERTIES CoreID
+   propValidUnits = unitString;
+   propDefaultUnit = unitString;
+   propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
 
 integer currentVolume;
 integer newDirection;
