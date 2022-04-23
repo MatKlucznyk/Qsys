@@ -10,17 +10,17 @@ namespace QscQsys
 {
     public class QsysPotsController
     {
-        public delegate void OffHookEvent(ushort value);
-        public delegate void RingingEvent(ushort value);
-        public delegate void DialingEvent(ushort value);
-        public delegate void IncomingCallEvent(ushort value);
-        public delegate void AutoAnswerEvent(ushort value);
-        public delegate void DndEvent(ushort value);
-        public delegate void DialStringEvent(SimplSharpString dialString);
-        public delegate void CurrentlyCallingEvent(SimplSharpString currentlyCalling);
-        public delegate void CurrentCallStatus(SimplSharpString callStatus);
-        public delegate void RecentCallsEvent(SimplSharpString item1, SimplSharpString item2, SimplSharpString item3, SimplSharpString item4, SimplSharpString item5);
-        public delegate void RecentCallListEvent(SimplSharpString xsig);
+        public delegate void OffHookEvent(SimplSharpString cName, ushort value);
+        public delegate void RingingEvent(SimplSharpString cName, ushort value);
+        public delegate void DialingEvent(SimplSharpString cName, ushort value);
+        public delegate void IncomingCallEvent(SimplSharpString cName, ushort value);
+        public delegate void AutoAnswerEvent(SimplSharpString cName, ushort value);
+        public delegate void DndEvent(SimplSharpString cName, ushort value);
+        public delegate void DialStringEvent(SimplSharpString cName, SimplSharpString dialString);
+        public delegate void CurrentlyCallingEvent(SimplSharpString cName, SimplSharpString currentlyCalling);
+        public delegate void CurrentCallStatus(SimplSharpString cName, SimplSharpString callStatus);
+        public delegate void RecentCallsEvent(SimplSharpString cName, SimplSharpString item1, SimplSharpString item2, SimplSharpString item3, SimplSharpString item4, SimplSharpString item5);
+        public delegate void RecentCallListEvent(SimplSharpString cName, SimplSharpString xsig);
         public OffHookEvent onOffHookEvent { get; set; }
         public RingingEvent onRingingEvent { get; set; }
         public DialingEvent onDialingEvent { get; set; }
@@ -117,10 +117,10 @@ namespace QscQsys
                         //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCurrentlyCalling, cName, true, currentlyCalling.Length, currentlyCalling, null));
 
                         if (onOffHookEvent != null)
-                            onOffHookEvent(1);
+                            onOffHookEvent(cName, 1);
 
                         if (onCurrentlyCallingEvent != null)
-                            onCurrentlyCallingEvent(currentlyCalling);
+                            onCurrentlyCallingEvent(cName, currentlyCalling);
                     }
                     else if (e.Value == 0)
                     {
@@ -129,7 +129,7 @@ namespace QscQsys
                         //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerOffHook, cName, false, 0, "0", null));
 
                         if (onOffHookEvent != null)
-                            onOffHookEvent(0);
+                            onOffHookEvent(cName, 0);
 
 
                         lastCalled = currentlyCalling;
@@ -138,10 +138,10 @@ namespace QscQsys
                         //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, false, 0, dialString.ToString(), null));
 
                         if (onCurrentlyCallingEvent != null)
-                            onCurrentlyCallingEvent(currentlyCalling);
+                            onCurrentlyCallingEvent(cName, currentlyCalling);
 
                         if (onDialStringEvent != null)
-                            onDialStringEvent(dialString.ToString());
+                            onDialStringEvent(cName, dialString.ToString());
                     }
                     break;
                 case "call_ringing":
@@ -151,7 +151,7 @@ namespace QscQsys
                         //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIsRinging, cName, true, 1, "1", null));
 
                         if (onRingingEvent != null)
-                            onRingingEvent(1);
+                            onRingingEvent(cName, 1);
                     }
                     else if (e.Value == 0)
                     {
@@ -159,7 +159,7 @@ namespace QscQsys
                         //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIsRinging, cName, false, 0, "0", null));
 
                         if (onRingingEvent != null)
-                            onRingingEvent(0);
+                            onRingingEvent(cName, 0);
                     }
                     break;
                 case "call_autoanswer":
@@ -167,7 +167,7 @@ namespace QscQsys
                     //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerAutoAnswerChange, cName, autoAnswer, Convert.ToInt16(e.Value), Convert.ToString(Convert.ToInt16(e.Value)), null));
 
                     if (onAutoAnswerEvent != null)
-                        onAutoAnswerEvent(Convert.ToUInt16(e.Value));
+                        onAutoAnswerEvent(cName, Convert.ToUInt16(e.Value));
                     
                     break;
                 case "call_dnd":
@@ -175,7 +175,7 @@ namespace QscQsys
                     //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDND_Change, cName, dnd, Convert.ToInt16(e.Value), Convert.ToString(Convert.ToInt16(e.Value)), null));
                     
                     if(onDndEvent != null)
-                        onDndEvent(Convert.ToUInt16(e.Value));
+                        onDndEvent(cName, Convert.ToUInt16(e.Value));
 
                     break;
                 case "call_status":
@@ -183,7 +183,7 @@ namespace QscQsys
                     //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCallStatusChange, cName, true, e.SValue.Length, e.SValue, null));
 
                     if (onCurrentCallStatusChange != null)
-                        onCurrentCallStatusChange(e.SValue);
+                        onCurrentCallStatusChange(cName, e.SValue);
 
                     if (callStatus.Contains("Dialing") && dialingState == false)
                     {
@@ -191,7 +191,7 @@ namespace QscQsys
                         //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialing, cName, true, 1, "true", null));
 
                         if (onDialingEvent != null)
-                            onDialingEvent(1);
+                            onDialingEvent(cName, 1);
                     }
                     else if (dialingState == true)
                     {
@@ -200,7 +200,7 @@ namespace QscQsys
                         //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialing, cName, false, 0, "false", null));
 
                         if (onDialingEvent != null)
-                            onDialingEvent(0);
+                            onDialingEvent(cName, 0);
                     }
 
                     if (callStatus.Contains("Incoming Call"))
@@ -209,7 +209,7 @@ namespace QscQsys
                         //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIncomingCall, cName, true, 1, "true", null));
 
                         if (onIncomingCallEvent != null)
-                            onIncomingCallEvent(1);
+                            onIncomingCallEvent(cName, 1);
                     }
                     else if (incomingCall == true)
                     {
@@ -217,7 +217,7 @@ namespace QscQsys
                         //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIncomingCall, cName, false, 0, "false", null));
 
                         if (onIncomingCallEvent != null)
-                            onIncomingCallEvent(0);
+                            onIncomingCallEvent(cName, 0);
                     }
                     break;
                 case "recent_calls":
@@ -244,7 +244,7 @@ namespace QscQsys
                                 break;
                             }
                         }
-                        onRecentCallsEvent(calls[0], calls[1], calls[2], calls[3], calls[4]);
+                        onRecentCallsEvent(cName, calls[0], calls[1], calls[2], calls[3], calls[4]);
                     }
                     if (onRecentCallListEvent != null)
                     {
@@ -253,7 +253,7 @@ namespace QscQsys
                         foreach (var call in calls)
                         {
                             var encodedBytes = XSig.GetBytes(calls.IndexOf(call), call);
-                            onRecentCallListEvent(Encoding.GetEncoding(28591).GetString(encodedBytes, 0, encodedBytes.Length));
+                            onRecentCallListEvent(cName, Encoding.GetEncoding(28591).GetString(encodedBytes, 0, encodedBytes.Length));
                         }
                     }
 
@@ -286,7 +286,7 @@ namespace QscQsys
                 //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString(), null));
 
                 if (onDialingEvent != null)
-                    onDialStringEvent(dialString.ToString());
+                    onDialStringEvent(cName, dialString.ToString());
             }
         }
 
@@ -300,7 +300,7 @@ namespace QscQsys
                     //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString(), null));
 
                     if (onDialingEvent != null)
-                        onDialStringEvent(dialString.ToString());
+                        onDialStringEvent(cName, dialString.ToString());
                 }
             }
         }
@@ -316,7 +316,7 @@ namespace QscQsys
                     //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString(), null));
 
                     if (onDialingEvent != null)
-                        onDialStringEvent(dialString.ToString());
+                        onDialStringEvent(cName, dialString.ToString());
                 }
             }
         }
@@ -332,7 +332,7 @@ namespace QscQsys
                     //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString(), null));
 
                     if (onDialingEvent != null)
-                        onDialStringEvent(dialString.ToString());
+                        onDialStringEvent(cName, dialString.ToString());
                 }
             }
         }
@@ -365,7 +365,7 @@ namespace QscQsys
             //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, false, 0, string.Empty, null));
 
             if (onDialingEvent != null)
-                onDialStringEvent(string.Empty);
+                onDialStringEvent(cName, string.Empty);
 
             ComponentChangeString dialNumber = new ComponentChangeString()
             {
@@ -487,7 +487,7 @@ namespace QscQsys
                     //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, Convert.ToBoolean(call.Length), call.Length, call, recentCalls));
 
                     if (onDialStringEvent != null)
-                        onDialStringEvent(call);
+                        onDialStringEvent(cName, call);
                 }
             }
         }

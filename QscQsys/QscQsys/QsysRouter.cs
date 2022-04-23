@@ -9,7 +9,7 @@ namespace QscQsys
 {
     public class QsysRouter
     {
-        public delegate void RouterInputChange(ushort input);
+        public delegate void RouterInputChange(SimplSharpString cName, ushort input);
         public RouterInputChange newRouterInputChange { get; set; }
 
         private string cName;
@@ -94,7 +94,7 @@ namespace QscQsys
                 //QsysRouterEvent(this, new QsysEventsArgs(eQscEventIds.RouterInputSelected, cName, Convert.ToBoolean(e.Value), Convert.ToInt16(e.Value), e.Value.ToString(), null));
 
                 if (newRouterInputChange != null)
-                    newRouterInputChange(Convert.ToUInt16(e.Value));
+                    newRouterInputChange(cName, Convert.ToUInt16(e.Value));
             }
         }
     }

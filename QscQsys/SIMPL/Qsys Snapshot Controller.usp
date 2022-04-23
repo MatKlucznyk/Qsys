@@ -1,7 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Snapshot Controller"
 
-#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 Digital_Input Load, Save;
@@ -63,12 +62,12 @@ Push Save
     }
 }
 
-callback function NewRecalledSnapshot(integer ss)
+callback function NewRecalledSnapshot(string cName, integer ss)
 {
     SnapshotActive[ss] = ON;
 }
 
-callback function NewUnRecalledSnapshot(integer ss)
+callback function NewUnRecalledSnapshot(string cName, integer ss)
 {
     SnapshotActive[ss] = OFF;
 }

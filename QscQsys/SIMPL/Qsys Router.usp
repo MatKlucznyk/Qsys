@@ -1,7 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Router"
 
-#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 Analog_Input Input;
@@ -30,7 +29,7 @@ Threadsafe Change Input
     }
 }
 
-Callback Function onRouterInputChange(integer in)
+Callback Function onRouterInputChange(string cName, integer in)
 {
     InputValue = in;
 }

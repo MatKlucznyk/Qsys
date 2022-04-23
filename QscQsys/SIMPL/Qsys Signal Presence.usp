@@ -1,7 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Signal Presence"
 
-#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 Digital_Input _skiP_, _skiP_, _skiP_, _skiP_, InfiniteHold, PeakThresholdUp, PeakThresholdDown, HoldTimeUp, HoldTimeDown;
@@ -54,7 +53,7 @@ Push HoldTimeDown
 	sp.HoldTimeDecrement();
 }
 
-Callback Function onSignalPresenceChange(integer index, integer value)
+Callback Function onSignalPresenceChange(string cName, integer index, integer value)
 {
 	switch(index)
 	{
@@ -80,17 +79,17 @@ Callback Function onSignalPresenceChange(integer index, integer value)
 	}
 }
 
-Callback Function onPeakThresholdChange(string value)
+Callback Function onPeakThresholdChange(string cName, string value)
 {
 	PeakThreshold = value;
 }
 
-Callback Function onHoldTimeChange(string value)
+Callback Function onHoldTimeChange(string cName, string value)
 {
 	HoldTime = value;
 }
 
-Callback Function onInfiniteHoldChange(integer value)
+Callback Function onInfiniteHoldChange(string cName, integer value)
 {
 	InfiniteHoldIsOn = value;
 }

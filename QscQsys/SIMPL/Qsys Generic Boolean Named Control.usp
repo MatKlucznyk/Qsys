@@ -1,7 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Generic Boolean Named Control"
 
-#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 digital_input SetBooleanStateOn;
@@ -39,7 +38,7 @@ push ToggleBooleanState
         booleanControl.SetBoolean(1);
 }
 
-callback function NewBooleanChange(integer value, string x)
+callback function NewBooleanChange(string cName, integer value, string x)
 {
     BooleanState = value;
 }

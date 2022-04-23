@@ -8,7 +8,7 @@ namespace QscQsys
 {
     public class QsysMeter
     {
-        public delegate void MeterChange(ushort meterValue);
+        public delegate void MeterChange(SimplSharpString cName, ushort meterValue);
         public MeterChange onMeterChange { get; set; }
 
         private string cName;
@@ -58,7 +58,7 @@ namespace QscQsys
             //QsysMeterEvent(this, new QsysEventsArgs(eQscEventIds.MeterUpdate, cName, Convert.ToBoolean(e.Value), Convert.ToInt16(e.Value), e.SValue, null));
 
             if (onMeterChange != null)
-                onMeterChange(Convert.ToUInt16(e.Value));
+                onMeterChange(cName, Convert.ToUInt16(e.Value));
         }
     }
 }

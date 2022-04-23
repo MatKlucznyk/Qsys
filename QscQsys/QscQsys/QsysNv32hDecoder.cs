@@ -9,7 +9,7 @@ namespace QscQsys
 {
     public class QsysNv32hDecoder
     {
-        public delegate void Nv32hDecoderInputChange(ushort input);
+        public delegate void Nv32hDecoderInputChange(SimplSharpString cName, ushort input);
         public Nv32hDecoderInputChange newNv32hDecoderInputChange { get; set; }
 
         private string cName;
@@ -63,7 +63,7 @@ namespace QscQsys
             //QsysNv32hDecoderEvent(this, new QsysEventsArgs(eQscEventIds.Nv32hDecoderInputChange, cName, Convert.ToBoolean(currentSource), currentSource, currentSource.ToString(), null));
 
             if (newNv32hDecoderInputChange != null)
-                newNv32hDecoderInputChange(Convert.ToUInt16(currentSource));
+                newNv32hDecoderInputChange(cName, Convert.ToUInt16(currentSource));
         }
 
         public void ChangeInput(int source)

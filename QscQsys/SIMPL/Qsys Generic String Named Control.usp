@@ -1,7 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Generic String Named Control"
 
-#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 string_input SetStringValue[255];
@@ -37,7 +36,7 @@ threadsafe change SetStringValue
     }
 }
 
-callback function NewStringChange(integer x, string value)
+callback function NewStringChange(string cName, integer x, string value)
 {
     StringValue = value;
 }

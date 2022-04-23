@@ -9,8 +9,8 @@ namespace QscQsys
 {
     public class QsysSnapshot
     {
-        public delegate void RecalledSnapshot(ushort snapshot);
-        public delegate void UnrecalledSnapshot(ushort snapshot);
+        public delegate void RecalledSnapshot(SimplSharpString cName, ushort snapshot);
+        public delegate void UnrecalledSnapshot(SimplSharpString cName, ushort snapshot);
         public RecalledSnapshot onRecalledSnapshot { get; set; }
         public UnrecalledSnapshot onUnrecalledSnapshot { get; set; }
 
@@ -75,12 +75,12 @@ namespace QscQsys
                 if (e.Position == 1.0)
                 {
                     if (onRecalledSnapshot != null)
-                        onRecalledSnapshot(load);
+                        onRecalledSnapshot(cName, load);
                 }
                 else if (e.Position < 1.0)
                 {
                     if (onUnrecalledSnapshot != null)
-                        onUnrecalledSnapshot(load);
+                        onUnrecalledSnapshot(cName, load);
                 }
             }
         }

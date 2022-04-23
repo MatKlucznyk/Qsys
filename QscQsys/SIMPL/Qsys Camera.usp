@@ -1,7 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Camera"
 
-//#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 #HELP_BEGIN
@@ -558,77 +557,77 @@ threadsafe change WhiteBalanceBlueGain
     }
 }
 
-callback function NewPrivacyChange(integer val)
+callback function NewPrivacyChange(string cName, integer val)
 {
     PrivacyIsOn = val;
 }
 
-callback function NewBrightnessChange(integer val)
+callback function NewBrightnessChange(string cName, integer val)
 {
     BrightnessValue = val;
 }
 
-callback function NewSaturationChange(integer val)
+callback function NewSaturationChange(string cName, integer val)
 {
     SaturationValue = val;
 }
 
-callback function NewSharpnessChange(integer val)
+callback function NewSharpnessChange(string cName, integer val)
 {
     SharpnessValue = val;
 }
 
-callback function NewContrastChange(integer val)
+callback function NewContrastChange(string cName, integer val)
 {
     ContrastValue = val;
 }
 
-callback function NewExposureModeChange(string val)
+callback function NewExposureModeChange(string cName, string val)
 {
     ExposureModeValue = val;
 }
 
-callback function NewIrisChange(string val)
+callback function NewIrisChange(string cName, string val)
 {
     IrisValue = val;
 }
 
-callback function NewShutterChange(string val)
+callback function NewShutterChange(string cName, string val)
 {
     ShutterValue = val;
 }
 
-callback function NewGainChange(integer val)
+callback function NewGainChange(string cName, integer val)
 {
     GainValue = val;
 }
 
-callback function NewAwbModeChange(string val)
+callback function NewAwbModeChange(string cName, string val)
 {
     AutoWhiteBalnceModeValue = val;
 }
 
-callback function NewAwbSensitivityChange(string val)
+callback function NewAwbSensitivityChange(string cName, string val)
 {
     AutoWhiteBalanceSensitivityValue = val;
 }
 
-callback function NewWbHueChange(integer val)
+callback function NewWbHueChange(string cName, integer val)
 {
     WhiteBalanceHueValue = val;
 }
 
-callback function NewWbRedGainChange(integer val)
+callback function NewWbRedGainChange(string cName, integer val)
 {
     WhiteBalanceRedGainValue = val;
 }
 
-callback function NewWbBlueGainChange(integer val)
+callback function NewWbBlueGainChange(string cName, integer val)
 {
     WhiteBalanceBlueGainValue = val;
 }
 
-callback function NewAutoFocusChange(integer val)
+callback function NewAutoFocusChange(string cName, integer val)
 {
     AutoFocusIsOn = val;
 }

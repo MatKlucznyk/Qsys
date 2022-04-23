@@ -9,10 +9,10 @@ namespace QscQsys
 {
     public class QsysSignalPresence
     {
-        public delegate void SignalPresenceChange(ushort index, ushort value);
-        public delegate void PeakThresholdChange(SimplSharpString value);
-        public delegate void HoldTimeChange(SimplSharpString value);
-        public delegate void InfiniteHoldChange(ushort value);
+        public delegate void SignalPresenceChange(SimplSharpString cName, ushort index, ushort value);
+        public delegate void PeakThresholdChange(SimplSharpString cName, SimplSharpString value);
+        public delegate void HoldTimeChange(SimplSharpString cName, SimplSharpString value);
+        public delegate void InfiniteHoldChange(SimplSharpString cName, ushort value);
         public SignalPresenceChange newSignalPresenceChange { get; set; }
         public PeakThresholdChange newPeakThresholdChange { get; set; }
         public HoldTimeChange newHoldTimeChange { get; set; }
@@ -92,21 +92,21 @@ namespace QscQsys
                 threshold = (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position));
 
                 if (newPeakThresholdChange != null)
-                    newPeakThresholdChange(e.SValue);
+                    newPeakThresholdChange(cName, e.SValue);
             }
             else if (e.Name == "hold_time")
             {
                 holdTime = (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position));
 
                 if (newHoldTimeChange != null)
-                    newHoldTimeChange(e.SValue);
+                    newHoldTimeChange(cName, e.SValue);
             }
             else if (e.Name == "infinite_hold")
             {
                 infiniteHold = Convert.ToBoolean(e.Value);
 
                 if (newInfiniteHoldChange != null)
-                    newInfiniteHoldChange((ushort)e.Value);
+                    newInfiniteHoldChange(cName, (ushort)e.Value);
             }
             else if(e.Name.Contains("signal_presence"))
             {
@@ -115,12 +115,12 @@ namespace QscQsys
                     var splitName = e.Name.Split('_');
 
                     if (newSignalPresenceChange != null)
-                        newSignalPresenceChange(Convert.ToUInt16(splitName[2]), (ushort)e.Value);
+                        newSignalPresenceChange(cName, Convert.ToUInt16(splitName[2]), (ushort)e.Value);
                 }
                 else
                 {
                     if(newSignalPresenceChange != null)
-                        newSignalPresenceChange(1, (ushort)e.Value);
+                        newSignalPresenceChange(cName, 1, (ushort)e.Value);
                 }
             }
         }

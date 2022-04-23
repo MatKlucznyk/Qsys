@@ -9,8 +9,8 @@ namespace QscQsys
 {
     public class QsysRoomCombiner
     {
-        public delegate void WallStateChange(ushort wall, ushort value);
-        public delegate void RoomCombinedChange(ushort room, ushort value);
+        public delegate void WallStateChange(SimplSharpString cName, ushort wall, ushort value);
+        public delegate void RoomCombinedChange(SimplSharpString cName, ushort room, ushort value);
         public WallStateChange onWallStateChange { get; set; }
         public RoomCombinedChange onRoomCombinedChange { get; set; }
 
@@ -86,7 +86,7 @@ namespace QscQsys
                 //QsysRoomCombinerEvent(this, new QsysEventsArgs(eQscEventIds.RoomCombinerWallStateChange, cName, Convert.ToBoolean(e.Value), Convert.ToInt16(wall[1]), e.SValue, null));
 
                 if (onWallStateChange != null)
-                    onWallStateChange(Convert.ToUInt16(wall[1]), Convert.ToUInt16(e.Value));
+                    onWallStateChange(cName, Convert.ToUInt16(wall[1]), Convert.ToUInt16(e.Value));
             }
             else if (e.Name.Contains("combined"))
             {
@@ -97,7 +97,7 @@ namespace QscQsys
                 //QsysRoomCombinerEvent(this, new QsysEventsArgs(eQscEventIds.RoomCombinerCombinedStateChange, cName, Convert.ToBoolean(e.Value), Convert.ToInt16(room[1]), e.SValue, null));
 
                 if (onRoomCombinedChange != null)
-                    onRoomCombinedChange(Convert.ToUInt16(room[1]), Convert.ToUInt16(e.Value));
+                    onRoomCombinedChange(cName, Convert.ToUInt16(room[1]), Convert.ToUInt16(e.Value));
             }
         }
 

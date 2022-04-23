@@ -1,7 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Nv32h Decoder"
 
-#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 analog_input Source;
@@ -31,7 +30,7 @@ threadsafe change Source
     }
 }
 
-callback function onInputChange(integer newSource)
+callback function onInputChange(string cName, integer newSource)
 {
     CurrentSource = newSource;
 }

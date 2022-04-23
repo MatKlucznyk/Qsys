@@ -24,13 +24,13 @@ namespace QscQsys
     public class QsysCore : IDisposable
     {
         #region Delegates
-        public delegate void IsLoggedIn(ushort value);
-        public delegate void IsRegistered(ushort value);
-        public delegate void IsConnectedStatus(ushort value);
-        public delegate void CoreStatus(SimplSharpString designName, ushort isRedundant, ushort isEmulator);
-        public delegate void SendingCommandEventHandler(object sender, SendingCommandEventArgs e);
-        public event EventHandler<SendingCommandEventArgs> SendingCommandEvent;
-        public delegate void SendingCommand(SimplSharpString command);
+        public delegate void IsLoggedIn(SimplSharpString id, ushort value);
+        public delegate void IsRegistered(SimplSharpString id, ushort value);
+        public delegate void IsConnectedStatus(SimplSharpString id, ushort value);
+        public delegate void CoreStatus(SimplSharpString id, SimplSharpString designName, ushort isRedundant, ushort isEmulator);
+        public delegate void SendingCommandEventHandler(SimplSharpString id, object sender, SendingCommandEventArgs e);
+        //public event EventHandler<SendingCommandEventArgs> SendingCommandEvent;
+        public delegate void SendingCommand(SimplSharpString id, SimplSharpString command);
         public IsLoggedIn onIsLoggedIn { get; set; }
         public IsRegistered onIsRegistered { get; set; }
         public IsConnectedStatus onIsConnected { get; set; }
@@ -272,7 +272,7 @@ namespace QscQsys
             isInitialized = true;
 
             if (onIsRegistered != null)
-                onIsRegistered(1);
+                onIsRegistered(coreId, 1);
         }
         #endregion
 
@@ -294,7 +294,7 @@ namespace QscQsys
                         ErrorLog.Notice("QsysProcessor is connected.");
 
                     if (onIsConnected != null)
-                        onIsConnected(1);
+                        onIsConnected(coreId,1);
                 }
                 else if (IsConnected && status != 2)
                 {
@@ -314,13 +314,13 @@ namespace QscQsys
                         heartbeatTimer.Dispose();
 
                     if (onIsRegistered != null)
-                        onIsRegistered(0);
+                        onIsRegistered(coreId, 0);
 
                     if (onIsLoggedIn != null)
-                        onIsLoggedIn(0);
+                        onIsLoggedIn(coreId, 0);
 
                     if (onIsConnected != null)
-                        onIsConnected(0);
+                        onIsConnected(coreId, 0);
                 }
             }
             catch (Exception e)
@@ -415,7 +415,7 @@ namespace QscQsys
 
                             if (onIsLoggedIn != null)
                             {
-                                onIsLoggedIn(1);
+                                onIsLoggedIn(coreId, 1);
                             }
 
                             waitForConnection = new CTimer(Init, 5000);
@@ -493,7 +493,7 @@ namespace QscQsys
                                 }
 
                                 if (onNewCoreStatus != null)
-                                    onNewCoreStatus(designName, Convert.ToUInt16(isRedundant), Convert.ToUInt16(isEmulator));
+                                    onNewCoreStatus(coreId, designName, Convert.ToUInt16(isRedundant), Convert.ToUInt16(isEmulator));
                             }
 
                             if (!isLoggedIn)
@@ -512,7 +512,7 @@ namespace QscQsys
 
                                     if (onIsLoggedIn != null)
                                     {
-                                        onIsLoggedIn(1);
+                                        onIsLoggedIn(coreId, 1);
                                     }
 
                                     waitForConnection = new CTimer(Init, 5000);
@@ -583,7 +583,7 @@ namespace QscQsys
                     //else if (SendingCommandEvent != null)
                     //    SendingCommandEvent(this, new SendingCommandEventArgs(data + "\x00"));
                     else if (onSendingCommand != null)
-                        onSendingCommand(data + "\x00");
+                        onSendingCommand(coreId, data + "\x00");
                 }
             }
             catch (Exception e)

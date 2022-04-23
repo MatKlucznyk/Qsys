@@ -1,7 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Generic Integer Named Control"
 
-#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 analog_input SetIntegerValue;
@@ -47,7 +46,7 @@ threadsafe change SetIntegerValue
     }
 }
 
-callback function NewIntegerChange(integer value, string x)
+callback function NewIntegerChange(string cName, integer value, string x)
 {
     IntegerValue = value;
 }

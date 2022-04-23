@@ -1,7 +1,6 @@
 #CATEGORY "0"
 #SYMBOL_NAME "Qsys Softphone Controller"
 
-#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys" 
 
 #DEFINE_CONSTANT true 1
@@ -107,7 +106,7 @@ Threadsafe Change DialString
 	softphone.NumString(x);
 }
 
-Callback Function NewOffHookEvent(integer value)
+Callback Function NewOffHookEvent(string cName, integer value)
 {
     if(value)
         Connected = true;
@@ -115,7 +114,7 @@ Callback Function NewOffHookEvent(integer value)
         Connected = false;
 }
 
-Callback Function NewRingingEvent(integer value)
+Callback Function NewRingingEvent(string cName, integer value)
 {
     if(value)
         Ringing = true;
@@ -123,7 +122,7 @@ Callback Function NewRingingEvent(integer value)
         Ringing = false;
 }
 
-Callback Function NewDialingEvent(integer value)
+Callback Function NewDialingEvent(string cName, integer value)
 {
     if(value)
         Dialing = true;
@@ -131,7 +130,7 @@ Callback Function NewDialingEvent(integer value)
         Dialing = false;
 }
 
-Callback Function NewAutoAnswerEvent(integer value)
+Callback Function NewAutoAnswerEvent(string cName, integer value)
 {
     if(value)
         AutoAnswerStatus = true;
@@ -139,7 +138,7 @@ Callback Function NewAutoAnswerEvent(integer value)
         AutoAnswerStatus = false;
 }
 
-Callback Function NewDndEvent(integer value)
+Callback Function NewDndEvent(string cName, integer value)
 {
     if(value)
         DndStatus = true;
@@ -147,22 +146,22 @@ Callback Function NewDndEvent(integer value)
         DndStatus = false;
 }
 
-Callback Function NewDialStringEvent(string newDialString)
+Callback Function NewDialStringEvent(string cName, string newDialString)
 {
     DialStringOut = newDialString;
 }
 
-Callback Function NewCurrentlyCallingEvent(string newCurrentlyCalling)
+Callback Function NewCurrentlyCallingEvent(string cName, string newCurrentlyCalling)
 {
     CurrentlyCalling = newCurrentlyCalling;
 }
 
-callback function NewCurrentCallStatusChange(string status)
+callback function NewCurrentCallStatusChange(string cName, string status)
 {
     CallStatus = status;
 }
 
-callback function NewRecentCallsEvent(string call1, string call2, string call3, string call4, string call5)
+callback function NewRecentCallsEvent(string cName, string call1, string call2, string call3, string call4, string call5)
 {
     RecentCalls[1] = call1;
     RecentCalls[2] = call2;
@@ -171,12 +170,12 @@ callback function NewRecentCallsEvent(string call1, string call2, string call3, 
     RecentCalls[5] = call5;
 }
 
-callback function NewRecentCallListEvent(string xsig)
+callback function NewRecentCallListEvent(string cName, string xsig)
 {
         RecentCallXSig = xsig;
 }
 
-callback function NewIncomingCallEvent(integer value)
+callback function NewIncomingCallEvent(string cName, integer value)
 {
     if(value)
         IncomingCall = true;

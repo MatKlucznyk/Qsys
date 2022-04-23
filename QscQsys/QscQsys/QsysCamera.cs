@@ -9,21 +9,21 @@ namespace QscQsys
 {
     public class QsysCamera
     {
-        public delegate void PrivacyChange(ushort privacyValue);
-        public delegate void BrightnessChange(ushort brightnessValue);
-        public delegate void SaturationChange(ushort saturationValue);
-        public delegate void SharpnessChange(ushort sharpnessValue);
-        public delegate void ContrastChange(ushort contrastValue);
-        public delegate void ExposureModeChange(SimplSharpString mode);
-        public delegate void IrisChange(SimplSharpString irisValue);
-        public delegate void ShutterChange(SimplSharpString apertureValue);
-        public delegate void GainChange(ushort gainValue);
-        public delegate void AutoWhiteBalanceSensitivityChange(SimplSharpString awbSens);
-        public delegate void AutoWhiteBalanceModeChange(SimplSharpString awbMode);
-        public delegate void WhiteBalanceHueChange(ushort hueValue);
-        public delegate void WhiteBalanceRedGainChange(ushort redGainValue);
-        public delegate void WhiteBalanceBlueGainChange(ushort blueGainValue);
-        public delegate void AutoFocusChange(ushort value);
+        public delegate void PrivacyChange(SimplSharpString cName, ushort privacyValue);
+        public delegate void BrightnessChange(SimplSharpString cName, ushort brightnessValue);
+        public delegate void SaturationChange(SimplSharpString cName, ushort saturationValue);
+        public delegate void SharpnessChange(SimplSharpString cName, ushort sharpnessValue);
+        public delegate void ContrastChange(SimplSharpString cName, ushort contrastValue);
+        public delegate void ExposureModeChange(SimplSharpString cName, SimplSharpString mode);
+        public delegate void IrisChange(SimplSharpString cName, SimplSharpString irisValue);
+        public delegate void ShutterChange(SimplSharpString cName, SimplSharpString apertureValue);
+        public delegate void GainChange(SimplSharpString cName, ushort gainValue);
+        public delegate void AutoWhiteBalanceSensitivityChange(SimplSharpString cName, SimplSharpString awbSens);
+        public delegate void AutoWhiteBalanceModeChange(SimplSharpString cName, SimplSharpString awbMode);
+        public delegate void WhiteBalanceHueChange(SimplSharpString cName, ushort hueValue);
+        public delegate void WhiteBalanceRedGainChange(SimplSharpString cName, ushort redGainValue);
+        public delegate void WhiteBalanceBlueGainChange(SimplSharpString cName, ushort blueGainValue);
+        public delegate void AutoFocusChange(SimplSharpString cName, ushort value);
         public PrivacyChange onPrivacyChange { get; set; }
         public BrightnessChange onBrightnessChange { get; set; }
         public SaturationChange onSaturationChange { get; set; }
@@ -108,104 +108,104 @@ namespace QscQsys
                 currentPrivacy = Convert.ToBoolean(e.Value);
 
                 if (onPrivacyChange != null)
-                    onPrivacyChange(Convert.ToUInt16(e.Value));
+                    onPrivacyChange(cName, Convert.ToUInt16(e.Value));
             }
             else if (e.Name == "img_brightness")
             {
                 if (onBrightnessChange != null)
                 {
-                    onBrightnessChange((ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
+                    onBrightnessChange(cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
                 }
             }
             else if (e.Name == "img_saturation")
             {
                 if (onSaturationChange != null)
                 {
-                    onSaturationChange((ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
+                    onSaturationChange(cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
                 }
             }
             else if (e.Name == "img_sharpness")
             {
                 if (onSharpnessChange != null)
                 {
-                    onSharpnessChange((ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
+                    onSharpnessChange(cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
                 }
             }
             else if (e.Name == "img_contrast")
             {
                 if (onContrastChange != null)
                 {
-                    onContrastChange((ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
+                    onContrastChange(cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
                 }
             }
             else if (e.Name == "exp_mode")
             {
                 if (onExposureModeChange != null)
                 {
-                    onExposureModeChange(e.SValue);
+                    onExposureModeChange(cName, e.SValue);
                 }
             }
             else if (e.Name == "exp_iris")
             {
                 if (onIrisChange != null)
                 {
-                    onIrisChange(e.SValue);
+                    onIrisChange(cName, e.SValue);
                 }
             }
             else if (e.Name == "exp_shutter")
             {
                 if (onShutterChange != null)
                 {
-                    onShutterChange(e.SValue);
+                    onShutterChange(cName, e.SValue);
                 }
             }
             else if (e.Name == "exp_gain")
             {
                 if (onGainChange != null)
                 {
-                    onGainChange((ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
+                    onGainChange(cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
                 }
             }
             else if (e.Name == "wb_awb_sensitivity")
             {
                 if (onAutoWhiteBalanceSensitivityChange != null)
                 {
-                    onAutoWhiteBalanceSensitivityChange(e.SValue);
+                    onAutoWhiteBalanceSensitivityChange(cName, e.SValue);
                 }
             }
             else if (e.Name == "wb_awb_mode")
             {
                 if (onAutoWhiteBalanceModeChange != null)
                 {
-                    onAutoWhiteBalanceModeChange(e.SValue);
+                    onAutoWhiteBalanceModeChange(cName, e.SValue);
                 }
             }
             else if (e.Name == "wb_hue")
             {
                 if (onWhiteBalanceHueChange != null)
                 {
-                    onWhiteBalanceHueChange((ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
+                    onWhiteBalanceHueChange(cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
                 }
             }
             else if (e.Name == "wb_red_gain")
             {
                 if (onWhiteBalanceRedGainChange != null)
                 {
-                    onWhiteBalanceRedGainChange((ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
+                    onWhiteBalanceRedGainChange(cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
                 }
             }
             else if (e.Name == "wb_blue_gain")
             {
                 if (onWhiteBalanceBlueGainChange != null)
                 {
-                    onWhiteBalanceBlueGainChange((ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
+                    onWhiteBalanceBlueGainChange(cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
                 }
             }
             else if (e.Name == "focus_auto")
             {
                 if (onAutoFocusChange != null)
                 {
-                    onAutoFocusChange((ushort)e.Value);
+                    onAutoFocusChange(cName, (ushort)e.Value);
                 }
             }
         }

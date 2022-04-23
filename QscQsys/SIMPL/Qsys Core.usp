@@ -38,7 +38,7 @@ Threadsafe Change DebugMode
 	processor.Debug(DebugMode);
 }
 
-Callback Function NewIsRegistered(integer value)
+Callback Function NewIsRegistered(string id, integer value)
 {
 	if(value = 1)
 		IsInitialized = ON;
@@ -46,7 +46,7 @@ Callback Function NewIsRegistered(integer value)
 		IsInitialized = OFF;
 }     
 
-Callback Function NewIsConnected(integer value)
+Callback Function NewIsConnected(string id, integer value)
 {
 	if(value = 1)
 		IsConnected = ON;
@@ -54,19 +54,19 @@ Callback Function NewIsConnected(integer value)
 		IsConnected = OFF;
 }
 
-Callback Function NewCoreStatus(string dName, integer redundant, integer emulator)
+Callback Function NewCoreStatus(string id, string dName, integer redundant, integer emulator)
 {
 	DesignName = dName;
 	IsRedundant = redundant;
 	IsEmulator = emulator;
 }
 
-callback function NewIsLoggedIn(integer status)
+callback function NewIsLoggedIn(string id, integer status)
 {
 	IsLoggedIn = status;
 }
 
-callback function NewSendingCommand(string comm)
+callback function NewSendingCommand(string id, string comm)
 {
 	string tx[65534];
 	

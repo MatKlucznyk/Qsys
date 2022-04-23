@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Crestron.SimplSharp;
 
 namespace QscQsys
 {
     public class QsysFader
     {
-        public delegate void VolumeChange(ushort value);
-        public delegate void MuteChange(ushort value);
+        public delegate void VolumeChange(SimplSharpString cName, ushort value);
+        public delegate void MuteChange(SimplSharpString cName, ushort value);
         public VolumeChange newVolumeChange { get; set; }
         public MuteChange newMuteChange { get; set; }
 
@@ -78,7 +79,7 @@ namespace QscQsys
                 //QsysFaderEvent(this, new QsysEventsArgs(eQscEventIds.GainChange, cName, true, currentLvl, currentLvl.ToString(), null));
 
                 if (newVolumeChange != null)
-                    newVolumeChange((ushort)currentLvl);
+                    newVolumeChange(cName, (ushort)currentLvl);
             }
             else if (e.Name == "mute")
             {
@@ -94,7 +95,7 @@ namespace QscQsys
                 }
 
                 if (newMuteChange != null)
-                    newMuteChange((ushort)e.Value);
+                    newMuteChange(cName, (ushort)e.Value);
             }
             else if (e.Name == "max_gain")
             {

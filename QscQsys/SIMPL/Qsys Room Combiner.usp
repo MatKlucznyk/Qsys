@@ -1,7 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Room Combiner"
 
-#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 Digital_Input WallOpen[3];
@@ -37,12 +36,12 @@ Release WallOpen
 }
 
 
-callback function NewWallStateChange(integer wall, integer value)
+callback function NewWallStateChange(string cName, integer wall, integer value)
 {
     WallOpenState[wall] = value;
 }
 
-callback function NewRoomCombinedStateChanged(integer room, integer value)
+callback function NewRoomCombinedStateChanged(string cName, integer room, integer value)
 {
     RoomCombined[room] = value;
 }

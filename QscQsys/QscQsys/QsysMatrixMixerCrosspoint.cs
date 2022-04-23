@@ -9,8 +9,8 @@ namespace QscQsys
 {
     public class QsysMatrixMixerCrosspoint
     {
-        public delegate void CrossPointValueChange(ushort value);
-        public delegate void CrossPointGainChange(ushort value);
+        public delegate void CrossPointValueChange(SimplSharpString cName, ushort value);
+        public delegate void CrossPointGainChange(SimplSharpString cName, ushort value);
         public CrossPointValueChange newCrossPointValueChange { get; set; }
         public CrossPointGainChange newCrossPointGainChange { get; set; }
 
@@ -69,14 +69,14 @@ namespace QscQsys
             {
                 if (newCrossPointValueChange != null)
                 {
-                    newCrossPointValueChange(Convert.ToUInt16(e.Value));
+                    newCrossPointValueChange(cName, Convert.ToUInt16(e.Value));
                 }
             }
             else if (e.Name == string.Format("{0}gain", crossName))
             {
                 if (newCrossPointGainChange != null)
                 {
-                    newCrossPointGainChange(Convert.ToUInt16(QsysCoreManager.ScaleUp(e.Position)));
+                    newCrossPointGainChange(cName, Convert.ToUInt16(QsysCoreManager.ScaleUp(e.Position)));
                 }
             }
         }

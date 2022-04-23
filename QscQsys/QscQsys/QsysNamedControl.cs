@@ -9,7 +9,7 @@ namespace QscQsys
 {
     public class QsysNamedControl
     {
-        public delegate void NamedControlChange(ushort intData, SimplSharpString stringData);
+        public delegate void NamedControlChange(SimplSharpString cName, ushort intData, SimplSharpString stringData);
         public NamedControlChange newNamedControlChange { get; set; }
 
         private string cName;
@@ -67,7 +67,7 @@ namespace QscQsys
                 //QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(e.Value), Convert.ToUInt16(e.Value), e.SValue, null));
 
                 if (newNamedControlChange != null)
-                    newNamedControlChange(Convert.ToUInt16(e.Value), e.SValue);
+                    newNamedControlChange(cName, Convert.ToUInt16(e.Value), e.SValue);
             }
             else
             {
@@ -76,7 +76,7 @@ namespace QscQsys
                 //QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(intValue), intValue, Convert.ToString(e.Position), null));
 
                 if (newNamedControlChange != null)
-                    newNamedControlChange(Convert.ToUInt16(intValue), intValue.ToString());
+                    newNamedControlChange(cName, Convert.ToUInt16(intValue), intValue.ToString());
             } 
         }
 

@@ -1,7 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Meter"
 
-#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 Analog_output MeterValue;
@@ -18,7 +17,7 @@ integer_parameter Index;
 
 QsysMeter meter;
 
-callback function NewMeterUpdate(integer value)
+callback function NewMeterUpdate(string cName, integer value)
 {
     MeterValue = value;
 }

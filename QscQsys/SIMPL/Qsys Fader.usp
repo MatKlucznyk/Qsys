@@ -1,7 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Fader"
 
-#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 Digital_Input MuteOn, MuteOff, MuteToggle, VolumeUp, VolumeDown;
@@ -109,13 +108,13 @@ Threadsafe Change Volume
     }
 }
 
-Callback Function onVolumeChange(integer value)
+Callback Function onVolumeChange(string cName, integer value)
 {
     currentVolume = value;
     VolumeValue = currentVolume;
 }
 
-Callback Function onMuteChange(integer value)
+Callback Function onMuteChange(string cName, integer value)
 {
     switch(value)
     {

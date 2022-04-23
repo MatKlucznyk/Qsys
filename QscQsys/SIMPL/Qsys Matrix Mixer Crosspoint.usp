@@ -1,7 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Matrix Mixer Crosspoint"
 
-#INCLUDEPATH "C:\\Users\\mathew.klucznyk\\OneDrive - Global USS\\Crestron Modules\\Mat\\SIMPLSharp Projects\\Qsys\\QscQsys\\QscQsys\\bin\\Debug"
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
 Digital_Input MuteOn, MuteOff, GainUp, GainDown;
@@ -95,7 +94,7 @@ Push MuteOff
     mixer.SetCrossPoint(0);
 }
 
-Callback Function onCrossPointValueChange(integer value)
+Callback Function onCrossPointValueChange(string cName, integer value)
 {
     if(value = 1)
     {
@@ -109,7 +108,7 @@ Callback Function onCrossPointValueChange(integer value)
     }
 }
 
-callback function onCrossPointGainChange(integer value)
+callback function onCrossPointGainChange(string cName, integer value)
 {
     currentGain = value;
     GainValue = value;
