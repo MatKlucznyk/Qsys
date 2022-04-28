@@ -38,8 +38,8 @@ namespace QscQsys
         public SendingCommand onSendingCommand { get; set; }
         #endregion
 
-        private readonly CrestronQueue<string> commandQueue = new CrestronQueue<string>();
-        private readonly CrestronQueue<string> responseQueue = new CrestronQueue<string>();
+        private readonly CrestronQueue<string> commandQueue = new CrestronQueue<string>(64);
+        private readonly CrestronQueue<string> responseQueue = new CrestronQueue<string>(64);
         private CTimer commandQueueTimer;
         private CTimer responseQueueTimer;
         private CTimer heartbeatTimer;

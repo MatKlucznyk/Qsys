@@ -44,5 +44,15 @@ namespace QscQsys
                 QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(set));
             }
         }
+
+        public void SetCrossPointMute(string inputs, string outputs, ushort value)
+        {
+            if (registered)
+            {
+                SetCrossPointMute set = new SetCrossPointMute() { Params = new SetCrossPointMuteParams() { Name = cName, Inputs = inputs, Outputs = outputs, Value = Convert.ToBoolean(value) } };
+
+                QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(set));
+            }
+        }
     }
 }

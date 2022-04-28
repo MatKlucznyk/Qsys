@@ -69,14 +69,14 @@ namespace QscQsys
             {
                 if (newCrossPointValueChange != null)
                 {
-                    newCrossPointValueChange(cName, Convert.ToUInt16(e.Value));
+                    newCrossPointValueChange(crossName, Convert.ToUInt16(e.Value));
                 }
             }
             else if (e.Name == string.Format("{0}gain", crossName))
             {
                 if (newCrossPointGainChange != null)
                 {
-                    newCrossPointGainChange(cName, Convert.ToUInt16(QsysCoreManager.ScaleUp(e.Position)));
+                    newCrossPointGainChange(crossName, Convert.ToUInt16(QsysCoreManager.ScaleUp(e.Position)));
                 }
             }
         }
