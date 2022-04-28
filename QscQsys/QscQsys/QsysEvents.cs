@@ -64,4 +64,14 @@ namespace QscQsys
             this.CoreId = coreId;
         }
     }
+
+    internal class CoreRemovedEventArgs : EventArgs
+    {
+        public string CoreId;
+
+        public CoreRemovedEventArgs(string coreId)
+        {
+            this.CoreId = coreId;
+        }
+    }
 }

@@ -76,7 +76,7 @@ namespace QscQsys
         /// </summary>
         public bool IsDisposed { get { return isDisposed; } }
 
-        public bool IsConnected { get; set; }
+        public bool IsConnected { get; private set; }
 
         public ushort IsDebugMode { get { return debug; } }
 
@@ -234,6 +234,38 @@ namespace QscQsys
                 {
                     if (debug > 0)
                         ErrorLog.Error("Error in QsysProcessor Iniitialize: {0}", e.Message);
+                }
+            }
+        }
+
+        public void ReInitialize(string id, string host, ushort port, string username, string password, ushort useExternalConnection)
+        {
+            if (isInitialized)
+            {
+                try
+                {
+                    client.Disconnect();
+                    commandQueue.Dispose();
+                    commandQueueTimer.Stop();
+                    commandQueueTimer.Dispose();
+
+                    if (!heartbeatTimer.Disposed)
+                    {
+                        heartbeatTimer.Stop();
+                        heartbeatTimer.Dispose();
+                    }
+
+                    maxLogonAttempts = 2;
+                    debug = 0;
+                    isInitialized = false;
+
+                    if (onIsLoggedIn != null)
+                        onIsLoggedIn(id, 0);
+                }
+                catch (Exception e)
+                {
+                    if (debug > 0)
+                        ErrorLog.Error("Error in QsysProcessor ReInitialize: {0}", e.Message);
                 }
             }
         }
@@ -601,7 +633,7 @@ namespace QscQsys
         /// </summary>
         public void Dispose()
         {
-            if (IsInitialized)
+            if (isInitialized)
             {
                 client.Disconnect();
                 commandQueue.Dispose();
@@ -613,6 +645,11 @@ namespace QscQsys
                     heartbeatTimer.Stop();
                     heartbeatTimer.Dispose();
                 }
+
+                maxLogonAttempts = 2;
+                debug = 0;
+                isInitialized = false;
+                
 
                 isDisposed = true;
             }

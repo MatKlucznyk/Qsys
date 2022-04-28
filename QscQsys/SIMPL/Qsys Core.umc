@@ -16,14 +16,14 @@ S0Nd=1
 S1Nd=2
 SLNd=3
 PrNm=Qsys Core.umc
-DbVr=211.00.002.00
-DvcDbVr=200.160.001.00
+DbVr=211.05.001.00
+DvcDbVr=200.170.001.00
 PgmNm=IPorter
 CltNm=Qsys Core
 Incl=1766,2574,2651,2817,2886,2938,2947,3181,3197,3233,3710,3735,3736,3816,3888,4176,4308,4476,4591,4769,5360,5388,5420,5455,5497,5699,5813,5919,6150,6161,6089,6101,6114,6136,6343,6356,6357,6423,
 McNm=Qsys Core
-SmVr=1160
-DvVr=1160
+SmVr=1164
+DvVr=1164
 TpN1=1
 TpN2=2
 TpN3=3
@@ -56,7 +56,7 @@ Ym=-1
 SH=6
 Z=100
 Ht=1
-Hi=2
+Hi=7
 ]
 [
 ObjTp=Bw
@@ -69,8 +69,8 @@ Xm=-1
 Ym=-1
 SH=7
 Z=100
-Ht=4
-Hi=7
+Ht=3
+Hi=10
 ]
 [
 ObjTp=Symbol
@@ -303,7 +303,7 @@ n1O=5
 mI=7
 I1=4
 I2=10
-I3=5
+I3=27
 I4=8
 I5=26
 I6=6
@@ -327,7 +327,7 @@ P6=
 P7=
 P8=
 P9=
-P10=CoreID
+P10=#CoreID
 P11=#Port
 P12=#Username
 P13=#Password
@@ -336,12 +336,6 @@ P13=#Password
 ObjTp=Sg
 H=4
 Nm=Initialize
-]
-[
-ObjTp=Sg
-H=5
-Nm=//__analog_reserved__
-SgTp=2
 ]
 [
 ObjTp=Sg
