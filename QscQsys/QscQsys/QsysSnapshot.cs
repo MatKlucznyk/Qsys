@@ -7,44 +7,19 @@ using Newtonsoft.Json;
 
 namespace QscQsys
 {
-    public class QsysSnapshot
+    public class QsysSnapshot : QsysComponent
     {
         public delegate void RecalledSnapshot(SimplSharpString cName, ushort snapshot);
         public delegate void UnrecalledSnapshot(SimplSharpString cName, ushort snapshot);
         public RecalledSnapshot onRecalledSnapshot { get; set; }
         public UnrecalledSnapshot onUnrecalledSnapshot { get; set; }
 
-        private string cName;
-        private string coreId;
-        private bool registered;
-
-        public void Initialize(string coreId, string name)
+        public void Initialize(string coreId, string componentName)
         {
-            this.cName = name;
-            this.coreId = coreId;
-
-            QsysCoreManager.CoreAdded += new EventHandler<CoreAddedEventArgs>(QsysCoreManager_CoreAdded);
-
-            if (!registered)
-                RegisterWithCore();
-        }
-
-        void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs e)
-        {
-            if (!registered && e.CoreId == coreId)
+            var component = new Component()
             {
-                RegisterWithCore();
-            }
-        }
-
-        private void RegisterWithCore()
-        {
-            if (QsysCoreManager.Cores.ContainsKey(coreId))
-            {
-                Component component = new Component()
-                {
-                    Name = cName,
-                    Controls = new List<ControlName>() 
+                Name = componentName,
+                Controls = new List<ControlName>() 
                     { 
                         new ControlName() { Name = "load_1" }, 
                         new ControlName() { Name = "load_2" },
@@ -55,18 +30,12 @@ namespace QscQsys
                         new ControlName() { Name = "load_7" },
                         new ControlName() { Name = "load_8" }
                     }
-                };
+            };
 
-                if (QsysCoreManager.Cores[coreId].RegisterComponent(component))
-                {
-                    QsysCoreManager.Cores[coreId].Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
-
-                    registered = true;
-                }
-            }
+            base.Initialize(coreId, component);
         }
 
-        void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
+        protected override void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
         {
             if(e.Name.Contains("load"))
             {
@@ -75,47 +44,47 @@ namespace QscQsys
                 if (e.Position == 1.0)
                 {
                     if (onRecalledSnapshot != null)
-                        onRecalledSnapshot(cName, load);
+                        onRecalledSnapshot(_cName, load);
                 }
                 else if (e.Position < 1.0)
                 {
                     if (onUnrecalledSnapshot != null)
-                        onUnrecalledSnapshot(cName, load);
+                        onUnrecalledSnapshot(_cName, load);
                 }
             }
         }
 
         public void LoadSnapshot(ushort number)
         {
-            if (registered)
+            if (_registered)
             {
                 ComponentChange loadSnapshot = new ComponentChange()
                 {
                     Params = new ComponentChangeParams()
                     {
-                        Name = cName,
+                        Name = _cName,
                         Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = string.Format("load_{0}", number), Value = 1 } }
                     }
                 };
 
-                QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(loadSnapshot, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(loadSnapshot, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
         }
 
         public void SaveSnapshot(ushort number)
         {
-            if (registered)
+            if (_registered)
             {
                 ComponentChange saveSnapshot = new ComponentChange()
                 {
                     Params = new ComponentChangeParams()
                     {
-                        Name = cName,
+                        Name = _cName,
                         Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = string.Format("save_{0}", number), Value = 1 } }
                     }
                 };
 
-                QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(saveSnapshot, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(saveSnapshot, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
         }
     }

@@ -8,7 +8,7 @@ namespace QscQsys
     /// <summary>
     /// Used only for internal methods.
     /// </summary>
-    internal class QsysInternalEventsArgs : EventArgs
+    public class QsysInternalEventsArgs : EventArgs
     {
         public string Name;
         public double Value;

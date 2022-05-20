@@ -38,15 +38,15 @@ namespace QscQsys
         [JsonProperty]
         static string method = "ChangeGroup.AutoPoll";
         [JsonProperty("params")]
-        CreateChangeGroupParams Params = new CreateChangeGroupParams();
+        internal CreateChangeGroupParams Params = new CreateChangeGroupParams();
     }
 
     public class CreateChangeGroupParams
     {
         [JsonProperty]
-        static string Id = "1";
+        internal static string Id = "crestron";
         [JsonProperty]
-        static double Rate = 0.10;
+        static double Rate = 0.1;
     }
 
     public class AddComoponentToChangeGroup
@@ -76,14 +76,14 @@ namespace QscQsys
     public class AddControlToChangeGroupParams
     {
         [JsonProperty]
-        static string Id = "1";
+        static string Id = "crestron";
         public List<string> Controls { get; set; }
     }
 
     public class AddComponentToChangeGroupParams
     {
         [JsonProperty]
-        static string Id = "1";
+        static string Id = "crestron";
         public Component Component { get; set; }
 
     }

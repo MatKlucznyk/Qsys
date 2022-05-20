@@ -4,6 +4,12 @@
         <name>QscQsys</name>
     </assembly>
     <members>
+        <member name="M:QscQsys.QsysComponent.Initialize(System.String,QscQsys.Component)">
+            <summary>
+            Default constructor for a QsysFader
+            </summary>
+            <param name="Name">The component name of the gain.</param>
+        </member>
         <member name="T:QscQsys.QsysInternalEventsArgs">
             <summary>
             Used only for internal methods.
@@ -16,27 +22,74 @@
         </member>
         <member name="T:QscQsys.QsysCore">
             <summary>
-            processor for Q-Sys Cores.
+            Q-SYS Core class that manages connection and parses responses to be dsitributed to components and named control classes
             </summary>
+        </member>
+        <member name="M:QscQsys.QsysCore.Debug(System.UInt16)">
+            <summary>
+            Set dbug mode.
+            </summary>
+            <param name="value"></param>
         </member>
         <member name="M:QscQsys.QsysCore.Initialize(System.String,System.String,System.UInt16,System.String,System.String,System.UInt16)">
             <summary>
             Initialzes all methods that are required to setup the class. Connection is established on port 1702.
             </summary>
         </member>
+        <member name="M:QscQsys.QsysCore.NewExternalResponse(System.String)">
+            <summary>
+            Enqueue response from SIMPL to be parsed
+            </summary>
+            <param name="response">Response from SIMPL to be parsed</param>
+        </member>
         <member name="M:QscQsys.QsysCore.Dispose">
             <summary>
-            Cleans up all resources.
+            Clean up of unmanaged resources
             </summary>
         </member>
         <member name="P:QscQsys.QsysCore.IsInitialized">
             <summary>
-            Processor initialzation state.
+            Get initialzation status
             </summary>
         </member>
         <member name="P:QscQsys.QsysCore.IsDisposed">
             <summary>
-            Processor disposed state.
+            Get disposed status
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.IsConnected">
+            <summary>
+            Get connection status
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.IsDebugMode">
+            <summary>
+            Get debug mode
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.MaxLogonAttemps">
+            <summary>
+            Get or set  max logon attempts
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.IsRedundant">
+            <summary>
+            Get redundant status
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.IsEmulator">
+            <summary>
+            Get emulator status
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.DesignName">
+            <summary>
+            Get running design name
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.CoreId">
+            <summary>
+            Get core ID
             </summary>
         </member>
         <member name="M:QscQsys.QsysMatrixMixer.SetCrossPointMute(System.String,System.String,System.Boolean)">
@@ -47,19 +100,25 @@
             <param name="outputs">The output channels.</param>
             <param name="value">The value of the crosspoint mute.</param>
         </member>
-        <member name="M:QscQsys.QsysFader.Initialize(System.String,System.String)">
-            <summary>
-            Default constructor for a QsysFader
-            </summary>
-            <param name="Name">The component name of the gain.</param>
-        </member>
         <member name="M:QscQsys.QsysFader.Volume(System.Int32)">
             <summary>
             Sets the current volume.
             </summary>
             <param name="value">The volume level to set to.</param>
         </member>
+        <member name="M:QscQsys.QsysFader.Volume(System.UInt16)">
+            <summary>
+            Sets the current volume value.
+            </summary>
+            <param name="value">Volume value to set the fader to.</param>
+        </member>
         <member name="M:QscQsys.QsysFader.Mute(System.Boolean)">
+            <summary>
+            Sets the current mute state.
+            </summary>
+            <param name="value">The state to set the mute.</param>
+        </member>
+        <member name="M:QscQsys.QsysFader.Mute(System.UInt16)">
             <summary>
             Sets the current mute state.
             </summary>

@@ -4,11 +4,11 @@ Version=1
 [
 ObjTp=FSgntr
 Sgntr=SimplWindow
-RelVrs=4.19.00
+RelVrs=4.20.00
 IntStrVrs=2
 MinSMWVrs=4.14.0
 MinTIOVrs=700
-SavedBy=SMW4.1900.00
+SavedBy=SMW4.2000.00
 ]
 [
 ObjTp=Hd
@@ -20,7 +20,7 @@ SLNd=3
 PrNm=3 Series Test.smw
 CmVr=3.03
 DbVr=211.05.001.00
-DvcDbVr=200.165.003.00
+DvcDbVr=200.175.001.00
 PgmNm=Mat Klucznyk
 DlrNm=RAVE Audio Visual
 CltNm=qsysTest
@@ -1152,7 +1152,7 @@ DvC=3808
 ObjVer=1
 DvVr=1164
 Ad=01
-SmH=39
+SmH=40
 RelStat=Release
 ProdLine=3-Series
 CmH=1
@@ -1168,7 +1168,7 @@ DvC=200
 ObjVer=1
 DvVr=1164
 Ad=03
-SmH=40
+SmH=41
 RelStat=Release
 ProdLine=2-Series,3-Series
 DbH=2
@@ -1325,7 +1325,7 @@ Nm=Logic
 ObjVer=1
 SmVr=1164
 CF=2
-mC=21
+mC=22
 C1=18
 C2=19
 C3=20
@@ -1347,6 +1347,7 @@ C18=35
 C19=36
 C20=37
 C21=38
+C22=39
 ]
 [
 ObjTp=Sm
@@ -1388,7 +1389,7 @@ PrH=1
 CF=2
 Cmn1=C2I-RMC3ENET-1
 mC=1
-C1=40
+C1=41
 ]
 [
 ObjTp=Sm
@@ -1402,7 +1403,7 @@ PrH=1
 CF=2
 Cmn1=C2I-RMC3-COM1
 mC=1
-C1=39
+C1=40
 ]
 [
 ObjTp=Sm
@@ -1557,25 +1558,43 @@ tO=17
 [
 ObjTp=Sm
 H=18
-SmC=9
-Nm=One Shot
+SmC=1477
+Nm=Multiple Serial Send
 ObjVer=1
 SmVr=1164
 PrH=4
 CF=2
-n1I=3
+n1I=1
 n1O=2
-mI=3
+mI=1
 I1=2
 mO=2
 tO=2
-O1=153
-mP=1
-P1=.1s
+O1=228
+O2=229
+mP=2
+P1=192.168.2.159
+P2=192.168.2.159
 ]
 [
 ObjTp=Sm
 H=19
+SmC=858
+Nm=Make String Permanent
+ObjVer=1
+SmVr=1164
+PrH=4
+CF=2
+n1I=2
+mI=2
+I1=228
+I2=229
+mP=1
+P1=50d
+]
+[
+ObjTp=Sm
+H=20
 SmC=155
 Nm=Qsys Core.umc
 ObjVer=1
@@ -1602,8 +1621,8 @@ O6=226
 O11=166
 mP=4
 P1=main
-P2=""
-P3=""
+P2=Mat
+P3=1234
 P4=1710d
 NGrpStI=13
 GrpStI1=0
@@ -1636,7 +1655,7 @@ GrpStO13=0
 ]
 [
 ObjTp=Sm
-H=20
+H=21
 SmC=103
 Nm=Qsys Fader.usp
 ObjVer=1
@@ -1672,7 +1691,7 @@ P11=.1s
 ]
 [
 ObjTp=Sm
-H=21
+H=22
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
@@ -1708,7 +1727,7 @@ P12=1s
 ]
 [
 ObjTp=Sm
-H=22
+H=23
 SmC=103
 Nm=Qsys Router.usp
 ObjVer=1
@@ -1729,7 +1748,7 @@ P5=1d
 ]
 [
 ObjTp=Sm
-H=23
+H=24
 SmC=155
 Nm=Qsys Pots Controller.umc
 ObjVer=1
@@ -1787,7 +1806,7 @@ P2=Pots
 ]
 [
 ObjTp=Sm
-H=24
+H=25
 SmC=155
 Nm=Qsys Softphone Controller.umc
 ObjVer=1
@@ -1846,7 +1865,7 @@ P2=Test VOIP
 ]
 [
 ObjTp=Sm
-H=25
+H=26
 SmC=103
 Nm=Qsys Nv32h Decoder.usp
 ObjVer=1
@@ -1866,7 +1885,7 @@ P4=decoder
 ]
 [
 ObjTp=Sm
-H=26
+H=27
 SmC=103
 Nm=Qsys Generic String Named Control.usp
 ObjVer=1
@@ -1886,7 +1905,7 @@ P4=StringTest
 ]
 [
 ObjTp=Sm
-H=27
+H=28
 SmC=103
 Nm=Qsys Generic Integer Named Control.usp
 ObjVer=1
@@ -1907,7 +1926,7 @@ P5=1d
 ]
 [
 ObjTp=Sm
-H=28
+H=29
 SmC=103
 Nm=Qsys Generic Boolean Named Control.usp
 ObjVer=1
@@ -1932,7 +1951,7 @@ P6=BoolTest
 ]
 [
 ObjTp=Sm
-H=29
+H=30
 SmC=103
 Nm=Qsys Generic Boolean Named Control.usp
 ObjVer=1
@@ -1957,7 +1976,7 @@ P6=BoolTest1
 ]
 [
 ObjTp=Sm
-H=30
+H=31
 SmC=470
 Nm=Serial Force
 ObjVer=1
@@ -1989,7 +2008,7 @@ I20=131
 ]
 [
 ObjTp=Sm
-H=31
+H=32
 SmC=327
 Nm=Intersystem Communications
 ObjVer=1
@@ -2031,7 +2050,7 @@ P2=2d
 ]
 [
 ObjTp=Sm
-H=32
+H=33
 SmC=103
 Nm=Qsys Camera.usp
 ObjVer=1
@@ -2127,7 +2146,7 @@ P38=Camera
 ]
 [
 ObjTp=Sm
-H=33
+H=34
 SmC=103
 Nm=Qsys Room Combiner.usp
 ObjVer=1
@@ -2162,7 +2181,7 @@ P12=3d
 ]
 [
 ObjTp=Sm
-H=34
+H=35
 SmC=103
 Nm=Qsys Signal Presence.usp
 ObjVer=1
@@ -2202,7 +2221,7 @@ P13=2d
 ]
 [
 ObjTp=Sm
-H=35
+H=36
 SmC=103
 Nm=Qsys Snapshot Controller.usp
 ObjVer=1
@@ -2241,7 +2260,7 @@ P12=1d
 ]
 [
 ObjTp=Sm
-H=36
+H=37
 SmC=103
 Nm=Qsys Meter.usp
 ObjVer=1
@@ -2259,7 +2278,7 @@ P5=1d
 ]
 [
 ObjTp=Sm
-H=37
+H=38
 SmC=103
 Nm=Qsys Generic Integer Named Control.usp
 ObjVer=1
@@ -2280,26 +2299,28 @@ P5=1d
 ]
 [
 ObjTp=Sm
-H=38
+H=39
 SmC=858
 Nm=Make String Permanent
 ObjVer=1
 SmVr=1164
 PrH=4
 CF=2
-n1I=5
-mI=5
+n1I=7
+mI=7
 I1=199
 I2=195
 I3=196
 I4=202
 I5=198
+I6=228
+I7=229
 mP=1
 P1=255d
 ]
 [
 ObjTp=Sm
-H=39
+H=40
 SmC=4342
 Nm=RMC3 Two-way serial driver
 ObjVer=1
@@ -2322,7 +2343,7 @@ P3=
 ]
 [
 ObjTp=Sm
-H=40
+H=41
 SmC=3166
 Nm=TCP/IP Client
 ObjVer=1

@@ -7,94 +7,55 @@ using Newtonsoft.Json;
 
 namespace QscQsys
 {
-    public class QsysRouter
+    public class QsysRouter : QsysComponent
     {
         public delegate void RouterInputChange(SimplSharpString cName, ushort input);
         public RouterInputChange newRouterInputChange { get; set; }
 
-        private string cName;
-        private string coreId;
-        private bool registered;
-        private int myOutput;
+        private int _output;
+        private int _currentSelectedInput;
 
-        //public event EventHandler<QsysEventsArgs> QsysRouterEvent;
+        public int CurrentSelectedInput { get { return _currentSelectedInput; } }
+        public int Output { get { return _output; } }
 
-        public string ComponentName { get { return cName; } }
-        public bool IsRegistered { get { return registered; } }
-        public int CurrentSelectedInput { set; get; }
-
-        public void Initialize(string coreId, string Name, int output)
+        public void Initialize(string coreId, string componentName, int output)
         {
-            QsysCoreManager.CoreAdded += new EventHandler<CoreAddedEventArgs>(QsysCoreManager_CoreAdded);
+            _output = output;
 
-            cName = Name;
-            this.coreId = coreId;
-            myOutput = output;
-
-            Component component = new Component()
+            var component = new Component()
             {
-                Name = cName,
+                Name = componentName,
                 Controls = new List<ControlName>() { new ControlName() { Name = string.Format("select_{0}", output) } }
             };
 
-            if (!registered)
-                RegisterWithCore();
+            base.Initialize(coreId, component);
         }
 
-        void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs e)
+        protected override void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
         {
-            if (!registered && e.CoreId == coreId)
+            if (e.Name.Contains(string.Format("select_{0}", _output)))
             {
-                RegisterWithCore();
-            }
-        }
+                _currentSelectedInput = Convert.ToInt16(e.Value);
 
-        private void RegisterWithCore()
-        {
-            if (QsysCoreManager.Cores.ContainsKey(coreId))
-            {
-                Component component = new Component()
-                {
-                    Name = cName,
-                    Controls = new List<ControlName>() { new ControlName() { Name = string.Format("select_{0}", myOutput) } }
-                };
-
-                if (QsysCoreManager.Cores[coreId].RegisterComponent(component))
-                {
-                    QsysCoreManager.Cores[coreId].Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
-
-                    registered = true;
-                }
+                if (newRouterInputChange != null)
+                    newRouterInputChange(_cName, Convert.ToUInt16(e.Value));
             }
         }
 
         public void InputSelect(int input)
         {
-            if (registered)
+            if (_registered)
             {
                 ComponentChange newInputSelectedChange = new ComponentChange()
                 {
                     Params = new ComponentChangeParams()
                     {
-                        Name = cName,
-                        Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = string.Format("select_{0}", myOutput), Value = input } }
+                        Name = _cName,
+                        Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = string.Format("select_{0}", _output), Value = input } }
                     }
                 };
 
-                QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(newInputSelectedChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
-            }
-        }
-
-        private void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
-        {
-            if (e.Name.Contains(string.Format("select_{0}", myOutput)))
-            {
-                CurrentSelectedInput = Convert.ToInt16(e.Value);
-
-                //QsysRouterEvent(this, new QsysEventsArgs(eQscEventIds.RouterInputSelected, cName, Convert.ToBoolean(e.Value), Convert.ToInt16(e.Value), e.Value.ToString(), null));
-
-                if (newRouterInputChange != null)
-                    newRouterInputChange(cName, Convert.ToUInt16(e.Value));
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(newInputSelectedChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
         }
     }

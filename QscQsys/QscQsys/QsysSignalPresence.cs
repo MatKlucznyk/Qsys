@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace QscQsys
 {
-    public class QsysSignalPresence
+    public class QsysSignalPresence : QsysComponent
     {
         public delegate void SignalPresenceChange(SimplSharpString cName, ushort index, ushort value);
         public delegate void PeakThresholdChange(SimplSharpString cName, SimplSharpString value);
@@ -18,36 +18,18 @@ namespace QscQsys
         public HoldTimeChange newHoldTimeChange { get; set; }
         public InfiniteHoldChange newInfiniteHoldChange { get; set; }
 
-        private string cName;
-        private bool registered;
-        private string coreId;
-        private ushort count;
-        private ushort threshold;
-        private ushort holdTime;
-        private bool infiniteHold;
+        private ushort _count;
+        private ushort _threshold;
+        private ushort _holdTime;
+        private bool _infiniteHold;
 
-        public string ComponentName { get { return cName; } }
-        public bool IsRegistered { get { return registered; } }
-
-        public void Initialize(string coreId, string Name, ushort Count)
+        public void Initialize(string coreId, string componentName, ushort count)
         {
-            QsysCoreManager.CoreAdded += new EventHandler<CoreAddedEventArgs>(QsysCoreManager_CoreAdded);
-            cName = Name;
-            count = Count;
+            _count = count;
 
-            this.coreId = coreId;
-
-            if (!registered)
-                RegisterWithCore();
-        }
-
-        private void RegisterWithCore()
-        {
-            if (QsysCoreManager.Cores.ContainsKey(coreId))
-            {
-                Component component = new Component()
+            var component = new Component()
                 {
-                    Name = cName,
+                    Name = componentName,
                     Controls = new List<ControlName>() 
                     { 
                         new ControlName() { Name = "threshold" }, 
@@ -56,57 +38,31 @@ namespace QscQsys
                     }
                 };
 
-                if (count > 1)
-                {
-                    for (int i = 1; i <= count; i++)
-                    {
-                        component.Controls.Add(new ControlName() { Name = string.Format("signal_presence_{0}", i) });
-                    }
-                }
-                else
-                {
-                    component.Controls.Add(new ControlName() { Name = "signal_presence" });
-                }
-
-                if (QsysCoreManager.Cores[coreId].RegisterComponent(component))
-                {
-                    QsysCoreManager.Cores[coreId].Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(QsysSignalPresence_OnNewEvent);
-
-                    registered = true;
-                }
-            }
-        } 
-
-        void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs e)
-        {
-            if (!registered && e.CoreId == coreId)
-            {
-                RegisterWithCore();
-            }
+            base.Initialize(coreId, component);
         }
 
-        void QsysSignalPresence_OnNewEvent(object sender, QsysInternalEventsArgs e)
+        protected override void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
         {
             if (e.Name == "threshold")
             {
-                threshold = (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position));
+                _threshold = (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position));
 
                 if (newPeakThresholdChange != null)
-                    newPeakThresholdChange(cName, e.SValue);
+                    newPeakThresholdChange(_cName, e.SValue);
             }
             else if (e.Name == "hold_time")
             {
-                holdTime = (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position));
+                _holdTime = (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position));
 
                 if (newHoldTimeChange != null)
-                    newHoldTimeChange(cName, e.SValue);
+                    newHoldTimeChange(_cName, e.SValue);
             }
             else if (e.Name == "infinite_hold")
             {
-                infiniteHold = Convert.ToBoolean(e.Value);
+                _infiniteHold = Convert.ToBoolean(e.Value);
 
                 if (newInfiniteHoldChange != null)
-                    newInfiniteHoldChange(cName, (ushort)e.Value);
+                    newInfiniteHoldChange(_cName, (ushort)e.Value);
             }
             else if(e.Name.Contains("signal_presence"))
             {
@@ -115,124 +71,127 @@ namespace QscQsys
                     var splitName = e.Name.Split('_');
 
                     if (newSignalPresenceChange != null)
-                        newSignalPresenceChange(cName, Convert.ToUInt16(splitName[2]), (ushort)e.Value);
+                        newSignalPresenceChange(_cName, Convert.ToUInt16(splitName[2]), (ushort)e.Value);
                 }
                 else
                 {
                     if(newSignalPresenceChange != null)
-                        newSignalPresenceChange(cName, 1, (ushort)e.Value);
+                        newSignalPresenceChange(_cName, 1, (ushort)e.Value);
                 }
             }
         }
 
         public void ThresholdIncrement()
         {
-            if (registered)
+            if (_registered)
             {
                 double newThreshold;
 
-                if ((threshold + 6553.5) <= 65535)
+                if ((_threshold + 6553.5) <= 65535)
                 {
-                    newThreshold = QsysCoreManager.ScaleDown(threshold + 6553.5);
+                    newThreshold = QsysCoreManager.ScaleDown(_threshold + 6553.5);
                 }
                 else
                 {
                     newThreshold = QsysCoreManager.ScaleDown(65535);
                 }
 
-                ComponentChange newChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "threshold", Position = newThreshold } } } };
+                ComponentChange newChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "threshold", Position = newThreshold } } } };
 
-                QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(newChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(newChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
         }
 
         public void ThresholdDecrement()
         {
-            if (registered)
+            if (_registered)
             {
                 double newThreshold;
 
-                if ((threshold - 6553.5) >= 0)
+                if ((_threshold - 6553.5) >= 0)
                 {
-                    newThreshold = QsysCoreManager.ScaleDown(threshold - 6553.5);
+                    newThreshold = QsysCoreManager.ScaleDown(_threshold - 6553.5);
                 }
                 else
                 {
                     newThreshold = QsysCoreManager.ScaleDown(0);
                 }
 
-                ComponentChange newChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "threshold", Position = newThreshold } } } };
+                ComponentChange newChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "threshold", Position = newThreshold } } } };
 
-                QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(newChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(newChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
         }
 
         public void HoldTimeIncrement()
         {
-            if (registered)
+            if (_registered)
             {
                 double newHoldtime;
 
-                if ((holdTime + 6553.5) <= 65535)
+                if ((_holdTime + 6553.5) <= 65535)
                 {
-                    newHoldtime = QsysCoreManager.ScaleDown(holdTime + 6553.5);
+                    newHoldtime = QsysCoreManager.ScaleDown(_holdTime + 6553.5);
                 }
                 else
                 {
                     newHoldtime = QsysCoreManager.ScaleDown(65535);
                 }
 
-                ComponentChange newChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "hold_time", Position = newHoldtime } } } };
+                ComponentChange newChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "hold_time", Position = newHoldtime } } } };
 
-                QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(newChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(newChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
         }
 
         public void HoldTimeDecrement()
         {
-            if (registered)
+            if (_registered)
             {
                 double newHoldtime;
 
-                if ((holdTime - 6553.5) >= 0)
+                if ((_holdTime - 6553.5) >= 0)
                 {
-                    newHoldtime = QsysCoreManager.ScaleDown(holdTime - 6553.5);
+                    newHoldtime = QsysCoreManager.ScaleDown(_holdTime - 6553.5);
                 }
                 else
                 {
                     newHoldtime = QsysCoreManager.ScaleDown(0);
                 }
 
-                ComponentChange newChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "hold_time", Position = newHoldtime } } } };
+                ComponentChange newChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "hold_time", Position = newHoldtime } } } };
 
-                QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(newChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(newChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
         }
 
         public void InfiniteHold(bool value)
         {
-            if (infiniteHold != value && registered)
+            if (_infiniteHold != value && _registered)
             {
                 var intValue = Convert.ToInt16(value);
 
-                ComponentChange newChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "infinite_hold", Value = intValue } } } };
+                ComponentChange newChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "infinite_hold", Value = intValue } } } };
 
-                QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(newChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(newChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
         }
 
         public void InfiniteHold(ushort value)
         {
-            switch (value)
+            if (_registered)
             {
-                case (0):
-                    this.InfiniteHold(false);
-                    break;
-                case (1):
-                    this.InfiniteHold(true);
-                    break;
-                default:
-                    break;
+                switch (value)
+                {
+                    case (0):
+                        this.InfiniteHold(false);
+                        break;
+                    case (1):
+                        this.InfiniteHold(true);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }

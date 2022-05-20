@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using Crestron.SimplSharp;
 using Newtonsoft.Json;
-using Crestron.SimplSharp.SimplSharpExtensions;
+using ExtensionMethods;
 
 namespace QscQsys
 {
-    public class QsysPotsController
+    public class QsysPotsController : QsysComponent
     {
         public delegate void OffHookEvent(SimplSharpString cName, ushort value);
         public delegate void RingingEvent(SimplSharpString cName, ushort value);
@@ -33,201 +33,152 @@ namespace QscQsys
         public RecentCallsEvent onRecentCallsEvent { get; set; }
         public RecentCallListEvent onRecentCallListEvent { get; set; }
 
-        private string cName;
-        private string coreId;
-        private bool registered;
-        private bool hookState;
-        private bool ringingState;
-        private bool dialingState;
-        private bool incomingCall;
-        private bool autoAnswer;
-        private bool dnd;
-        private StringBuilder dialString = new StringBuilder();
-        private string currentlyCalling;
-        private string lastCalled;
-        private string callStatus;
-        private List<ListBoxChoice> recentCalls;
+        private bool _hookState;
+        private bool _ringingState;
+        private bool _dialingState;
+        private bool _incomingCall;
+        private bool _autoAnswer;
+        private bool _dnd;
+        private StringBuilder _dialString = new StringBuilder();
+        private string _currentlyCalling;
+        private string _lastCalled;
+        private string _callStatus;
+        private List<ListBoxChoice> _recentCalls = new List<ListBoxChoice>();
 
-        //public event EventHandler<QsysEventsArgs> QsysPotsControllerEvent;
+        public bool IsOffhook { get { return _hookState; } }
+        public bool IsRinging { get { return _ringingState; } }
+        public bool IsDialing { get { return _dialingState; } }
+        public bool IsIncomingCall { get { return _incomingCall; } }
+        public bool AutoAnswer { get { return _autoAnswer; } }
+        public bool DND { get { return _dnd; } }
+        public string DialString { get { return _dialString.ToString(); } }
+        public string CurrentlyCalling { get { return _currentlyCalling; } }
+        public string LastNumberCalled { get { return _lastCalled; } }
+        public string CallStatus { get { return _callStatus; } }
+        public List<ListBoxChoice> RecentCalls { get { return _recentCalls; } }
 
-        public string ComponentName { get { return cName; } }
-        public bool IsRegistered { get { return registered; } }
-        public bool IsOffhook { get { return hookState; } }
-        public bool IsRinging { get { return ringingState; } }
-        public bool IsDialing { get { return dialingState; } }
-        public bool IsIncomingCall { get { return incomingCall; } }
-        public bool AutoAnswer { get { return autoAnswer; } }
-        public bool DND { get { return dnd; } }
-        public string DialString { get { return dialString.ToString(); } }
-        public string CurrentlyCalling { get { return currentlyCalling; } }
-        public string LastNumberCalled { get { return lastCalled; } }
-        public string CallStatus { get { return callStatus; } }
-        public List<ListBoxChoice> RecentCalls { get { return recentCalls; } }
-
-        public void Initialize(string coreId, string Name)
+        public void Initialize(string coreId, string componentName)
         {
-            QsysCoreManager.CoreAdded += new EventHandler<CoreAddedEventArgs>(QsysCoreManager_CoreAdded);
-
-            cName = Name;
-            this.coreId = coreId;
-            recentCalls = new List<ListBoxChoice>();
-
-            if (!registered)
-                RegisterWithCore();
-        }
-
-        void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs e)
-        {
-            if (!registered && e.CoreId == coreId)
+            var component = new Component()
             {
-                RegisterWithCore();
-            }
-        }
-
-        private void RegisterWithCore()
-        {
-            if (QsysCoreManager.Cores.ContainsKey(coreId))
-            {
-                Component component = new Component()
-                {
-                    Name = cName,
-                    Controls = new List<ControlName>(){new ControlName(){Name = "call_offhook"},
-                new ControlName(){Name = "call_ringing"}, new ControlName(){Name = "call_autoanswer"}, new ControlName(){Name = "call_dnd"}, new ControlName(){Name = "call_status"},
+                Name = componentName,
+                Controls = new List<ControlName>(){new ControlName(){Name = "call_offhook"},
+                new ControlName(){Name = "call_ringing"}, 
+                new ControlName(){Name = "call_autoanswer"}, 
+                new ControlName(){Name = "call_dnd"}, 
+                new ControlName(){Name = "call_status"},
                 new ControlName(){Name = "recent_calls"}}
-                };
-
-                if (QsysCoreManager.Cores[coreId].RegisterComponent(component))
-                {
-                    QsysCoreManager.Cores[coreId].Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
-
-                    registered = true;
-                }
-            }
+            };
+            base.Initialize(coreId, component);
         }
 
-        void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
+        protected override void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
         {
             switch (e.Name)
             {
                 case "call_offhook":
                     if (e.Value == 1)
                     {
-                        hookState = true;
-                        //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerOffHook, cName, true, 1, "1", null));
-                        //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCurrentlyCalling, cName, true, currentlyCalling.Length, currentlyCalling, null));
+                        _hookState = true;
 
                         if (onOffHookEvent != null)
-                            onOffHookEvent(cName, 1);
+                            onOffHookEvent(_cName, 1);
 
                         if (onCurrentlyCallingEvent != null)
-                            onCurrentlyCallingEvent(cName, currentlyCalling);
+                            onCurrentlyCallingEvent(_cName, _currentlyCalling);
                     }
                     else if (e.Value == 0)
                     {
-                        hookState = false;
-                        dialString.Remove(0, dialString.Length);
-                        //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerOffHook, cName, false, 0, "0", null));
+                        _hookState = false;
+                        _dialString.Remove(0, _dialString.Length);
 
                         if (onOffHookEvent != null)
-                            onOffHookEvent(cName, 0);
+                            onOffHookEvent(_cName, 0);
 
 
-                        lastCalled = currentlyCalling;
-                        currentlyCalling = string.Empty;
-                        //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCurrentlyCalling, cName, false, currentlyCalling.Length, currentlyCalling, null));
-                        //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, false, 0, dialString.ToString(), null));
-
+                        _lastCalled = _currentlyCalling;
+                        _currentlyCalling = string.Empty;
+ 
                         if (onCurrentlyCallingEvent != null)
-                            onCurrentlyCallingEvent(cName, currentlyCalling);
+                            onCurrentlyCallingEvent(_cName, _currentlyCalling);
 
                         if (onDialStringEvent != null)
-                            onDialStringEvent(cName, dialString.ToString());
+                            onDialStringEvent(_cName, _dialString.ToString());
                     }
                     break;
                 case "call_ringing":
                     if (e.Value == 1)
                     {
-                        ringingState = true;
-                        //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIsRinging, cName, true, 1, "1", null));
+                        _ringingState = true;
 
                         if (onRingingEvent != null)
-                            onRingingEvent(cName, 1);
+                            onRingingEvent(_cName, 1);
                     }
                     else if (e.Value == 0)
                     {
-                        ringingState = false;
-                        //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIsRinging, cName, false, 0, "0", null));
+                        _ringingState = false;
 
                         if (onRingingEvent != null)
-                            onRingingEvent(cName, 0);
+                            onRingingEvent(_cName, 0);
                     }
                     break;
                 case "call_autoanswer":
-                    autoAnswer = Convert.ToBoolean(e.Value);
-                    //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerAutoAnswerChange, cName, autoAnswer, Convert.ToInt16(e.Value), Convert.ToString(Convert.ToInt16(e.Value)), null));
+                    _autoAnswer = Convert.ToBoolean(e.Value);
 
                     if (onAutoAnswerEvent != null)
-                        onAutoAnswerEvent(cName, Convert.ToUInt16(e.Value));
+                        onAutoAnswerEvent(_cName, Convert.ToUInt16(e.Value));
                     
                     break;
                 case "call_dnd":
-                    dnd = Convert.ToBoolean(e.Value);
-                    //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDND_Change, cName, dnd, Convert.ToInt16(e.Value), Convert.ToString(Convert.ToInt16(e.Value)), null));
-                    
+                    _dnd = Convert.ToBoolean(e.Value);
+
                     if(onDndEvent != null)
-                        onDndEvent(cName, Convert.ToUInt16(e.Value));
+                        onDndEvent(_cName, Convert.ToUInt16(e.Value));
 
                     break;
                 case "call_status":
-                    callStatus = e.SValue;
-                    //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerCallStatusChange, cName, true, e.SValue.Length, e.SValue, null));
+                    _callStatus = e.SValue;
 
                     if (onCurrentCallStatusChange != null)
-                        onCurrentCallStatusChange(cName, e.SValue);
+                        onCurrentCallStatusChange(_cName, e.SValue);
 
-                    if (callStatus.Contains("Dialing") && dialingState == false)
+                    if (_callStatus.Contains("Dialing") && _dialingState == false)
                     {
-                        dialingState = true;
-                        //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialing, cName, true, 1, "true", null));
+                        _dialingState = true;
 
                         if (onDialingEvent != null)
-                            onDialingEvent(cName, 1);
+                            onDialingEvent(_cName, 1);
                     }
-                    else if (dialingState == true)
+                    else if (_dialingState == true)
                     {
-                        dialingState = false;
+                        _dialingState = false;
                         
-                        //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialing, cName, false, 0, "false", null));
-
                         if (onDialingEvent != null)
-                            onDialingEvent(cName, 0);
+                            onDialingEvent(_cName, 0);
                     }
 
-                    if (callStatus.Contains("Incoming Call"))
+                    if (_callStatus.Contains("Incoming Call"))
                     {
-                        incomingCall = true;
-                        //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIncomingCall, cName, true, 1, "true", null));
+                        _incomingCall = true;
 
                         if (onIncomingCallEvent != null)
-                            onIncomingCallEvent(cName, 1);
+                            onIncomingCallEvent(_cName, 1);
                     }
-                    else if (incomingCall == true)
+                    else if (_incomingCall == true)
                     {
-                        incomingCall = false;
-                        //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerIncomingCall, cName, false, 0, "false", null));
+                        _incomingCall = false;
 
                         if (onIncomingCallEvent != null)
-                            onIncomingCallEvent(cName, 0);
+                            onIncomingCallEvent(_cName, 0);
                     }
                     break;
                 case "recent_calls":
-                    recentCalls.Clear();
+                    _recentCalls.Clear();
                     foreach (var choice in e.Choices)
                     {
                         var newChoice = JsonConvert.DeserializeObject<ListBoxChoice>(choice);
-                        recentCalls.Add(newChoice);
+                        _recentCalls.Add(newChoice);
                     }
-                    //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerRecentCallsChange, cName, Convert.ToBoolean(recentCalls.Count), recentCalls.Count, recentCalls.Count.ToString(), recentCalls));
 
                     if (onRecentCallsEvent != null)
                     {
@@ -235,16 +186,16 @@ namespace QscQsys
 
                         for (int i = 0; i <= 4; i++)
                         {
-                            if (recentCalls.Count > i)
+                            if (_recentCalls.Count > i)
                             {
-                                calls[i] = recentCalls[i].Text;
+                                calls[i] = _recentCalls[i].Text;
                             }
                             else
                             {
                                 break;
                             }
                         }
-                        onRecentCallsEvent(cName, calls[0], calls[1], calls[2], calls[3], calls[4]);
+                        onRecentCallsEvent(_cName, calls[0], calls[1], calls[2], calls[3], calls[4]);
                     }
                     if (onRecentCallListEvent != null)
                     {
@@ -252,8 +203,9 @@ namespace QscQsys
 
                         foreach (var call in calls)
                         {
+                            
                             var encodedBytes = XSig.GetBytes(calls.IndexOf(call), call);
-                            onRecentCallListEvent(cName, Encoding.GetEncoding(28591).GetString(encodedBytes, 0, encodedBytes.Length));
+                            onRecentCallListEvent(_cName, Encoding.GetEncoding(28591).GetString(encodedBytes, 0, encodedBytes.Length));
                         }
                     }
 
@@ -265,84 +217,77 @@ namespace QscQsys
 
         public void NumPad(string number)
         {
-            if (registered)
+            if (_registered)
             {
-                dialString.Append(number);
+                _dialString.Append(number);
 
-                if (hookState)
+                if (_hookState)
                 {
                     ComponentChange pinPad = new ComponentChange()
                     {
                         Params = new ComponentChangeParams()
                         {
-                            Name = cName,
+                            Name = _cName,
                             Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = string.Format("call_pinpad_{0}", number), Value = 1 } }
                         }
                     };
 
-                    QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(pinPad, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                    QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(pinPad, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
                 }
 
-                //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString(), null));
-
                 if (onDialingEvent != null)
-                    onDialStringEvent(cName, dialString.ToString());
+                    onDialStringEvent(_cName, _dialString.ToString());
             }
         }
 
         public void NumString(string number)
         {
-            if (registered)
+            if (_registered)
             {
-                if (!hookState)
+                if (!_hookState)
                 {
-                    dialString.Append(number);
-                    //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString(), null));
+                    _dialString.Append(number);
 
                     if (onDialingEvent != null)
-                        onDialStringEvent(cName, dialString.ToString());
+                        onDialStringEvent(_cName, _dialString.ToString());
                 }
             }
         }
 
         public void NumPadDelete()
         {
-            if (registered)
+            if (_registered)
             {
-                if (dialString.Length > 0)
+                if (_dialString.Length > 0)
                 {
-                    dialString.Remove(dialString.Length - 1, 1);
-
-                    //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString(), null));
+                    _dialString.Remove(_dialString.Length - 1, 1);
 
                     if (onDialingEvent != null)
-                        onDialStringEvent(cName, dialString.ToString());
+                        onDialStringEvent(_cName, _dialString.ToString());
                 }
             }
         }
 
         public void NumPadClear()
         {
-            if (registered)
+            if (_registered)
             {
-                if (dialString.Length > 0)
+                if (_dialString.Length > 0)
                 {
-                    dialString.Remove(0, dialString.Length);
-
-                    //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, true, dialString.Length, dialString.ToString(), null));
+                    _dialString.Remove(0, _dialString.Length);
 
                     if (onDialingEvent != null)
-                        onDialStringEvent(cName, dialString.ToString());
+                        onDialStringEvent(_cName, _dialString.ToString());
                 }
             }
         }
 
         public void Dial()
         {
-            if (registered)
+            if (_registered)
             {
-                currentlyCalling = dialString.ToString();
-                dialString.Remove(0, dialString.Length);;
+                _currentlyCalling = _dialString.ToString();
+                _dialString.Remove(0, _dialString.Length);;
 
                 DialNow();
             }
@@ -350,10 +295,10 @@ namespace QscQsys
 
         public void Dial(string number)
         {
-            if (registered)
+            if (_registered)
             {
-                currentlyCalling = dialString.ToString() + number;
-                dialString.Remove(0, dialString.Length);
+                _currentlyCalling = _dialString.ToString() + number;
+                _dialString.Remove(0, _dialString.Length);
 
                 DialNow();
             }
@@ -362,132 +307,131 @@ namespace QscQsys
 
         private void DialNow()
         {
-            //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, false, 0, string.Empty, null));
-
-            if (onDialingEvent != null)
-                onDialStringEvent(cName, string.Empty);
-
-            ComponentChangeString dialNumber = new ComponentChangeString()
+            if (_registered)
             {
-                Params = new ComponentChangeParamsString()
+                if (onDialingEvent != null)
+                    onDialStringEvent(_cName, string.Empty);
+
+                ComponentChangeString dialNumber = new ComponentChangeString()
                 {
-                    Name = cName,
-                    Controls = new List<ComponentSetValueString>() { new ComponentSetValueString() { Name = "call_number", Value = currentlyCalling } }
-                }
-            };
+                    Params = new ComponentChangeParamsString()
+                    {
+                        Name = _cName,
+                        Controls = new List<ComponentSetValueString>() { new ComponentSetValueString() { Name = "call_number", Value = _currentlyCalling } }
+                    }
+                };
 
-            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(dialNumber, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(dialNumber, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
 
-            ComponentChange dial = new ComponentChange()
-            {
-                Params = new ComponentChangeParams()
+                ComponentChange dial = new ComponentChange()
                 {
-                    Name = cName,
-                    Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "call_connect", Value = 1 } }
-                }
-            };
+                    Params = new ComponentChangeParams()
+                    {
+                        Name = _cName,
+                        Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "call_connect", Value = 1 } }
+                    }
+                };
 
-            QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(dial, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(dial, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+            }
         }
 
         public void Connect()
         {
-            if (registered)
+            if (_registered)
             {
                 ComponentChange dial = new ComponentChange()
                 {
                     Params = new ComponentChangeParams()
                     {
-                        Name = cName,
+                        Name = _cName,
                         Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "call_connect", Value = 1 } }
                     }
                 };
 
-                QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(dial, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(dial, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
         }
 
         public void Disconnect()
         {
-            if (registered)
+            if (_registered)
             {
                 ComponentChange disconnect = new ComponentChange()
                 {
                     Params = new ComponentChangeParams()
                     {
-                        Name = cName,
+                        Name = _cName,
                         Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "call_disconnect", Value = 1 } }
                     }
                 };
 
-                QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(disconnect, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(disconnect, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
         }
 
         public void Redial()
         {
-            if (registered)
+            if (_registered)
             {
-                dialString = new StringBuilder();
-                dialString.Append(lastCalled);
+                _dialString = new StringBuilder();
+                _dialString.Append(_lastCalled);
                 Dial();
             }
         }
 
         public void AutoAnswerToggle()
         {
-            if (registered)
+            if (_registered)
             {
                 ComponentChange aAnswer = new ComponentChange()
                 {
                     Params = new ComponentChangeParams()
                     {
-                        Name = cName,
-                        Controls = new List<ComponentSetValue> (){new ComponentSetValue(){Name = "call_autoanswer", Value = Convert.ToDouble(!autoAnswer)}}
+                        Name = _cName,
+                        Controls = new List<ComponentSetValue> (){new ComponentSetValue(){Name = "call_autoanswer", Value = Convert.ToDouble(!_autoAnswer)}}
                     }
                 };
 
-                QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(aAnswer, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(aAnswer, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
         }
 
         public void DndToggle()
         {
-            if (registered)
+            if (_registered)
             {
                 ComponentChange d = new ComponentChange()
                 {
                     Params = new ComponentChangeParams()
                     {
-                        Name = cName,
-                        Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "call_dnd", Value = Convert.ToDouble(!dnd) } }
+                        Name = _cName,
+                        Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "call_dnd", Value = Convert.ToDouble(!_dnd) } }
                     }
                 };
 
-                QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(d, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(d, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
         }
 
         public void SelectRecentCall(int index)
         {
-            if (registered)
+            if (_registered)
             {
-                if (recentCalls.Count >= index)
+                if (_recentCalls.Count >= index)
                 {
-                    dialString.Remove(0, dialString.Length);
+                    _dialString.Remove(0, _dialString.Length);
 
-                    var call = recentCalls[index - 1].Text;
+                    var call = _recentCalls[index - 1].Text;
 
                     if (call.Contains(' '))
                     {
                         call = call.Remove(call.IndexOf(' '), call.Length - call.IndexOf(' '));
                     }
-                    dialString.Append(call);
-
-                    //QsysPotsControllerEvent(this, new QsysEventsArgs(eQscEventIds.PotsControllerDialString, cName, Convert.ToBoolean(call.Length), call.Length, call, recentCalls));
+                    _dialString.Append(call);
 
                     if (onDialStringEvent != null)
-                        onDialStringEvent(cName, call);
+                        onDialStringEvent(_cName, call);
                 }
             }
         }

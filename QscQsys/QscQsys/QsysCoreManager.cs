@@ -30,6 +30,7 @@ namespace QscQsys
             }
             catch (Exception e)
             {
+                ErrorLog.Error("Error in QsysCoreManager AddCore: {0}", e.Message);
             }
         }
 
@@ -49,6 +50,7 @@ namespace QscQsys
             }
             catch (Exception e)
             {
+                ErrorLog.Error("Error in QsysCoreManager RemoveCore: {0}", e.Message);
             }
         }
 

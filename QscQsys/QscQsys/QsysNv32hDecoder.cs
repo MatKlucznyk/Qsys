@@ -7,72 +7,37 @@ using Newtonsoft.Json;
 
 namespace QscQsys
 {
-    public class QsysNv32hDecoder
+    public class QsysNv32hDecoder : QsysComponent
     {
         public delegate void Nv32hDecoderInputChange(SimplSharpString cName, ushort input);
         public Nv32hDecoderInputChange newNv32hDecoderInputChange { get; set; }
 
-        private string cName;
-        private string coreId;
-        private bool registered;
-        private int currentSource;
+        private int _currentSource;
 
-        //public event EventHandler<QsysEventsArgs> QsysNv32hDecoderEvent;
+        public string ComponentName { get { return _cName; } }
+        public int CurrentSource { get { return _currentSource; } }
 
-        public string ComponentName { get { return cName; } }
-        public bool IsRegistered { get { return registered; } }
-        public int CurrentSource { get { return currentSource; } }
-
-        public void Initialize(string coreId, string Name)
+        public void Initialize(string coreId, string componentName)
         {
-            QsysCoreManager.CoreAdded += new EventHandler<CoreAddedEventArgs>(QsysCoreManager_CoreAdded);
-            cName = Name;
-            this.coreId = coreId;
-
-            if(!registered)
-                RegisterWithCore();
+            var component = new Component() { Name = componentName, Controls = new List<ControlName>() { new ControlName() { Name = "hdmi_out_0_select_index" } } };
+            base.Initialize(coreId, component);
         }
 
-        void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs e)
+        protected override void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
         {
-            if (!registered && e.CoreId == coreId)
-            {
-                RegisterWithCore();
-            }
-        }
-
-        private void RegisterWithCore()
-        {
-            if (QsysCoreManager.Cores.ContainsKey(coreId))
-            {
-                Component component = new Component(){Name = cName, Controls = new List<ControlName>(){new ControlName(){Name = "hdmi_out_0_select_index"}}};
-
-                if (QsysCoreManager.Cores[coreId].RegisterComponent(component))
-                {
-                    QsysCoreManager.Cores[coreId].Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
-
-                    registered = true;
-                }
-            }
-        }
-
-        void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
-        {
-            currentSource = Convert.ToInt16(e.Value);
-
-            //QsysNv32hDecoderEvent(this, new QsysEventsArgs(eQscEventIds.Nv32hDecoderInputChange, cName, Convert.ToBoolean(currentSource), currentSource, currentSource.ToString(), null));
+            _currentSource = Convert.ToInt16(e.Value);
 
             if (newNv32hDecoderInputChange != null)
-                newNv32hDecoderInputChange(cName, Convert.ToUInt16(currentSource));
+                newNv32hDecoderInputChange(_cName, Convert.ToUInt16(_currentSource));
         }
 
         public void ChangeInput(int source)
         {
-            if (registered)
+            if (_registered)
             {
-                ComponentChange inputChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "hdmi_out_0_select_index", Value = source } } } };
+                ComponentChange inputChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "hdmi_out_0_select_index", Value = source } } } };
 
-                QsysCoreManager.Cores[coreId].Enqueue(JsonConvert.SerializeObject(inputChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(inputChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
         }
     }
