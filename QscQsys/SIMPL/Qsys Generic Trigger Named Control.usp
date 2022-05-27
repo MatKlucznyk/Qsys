@@ -1,0 +1,26 @@
+#CATEGORY "46" "Qsys" // Custom
+#SYMBOL_NAME "Qsys Generic Trigger Named Control"
+
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+digital_input Trigger;
+
+string_parameter _skip_, CoreID[100], NamedControlName[100];
+
+#BEGIN_PARAMETER_PROPERTIES CoreID
+   propValidUnits = unitString;
+   propDefaultUnit = unitString;
+   propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
+QsysNamedControl booleanControl;
+
+push Trigger
+{
+    booleanControl.SetBoolean(1);
+}
+
+function Main()
+{
+    booleanControl.Initialize(CoreID, NamedControlName, 0);
+}
