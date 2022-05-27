@@ -29,9 +29,9 @@ namespace QscQsys
         #endregion
 
         private readonly CrestronQueue<string> commandQueue = new CrestronQueue<string>(1000);
-        private readonly CrestronQueue<string> responseQueue = new CrestronQueue<string>(100);
+        //private readonly CrestronQueue<string> responseQueue = new CrestronQueue<string>(100);
         private CTimer commandQueueTimer;
-        private CTimer responseQueueTimer;
+        //private CTimer responseQueueTimer;
         private CTimer heartbeatTimer;
         private CTimer waitForConnection;
         private TCPClientDevice client;
@@ -59,9 +59,9 @@ namespace QscQsys
 
         public QsysCore()
         {
-            heartbeatTimer = new CTimer(SendHeartbeat, Crestron.SimplSharp.Timeout.Infinite);
+            heartbeatTimer = new CTimer(SendHeartbeat, Timeout.Infinite);
             commandQueueTimer = new CTimer(CommandQueueDequeue, null, 0, 50);
-            responseQueueTimer = new CTimer(ResponseQueueDequeue, null, 0, 10);
+            //responseQueueTimer = new CTimer(ResponseQueueDequeue, null, 0, 10);
             waitForConnection = new CTimer(Initialize, Timeout.Infinite);
         }
 
@@ -255,8 +255,6 @@ namespace QscQsys
 
         private void Initialize(object o)
         {
-            var sentAutoPoll = false;
-
             lock (Components)
             {
                 foreach (var item in Components)
@@ -302,7 +300,8 @@ namespace QscQsys
         #region TCP Client Events
         private void client_ResponseString(string response, SimplSharpString id)
         {
-            responseQueue.Enqueue(response);
+            //responseQueue.Enqueue(response);
+            ProcessResponse(response);
         }
 
         private void client_ConnectionStatus(int status, SimplSharpString id)
@@ -330,8 +329,7 @@ namespace QscQsys
                     isLoggedIn = false;
                     isInitialized = false;
 
-                    if(heartbeatTimer != null)
-                        heartbeatTimer.Dispose();
+                    heartbeatTimer.Stop();
 
                     if (onIsRegistered != null)
                         onIsRegistered(coreId, 0);
@@ -357,7 +355,7 @@ namespace QscQsys
         #endregion
 
         #region Parsing
-        private void ResponseQueueDequeue(object o)
+        /*private void ResponseQueueDequeue(object o)
         {
             try
             {
@@ -400,6 +398,36 @@ namespace QscQsys
 
                 if (debug == 1 || debug == 2)
                     ErrorLog.Error("Error in QsysProcessor ResponseQueueDequeue: {0}", e.Message);
+            }
+        }*/
+
+        private void ProcessResponse(string response)
+        {
+            lock (parseLock)
+            {
+                RxData.Append(response); //Append received data to the COM buffer
+            }
+
+            if (CMonitor.TryEnter(responseLock))
+            {
+                while (RxData.ToString().Contains("\x00"))
+                {
+                    var responseData = string.Empty;
+
+                    lock (parseLock)
+                    {
+                        responseData = RxData.ToString();
+                        var delimeterPos = responseData.IndexOf("\x00");
+                        responseData = responseData.Substring(0, delimeterPos);
+                        RxData.Remove(0, delimeterPos + 1);
+                    }
+
+                    if (debug == 2)
+                        CrestronConsole.PrintLine("Response found ** {0} **", responseData);
+
+                    new CTimer(ParseInternalResponse, responseData, 0);
+                }
+                CMonitor.Exit(responseLock);
             }
         }
 
@@ -569,7 +597,8 @@ namespace QscQsys
         /// <param name="response">Response from SIMPL to be parsed</param>
         public void NewExternalResponse(string response)
         {
-            responseQueue.Enqueue(response);
+            //responseQueue.Enqueue(response);
+            ProcessResponse(response);
         }
         #endregion
 
@@ -651,9 +680,9 @@ namespace QscQsys
                 commandQueueTimer.Dispose();
                 commandQueue.Dispose();
 
-                responseQueueTimer.Stop();
-                responseQueueTimer.Dispose();
-                responseQueue.Dispose();
+                //responseQueueTimer.Stop();
+                //responseQueueTimer.Dispose();
+                //responseQueue.Dispose();
 
                 client.ConnectionStatus -= client_ConnectionStatus;
                 client.ResponseString -= client_ResponseString;
