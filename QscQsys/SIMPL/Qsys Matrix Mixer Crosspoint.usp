@@ -117,6 +117,6 @@ callback function onCrossPointGainChange(string cName, integer value)
 Function Main()
 {      
     RegisterDelegate(mixer, newCrossPointValueChange, onCrossPointValueChange);
-    RegisterDelegate(mixer, newCrossPointGainChange, onCrossPointGainChange);             
-	mixer.Initialize(CoreID, ComponentName, Input, Output);
+    RegisterDelegate(mixer, newCrossPointGainChange, onCrossPointGainChange);
+    mixer.Initialize(CoreID, ComponentName, Input, Output);            
 }

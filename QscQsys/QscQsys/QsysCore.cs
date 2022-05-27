@@ -47,6 +47,7 @@ namespace QscQsys
         private bool isRedundant;
         private bool isEmulator;
         private bool externalConnection;
+        private bool changeGroupCreated;
 
         private string designName;
         private string coreId;
@@ -55,6 +56,14 @@ namespace QscQsys
 
         internal Dictionary<Component, InternalEvents> Components = new Dictionary<Component, InternalEvents>();
         internal Dictionary<Control, InternalEvents> Controls = new Dictionary<Control, InternalEvents>();
+
+        public QsysCore()
+        {
+            heartbeatTimer = new CTimer(SendHeartbeat, Crestron.SimplSharp.Timeout.Infinite);
+            commandQueueTimer = new CTimer(CommandQueueDequeue, null, 0, 50);
+            responseQueueTimer = new CTimer(ResponseQueueDequeue, null, 0, 10);
+            waitForConnection = new CTimer(Initialize, Timeout.Infinite);
+        }
 
 
         #region Properties
@@ -95,13 +104,10 @@ namespace QscQsys
 
                         if (isInitialized && IsConnected)
                         {
-                            AddComoponentToChangeGroup addControl;
+                            var addComponent = new AddComoponentToChangeGroup() { method = "ChangeGroup.AddComponentControl", ComponentParams = new AddComponentToChangeGroupParams() { Component = component } };
+                            commandQueue.Enqueue(JsonConvert.SerializeObject(addComponent));
 
-                            addControl = new AddComoponentToChangeGroup();
-                            addControl.method = "ChangeGroup.AddComponentControl";
-                            addControl.ComponentParams = new AddComponentToChangeGroupParams();
-                            addControl.ComponentParams.Component = component;
-                            commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
+                            StartAutoPoll();
 
                             if (debug == 2)
                                 CrestronConsole.PrintLine("Registered {0} Component", component.Name);
@@ -131,14 +137,10 @@ namespace QscQsys
 
                         if (isInitialized && IsConnected)
                         {
-                            AddControlToChangeGroup addControl;
-
-                            addControl = new AddControlToChangeGroup();
-                            addControl.method = "ChangeGroup.AddControl";
-                            addControl.ControlParams = new AddControlToChangeGroupParams();
-                            addControl.ControlParams.Controls = new List<string>();
-                            addControl.ControlParams.Controls.Add(control.Name);
+                            var addControl = new AddControlToChangeGroup() { method = "ChangeGroup.AddControl", ControlParams = new AddControlToChangeGroupParams() { Controls = new List<string>() { control.Name } } };
                             commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
+
+                            StartAutoPoll();
 
                             if (debug == 2)
                                 CrestronConsole.PrintLine("Registered {0} Control", control.Name);
@@ -231,9 +233,6 @@ namespace QscQsys
                     if (debug == 1)
                         ErrorLog.Notice("QsysProcessor is initializing.");
 
-                    commandQueueTimer = new CTimer(CommandQueueDequeue, null, 0, 50);
-                    responseQueueTimer = new CTimer(ResponseQueueDequeue, null, 0, 10);
-
                     if (useExternalConnection == 0)
                     {
                         client = new TCPClientDevice();
@@ -254,30 +253,31 @@ namespace QscQsys
             }
         }
 
-        private void Init(object o)
+        private void Initialize(object o)
         {
-            foreach (var item in Components)
+            var sentAutoPoll = false;
+
+            lock (Components)
             {
-                var addComponent = new AddComoponentToChangeGroup() { method = "ChangeGroup.AddComponentControl", ComponentParams = new AddComponentToChangeGroupParams() { Component = item.Key } };
-                commandQueue.Enqueue(JsonConvert.SerializeObject(addComponent));
+                foreach (var item in Components)
+                {
+                    var addComponent = new AddComoponentToChangeGroup() { method = "ChangeGroup.AddComponentControl", ComponentParams = new AddComponentToChangeGroupParams() { Component = item.Key } };
+                    commandQueue.Enqueue(JsonConvert.SerializeObject(addComponent));
+                    StartAutoPoll();
+                }
             }
 
-            foreach (var item in Controls)
+            lock (Controls)
             {
-                var addControl = new AddControlToChangeGroup() { method = "ChangeGroup.AddControl", ControlParams = new AddControlToChangeGroupParams() { Controls = new List<string>() { item.Key.Name } } };
-                commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
+                foreach (var item in Controls)
+                {
+                    var addControl = new AddControlToChangeGroup() { method = "ChangeGroup.AddControl", ControlParams = new AddControlToChangeGroupParams() { Controls = new List<string>() { item.Key.Name } } };
+                    commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
+                    StartAutoPoll();
+                }
             }
 
-            commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
-
-            if (heartbeatTimer != null)
-            {
-                heartbeatTimer.Reset(0, 15000);
-            }
-            else
-            {
-                heartbeatTimer = new CTimer(SendHeartbeat, null, 15000, 15000);
-            }
+            heartbeatTimer.Reset(15000, 15000);
 
             if (debug == 1 || debug == 2)
                 ErrorLog.Notice("QsysProcessor is initialized.");
@@ -287,6 +287,16 @@ namespace QscQsys
             if (onIsRegistered != null)
                 onIsRegistered(coreId, 1);
         }
+
+        private void StartAutoPoll()
+        {
+            if (!changeGroupCreated)
+            {
+                commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
+                changeGroupCreated = true;
+            }
+        }
+
         #endregion
 
         #region TCP Client Events
@@ -316,6 +326,7 @@ namespace QscQsys
                     if (debug > 0)
                         ErrorLog.Error("QsysProcessor disconnected!");
 
+                    changeGroupCreated = false;
                     isLoggedIn = false;
                     isInitialized = false;
 
@@ -376,7 +387,8 @@ namespace QscQsys
 
                             if (debug == 2)
                                 CrestronConsole.PrintLine("Response found ** {0} **", responseData);
-                            var x = new CTimer(ParseInternalResponse, responseData, 0);
+                            
+                            new CTimer(ParseInternalResponse, responseData, 0);
                         }
                         CMonitor.Exit(responseLock);
                     }
@@ -412,7 +424,8 @@ namespace QscQsys
                                     onIsLoggedIn(coreId, 1);
                                 }
 
-                                waitForConnection = new CTimer(Init, 5000);
+
+                                waitForConnection.Reset(5000);
                             }
                         }
                         else
@@ -510,7 +523,7 @@ namespace QscQsys
                                             onIsLoggedIn(coreId, 1);
                                         }
 
-                                        waitForConnection = new CTimer(Init, 5000);
+                                        waitForConnection = new CTimer(Initialize, 5000);
                                     }
                                 }
                             }
@@ -616,27 +629,38 @@ namespace QscQsys
         /// </summary>
         public void Dispose()
         {
-            if (isInitialized)
+            Dispose(true);
+            isDisposed = true;
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
             {
+                changeGroupCreated = false;
+                isLoggedIn = false;
+                isInitialized = false;
+
+                waitForConnection.Stop();
+                waitForConnection.Dispose();
+
+                heartbeatTimer.Stop();
+                heartbeatTimer.Dispose();
+
+                commandQueueTimer.Stop();
+                commandQueueTimer.Dispose();
+                commandQueue.Dispose();
+
+                responseQueueTimer.Stop();
+                responseQueueTimer.Dispose();
+                responseQueue.Dispose();
+
                 client.ConnectionStatus -= client_ConnectionStatus;
                 client.ResponseString -= client_ResponseString;
                 client.Disconnect();
-                commandQueue.Dispose();
-                commandQueueTimer.Stop();
-                commandQueueTimer.Dispose();
-
-                if (!heartbeatTimer.Disposed)
-                {
-                    heartbeatTimer.Stop();
-                    heartbeatTimer.Dispose();
-                }
 
                 maxLogonAttempts = 2;
                 debug = 0;
-                isInitialized = false;
-                
-
-                isDisposed = true;
             }
         }
     }
