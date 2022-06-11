@@ -1197,6 +1197,7 @@ H=553
 PrH=552
 DvC=356
 ObjVer=1
+SlC=80
 DvVr=1164
 Ad=01
 RelStat=None
@@ -1677,8 +1678,9 @@ mO=6
 tO=6
 O1=18
 O2=19
-O6=20
-mP=11
+O5=20
+O6=382
+mP=12
 P1=
 P2=
 P3=
@@ -1688,8 +1690,9 @@ P6=
 P7=
 P8=main
 P9=fader test
-P10=5%
-P11=.1s
+P10=1260d
+P11=.5s
+P12=2.5s
 ]
 [
 ObjTp=Sm
@@ -3616,8 +3619,8 @@ Nm=fader.muteIsOff
 [
 ObjTp=Sg
 H=20
-Nm=fader.volValue
-SgTp=2
+Nm=fader.volVal
+SgTp=4
 ]
 [
 ObjTp=Sg
@@ -5572,4 +5575,10 @@ SgTp=2
 ObjTp=Sg
 H=381
 Nm=genericTrigger[1].trigger
+]
+[
+ObjTp=Sg
+H=382
+Nm=fader.volPer
+SgTp=2
 ]

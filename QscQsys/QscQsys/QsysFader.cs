@@ -9,14 +9,18 @@ namespace QscQsys
     {
         public delegate void VolumeChange(SimplSharpString cName, ushort value);
         public delegate void MuteChange(SimplSharpString cName, ushort value);
+        public delegate void GainStringChange(SimplSharpString cName, SimplSharpString value);
         public VolumeChange newVolumeChange { get; set; }
         public MuteChange newMuteChange { get; set; }
+        public GainStringChange newGainStringChange { get; set; }
 
         private bool _currentMute;
+        private string _currentGainString;
         private int _currentLvl;
 
         public bool MuteValue { get { return _currentMute; } }
         public int VolumeValue { get { return _currentLvl; } }
+        public string GainValue { get { return _currentGainString; } }
 
         public void Initialize(string coreId, string componentName)
         {
@@ -29,9 +33,13 @@ namespace QscQsys
             if (e.Name == "gain")
             {
                 _currentLvl = (int)Math.Round(QsysCoreManager.ScaleUp(e.Position));
+                _currentGainString = e.SValue;
 
                 if (newVolumeChange != null)
                     newVolumeChange(_cName, (ushort)_currentLvl);
+
+                if (newGainStringChange != null)
+                    newGainStringChange(_cName, _currentGainString);
             }
             else if (e.Name == "mute")
             {

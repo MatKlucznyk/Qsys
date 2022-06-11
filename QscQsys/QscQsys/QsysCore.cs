@@ -427,6 +427,7 @@ namespace QscQsys
 
                     new CTimer(ParseInternalResponse, responseData, 0);
                 }
+
                 CMonitor.Exit(responseLock);
             }
         }
@@ -462,6 +463,7 @@ namespace QscQsys
                             {
                                 var response = JObject.Parse(returnString);
                                 IList<JToken> changes = response["params"]["Changes"].Children().ToList();
+                                response = null;
 
                                 IList<ChangeResult> changeResults = new List<ChangeResult>();
 
@@ -664,32 +666,33 @@ namespace QscQsys
 
         private void Dispose(bool disposing)
         {
-            if (disposing)
+            if (!isDisposed)
             {
-                changeGroupCreated = false;
-                isLoggedIn = false;
-                isInitialized = false;
+                if (disposing)
+                {
+                    changeGroupCreated = false;
+                    isLoggedIn = false;
+                    isInitialized = false;
 
-                waitForConnection.Stop();
-                waitForConnection.Dispose();
+                    waitForConnection.Stop();
+                    waitForConnection.Dispose();
 
-                heartbeatTimer.Stop();
-                heartbeatTimer.Dispose();
+                    heartbeatTimer.Stop();
+                    heartbeatTimer.Dispose();
 
-                commandQueueTimer.Stop();
-                commandQueueTimer.Dispose();
-                commandQueue.Dispose();
+                    commandQueueTimer.Stop();
+                    commandQueueTimer.Dispose();
+                    commandQueue.Dispose();
 
-                //responseQueueTimer.Stop();
-                //responseQueueTimer.Dispose();
-                //responseQueue.Dispose();
+                    RxData.Remove(0, RxData.Length);
 
+                    maxLogonAttempts = 2;
+                    debug = 0;
+                }
+
+                client.Disconnect();
                 client.ConnectionStatus -= client_ConnectionStatus;
                 client.ResponseString -= client_ResponseString;
-                client.Disconnect();
-
-                maxLogonAttempts = 2;
-                debug = 0;
             }
         }
     }
