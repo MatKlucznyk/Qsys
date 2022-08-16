@@ -1,0 +1,52 @@
+#CATEGORY "46" "Qsys" // Custom
+#SYMBOL_NAME "Qsys Generic String Named Control"
+
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+analog_input SelectItem;
+
+analog_output SelectedItem, ItemsCount;
+
+string_output SelectedItemName, ItemsXSig;
+
+string_parameter  _skip_, _skip_, _skip_, _skip_, CoreID[100], NamedControlName[100];
+
+#BEGIN_PARAMETER_PROPERTIES CoreID
+propValidUnits = unitString;
+propDefaultUnit = unitString;
+propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
+
+QsysNamedControl listControl;
+
+change SelectItem
+{
+    integer x;
+
+	if(SelectItem > 0)
+	{
+        x = SelectItem - 1;
+		listControl.SelectListItem(x);
+	}
+}
+
+
+callback function NewListChange(string cName, integer cnt, string x, string xsig)
+{
+    ItemsCount = cnt;
+	ItemsXSig = xsig;
+}
+
+callback function NewListSelectedItemChange(integer index, string name)
+{
+	SelectedItem = index;
+	SelectedItemName = name;
+}
+
+function Main()
+{
+	RegisterDelegate(listControl, newNamedControlChange, NewListChange);
+	RegisterDelegate(listControl, newNameControldListSelectedItemChange, NewListSelectedItemChange);
+	listControl.Initialize(CoreID, NamedControlName, 2);
+}

@@ -24,33 +24,38 @@ namespace QscQsys
         /// <param name="Name">The component name of the gain.</param>
         public void Initialize(string coreId, Component component)
         {
-            _coreId = coreId;
-            _component = component;
-            _cName = component.Name;
-
-            QsysCoreManager.CoreAdded += new EventHandler<CoreAddedEventArgs>(QsysCoreManager_CoreAdded);
-
             if (!_registered)
+            {
+                _coreId = coreId;
+                _component = component;
+                _cName = component.Name;
+
+                QsysCoreManager.CoreAdded += new EventHandler<CoreAddedEventArgs>(QsysCoreManager_CoreAdded);
+
                 RegisterWithCore();
+            }
         }
 
         private void RegisterWithCore()
         {
-            if (QsysCoreManager.Cores.ContainsKey(_coreId) && _component != null)
+            if (!_registered)
             {
-
-                if (QsysCoreManager.Cores[_coreId].RegisterComponent(_component))
+                if (QsysCoreManager.Cores.ContainsKey(_coreId) && _component != null)
                 {
-                    QsysCoreManager.Cores[_coreId].Components[_component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
 
-                    _registered = true;
+                    if (QsysCoreManager.Cores[_coreId].RegisterComponent(_component))
+                    {
+                        QsysCoreManager.Cores[_coreId].Components[_component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
+
+                        _registered = true;
+                    }
                 }
             }
         }
 
         private void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs e)
         {
-            if (!_registered && e.CoreId == _coreId)
+            if (e.CoreId == _coreId)
             {
                 RegisterWithCore();
             }

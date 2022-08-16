@@ -46,7 +46,7 @@ threadsafe change SetIntegerValue
     }
 }
 
-callback function NewIntegerChange(string cName, integer value, string x)
+callback function NewIntegerChange(string cName, integer value, string x, string y)
 {
     IntegerValue = value;
 }

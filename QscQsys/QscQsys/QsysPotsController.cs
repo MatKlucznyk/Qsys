@@ -304,7 +304,6 @@ namespace QscQsys
             }
         }
 
-
         private void DialNow()
         {
             if (_registered)

@@ -690,9 +690,9 @@ namespace QscQsys
                     debug = 0;
                 }
 
-                client.Disconnect();
                 client.ConnectionStatus -= client_ConnectionStatus;
                 client.ResponseString -= client_ResponseString;
+                client.Disconnect();
             }
         }
     }

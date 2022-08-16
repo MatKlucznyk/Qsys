@@ -38,7 +38,7 @@ push ToggleBooleanState
         booleanControl.SetBoolean(1);
 }
 
-callback function NewBooleanChange(string cName, integer value, string x)
+callback function NewBooleanChange(string cName, integer value, string x, string y)
 {
     BooleanState = value;
 }

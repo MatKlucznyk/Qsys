@@ -86,7 +86,7 @@ namespace QscQsys
         /// <param name="value">The state to set the mute.</param>
         public void Mute(bool value)
         {
-            if (_currentMute != value && _registered)
+            if (_registered)
             {
                 var intValue = Convert.ToInt16(value);
 
