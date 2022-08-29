@@ -144,12 +144,19 @@ namespace QscQsys
     {
         [JsonProperty]
         static string jsonrpc = "2.0";
+        //[JsonProperty("id")]
+        //public string ID;
         [JsonProperty]
         static string id = "crestron";
         [JsonProperty]
         static string method = "Component.Set";
         [JsonProperty("params")]
         public ComponentChangeParams Params { get; set; }
+
+        /*public ComponentChange()
+        {
+            ID = "crestron";
+        }*/
     }
 
     public class ControlIntegerChange

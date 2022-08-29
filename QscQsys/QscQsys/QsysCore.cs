@@ -462,29 +462,33 @@ namespace QscQsys
                             if (returnString.Contains("Changes") && !returnString.Contains("\"Changes\":[]"))
                             {
                                 var response = JObject.Parse(returnString);
-                                IList<JToken> changes = response["params"]["Changes"].Children().ToList();
+                                var changes = response["params"]["Changes"].Children().ToList();
                                 response = null;
 
-                                IList<ChangeResult> changeResults = new List<ChangeResult>();
+                                //var changeResults = new List<ChangeResult>();
 
                                 foreach (JToken change in changes)
                                 {
-                                    ChangeResult changeResult = JsonConvert.DeserializeObject<ChangeResult>(change.ToString(), new JsonSerializerSettings { MissingMemberHandling = MissingMemberHandling.Ignore });
+                                    var changeResult = JsonConvert.DeserializeObject<ChangeResult>(change.ToString(), new JsonSerializerSettings { MissingMemberHandling = MissingMemberHandling.Ignore });
 
                                     if (changeResult.Component != null)
                                     {
-                                        foreach (var item in Components)
+                                        List<string> choices;
+
+                                        if (changeResult.Choices != null)
+                                            choices = changeResult.Choices.ToList();
+                                        else
+                                            choices = new List<string>();
+
+                                        //var component = Components.First(x => x.Key.Name == changeResult.Component);
+                                        var components = Components.Where(x => x.Key.Name == changeResult.Component);
+
+                                        foreach (var component in components)
                                         {
-                                            List<string> choices;
-
-                                            if (changeResult.Choices != null)
-                                                choices = changeResult.Choices.ToList();
-                                            else
-                                                choices = new List<string>();
-
-                                            if (item.Key.Name == changeResult.Component)
-                                                item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String, choices));
+                                            if (component.Key != null)
+                                                component.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String, choices));
                                         }
+                                        
                                     }
                                     else if (changeResult.Name != null)
                                     {
@@ -495,12 +499,13 @@ namespace QscQsys
                                         else
                                             choices = new List<string>();
 
-                                        foreach (var item in Controls)
-                                        {
-                                            if (item.Key.Name == changeResult.Name)
-                                                item.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String, choices));
-                                        }
+                                        var control = Controls.First(x => x.Key.Name == changeResult.Name);
+                                        if (control.Key != null)
+                                            control.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String, choices));
+
                                     }
+
+                                    changeResult = null;
                                 }
                             }
                             else if (returnString.Contains("EngineStatus"))
@@ -553,7 +558,7 @@ namespace QscQsys
                                             onIsLoggedIn(coreId, 1);
                                         }
 
-                                        waitForConnection = new CTimer(Initialize, 5000);
+                                        waitForConnection.Reset(5000);
                                     }
                                 }
                             }
