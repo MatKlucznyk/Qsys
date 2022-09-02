@@ -192,6 +192,17 @@ namespace QscQsys
                 CrestronConsole.PrintLine("********Qsys Debug Mode Active********");
                 CrestronConsole.PrintLine("See log for details");
                 ErrorLog.Notice("********Qsys Debug Mode Active********");
+                if (QsysCoreManager.Is3Series)
+                {
+                    CrestronConsole.PrintLine("********Qsys Running On 3-Series********");
+                    ErrorLog.Notice("********Qsys Running On 3-Series********");
+                }
+                else
+                {
+                    CrestronConsole.PrintLine("********Qsys Running On 4-Series Or Greater********");
+                    ErrorLog.Notice("********Qsys Running On 4-Series Or Greater********");
+                }
+                
                 if (debug == 1)
                 {
                     ErrorLog.Notice("Qsys debug level: Main communications");

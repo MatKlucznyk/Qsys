@@ -14,6 +14,14 @@ namespace QscQsys
         internal static event EventHandler<CoreAddedEventArgs> CoreAdded;
         internal static event EventHandler<CoreRemovedEventArgs> CoreRemoved;
 
+        internal static bool Is3Series
+        {
+            get
+            {
+                return InitialParametersClass.ControllerPromptName.Contains("3");
+            }
+        }
+
         internal static void AddCore(QsysCore core)
         {
             try

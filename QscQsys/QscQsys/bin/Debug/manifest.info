@@ -1,4 +1,4 @@
-﻿MainAssembly=QscQsys.dll:675c7722a8df78485724bbf0df6a1ae2
+﻿MainAssembly=QscQsys.dll:6296a40cd7d2735be493a8b28d418c82
 MainAssemblyMinFirmwareVersion=1.007.0017
 MainAssemblyResource=QscQsys.xml:bff8266b680e422223ff472e2f095f41
 MainAssemblyResource=SimplSharpData.dat:820b61c48c8a2cace82957eed4cc377c
@@ -6,9 +6,9 @@ MainAssemblyResource=SimplSharpData.dat.der:bf862965c00f3e6ec535e4e00e82d30c
 MainAssemblyResource=SimplSharpData.dat:820b61c48c8a2cace82957eed4cc377c
 MainAssemblyResource=SimplSharpData.dat.der:bf862965c00f3e6ec535e4e00e82d30c
 ü
-DependencySource=ExtensionMethods.dll:26259b9e4d028a65b76ae4592aba720e
+DependencySource=ExtensionMethods.dll:39de62803725bff38a8a65e3285355f1
 DependencyPath=QscQsys.clz:ExtensionMethods.dll
-DependencyMainAssembly=ExtensionMethods.dll:26259b9e4d028a65b76ae4592aba720e
+DependencyMainAssembly=ExtensionMethods.dll:39de62803725bff38a8a65e3285355f1
 ü
 DependencySource=Newtonsoft.Json.Compact.dll:66d4c8a51da9d0c73cefdb9711863f70
 DependencyPath=QscQsys.clz:Newtonsoft.Json.Compact.dll

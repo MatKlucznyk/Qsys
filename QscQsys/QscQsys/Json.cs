@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Crestron.SimplSharp;
 
 namespace QscQsys
 {
@@ -46,7 +47,19 @@ namespace QscQsys
         [JsonProperty]
         internal static string Id = "crestron";
         [JsonProperty]
-        static double Rate = 0.1;
+        static double Rate;
+
+        public CreateChangeGroupParams()
+        {
+            if (!QsysCoreManager.Is3Series)
+            {
+                Rate = 0.1;
+            }
+            else
+            {
+                Rate = 0.25;
+            }
+        }
     }
 
     public class AddComoponentToChangeGroup
