@@ -22,7 +22,7 @@ namespace QscQsys
         {
             _output = output;
 
-            var component = new Component()
+            var component = new Component(true)
             {
                 Name = componentName,
                 Controls = new List<ControlName>() { new ControlName() { Name = string.Format("select_{0}", output) } }
@@ -46,16 +46,7 @@ namespace QscQsys
         {
             if (_registered)
             {
-                ComponentChange newInputSelectedChange = new ComponentChange()
-                {
-                    Params = new ComponentChangeParams()
-                    {
-                        Name = _cName,
-                        Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = string.Format("select_{0}", _output), Value = input } }
-                    }
-                };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(newInputSelectedChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                SendComponentChangeDoubleValue(string.Format("select_{0}", _output), input);
             }
         }
     }

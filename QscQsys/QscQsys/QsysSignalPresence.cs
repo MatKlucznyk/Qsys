@@ -27,7 +27,7 @@ namespace QscQsys
         {
             _count = count;
 
-            var component = new Component()
+            var component = new Component(true)
                 {
                     Name = componentName,
                     Controls = new List<ControlName>() 
@@ -96,9 +96,7 @@ namespace QscQsys
                     newThreshold = QsysCoreManager.ScaleDown(65535);
                 }
 
-                ComponentChange newChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "threshold", Position = newThreshold } } } };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(newChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                SendComponentChangePosition("threshold", newThreshold);
             }
         }
 
@@ -117,9 +115,7 @@ namespace QscQsys
                     newThreshold = QsysCoreManager.ScaleDown(0);
                 }
 
-                ComponentChange newChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "threshold", Position = newThreshold } } } };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(newChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                SendComponentChangePosition("threshold", newThreshold);
             }
         }
 
@@ -138,9 +134,7 @@ namespace QscQsys
                     newHoldtime = QsysCoreManager.ScaleDown(65535);
                 }
 
-                ComponentChange newChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "hold_time", Position = newHoldtime } } } };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(newChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                SendComponentChangePosition("hold_time", newHoldtime);
             }
         }
 
@@ -159,9 +153,7 @@ namespace QscQsys
                     newHoldtime = QsysCoreManager.ScaleDown(0);
                 }
 
-                ComponentChange newChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "hold_time", Position = newHoldtime } } } };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(newChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                SendComponentChangePosition("hold_time", newHoldtime);
             }
         }
 
@@ -169,11 +161,7 @@ namespace QscQsys
         {
             if (_infiniteHold != value && _registered)
             {
-                var intValue = Convert.ToInt16(value);
-
-                ComponentChange newChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "infinite_hold", Value = intValue } } } };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(newChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                SendComponentChangeDoubleValue("infinite_hold", Convert.ToDouble(value));
             }
         }
 

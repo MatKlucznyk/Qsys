@@ -16,7 +16,7 @@ namespace QscQsys
 
         public void Initialize(string coreId, string componentName)
         {
-            var component = new Component()
+            var component = new Component(true)
             {
                 Name = componentName,
                 Controls = new List<ControlName>() 
@@ -58,16 +58,7 @@ namespace QscQsys
         {
             if (_registered)
             {
-                ComponentChange loadSnapshot = new ComponentChange()
-                {
-                    Params = new ComponentChangeParams()
-                    {
-                        Name = _cName,
-                        Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = string.Format("load_{0}", number), Value = 1 } }
-                    }
-                };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(loadSnapshot, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                SendComponentChangeDoubleValue(string.Format("load_{0}", number), 1);
             }
         }
 
@@ -75,16 +66,7 @@ namespace QscQsys
         {
             if (_registered)
             {
-                ComponentChange saveSnapshot = new ComponentChange()
-                {
-                    Params = new ComponentChangeParams()
-                    {
-                        Name = _cName,
-                        Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = string.Format("save_{0}", number), Value = 1 } }
-                    }
-                };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(saveSnapshot, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                SendComponentChangeDoubleValue(string.Format("save_{0}", number), number);
             }
         }
     }

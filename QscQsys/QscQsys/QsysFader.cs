@@ -24,7 +24,7 @@ namespace QscQsys
 
         public void Initialize(string coreId, string componentName)
         {
-            var component = new Component() { Name = componentName, Controls = new List<ControlName>() { new ControlName() { Name = "gain" }, new ControlName() { Name = "mute" } } };
+            var component = new Component(true) { Name = componentName, Controls = new List<ControlName>() { new ControlName() { Name = "gain" }, new ControlName() { Name = "mute" } } };
             base.Initialize(coreId, component);
         }
 
@@ -38,7 +38,7 @@ namespace QscQsys
                 if (newVolumeChange != null)
                     newVolumeChange(_cName, (ushort)_currentLvl);
 
-                if (newGainStringChange != null)
+                if (newGainStringChange != null && e.SValue.Length > 0)
                     newGainStringChange(_cName, _currentGainString);
             }
             else if (e.Name == "mute")
@@ -65,9 +65,7 @@ namespace QscQsys
         {
             if (_registered)
             {
-                ComponentChange newVolumeChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "gain", Position = QsysCoreManager.ScaleDown(value) } } } };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(newVolumeChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                SendComponentChangePosition("gain", QsysCoreManager.ScaleDown(value));
             }
         }
 
@@ -88,11 +86,7 @@ namespace QscQsys
         {
             if (_registered)
             {
-                var intValue = Convert.ToInt16(value);
-
-                ComponentChange newMuteChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "mute", Value = intValue } } } };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(newMuteChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                SendComponentChangeDoubleValue("mute", Convert.ToDouble(value));
             }
         }
 

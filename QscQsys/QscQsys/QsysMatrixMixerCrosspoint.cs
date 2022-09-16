@@ -56,7 +56,7 @@ namespace QscQsys
             {
                 if (QsysCoreManager.Cores.ContainsKey(_coreId))
                 {
-                    Component component = new Component() { Name = _cName, Controls = new List<ControlName>() { new ControlName() { Name = string.Format("{0}mute", _crossName) }, new ControlName() { Name = string.Format("{0}gain", _crossName) } } };
+                    Component component = new Component(true) { Name = _cName, Controls = new List<ControlName>() { new ControlName() { Name = string.Format("{0}mute", _crossName) }, new ControlName() { Name = string.Format("{0}gain", _crossName) } } };
 
                     if (QsysCoreManager.Cores[_coreId].RegisterComponent(component))
                     {

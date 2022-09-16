@@ -18,7 +18,7 @@ namespace QscQsys
             if (!_registered)
             {
                 _meterIndex = meterIndex;
-                var component = new Component() { Name = _cName, Controls = new List<ControlName>() { new ControlName() { Name = string.Format("meter_{0}", _meterIndex) } } };
+                var component = new Component(true) { Name = _cName, Controls = new List<ControlName>() { new ControlName() { Name = string.Format("meter_{0}", _meterIndex) } } };
                 base.Initialize(coreId, component);
             }
         }

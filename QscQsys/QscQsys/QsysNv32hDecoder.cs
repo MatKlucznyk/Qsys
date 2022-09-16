@@ -19,7 +19,7 @@ namespace QscQsys
 
         public void Initialize(string coreId, string componentName)
         {
-            var component = new Component() { Name = componentName, Controls = new List<ControlName>() { new ControlName() { Name = "hdmi_out_0_select_index" } } };
+            var component = new Component(true) { Name = componentName, Controls = new List<ControlName>() { new ControlName() { Name = "hdmi_out_0_select_index" } } };
             base.Initialize(coreId, component);
         }
 
@@ -35,9 +35,7 @@ namespace QscQsys
         {
             if (_registered)
             {
-                ComponentChange inputChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "hdmi_out_0_select_index", Value = source } } } };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(inputChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                SendComponentChangeDoubleValue("hdmi_out_0_select_index", source);
             }
         }
     }

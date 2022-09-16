@@ -8,18 +8,20 @@ using ExtensionMethods;
 
 namespace QscQsys
 {
-    public class QsysNamedControl
+    public class QsysNamedControl: IDisposable
     {
         public delegate void NamedControlChange(SimplSharpString cName, ushort intData, SimplSharpString stringData, SimplSharpString choicesData);
         public delegate void NamedControlListSelectedItem(ushort index, SimplSharpString name);
         public NamedControlChange newNamedControlChange { get; set; }
         public NamedControlListSelectedItem newNameControldListSelectedItemChange { get; set; }
 
+        private Control _control;
         private string _cName;
         private string _coreId;
         private bool _registered;
         private bool _isInteger;
         private bool _isList;
+        private bool _disposed;
         private List<string> _listData;
 
         //public event EventHandler<QsysEventsArgs> QsysNamedControlEvent;
@@ -61,11 +63,11 @@ namespace QscQsys
             {
                 if (QsysCoreManager.Cores.ContainsKey(_coreId))
                 {
-                    Control control = new Control() { Name = _cName };
+                    _control = new Control(true) { Name = _cName };
 
-                    if (QsysCoreManager.Cores[_coreId].RegisterControl(control))
+                    if (QsysCoreManager.Cores[_coreId].RegisterControl(_control))
                     {
-                        QsysCoreManager.Cores[_coreId].Controls[control].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Control_OnNewEvent);
+                        QsysCoreManager.Cores[_coreId].Controls[_control].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Control_OnNewEvent);
 
                         _registered = true;
                     }
@@ -112,6 +114,26 @@ namespace QscQsys
                         newNamedControlChange(_cName, Convert.ToUInt16(_listData.Count), e.SValue, Encoding.GetEncoding(28591).GetString(encodedBytes, 0, encodedBytes.Length));
                     }
                 }
+            }
+        }
+
+        private void SendControlChangePosition(double value)
+        {
+            if (_registered)
+            {
+                var change = new ControlIntegerChange() {ID = JsonConvert.SerializeObject(new CustomResponseId(){Caller = _cName, Method = "Control.Set", Position = value}), Params = new ControlIntegerParams() { Name = _cName, Position = value } };
+
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+            }
+        }
+
+        private void SendControlChangeStringValue(string value)
+        {
+            if (_registered)
+            {
+                var change = new ControlStringChange() { ID = JsonConvert.SerializeObject(new CustomResponseId() { Caller = _cName, Method = "Control.Set", StringValue = value }), Params = new ControlStringParams() { Name = _cName, Value = value } };
+
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
         }
 
@@ -171,6 +193,33 @@ namespace QscQsys
 
                         QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(str));
                     }
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (_disposed) return;
+
+            _disposed = true;
+            if (disposing)
+            {
+                QsysCoreManager.CoreAdded -= QsysCoreManager_CoreAdded;
+                if (_registered)
+                {
+                    if (QsysCoreManager.Cores.ContainsKey(_coreId))
+                    {
+                        if (QsysCoreManager.Cores[_coreId].Controls.ContainsKey(_control))
+                        {
+                            QsysCoreManager.Cores[_coreId].Controls[_control].OnNewEvent -= Control_OnNewEvent;
+                        }
+                    }
+                    _registered = false;
                 }
             }
         }

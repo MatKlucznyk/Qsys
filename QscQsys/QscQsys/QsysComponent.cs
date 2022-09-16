@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Crestron.SimplSharp;
+using Newtonsoft.Json;
 
 namespace QscQsys
 {
@@ -65,6 +66,36 @@ namespace QscQsys
         {
         }
 
+        protected void SendComponentChangePosition(string method, double position)
+        {
+            if (_registered)
+            {
+                var change = new ComponentChange() { ID = JsonConvert.SerializeObject(new CustomResponseId() { Caller = _cName, Method = method, Position = position }), Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = method, Position = position } } } };
+
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+            }
+        }
+
+        protected void SendComponentChangeDoubleValue(string method, double value)
+        {
+            if (_registered)
+            {
+                var change = new ComponentChange() { ID = JsonConvert.SerializeObject(new CustomResponseId() { Caller = _cName, Method = method, Value = value }), Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = method, Value = value } } } };
+
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+            }
+        }
+
+        protected void SendComponentChangeStringValue(string method, string value)
+        {
+            if (_registered)
+            {
+                var change = new ComponentChangeString() { ID = JsonConvert.SerializeObject(new CustomResponseId() { Caller = _cName, Method = method, StringValue = value }), Params = new ComponentChangeParamsString() { Name = _cName, Controls = new List<ComponentSetValueString>() { new ComponentSetValueString() { Name = method, Value = value } } } };
+
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+            }
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -72,11 +103,23 @@ namespace QscQsys
 
         private void Dispose(bool disposing)
         {
+            if (_disposed) return;
+
             _disposed = true;
             if (disposing)
             {
                 QsysCoreManager.CoreAdded -= QsysCoreManager_CoreAdded;
-                if(_registered) QsysCoreManager.Cores[_coreId].Components[_component].OnNewEvent -= Component_OnNewEvent;
+                if (_registered)
+                {
+                    if (QsysCoreManager.Cores.ContainsKey(_coreId))
+                    {
+                        if (QsysCoreManager.Cores[_coreId].Components.ContainsKey(_component))
+                        {
+                            QsysCoreManager.Cores[_coreId].Components[_component].OnNewEvent -= Component_OnNewEvent;
+                        }
+                    }
+                    _registered = false;
+                }
             }
         }
     }

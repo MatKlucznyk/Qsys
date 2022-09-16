@@ -26,7 +26,7 @@ namespace QscQsys
             _wallState = new bool[walls];
             _roomCombined = new bool[rooms];
 
-            var component = new Component() { Name = componentName, Controls = new List<ControlName>() };
+            var component = new Component(true) { Name = componentName, Controls = new List<ControlName>() };
 
             for (int i = 1; i <= _wallState.Length; i++)
             {
@@ -73,9 +73,7 @@ namespace QscQsys
                 {
                     if (_wallState[wall - 1] != state)
                     {
-                        ComponentChange newState = new ComponentChange { Params = new ComponentChangeParams { Name = _cName, Controls = new List<ComponentSetValue> { new ComponentSetValue { Name = string.Format("wall_{0}_open", wall), Value = Convert.ToDouble(state) } } } };
-
-                        QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(newState, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                        SendComponentChangeDoubleValue(string.Format("wall_{0}_open", wall), Convert.ToDouble(state));
                     }
                 }
             }
@@ -83,18 +81,7 @@ namespace QscQsys
 
         public void SetWall(ushort wall, ushort value)
         {
-            if (_registered)
-            {
-                switch (value)
-                {
-                    case (1):
-                        SetWall(wall, true);
-                        break;
-                    case (0):
-                        SetWall(wall, false);
-                        break;
-                }
-            }
+            SetWall(wall, Convert.ToBoolean(value));
         }
     }
 }

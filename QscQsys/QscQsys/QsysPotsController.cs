@@ -59,7 +59,7 @@ namespace QscQsys
 
         public void Initialize(string coreId, string componentName)
         {
-            var component = new Component()
+            var component = new Component(true)
             {
                 Name = componentName,
                 Controls = new List<ControlName>(){new ControlName(){Name = "call_offhook"},
@@ -137,39 +137,42 @@ namespace QscQsys
 
                     break;
                 case "call_status":
-                    _callStatus = e.SValue;
-
-                    if (onCurrentCallStatusChange != null)
-                        onCurrentCallStatusChange(_cName, e.SValue);
-
-                    if (_callStatus.Contains("Dialing") && _dialingState == false)
+                    if (e.SValue.Length > 0)
                     {
-                        _dialingState = true;
+                        _callStatus = e.SValue;
 
-                        if (onDialingEvent != null)
-                            onDialingEvent(_cName, 1);
-                    }
-                    else if (_dialingState == true)
-                    {
-                        _dialingState = false;
-                        
-                        if (onDialingEvent != null)
-                            onDialingEvent(_cName, 0);
-                    }
+                        if (onCurrentCallStatusChange != null)
+                            onCurrentCallStatusChange(_cName, e.SValue);
 
-                    if (_callStatus.Contains("Incoming Call"))
-                    {
-                        _incomingCall = true;
+                        if (_callStatus.Contains("Dialing") && _dialingState == false)
+                        {
+                            _dialingState = true;
 
-                        if (onIncomingCallEvent != null)
-                            onIncomingCallEvent(_cName, 1);
-                    }
-                    else if (_incomingCall == true)
-                    {
-                        _incomingCall = false;
+                            if (onDialingEvent != null)
+                                onDialingEvent(_cName, 1);
+                        }
+                        else if (_dialingState == true)
+                        {
+                            _dialingState = false;
 
-                        if (onIncomingCallEvent != null)
-                            onIncomingCallEvent(_cName, 0);
+                            if (onDialingEvent != null)
+                                onDialingEvent(_cName, 0);
+                        }
+
+                        if (_callStatus.Contains("Incoming Call"))
+                        {
+                            _incomingCall = true;
+
+                            if (onIncomingCallEvent != null)
+                                onIncomingCallEvent(_cName, 1);
+                        }
+                        else if (_incomingCall == true)
+                        {
+                            _incomingCall = false;
+
+                            if (onIncomingCallEvent != null)
+                                onIncomingCallEvent(_cName, 0);
+                        }
                     }
                     break;
                 case "recent_calls":
@@ -223,16 +226,7 @@ namespace QscQsys
 
                 if (_hookState)
                 {
-                    ComponentChange pinPad = new ComponentChange()
-                    {
-                        Params = new ComponentChangeParams()
-                        {
-                            Name = _cName,
-                            Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = string.Format("call_pinpad_{0}", number), Value = 1 } }
-                        }
-                    };
-
-                    QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(pinPad, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                    SendComponentChangeDoubleValue("call_pinpad_{0}", 1);
                 }
 
                 if (onDialingEvent != null)
@@ -311,27 +305,9 @@ namespace QscQsys
                 if (onDialingEvent != null)
                     onDialStringEvent(_cName, string.Empty);
 
-                ComponentChangeString dialNumber = new ComponentChangeString()
-                {
-                    Params = new ComponentChangeParamsString()
-                    {
-                        Name = _cName,
-                        Controls = new List<ComponentSetValueString>() { new ComponentSetValueString() { Name = "call_number", Value = _currentlyCalling } }
-                    }
-                };
+                SendComponentChangeStringValue("call_number", _currentlyCalling);
 
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(dialNumber, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
-
-                ComponentChange dial = new ComponentChange()
-                {
-                    Params = new ComponentChangeParams()
-                    {
-                        Name = _cName,
-                        Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "call_connect", Value = 1 } }
-                    }
-                };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(dial, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                Connect();
             }
         }
 
@@ -339,16 +315,7 @@ namespace QscQsys
         {
             if (_registered)
             {
-                ComponentChange dial = new ComponentChange()
-                {
-                    Params = new ComponentChangeParams()
-                    {
-                        Name = _cName,
-                        Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "call_connect", Value = 1 } }
-                    }
-                };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(dial, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                SendComponentChangeDoubleValue("call_connect", 1);
             }
         }
 
@@ -356,16 +323,7 @@ namespace QscQsys
         {
             if (_registered)
             {
-                ComponentChange disconnect = new ComponentChange()
-                {
-                    Params = new ComponentChangeParams()
-                    {
-                        Name = _cName,
-                        Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "call_disconnect", Value = 1 } }
-                    }
-                };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(disconnect, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                SendComponentChangeDoubleValue("call_disconnect", 1);
             }
         }
 
@@ -383,16 +341,7 @@ namespace QscQsys
         {
             if (_registered)
             {
-                ComponentChange aAnswer = new ComponentChange()
-                {
-                    Params = new ComponentChangeParams()
-                    {
-                        Name = _cName,
-                        Controls = new List<ComponentSetValue> (){new ComponentSetValue(){Name = "call_autoanswer", Value = Convert.ToDouble(!_autoAnswer)}}
-                    }
-                };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(aAnswer, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                SendComponentChangeDoubleValue("call_autoanswer", Convert.ToDouble(!_autoAnswer));
             }
         }
 
@@ -400,16 +349,7 @@ namespace QscQsys
         {
             if (_registered)
             {
-                ComponentChange d = new ComponentChange()
-                {
-                    Params = new ComponentChangeParams()
-                    {
-                        Name = _cName,
-                        Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = "call_dnd", Value = Convert.ToDouble(!_dnd) } }
-                    }
-                };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(d, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                SendComponentChangeDoubleValue("call_dnd", Convert.ToDouble(!_dnd));
             }
         }
 

@@ -10,7 +10,7 @@ namespace QscQsys
         [JsonProperty]
         static string jsonrpc = "2.0";
         [JsonProperty]
-        static string id = "crestron";
+        static string id = JsonConvert.SerializeObject(new CustomResponseId() { Method = "Component.GetComponents" });
         [JsonProperty]
         static string method = "Component.GetComponents";
         [JsonProperty("params")]
@@ -35,7 +35,7 @@ namespace QscQsys
         [JsonProperty]
         static string jsonrpc = "2.0";
         [JsonProperty]
-        static string id = "crestron";
+        static string id = JsonConvert.SerializeObject(new CustomResponseId() { Method = "ChangeGroup.AutoPoll" });
         [JsonProperty]
         static string method = "ChangeGroup.AutoPoll";
         [JsonProperty("params")]
@@ -53,11 +53,11 @@ namespace QscQsys
         {
             if (!QsysCoreManager.Is3Series)
             {
-                Rate = 0.1;
+                Rate = 0.3;
             }
             else
             {
-                Rate = 0.25;
+                Rate = 0.5;
             }
         }
     }
@@ -67,7 +67,7 @@ namespace QscQsys
         [JsonProperty]
         static string jsonrpc = "2.0";
         [JsonProperty]
-        static string id = "crestron";
+        static string id = JsonConvert.SerializeObject(new CustomResponseId());
         [JsonProperty]
         public string method { get; set; }
         [JsonProperty("params")]
@@ -79,7 +79,7 @@ namespace QscQsys
         [JsonProperty]
         static string jsonrpc = "2.0";
         [JsonProperty]
-        static string id = "crestron";
+        static string id = JsonConvert.SerializeObject(new CustomResponseId());
         [JsonProperty]
         public string method { get; set; }
         [JsonProperty("params")]
@@ -104,8 +104,14 @@ namespace QscQsys
 
     public class Component : IEquatable<Component>
     {
+        internal bool Subscribe;
         public string Name { get; set; }
         public IList<ControlName> Controls { get; set; }
+
+        public Component(bool subscribe)
+        {
+            Subscribe = subscribe;
+        }
 
         public bool Equals(Component other)
         {
@@ -115,7 +121,13 @@ namespace QscQsys
 
     public class Control : IEquatable<Control>
     {
+        internal bool Subscribe;
         public string Name { get; set; }
+
+        public Control(bool subscribe)
+        {
+            Subscribe = subscribe;
+        }
 
         public bool Equals(Control other)
         {
@@ -157,43 +169,51 @@ namespace QscQsys
     {
         [JsonProperty]
         static string jsonrpc = "2.0";
-        //[JsonProperty("id")]
-        //public string ID;
-        [JsonProperty]
-        static string id = "crestron";
+        [JsonProperty("id")]
+        public string ID;
         [JsonProperty]
         static string method = "Component.Set";
         [JsonProperty("params")]
         public ComponentChangeParams Params { get; set; }
 
-        /*public ComponentChange()
+        public ComponentChange()
         {
-            ID = "crestron";
-        }*/
+            ID = JsonConvert.SerializeObject(new CustomResponseId() { Method = "Component.Set" });
+        }
     }
 
     public class ControlIntegerChange
     {
         [JsonProperty]
         static string jsonrpc = "2.0";
-        [JsonProperty]
-        static string id = "crestron";
+        [JsonProperty("id")]
+        public string ID;
         [JsonProperty]
         static string method = "Control.Set";
         [JsonProperty("params")]
         public ControlIntegerParams Params { get; set; }
+
+        public ControlIntegerChange()
+        {
+            ID = JsonConvert.SerializeObject(new CustomResponseId() { Method = "ControlSet.Set" });
+        }
     }
 
     public class ControlStringChange
     {
         [JsonProperty]
         static string jsonrpc = "2.0";
-        [JsonProperty]
-        static string id = "crestron";
+        [JsonProperty("id")]
+        public string ID;
         [JsonProperty]
         static string method = "Control.Set";
         [JsonProperty("params")]
         public ControlStringParams Params { get; set; }
+
+        public ControlStringChange()
+        {
+            ID = JsonConvert.SerializeObject(new CustomResponseId() { Method = "ControlSet.Set" });
+        }
     }
 
     public class ComponentChangeParams
@@ -243,7 +263,7 @@ namespace QscQsys
         [JsonProperty]
         static string jsonrpc = "2.0";
         [JsonProperty]
-        static string id = "crestron";
+        static string id = JsonConvert.SerializeObject(new CustomResponseId() { Method = "Mixer.SetCrossPointMute" });
         [JsonProperty]
         static string method = "Mixer.SetCrossPointMute";
         [JsonProperty("params")]
@@ -262,12 +282,17 @@ namespace QscQsys
     {
         [JsonProperty]
         static string jsonrpc = "2.0";
-        [JsonProperty]
-        static string id = "crestron";
+        [JsonProperty("id")]
+        public string ID;
         [JsonProperty]
         static string method = "Component.Set";
         [JsonProperty("params")]
         public ComponentChangeParamsString Params { get; set; }
+
+        public ComponentChangeString()
+        {
+            ID = JsonConvert.SerializeObject(new CustomResponseId() { Method = "Component.Set" });
+        }
     }
 
     public class ComponentChangeParamsString
@@ -294,7 +319,7 @@ namespace QscQsys
         [JsonProperty]
         static string jsonrpc = "2.0";
         [JsonProperty]
-        static string id = "crestron";
+        static string id = JsonConvert.SerializeObject(new CustomResponseId() { Method = "Logon", });
         [JsonProperty]
         static string method = "Logon";
         [JsonProperty("params")]
@@ -307,5 +332,31 @@ namespace QscQsys
         public string User { get; set; }
         [JsonProperty]
         public string Password { get; set; }
+    }
+
+    public class CustomResponseId
+    {
+        [JsonProperty("app")]
+        public string App { get; set;}
+        [JsonProperty("caller")]
+        public string Caller { get; set;}
+        [JsonProperty("method")]
+        public string Method { get; set;}
+        [JsonProperty("value")]
+        public double Value { get; set; }
+        [JsonProperty("stringValue")]
+        public string StringValue { get; set;}
+        [JsonProperty("position")]
+        public double Position { get; set; }
+
+        public CustomResponseId()
+        {
+            App = "crestron";
+            Caller = string.Empty;
+            Method = string.Empty;
+            Value = new double();
+            StringValue = string.Empty;
+            Position = new double();
+        }
     }
 }
