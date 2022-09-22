@@ -39,6 +39,7 @@ namespace QscQsys
         private readonly object _responseLock = new object();
         private readonly object _parseLock = new object();
         private bool _isInitialized;
+        private bool _isConnected;
         private bool _isLoggedIn;
         private bool _disposed;
         private ushort _debug;
@@ -79,7 +80,12 @@ namespace QscQsys
         /// <summary>
         /// Get connection status
         /// </summary>
-        public bool IsConnected { get; private set; }
+        public bool IsConnected { get { return _isConnected; } }
+
+        /// <summary>
+        /// Get authentication status
+        /// </summary>
+        public bool IsAuthenticatedIn { get { return _isLoggedIn; } }
 
         /// <summary>
         /// Get debug mode
@@ -89,72 +95,7 @@ namespace QscQsys
         /// <summary>
         /// Get or set  max logon attempts
         /// </summary>
-        public ushort MaxLogonAttemps { get { return _maxLogonAttempts; } set { _maxLogonAttempts = value; } }
-
-        internal bool RegisterComponent(Component component)
-        {
-            try
-            {
-                lock (Components)
-                {
-                    if (!Components.ContainsKey(component))
-                    {
-                        Components.Add(component, new InternalEvents());
-
-                        if (_isInitialized && IsConnected && component.Subscribe)
-                        {
-                             var addComponent = new AddComoponentToChangeGroup() { method = "ChangeGroup.AddComponentControl", ComponentParams = new AddComponentToChangeGroupParams() { Component = component } };
-                                _commandQueue.Enqueue(JsonConvert.SerializeObject(addComponent));
-
-                                StartAutoPoll();
-                        }
-                        if (_debug == 2)
-                            CrestronConsole.PrintLine("Registered {0} Component", component.Name);
-                    }
-                }
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                if (_debug == 1 || _debug == 2)
-                    ErrorLog.Error("Error registering QsysClient to the QsysProcessor: {0}", e.Message);
-                return false;
-            }
-        }
-
-        internal bool RegisterControl(Control control)
-        {
-            try
-            {
-                lock (Controls)
-                {
-                    if (!Controls.ContainsKey(control))
-                    {
-                        Controls.Add(control, new InternalEvents());
-
-                        if (_isInitialized && IsConnected && control.Subscribe)
-                        {
-                            var addControl = new AddControlToChangeGroup() { method = "ChangeGroup.AddControl", ControlParams = new AddControlToChangeGroupParams() { Controls = new List<string>() { control.Name } } };
-                            _commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
-
-                            StartAutoPoll();               
-                        }
-
-                        if (_debug == 2)
-                            CrestronConsole.PrintLine("Registered {0} Control", control.Name);
-                    }
-                }
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                if (_debug == 1 || _debug == 2)
-                    ErrorLog.Error("Error registering QsysClient to the QsysProcessor: {0}", e.Message);
-                return false;
-            }
-        }
+        public ushort MaxLogonAttemps { get { return _maxLogonAttempts; } set { _maxLogonAttempts = value; } }   
 
         /// <summary>
         /// Get redundant status
@@ -175,10 +116,9 @@ namespace QscQsys
         /// Get core ID
         /// </summary>
         public string CoreId { get { return _coreId; } }
-        #endregion
 
         /// <summary>
-        /// Set dbug mode.
+        /// Set debug mode.
         /// </summary>
         /// <param name="value"></param>
         public void Debug(ushort value)
@@ -212,6 +152,62 @@ namespace QscQsys
                 ErrorLog.Notice("Qsys TCP ID 1710");
             }
         }
+
+        /// <summary>
+        /// Get or set the network port. If currently connected, changing the port will reconnect with the new port number.
+        /// </summary>
+        public ushort Port
+        {
+            get
+            {
+                if (_client != null)
+                {
+                    return _client.Port;
+                }
+                else
+                {
+                    return ushort.MinValue;
+                }
+            }
+            set
+            {
+                if (_client != null)
+                {
+                    _client.Port = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get or set the network host address. If currently connectd, changing the host will reconnect with the new host address.
+        /// </summary>
+        public string Host
+        {
+            get
+            {
+                if (_client != null)
+                {
+                    return _client.Host;
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+            set
+            {
+                if (_client != null)
+                {
+                    _client.Host = value;
+                }
+            }
+        }
+
+        /*public bool UseExternalConnection
+        {
+
+        }*/
+        #endregion
 
         #region Initialization
         /// <summary>
@@ -310,6 +306,70 @@ namespace QscQsys
             }
         }
 
+        internal bool RegisterComponent(Component component)
+        {
+            try
+            {
+                lock (Components)
+                {
+                    if (!Components.ContainsKey(component))
+                    {
+                        Components.Add(component, new InternalEvents());
+
+                        if (_isInitialized && _isConnected && component.Subscribe)
+                        {
+                            var addComponent = new AddComoponentToChangeGroup() { method = "ChangeGroup.AddComponentControl", ComponentParams = new AddComponentToChangeGroupParams() { Component = component } };
+                            _commandQueue.Enqueue(JsonConvert.SerializeObject(addComponent));
+
+                            StartAutoPoll();
+                        }
+                        if (_debug == 2)
+                            CrestronConsole.PrintLine("Registered {0} Component", component.Name);
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                if (_debug == 1 || _debug == 2)
+                    ErrorLog.Error("Error registering QsysClient to the QsysProcessor: {0}", e.Message);
+                return false;
+            }
+        }
+
+        internal bool RegisterControl(Control control)
+        {
+            try
+            {
+                lock (Controls)
+                {
+                    if (!Controls.ContainsKey(control))
+                    {
+                        Controls.Add(control, new InternalEvents());
+
+                        if (_isInitialized && _isConnected && control.Subscribe)
+                        {
+                            var addControl = new AddControlToChangeGroup() { method = "ChangeGroup.AddControl", ControlParams = new AddControlToChangeGroupParams() { Controls = new List<string>() { control.Name } } };
+                            _commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
+
+                            StartAutoPoll();
+                        }
+
+                        if (_debug == 2)
+                            CrestronConsole.PrintLine("Registered {0} Control", control.Name);
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                if (_debug == 1 || _debug == 2)
+                    ErrorLog.Error("Error registering QsysClient to the QsysProcessor: {0}", e.Message);
+                return false;
+            }
+        }
         #endregion
 
         #region TCP Client Events
@@ -323,9 +383,9 @@ namespace QscQsys
         {
             try
             {
-                if (status == 2 && !IsConnected)
+                if (status == 2 && !_isConnected)
                 {
-                    IsConnected = true;
+                    _isConnected = true;
 
                     if (_debug > 0)
                         ErrorLog.Notice("QsysProcessor is connected.");
@@ -333,9 +393,9 @@ namespace QscQsys
                     if (onIsConnected != null)
                         onIsConnected(_coreId,1);
                 }
-                else if (IsConnected && status != 2)
+                else if (_isConnected && status != 2)
                 {
-                    IsConnected = false;
+                    _isConnected = false;
 
                     if (_debug > 0)
                         ErrorLog.Error("QsysProcessor disconnected!");
@@ -344,6 +404,7 @@ namespace QscQsys
                     _isLoggedIn = false;
                     _isInitialized = false;
 
+                    _commandQueue.Clear();
                     _heartbeatTimer.Stop();
 
                     if (onIsRegistered != null)
@@ -455,7 +516,7 @@ namespace QscQsys
 
                 if (returnString != null)
                 {
-                    if (returnString.Length > 0 && ((IsConnected && !_externalConnection) || _externalConnection))
+                    if (returnString.Length > 0 && ((_isConnected && !_externalConnection) || _externalConnection))
                     {
                         if (returnString.Contains("Changes") && !returnString.Contains("\"Changes\":[]"))
                         {

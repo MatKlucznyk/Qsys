@@ -38,6 +38,18 @@ Threadsafe Change DebugMode
 	processor.Debug(DebugMode);
 }
 
+threadsafe change TestingHost, DeploymentHost, DeploymentMode
+{
+	if(DeploymentMode = 0 && len(TestingHost))
+	{
+		processor.Host = TestingHost;
+	}
+	else if(DeploymentMode = 1 && len(DeploymentHost))
+	{
+		processor.Host = DeploymentHost;
+	}
+}
+
 Callback Function NewIsRegistered(string id, integer value)
 {
 	if(value = 1)

@@ -27,7 +27,7 @@
         </member>
         <member name="M:QscQsys.QsysCore.Debug(System.UInt16)">
             <summary>
-            Set dbug mode.
+            Set debug mode.
             </summary>
             <param name="value"></param>
         </member>
@@ -62,6 +62,11 @@
             Get connection status
             </summary>
         </member>
+        <member name="P:QscQsys.QsysCore.IsAuthenticatedIn">
+            <summary>
+            Get authentication status
+            </summary>
+        </member>
         <member name="P:QscQsys.QsysCore.IsDebugMode">
             <summary>
             Get debug mode
@@ -90,6 +95,16 @@
         <member name="P:QscQsys.QsysCore.CoreId">
             <summary>
             Get core ID
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.Port">
+            <summary>
+            Get or set the network port. If currently connected, changing the port will reconnect with the new port number.
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.Host">
+            <summary>
+            Get or set the network host address. If currently connectd, changing the host will reconnect with the new host address.
             </summary>
         </member>
         <member name="M:QscQsys.QsysMatrixMixer.SetCrossPointMute(System.String,System.String,System.Boolean)">
