@@ -20,7 +20,7 @@ namespace QscQsys
         public string CoreID { get { return _coreId; } }
 
         /// <summary>
-        /// Default constructor for a QsysFader
+        /// Default constructor for a QsysComponent
         /// </summary>
         /// <param name="Name">The component name of the gain.</param>
         public void Initialize(string coreId, Component component)
@@ -96,6 +96,9 @@ namespace QscQsys
             }
         }
 
+        /// <summary>
+        /// Clean up of unmanaged resources
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);

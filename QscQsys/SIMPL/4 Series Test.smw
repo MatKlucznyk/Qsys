@@ -546,10 +546,10 @@ Rx=930
 Ry=612
 Xm=-1
 Ym=-1
-SH=27
+SH=24
 Z=100
 Ht=1
-Hi=1
+Hi=10
 ]
 [
 ObjTp=Et
@@ -1251,7 +1251,7 @@ I3=134
 I4=135
 I6=149
 I7=150
-I9=184
+I9=393
 I10=185
 I11=216
 I13=136
@@ -3703,11 +3703,6 @@ Nm=camera.privacyToggle
 ]
 [
 ObjTp=Sg
-H=184
-Nm=camera.autoFocusToggle
-]
-[
-ObjTp=Sg
 H=185
 Nm=camera.focusNear
 ]
@@ -4848,4 +4843,9 @@ ObjTp=Sg
 H=392
 Nm=genericList.itemsName[4]
 SgTp=4
+]
+[
+ObjTp=Sg
+H=393
+Nm=camera.autoFocus
 ]

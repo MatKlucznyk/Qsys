@@ -6,9 +6,14 @@
     <members>
         <member name="M:QscQsys.QsysComponent.Initialize(System.String,QscQsys.Component)">
             <summary>
-            Default constructor for a QsysFader
+            Default constructor for a QsysComponent
             </summary>
             <param name="Name">The component name of the gain.</param>
+        </member>
+        <member name="M:QscQsys.QsysComponent.Dispose">
+            <summary>
+            Clean up of unmanaged resources
+            </summary>
         </member>
         <member name="T:QscQsys.QsysInternalEventsArgs">
             <summary>
