@@ -34,7 +34,8 @@ namespace QscQsys
         //private CTimer responseQueueTimer;
         private CTimer _heartbeatTimer;
         private CTimer _waitForConnection;
-        private TCPClientDevice _client;
+        private TCPClientDevice _primaryClient;
+        private TCPClientDevice _secondaryClient;
         private StringBuilder _rxData = new StringBuilder();
         private readonly object _responseLock = new object();
         private readonly object _parseLock = new object();
@@ -47,15 +48,19 @@ namespace QscQsys
         private ushort _maxLogonAttempts = 2;
         private bool _isRedundant;
         private bool _isEmulator;
+        private bool _primaryCoreActive;
+        private bool _backupCoreActive;
         private bool _externalConnection;
         private bool _changeGroupCreated;
         private string _designName;
         private string _coreId;
         private string _username;
         private string _password;
+        private string _primaryCoreIpA;
+        private string _backupCoreIpA;
 
-        internal Dictionary<Component, InternalEvents> Components = new Dictionary<Component, InternalEvents>();
-        internal Dictionary<Control, InternalEvents> Controls = new Dictionary<Control, InternalEvents>();
+        internal readonly Dictionary<Component, InternalEvents> Components = new Dictionary<Component, InternalEvents>();
+        internal readonly Dictionary<Control, InternalEvents> Controls = new Dictionary<Control, InternalEvents>();
 
         public QsysCore()
         {
@@ -112,6 +117,10 @@ namespace QscQsys
         /// </summary>
         public string DesignName { get { return _designName; } }
 
+        public bool PrimaryCoreActive { get { return _primaryCoreActive; } }
+
+        public bool SecondaryCoreActive { get { return _backupCoreActive; } }
+
         /// <summary>
         /// Get core ID
         /// </summary>
@@ -120,10 +129,20 @@ namespace QscQsys
         /// <summary>
         /// Set debug mode.
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">Debug level to set.</param>
+        /// <remarks>
+        /// Debug level 0 = off
+        /// Debug level 1 = Main communications
+        /// Debug level 2 = Main communications and verbose console
+        /// </remarks>
         public void Debug(ushort value)
         {
             _debug = value;
+
+            if (_primaryClient != null)
+            {
+                _primaryClient.Debug = _debug;
+            }
 
             if (_debug > 0)
             {
@@ -151,6 +170,8 @@ namespace QscQsys
                 }
                 ErrorLog.Notice("Qsys TCP ID 1710");
             }
+
+            
         }
 
         /// <summary>
@@ -160,9 +181,9 @@ namespace QscQsys
         {
             get
             {
-                if (_client != null)
+                if (_primaryClient != null)
                 {
-                    return _client.Port;
+                    return _primaryClient.Port;
                 }
                 else
                 {
@@ -171,9 +192,9 @@ namespace QscQsys
             }
             set
             {
-                if (_client != null)
+                if (_primaryClient != null)
                 {
-                    _client.Port = value;
+                    _primaryClient.Port = value;
                 }
             }
         }
@@ -185,9 +206,9 @@ namespace QscQsys
         {
             get
             {
-                if (_client != null)
+                if (_primaryClient != null)
                 {
-                    return _client.Host;
+                    return _primaryClient.Host;
                 }
                 else
                 {
@@ -196,9 +217,9 @@ namespace QscQsys
             }
             set
             {
-                if (_client != null)
+                if (_primaryClient != null)
                 {
-                    _client.Host = value;
+                    _primaryClient.Host = value;
                 }
             }
         }
@@ -238,16 +259,16 @@ namespace QscQsys
                     if (_debug == 1)
                         ErrorLog.Notice("QsysProcessor is initializing.");
 
-                    if (useExternalConnection == 0)
+                    if (!_externalConnection)
                     {
-                        _client = new TCPClientDevice();
+                        _primaryClient = new TCPClientDevice();
 
-                        _client.Debug = _debug;
+                        _primaryClient.Debug = _debug;
 
-                        _client.ID = id;
-                        _client.ConnectionStatus += new StatusEventHandler(client_ConnectionStatus);
-                        _client.ResponseString += new ResponseEventHandler(client_ResponseString);
-                        _client.Connect(host, port);
+                        _primaryClient.ID = id;
+                        _primaryClient.ConnectionStatus += new StatusEventHandler(client_ConnectionStatus);
+                        _primaryClient.ResponseString += new ResponseEventHandler(client_ResponseString);
+                        _primaryClient.Connect(host, port);
                     }
                 }
                 catch (Exception e)
@@ -404,8 +425,8 @@ namespace QscQsys
                     _isLoggedIn = false;
                     _isInitialized = false;
 
-                    _commandQueue.Clear();
                     _heartbeatTimer.Stop();
+                    _commandQueue.Clear();
 
                     if (onIsRegistered != null)
                         onIsRegistered(_coreId, 0);
@@ -724,7 +745,7 @@ namespace QscQsys
                         }
 
                         if (!_externalConnection)
-                            _client.SendCommand(data + "\x00");
+                            _primaryClient.SendCommand(data + "\x00");
                         //else if (SendingCommandEvent != null)
                         //    SendingCommandEvent(this, new SendingCommandEventArgs(data + "\x00"));
                         else if (onSendingCommand != null)
@@ -773,7 +794,7 @@ namespace QscQsys
 
                 _waitForConnection.Dispose();
 
-                _client.Dispose();
+                _primaryClient.Dispose();
 
                 _heartbeatTimer.Dispose();
 

@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Json.cs" />
+    <Compile Include="QsysBackupCore.cs" />
     <Compile Include="QsysCamera.cs" />
     <Compile Include="QsysComponent.cs" />
     <Compile Include="QsysCoreManager.cs" />

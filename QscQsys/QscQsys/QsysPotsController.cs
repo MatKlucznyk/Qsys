@@ -226,7 +226,7 @@ namespace QscQsys
 
                 if (_hookState)
                 {
-                    SendComponentChangeDoubleValue("call_pinpad_{0}", 1);
+                    SendComponentChangeDoubleValue(string.Format("call_pinpad_{0}", number), 1);
                 }
 
                 if (onDialingEvent != null)

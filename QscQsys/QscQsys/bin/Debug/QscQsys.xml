@@ -34,7 +34,12 @@
             <summary>
             Set debug mode.
             </summary>
-            <param name="value"></param>
+            <param name="value">Debug level to set.</param>
+            <remarks>
+            Debug level 0 = off
+            Debug level 1 = Main communications
+            Debug level 2 = Main communications and verbose console
+            </remarks>
         </member>
         <member name="M:QscQsys.QsysCore.Initialize(System.String,System.String,System.UInt16,System.String,System.String,System.UInt16)">
             <summary>
