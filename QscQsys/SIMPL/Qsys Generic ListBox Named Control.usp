@@ -1,5 +1,5 @@
 #CATEGORY "46" "Qsys" // Custom
-#SYMBOL_NAME "Qsys Generic String Named Control"
+#SYMBOL_NAME "Qsys Generic ListBox Named Control"
 
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
