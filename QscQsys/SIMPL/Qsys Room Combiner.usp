@@ -3,7 +3,7 @@
 
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
-Digital_Input WallOpen[3];
+Digital_Input WallOpen[3], WallClose[3];
 
 Digital_Output WallOpenState[3], RoomCombined[4];
 
@@ -27,7 +27,7 @@ Push WallOpen
     combiner.SetWall(x, 1);
 }
 
-Release WallOpen 
+push WallClose 
 {
     integer x;
 
