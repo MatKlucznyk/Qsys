@@ -36,13 +36,13 @@ threadsafe change SetStringValue
     }
 }
 
-callback function NewStringChange(string cName, integer x, string value, string y)
+callback function NewStringChange(string cName, string value)
 {
     StringValue = value;
 }
 
 function Main()
 {
-    RegisterDelegate(stringControl, newNamedControlChange, NewStringChange);
+    RegisterDelegate(stringControl, newNamedControlStringChange, NewStringChange);
     stringControl.Initialize(CoreID, NamedControlName, 0);
 }

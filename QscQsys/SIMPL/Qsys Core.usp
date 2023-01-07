@@ -103,7 +103,7 @@ callback GatherEventHandler RxGatherHandler(GatherEventArgs e)
 	}
 	catch
 	{   
-		Trace("RxGatherHandler Exception: %s\n", GetExceptionMessage());
+		GenerateUserError("RxGatherHandler Exception: %s\n", GetExceptionMessage());
 	}
 	ReArmGatherAsync(e.Input);
 }

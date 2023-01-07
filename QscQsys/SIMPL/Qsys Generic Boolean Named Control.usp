@@ -38,13 +38,13 @@ push ToggleBooleanState
         booleanControl.SetBoolean(1);
 }
 
-callback function NewBooleanChange(string cName, integer value, string x, string y)
+callback function NewBooleanChange(string cName, signed_integer value)
 {
     BooleanState = value;
 }
 
 function Main()
 {
-    RegisterDelegate(booleanControl, newNamedControlChange, NewBooleanChange);
-    booleanControl.Initialize(CoreID, NamedControlName, 0);
+    RegisterDelegate(booleanControl, newNamedControlIntChange, NewBooleanChange);
+    booleanControl.Initialize(CoreID, NamedControlName, 1);
 }

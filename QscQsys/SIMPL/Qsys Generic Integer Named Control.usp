@@ -3,11 +3,14 @@
 
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
+#DEFINE_CONSTANT true 1
+#DEFINE_CONSTANT false 0
+
 analog_input SetIntegerValue;
 
-analog_Output IntegerValue;
+analog_Output IntegerValueScaled, IntegerValueUnscaled;
 
-string_parameter  _skip_, CoreID[100], NamedControlName[100];
+string_parameter  _skip_, _skip_, CoreID[100], NamedControlName[100];
 integer_parameter Scaled;
 
 #BEGIN_PARAMETER_PROPERTIES CoreID
@@ -27,32 +30,47 @@ integer_parameter Scaled;
 
 
 QsysNamedControl integerControl;
+signed_long_integer intVal;
+integer changeSemephore;
 
-threadsafe change SetIntegerValue
+change SetIntegerValue
 {
-    Integer x;
+    signed_long_integer x;
+    intVal = SetIntegerValue;
 
-    if(SetIntegerValue = 0)
+    if(changeSemephore)
     {
-        integerControl.SetInteger(0, Scaled);
-    }
-    else
-    {
-        while(x != SetIntegerValue)
+        changeSemephore = false;
+        if(intVal = 0)
         {
-            x = SetIntegerValue;
+            x = intVal;
             integerControl.SetInteger(x, Scaled);
         }
+        while(x != intVal)
+        {
+            x = intVal;
+            integerControl.SetInteger(x, Scaled);
+        }
+
+        changeSemephore = true;
     }
 }
 
-callback function NewIntegerChange(string cName, integer value, string x, string y)
+callback function NewUIntChange(string cName, integer value)
 {
-    IntegerValue = value;
+    IntegerValueScaled = value;
+}
+
+callback function NewIntChange(string cName, signed_integer value)
+{
+    IntegerValueUnscaled = value;
 }
 
 function Main()
 {
-    RegisterDelegate(integerControl, newNamedControlChange, NewIntegerChange);
+    RegisterDelegate(integerControl, newNamedControlUIntChange, NewUIntChange);
+    RegisterDelegate(integerControl, newNamedControlIntChange, NewIntChange);
     integerControl.Initialize(CoreID, NamedControlName, 1);
+
+    changeSemephore = true;
 }

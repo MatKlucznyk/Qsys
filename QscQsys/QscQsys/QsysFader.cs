@@ -32,14 +32,21 @@ namespace QscQsys
         {
             if (e.Name == "gain")
             {
-                _currentLvl = (int)Math.Round(QsysCoreManager.ScaleUp(e.Position));
-                _currentGainString = e.SValue;
+                if (e.Type == "position" || e.Type == "change")
+                {
+                    _currentLvl = (int)Math.Round(QsysCoreManager.ScaleUp(e.Position));
 
-                if (newVolumeChange != null)
-                    newVolumeChange(_cName, (ushort)_currentLvl);
+                    if (newVolumeChange != null)
+                        newVolumeChange(_cName, (ushort)_currentLvl);
+                }
 
-                if (newGainStringChange != null && e.SValue.Length > 0)
-                    newGainStringChange(_cName, _currentGainString);
+                if (e.Type == "value" || e.Type == "change")
+                {
+                    _currentGainString = e.SValue;
+
+                    if (newGainStringChange != null && e.SValue.Length > 0)
+                        newGainStringChange(_cName, _currentGainString);
+                }
             }
             else if (e.Name == "mute")
             {
@@ -76,6 +83,19 @@ namespace QscQsys
         public void Volume(ushort value)
         {
             this.Volume((int)value);
+        }
+
+        public void Decibels(double value)
+        {
+            if (_registered)
+            {
+                SendComponentChangeDoubleValue("gain", value);
+            }
+        }
+
+        public void Decibels(short value)
+        {
+            this.Decibels((double)value);
         }
 
         /// <summary>

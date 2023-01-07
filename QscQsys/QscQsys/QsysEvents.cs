@@ -10,14 +10,16 @@ namespace QscQsys
     /// </summary>
     public class QsysInternalEventsArgs : EventArgs
     {
+        public string Type;
         public string Name;
         public double Value;
         public double Position;
         public string SValue;
         public List<string> Choices;
 
-        public QsysInternalEventsArgs(string name, double data, double position, string sData, List<string> choices)
+        public QsysInternalEventsArgs(string type, string name, double data, double position, string sData, List<string> choices)
         {
+            this.Type = type;
             this.Name = name;
             this.Value = data;
             this.Position = position;

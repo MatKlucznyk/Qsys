@@ -340,6 +340,8 @@ namespace QscQsys
         public string App { get; set;}
         [JsonProperty("caller")]
         public string Caller { get; set;}
+        [JsonProperty("valueType")]
+        public string ValueType { get; set; }
         [JsonProperty("method")]
         public string Method { get; set;}
         [JsonProperty("value")]
@@ -352,11 +354,23 @@ namespace QscQsys
         public CustomResponseId()
         {
             App = "crestron";
+            ValueType = string.Empty;
             Caller = string.Empty;
             Method = string.Empty;
             Value = new double();
             StringValue = string.Empty;
             Position = new double();
+        }
+
+        public CustomResponseId(string valueType, string caller, string method, double value, string stringValue, double position)
+        {
+            App = "crestron";
+            ValueType = valueType;
+            Caller = caller;
+            Method = method;
+            Value = value;
+            StringValue = stringValue;
+            Position = position;
         }
     }
 }

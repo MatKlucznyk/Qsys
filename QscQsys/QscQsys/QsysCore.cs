@@ -29,9 +29,7 @@ namespace QscQsys
         #endregion
 
         private readonly CrestronQueue<string> _commandQueue = new CrestronQueue<string>(1000);
-        //private readonly CrestronQueue<string> responseQueue = new CrestronQueue<string>(100);
         private CTimer _commandQueueTimer;
-        //private CTimer responseQueueTimer;
         private CTimer _heartbeatTimer;
         private CTimer _waitForConnection;
         private TCPClientDevice _primaryClient;
@@ -224,10 +222,6 @@ namespace QscQsys
             }
         }
 
-        /*public bool UseExternalConnection
-        {
-
-        }*/
         #endregion
 
         #region Initialization
@@ -281,10 +275,16 @@ namespace QscQsys
 
         private void Initialize(object o)
         {
+            if(!_isConnected)
+                return;
+
             lock (Components)
             {
                 foreach (var item in Components)
                 {
+                    if (!_isConnected)
+                        return;
+
                     if (item.Key.Subscribe)
                     {
                         var addComponent = new AddComoponentToChangeGroup() { method = "ChangeGroup.AddComponentControl", ComponentParams = new AddComponentToChangeGroupParams() { Component = item.Key } };
@@ -298,6 +298,9 @@ namespace QscQsys
             {
                 foreach (var item in Controls)
                 {
+                    if (!_isConnected)
+                        return;
+
                     if (item.Key.Subscribe)
                     {
                         var addControl = new AddControlToChangeGroup() { method = "ChangeGroup.AddControl", ControlParams = new AddControlToChangeGroupParams() { Controls = new List<string>() { item.Key.Name } } };
@@ -306,6 +309,9 @@ namespace QscQsys
                     }
                 }
             }
+
+            if (!_isConnected)
+                return;
 
             _heartbeatTimer.Reset(15000, 15000);
 
@@ -320,6 +326,9 @@ namespace QscQsys
 
         private void StartAutoPoll()
         {
+            if (!_isConnected)
+                return;
+
             if (!_changeGroupCreated)
             {
                 _commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
@@ -396,7 +405,6 @@ namespace QscQsys
         #region TCP Client Events
         private void client_ResponseString(string response, SimplSharpString id)
         {
-            //responseQueue.Enqueue(response);
             ProcessResponse(response);
         }
 
@@ -452,52 +460,6 @@ namespace QscQsys
         #endregion
 
         #region Parsing
-        /*private void ResponseQueueDequeue(object o)
-        {
-            try
-            {
-                if (!responseQueue.IsEmpty)
-                {
-                    // removes string from queue, blocks until an item is queued
-                    string tmpString = responseQueue.Dequeue();
-
-                    lock (parseLock)
-                    {
-                        RxData.Append(tmpString); //Append received data to the COM buffer
-                    }
-
-                    if (CMonitor.TryEnter(responseLock))
-                    {
-                        while (RxData.ToString().Contains("\x00"))
-                        {
-                            var responseData = string.Empty;
-
-                            lock (parseLock)
-                            {
-                                responseData = RxData.ToString();
-                                var delimeterPos = responseData.IndexOf("\x00");
-                                responseData = responseData.Substring(0, delimeterPos);
-                                RxData.Remove(0, delimeterPos + 1);
-                            }
-
-                            if (debug == 2)
-                                CrestronConsole.PrintLine("Response found ** {0} **", responseData);
-                            
-                            new CTimer(ParseInternalResponse, responseData, 0);
-                        }
-                        CMonitor.Exit(responseLock);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                CMonitor.Exit(responseLock);
-
-                if (debug == 1 || debug == 2)
-                    ErrorLog.Error("Error in QsysProcessor ResponseQueueDequeue: {0}", e.Message);
-            }
-        }*/
-
         private void ProcessResponse(string response)
         {
             lock (_parseLock)
@@ -545,8 +507,6 @@ namespace QscQsys
                             var changes = response["params"]["Changes"].Children().ToList();
                             response = null;
 
-                            //var changeResults = new List<ChangeResult>();
-
                             foreach (JToken change in changes)
                             {
                                 var changeResult = JsonConvert.DeserializeObject<ChangeResult>(change.ToString(), new JsonSerializerSettings { MissingMemberHandling = MissingMemberHandling.Ignore });
@@ -560,13 +520,12 @@ namespace QscQsys
                                     else
                                         choices = new List<string>();
 
-                                    //var component = Components.First(x => x.Key.Name == changeResult.Component);
                                     var components = Components.Where(x => x.Key.Name == changeResult.Component);
 
                                     foreach (var component in components)
                                     {
                                         if (component.Key != null)
-                                            component.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String, choices));
+                                            component.Value.Fire(new QsysInternalEventsArgs("change", changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String, choices));
                                     }
 
                                 }
@@ -581,7 +540,7 @@ namespace QscQsys
 
                                     var control = Controls.First(x => x.Key.Name == changeResult.Name);
                                     if (control.Key != null)
-                                        control.Value.Fire(new QsysInternalEventsArgs(changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String, choices));
+                                        control.Value.Fire(new QsysInternalEventsArgs("change", changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String, choices));
 
                                 }
 
@@ -694,7 +653,7 @@ namespace QscQsys
                                     foreach (var component in components)
                                     {
                                         if (component.Key != null)
-                                            component.Value.Fire(new QsysInternalEventsArgs(responseData.Method, responseData.Value, responseData.Position, responseData.StringValue, null));
+                                            component.Value.Fire(new QsysInternalEventsArgs(responseData.ValueType, responseData.Method, responseData.Value, responseData.Position, responseData.StringValue, null));
                                     }
                                 }
 
@@ -717,7 +676,6 @@ namespace QscQsys
         /// <param name="response">Response from SIMPL to be parsed</param>
         public void NewExternalResponse(string response)
         {
-            //responseQueue.Enqueue(response);
             ProcessResponse(response);
         }
         #endregion

@@ -91,3 +91,4 @@ D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Project
 D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\ResolveAssemblyReference.cache
 D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.dll
 D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.pdb
+D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.xml

@@ -32,7 +32,7 @@ change SelectItem
 }
 
 
-callback function NewListChange(string cName, integer cnt, string x, string xsig)
+callback function NewListChange(string cName, integer cnt, string xsig)
 {
     ItemsCount = cnt;
 	ItemsXSig = xsig;
@@ -46,7 +46,7 @@ callback function NewListSelectedItemChange(integer index, string name)
 
 function Main()
 {
-	RegisterDelegate(listControl, newNamedControlChange, NewListChange);
-	RegisterDelegate(listControl, newNameControldListSelectedItemChange, NewListSelectedItemChange);
+	RegisterDelegate(listControl, newNamedControlListChange, NewListChange);
+	RegisterDelegate(listControl, newNameControlListSelectedItemChange, NewListSelectedItemChange);
 	listControl.Initialize(CoreID, NamedControlName, 2);
 }

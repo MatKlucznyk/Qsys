@@ -70,7 +70,7 @@ namespace QscQsys
         {
             if (_registered)
             {
-                var change = new ComponentChange() { ID = JsonConvert.SerializeObject(new CustomResponseId() { Caller = _cName, Method = method, Position = position }), Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = method, Position = position } } } };
+                var change = new ComponentChange() { ID = JsonConvert.SerializeObject(new CustomResponseId() { ValueType = "position", Caller = _cName, Method = method, Position = position }), Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = method, Position = position } } } };
 
                 QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
@@ -80,7 +80,7 @@ namespace QscQsys
         {
             if (_registered)
             {
-                var change = new ComponentChange() { ID = JsonConvert.SerializeObject(new CustomResponseId() { Caller = _cName, Method = method, Value = value }), Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = method, Value = value } } } };
+                var change = new ComponentChange() { ID = JsonConvert.SerializeObject(new CustomResponseId() { ValueType = "value", Caller = _cName, Method = method, Value = value, StringValue = value.ToString() }), Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = method, Value = value } } } };
 
                 QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
@@ -90,7 +90,7 @@ namespace QscQsys
         {
             if (_registered)
             {
-                var change = new ComponentChangeString() { ID = JsonConvert.SerializeObject(new CustomResponseId() { Caller = _cName, Method = method, StringValue = value }), Params = new ComponentChangeParamsString() { Name = _cName, Controls = new List<ComponentSetValueString>() { new ComponentSetValueString() { Name = method, Value = value } } } };
+                var change = new ComponentChangeString() { ID = JsonConvert.SerializeObject(new CustomResponseId() { ValueType = "string_value", Caller = _cName, Method = method, StringValue = value }), Params = new ComponentChangeParamsString() { Name = _cName, Controls = new List<ComponentSetValueString>() { new ComponentSetValueString() { Name = method, Value = value } } } };
 
                 QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
