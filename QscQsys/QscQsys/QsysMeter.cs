@@ -15,12 +15,9 @@ namespace QscQsys
 
         public void Initialize(string coreId, string componentName, int meterIndex)
         {
-            if (!_registered)
-            {
-                _meterIndex = meterIndex;
-                var component = new Component(true) { Name = _cName, Controls = new List<ControlName>() { new ControlName() { Name = string.Format("meter_{0}", _meterIndex) } } };
-                base.Initialize(coreId, component);
-            }
+            _meterIndex = meterIndex;
+            var component = new Component(true) { Name = componentName, Controls = new List<ControlName>() { new ControlName() { Name = string.Format("meter_{0}", _meterIndex) } } };
+            base.Initialize(coreId, component);
         }
 
         protected override void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)

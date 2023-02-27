@@ -38,6 +38,11 @@ namespace QscQsys
                     }
                 };
 
+            for (int i = 1; i <= count; i++)
+            {
+                component.Controls.Add(new ControlName() { Name = string.Format("signal_presence_{0}", i) });
+            }
+
             base.Initialize(coreId, component);
         }
 
