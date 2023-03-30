@@ -37,6 +37,8 @@ namespace QscQsys
         private StringBuilder _rxData = new StringBuilder();
         private readonly object _responseLock = new object();
         private readonly object _parseLock = new object();
+        private readonly object _initLock = new object();
+        private readonly CCriticalSection _connectionCritical = new CCriticalSection();
         private bool _isInitialized;
         private bool _isConnected;
         private bool _isLoggedIn;
@@ -64,7 +66,6 @@ namespace QscQsys
         {
             _heartbeatTimer = new CTimer(SendHeartbeat, Timeout.Infinite);
             _commandQueueTimer = new CTimer(CommandQueueDequeue, null, 0, 50);
-            //responseQueueTimer = new CTimer(ResponseQueueDequeue, null, 0, 10);
             _waitForConnection = new CTimer(Initialize, Timeout.Infinite);
         }
 
@@ -230,8 +231,11 @@ namespace QscQsys
         /// </summary>
         public void Initialize(string id, string host, ushort port, string username, string password, ushort useExternalConnection)
         {
-            if (!_isInitialized)
+            lock (_initLock)
             {
+                if (_isInitialized)
+                    return;
+
                 try
                 {
                     _coreId = id;
@@ -250,8 +254,8 @@ namespace QscQsys
 
                     QsysCoreManager.AddCore(this);
 
-                    if (_debug == 1)
-                        ErrorLog.Notice("QsysProcessor is initializing.");
+                    if (_debug > 1)
+                        ErrorLog.Notice("QsysProcessor is initializing");
 
                     if (!_externalConnection)
                     {
@@ -275,65 +279,65 @@ namespace QscQsys
 
         private void Initialize(object o)
         {
-            if(!_isConnected)
-                return;
-
-            lock (Components)
+            lock (_initLock)
             {
-                foreach (var item in Components)
-                {
-                    if (!_isConnected)
-                        return;
+                if (!_isConnected)
+                    return;
 
-                    if (item.Key.Subscribe)
+                lock (Components)
+                {
+                    foreach (var item in Components)
                     {
-                        var addComponent = new AddComoponentToChangeGroup() { method = "ChangeGroup.AddComponentControl", ComponentParams = new AddComponentToChangeGroupParams() { Component = item.Key } };
-                        _commandQueue.Enqueue(JsonConvert.SerializeObject(addComponent));
-                        StartAutoPoll();
+                        if (!_isConnected)
+                            return;
+
+                        if (item.Key.Subscribe)
+                        {
+                            var addComponent = new AddComoponentToChangeGroup() { method = "ChangeGroup.AddComponentControl", ComponentParams = new AddComponentToChangeGroupParams() { Component = item.Key } };
+                            _commandQueue.Enqueue(JsonConvert.SerializeObject(addComponent));
+                            StartAutoPoll();
+                        }
                     }
                 }
-            }
 
-            lock (Controls)
-            {
-                foreach (var item in Controls)
+                lock (Controls)
                 {
-                    if (!_isConnected)
-                        return;
-
-                    if (item.Key.Subscribe)
+                    foreach (var item in Controls)
                     {
-                        var addControl = new AddControlToChangeGroup() { method = "ChangeGroup.AddControl", ControlParams = new AddControlToChangeGroupParams() { Controls = new List<string>() { item.Key.Name } } };
-                        _commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
-                        StartAutoPoll();
+                        if (!_isConnected)
+                            return;
+
+                        if (item.Key.Subscribe)
+                        {
+                            var addControl = new AddControlToChangeGroup() { method = "ChangeGroup.AddControl", ControlParams = new AddControlToChangeGroupParams() { Controls = new List<string>() { item.Key.Name } } };
+                            _commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
+                            StartAutoPoll();
+                        }
                     }
                 }
+
+                if (!_isConnected)
+                    return;
+
+                _heartbeatTimer.Reset(15000, 15000);
+
+                if (_debug == 1 || _debug == 2)
+                    ErrorLog.Notice("QsysProcessor is initialized.");
+
+                _isInitialized = true;
+
+                if (onIsRegistered != null)
+                    onIsRegistered(_coreId, 1);
             }
-
-            if (!_isConnected)
-                return;
-
-            _heartbeatTimer.Reset(15000, 15000);
-
-            if (_debug == 1 || _debug == 2)
-                ErrorLog.Notice("QsysProcessor is initialized.");
-
-            _isInitialized = true;
-
-            if (onIsRegistered != null)
-                onIsRegistered(_coreId, 1);
         }
 
         private void StartAutoPoll()
         {
-            if (!_isConnected)
+            if (!_isConnected || _changeGroupCreated)
                 return;
 
-            if (!_changeGroupCreated)
-            {
-                _commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
-                _changeGroupCreated = true;
-            }
+            _changeGroupCreated = true;
+            _commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
         }
 
         internal bool RegisterComponent(Component component)
@@ -412,6 +416,7 @@ namespace QscQsys
         {
             try
             {
+                _connectionCritical.Enter();
                 if (status == 2 && !_isConnected)
                 {
                     _isConnected = true;
@@ -420,7 +425,7 @@ namespace QscQsys
                         ErrorLog.Notice("QsysProcessor is connected.");
 
                     if (onIsConnected != null)
-                        onIsConnected(_coreId,1);
+                        onIsConnected(_coreId, 1);
                 }
                 else if (_isConnected && status != 2)
                 {
@@ -429,6 +434,7 @@ namespace QscQsys
                     if (_debug > 0)
                         ErrorLog.Error("QsysProcessor disconnected!");
 
+                    _commandQueue.Clear();
                     _changeGroupCreated = false;
                     _isLoggedIn = false;
                     _isInitialized = false;
@@ -450,6 +456,10 @@ namespace QscQsys
             {
                 if (_debug > 0)
                     ErrorLog.Error("Error in QsysProcessor client_ConnectionStatus: {0}", e.Message);
+            }
+            finally
+            {
+                _connectionCritical.Leave();
             }
         }
 
