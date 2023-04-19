@@ -9,12 +9,12 @@ namespace QscQsys
 {
     public class QsysMatrixMixerCrosspoint
     {
-        public delegate void CrossPointValueChange(SimplSharpString cName, ushort value);
+        public delegate void CrossPointMuteChange(SimplSharpString cName, ushort value);
         public delegate void CrossPointGainChange(SimplSharpString cName, ushort value);
-        public CrossPointValueChange newCrossPointValueChange { get; set; }
+        public CrossPointMuteChange newCrossPointMuteChange { get; set; }
         public CrossPointGainChange newCrossPointGainChange { get; set; }
 
-        private QsysMatrixMixer mixer;
+        private QsysMatrixMixer _mixer;
 
         private ushort _input;
         private ushort _output;
@@ -23,22 +23,21 @@ namespace QscQsys
         private string _crossName;
         private bool _registered;
 
+        internal string CrosspointName { get { return _crossName; } }
+
         public void Initialize(string coreId, string name, ushort input, ushort output)
         {
             if (!_registered)
             {
                 _cName = name;
-                this._coreId = coreId;
+                _coreId = coreId;
                 _input = input;
                 _output = output;
                 _crossName = string.Format("input_{0}_output_{1}_", input, output);
 
-                mixer = new QsysMatrixMixer();
-                mixer.Initialize(coreId, name);
-
                 QsysCoreManager.CoreAdded += new EventHandler<CoreAddedEventArgs>(QsysCoreManager_CoreAdded);
 
-                    RegisterWithCore();
+                RegisterWithMatrixMixer();
             }
         }
 
@@ -46,35 +45,34 @@ namespace QscQsys
         {
             if (e.CoreId == _coreId)
             {
-                RegisterWithCore();
+                RegisterWithMatrixMixer();
             }
         }
 
-        private void RegisterWithCore()
+        private void RegisterWithMatrixMixer()
         {
             if (!_registered)
             {
                 if (QsysCoreManager.Cores.ContainsKey(_coreId))
                 {
-                    Component component = new Component(true) { Name = _cName, Controls = new List<ControlName>() { new ControlName() { Name = string.Format("{0}mute", _crossName) }, new ControlName() { Name = string.Format("{0}gain", _crossName) } } };
+                    _mixer = QsysCoreManager.Cores[_coreId].GetMatrixMixer(_cName);
 
-                    if (QsysCoreManager.Cores[_coreId].RegisterComponent(component))
+                    if (_mixer != null)
                     {
-                        QsysCoreManager.Cores[_coreId].Components[component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
-
+                        _mixer.RegisterCrosspoint(this);
                         _registered = true;
                     }
                 }
             }
         }
 
-        void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
+        internal void ComponentUpdate(QsysInternalEventsArgs e)
         {
             if (e.Name == string.Format("{0}mute", _crossName))
             {
-                if (newCrossPointValueChange != null)
+                if (newCrossPointMuteChange != null)
                 {
-                    newCrossPointValueChange(_crossName, Convert.ToUInt16(e.Value));
+                    newCrossPointMuteChange(_crossName, Convert.ToUInt16(e.Value));
                 }
             }
             else if (e.Name == string.Format("{0}gain", _crossName))
@@ -85,37 +83,17 @@ namespace QscQsys
                 }
             }
         }
-        public void SetCrossPoint(ushort value)
+        public void SetCrossPointMute(ushort value)
         {
             if (_registered)
             {
-                switch (value)
-                {
-                    case (1):
-                        mixer.SetCrossPointMute(_input.ToString(), _output.ToString(), true);
-                        break;
-                    case (0):
-                        mixer.SetCrossPointMute(_input.ToString(), _output.ToString(), false);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
-        public void SetCrossPointGain(int value)
-        {
-            if (_registered)
-            {
-                ComponentChange newGainChange = new ComponentChange() { Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = string.Format("{0}gain", _crossName), Position = QsysCoreManager.ScaleDown(value) } } } };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(newGainChange, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                _mixer.SetCrosspointMute(_input, _output, value);
             }
         }
 
         public void SetCrossPointGain(ushort value)
         {
-            this.SetCrossPointGain((int)value);
+            _mixer.SetCrosspointGain(_input, _output, value);
         }
     }
 }

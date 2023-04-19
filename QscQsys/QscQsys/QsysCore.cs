@@ -38,6 +38,7 @@ namespace QscQsys
         private readonly object _responseLock = new object();
         private readonly object _parseLock = new object();
         private readonly object _initLock = new object();
+        private readonly object _matrixMixersLock = new object();
         private readonly CCriticalSection _connectionCritical = new CCriticalSection();
         private bool _isInitialized;
         private bool _isConnected;
@@ -61,6 +62,7 @@ namespace QscQsys
 
         internal readonly Dictionary<Component, InternalEvents> Components = new Dictionary<Component, InternalEvents>();
         internal readonly Dictionary<Control, InternalEvents> Controls = new Dictionary<Control, InternalEvents>();
+        private readonly Dictionary<string, QsysMatrixMixer> _matrixMixers = new Dictionary<string, QsysMatrixMixer>();
 
         public QsysCore()
         {
@@ -404,12 +406,25 @@ namespace QscQsys
                 return false;
             }
         }
+
+        internal QsysMatrixMixer GetMatrixMixer(string cName)
+        {
+            lock (_matrixMixersLock)
+            {
+                if (_matrixMixers.ContainsKey(cName))
+                    return _matrixMixers[cName];
+
+                var mixer = new QsysMatrixMixer();
+                mixer.Initialize(_coreId, cName);
+                return mixer;
+            }
+        }
         #endregion
 
         #region TCP Client Events
         private void client_ResponseString(string response, SimplSharpString id)
         {
-            ProcessResponse(response);
+            CrestronInvoke.BeginInvoke(x => ProcessResponse(response), null);   
         }
 
         private void client_ConnectionStatus(int status, SimplSharpString id)
@@ -494,181 +509,176 @@ namespace QscQsys
                     if (_debug == 2)
                         CrestronConsole.PrintLine("Response found ** {0} **", responseData);
 
-                    new CTimer(ParseInternalResponse, responseData, 0);
+                    CrestronInvoke.BeginInvoke(x => ParseInternalResponse(responseData), null);
                 }
 
                 CMonitor.Exit(_responseLock);
             }
         }
 
-        private void ParseInternalResponse(object o)
+        private void ParseInternalResponse(string returnString)
         {
             try
             {
-                var returnString = o as string;
-
-                if (returnString != null)
+                if (returnString.Length > 0 && ((_isConnected && !_externalConnection) || _externalConnection))
                 {
-                    if (returnString.Length > 0 && ((_isConnected && !_externalConnection) || _externalConnection))
+                    if (returnString.Contains("Changes") && !returnString.Contains("\"Changes\":[]"))
                     {
-                        if (returnString.Contains("Changes") && !returnString.Contains("\"Changes\":[]"))
+                        var response = JObject.Parse(returnString);
+                        var changes = response["params"]["Changes"].Children().ToList();
+                        response = null;
+
+                        foreach (JToken change in changes)
                         {
-                            var response = JObject.Parse(returnString);
-                            var changes = response["params"]["Changes"].Children().ToList();
-                            response = null;
+                            var changeResult = JsonConvert.DeserializeObject<ChangeResult>(change.ToString(), new JsonSerializerSettings { MissingMemberHandling = MissingMemberHandling.Ignore });
 
-                            foreach (JToken change in changes)
+                            if (changeResult.Component != null)
                             {
-                                var changeResult = JsonConvert.DeserializeObject<ChangeResult>(change.ToString(), new JsonSerializerSettings { MissingMemberHandling = MissingMemberHandling.Ignore });
+                                List<string> choices;
 
-                                if (changeResult.Component != null)
-                                {
-                                    List<string> choices;
-
-                                    if (changeResult.Choices != null)
-                                        choices = changeResult.Choices.ToList();
-                                    else
-                                        choices = new List<string>();
-
-                                    var components = Components.Where(x => x.Key.Name == changeResult.Component);
-
-                                    foreach (var component in components)
-                                    {
-                                        if (component.Key != null)
-                                            component.Value.Fire(new QsysInternalEventsArgs("change", changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String, choices));
-                                    }
-
-                                }
-                                else if (changeResult.Name != null)
-                                {
-                                    List<string> choices;
-
-                                    if (changeResult.Choices != null)
-                                        choices = changeResult.Choices.ToList();
-                                    else
-                                        choices = new List<string>();
-
-                                    var control = Controls.First(x => x.Key.Name == changeResult.Name);
-                                    if (control.Key != null)
-                                        control.Value.Fire(new QsysInternalEventsArgs("change", changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String, choices));
-
-                                }
-
-                                changeResult = null;
-                            }
-                        }
-                        else if (returnString.Contains("EngineStatus"))
-                        {
-                            var response = JObject.Parse(returnString);
-
-                            if (_externalConnection)
-                            {
-                                _isLoggedIn = false;
-                            }
-                            if (response["params"] != null)
-                            {
-                                JToken engineStatus = response["params"];
-
-                                if (engineStatus["DesignName"] != null)
-                                {
-                                    _designName = engineStatus["DesignName"].ToString();
-                                }
-
-                                if (engineStatus["IsRedundant"] != null)
-                                {
-                                    _isRedundant = Convert.ToBoolean(engineStatus["IsRedundant"].ToString());
-                                }
-
-                                if (engineStatus["IsEmulator"] != null)
-                                {
-                                    _isEmulator = Convert.ToBoolean(engineStatus["IsEmulator"].ToString());
-                                }
-
-                                if (onNewCoreStatus != null)
-                                    onNewCoreStatus(_coreId, _designName, Convert.ToUInt16(_isRedundant), Convert.ToUInt16(_isEmulator));
-                            }
-
-                            if (!_isLoggedIn)
-                            {
-                                if (_debug == 1 || _debug == 2)
-                                    ErrorLog.Notice("QsysProcessor server ready, starting to send intialization strings.");
-
-                                if (_password.Length > 0 && _username.Length > 0)
-                                {
-                                    _logonAttempts = 1;
-                                    _commandQueue.Enqueue(JsonConvert.SerializeObject(new Logon() { Params = new LogonParams() { User = _username, Password = _password } }));
-                                }
+                                if (changeResult.Choices != null)
+                                    choices = changeResult.Choices.ToList();
                                 else
+                                    choices = new List<string>();
+
+                                var components = Components.Where(x => x.Key.Name == changeResult.Component);
+
+                                foreach (var component in components)
                                 {
-                                    _isLoggedIn = true;
-
-                                    if (onIsLoggedIn != null)
-                                    {
-                                        onIsLoggedIn(_coreId, 1);
-                                    }
-
-                                    _waitForConnection.Reset(5000);
+                                    if (component.Key != null)
+                                        component.Value.Fire(new QsysInternalEventsArgs("change", changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String, choices));
                                 }
+
                             }
-                        }
-                        else if (returnString.Contains("error"))
-                        {
-                            var response = JObject.Parse(returnString);
-
-                            if (_logonAttempts < _maxLogonAttempts)
+                            else if (changeResult.Name != null)
                             {
-                                JToken error = response["error"];
+                                List<string> choices;
 
-                                if (error["code"] != null)
-                                {
-                                    if (error["code"].ToString().Replace("\'", string.Empty) == "10")
-                                    {
-                                        _logonAttempts++;
-                                        _commandQueue.Enqueue(JsonConvert.SerializeObject(new Logon() { Params = new LogonParams() { User = _username, Password = _password } }));
-                                    }
-                                }
+                                if (changeResult.Choices != null)
+                                    choices = changeResult.Choices.ToList();
+                                else
+                                    choices = new List<string>();
+
+                                var control = Controls.First(x => x.Key.Name == changeResult.Name);
+                                if (control.Key != null)
+                                    control.Value.Fire(new QsysInternalEventsArgs("change", changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String, choices));
+
+                            }
+
+                            changeResult = null;
+                        }
+                    }
+                    else if (returnString.Contains("EngineStatus"))
+                    {
+                        var response = JObject.Parse(returnString);
+
+                        if (_externalConnection)
+                        {
+                            _isLoggedIn = false;
+                        }
+                        if (response["params"] != null)
+                        {
+                            JToken engineStatus = response["params"];
+
+                            if (engineStatus["DesignName"] != null)
+                            {
+                                _designName = engineStatus["DesignName"].ToString();
+                            }
+
+                            if (engineStatus["IsRedundant"] != null)
+                            {
+                                _isRedundant = Convert.ToBoolean(engineStatus["IsRedundant"].ToString());
+                            }
+
+                            if (engineStatus["IsEmulator"] != null)
+                            {
+                                _isEmulator = Convert.ToBoolean(engineStatus["IsEmulator"].ToString());
+                            }
+
+                            if (onNewCoreStatus != null)
+                                onNewCoreStatus(_coreId, _designName, Convert.ToUInt16(_isRedundant), Convert.ToUInt16(_isEmulator));
+                        }
+
+                        if (!_isLoggedIn)
+                        {
+                            if (_debug == 1 || _debug == 2)
+                                ErrorLog.Notice("QsysProcessor server ready, starting to send intialization strings.");
+
+                            if (_password.Length > 0 && _username.Length > 0)
+                            {
+                                _logonAttempts = 1;
+                                _commandQueue.Enqueue(JsonConvert.SerializeObject(new Logon() { Params = new LogonParams() { User = _username, Password = _password } }));
                             }
                             else
                             {
-                                if (_debug > 0)
+                                _isLoggedIn = true;
+
+                                if (onIsLoggedIn != null)
                                 {
-                                    ErrorLog.Error("Error in QsysProcessor max logon attempts reached");
+                                    onIsLoggedIn(_coreId, 1);
+                                }
+
+                                _waitForConnection.Reset(5000);
+                            }
+                        }
+                    }
+                    else if (returnString.Contains("error"))
+                    {
+                        var response = JObject.Parse(returnString);
+
+                        if (_logonAttempts < _maxLogonAttempts)
+                        {
+                            JToken error = response["error"];
+
+                            if (error["code"] != null)
+                            {
+                                if (error["code"].ToString().Replace("\'", string.Empty) == "10")
+                                {
+                                    _logonAttempts++;
+                                    _commandQueue.Enqueue(JsonConvert.SerializeObject(new Logon() { Params = new LogonParams() { User = _username, Password = _password } }));
                                 }
                             }
                         }
-                        else if (returnString.Contains("\"id\":") && returnString.Contains("\"result\":true"))
+                        else
                         {
-                            var response = JObject.Parse(returnString);
-
-                            if (response["id"] != null)
+                            if (_debug > 0)
                             {
-                                var responseData = JsonConvert.DeserializeObject<CustomResponseId>(response["id"].ToObject<string>());
-
-                                if (responseData.Method == "Logon")
-                                {
-                                    _isLoggedIn = true;
-
-                                    if (onIsLoggedIn != null)
-                                    {
-                                        onIsLoggedIn(_coreId, 1);
-                                    }
-
-                                    _waitForConnection.Reset(5000);
-                                }
-
-                                if (responseData.Caller != string.Empty)
-                                {
-                                    var components = Components.Where(x => x.Key.Name == responseData.Caller);
-
-                                    foreach (var component in components)
-                                    {
-                                        if (component.Key != null)
-                                            component.Value.Fire(new QsysInternalEventsArgs(responseData.ValueType, responseData.Method, responseData.Value, responseData.Position, responseData.StringValue, null));
-                                    }
-                                }
-
-                                responseData = null;
+                                ErrorLog.Error("Error in QsysProcessor max logon attempts reached");
                             }
+                        }
+                    }
+                    else if (returnString.Contains("\"id\":") && returnString.Contains("\"result\":true"))
+                    {
+                        var response = JObject.Parse(returnString);
+
+                        if (response["id"] != null)
+                        {
+                            var responseData = JsonConvert.DeserializeObject<CustomResponseId>(response["id"].ToObject<string>());
+
+                            if (responseData.Method == "Logon")
+                            {
+                                _isLoggedIn = true;
+
+                                if (onIsLoggedIn != null)
+                                {
+                                    onIsLoggedIn(_coreId, 1);
+                                }
+
+                                _waitForConnection.Reset(5000);
+                            }
+
+                            if (responseData.Caller != string.Empty)
+                            {
+                                var components = Components.Where(x => x.Key.Name == responseData.Caller);
+
+                                foreach (var component in components)
+                                {
+                                    if (component.Key != null)
+                                        component.Value.Fire(new QsysInternalEventsArgs(responseData.ValueType, responseData.Method, responseData.Value, responseData.Position, responseData.StringValue, null));
+                                }
+                            }
+
+                            responseData = null;
                         }
                     }
                 }

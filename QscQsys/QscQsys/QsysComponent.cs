@@ -54,6 +54,16 @@ namespace QscQsys
             }
         }
 
+        protected void AddControl(string controlName)
+        {
+            if (_registered)
+            {
+                _component.Controls.Add(new ControlName() { Name = controlName });
+                var addComponent = new AddComoponentToChangeGroup() { method = "ChangeGroup.AddComponentControl", ComponentParams = new AddComponentToChangeGroupParams() { Component = _component } };
+                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(addComponent));
+            }
+        }
+
         private void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs e)
         {
             if (e.CoreId == _coreId)
@@ -104,7 +114,7 @@ namespace QscQsys
             Dispose(true);
         }
 
-        private void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (_disposed) return;
 

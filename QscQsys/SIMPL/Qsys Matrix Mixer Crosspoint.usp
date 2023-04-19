@@ -86,20 +86,20 @@ Threadsafe Change Gain
 
 Push MuteOn
 {
-    mixer.SetCrossPoint(1);
+    mixer.SetCrossPointMute(1);
 }
 
 Push MuteOff
 {
-    mixer.SetCrossPoint(0);
+    mixer.SetCrossPointMute(0);
 }
 
-Callback Function onCrossPointValueChange(string cName, integer value)
+Callback Function onCrossPointMuteChange(string cName, integer value)
 {
     if(value = 1)
     {
-        MuteIsOn = ON;
         MuteIsOff = OFF;
+        MuteIsOn = ON;
     }
     else
     {
@@ -116,7 +116,7 @@ callback function onCrossPointGainChange(string cName, integer value)
 
 Function Main()
 {      
-    RegisterDelegate(mixer, newCrossPointValueChange, onCrossPointValueChange);
+    RegisterDelegate(mixer, newCrossPointMuteChange, onCrossPointMuteChange);
     RegisterDelegate(mixer, newCrossPointGainChange, onCrossPointGainChange);
     mixer.Initialize(CoreID, ComponentName, Input, Output);            
 }

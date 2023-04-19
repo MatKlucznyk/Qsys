@@ -83,6 +83,7 @@
     <Compile Include="QsysComponent.cs" />
     <Compile Include="QsysCoreManager.cs" />
     <Compile Include="QsysMatrixMixer.cs" />
+    <Compile Include="QsysMatrixMixerApi.cs" />
     <Compile Include="QsysMatrixMixerCrosspoint.cs" />
     <Compile Include="QsysMeter.cs" />
     <Compile Include="QsysNv32hDecoder.cs" />

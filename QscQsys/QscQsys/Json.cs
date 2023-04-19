@@ -263,11 +263,16 @@ namespace QscQsys
         [JsonProperty]
         static string jsonrpc = "2.0";
         [JsonProperty]
-        static string id = JsonConvert.SerializeObject(new CustomResponseId() { Method = "Mixer.SetCrossPointMute" });
+        public string ID;
         [JsonProperty]
         static string method = "Mixer.SetCrossPointMute";
         [JsonProperty("params")]
         public SetCrossPointMuteParams Params { get; set; }
+
+        public SetCrossPointMute()
+        {
+            ID = JsonConvert.SerializeObject(new CustomResponseId() { Method = "Mixer.SetCrossPointMute" });
+        }
     }
 
     public class SetCrossPointMuteParams

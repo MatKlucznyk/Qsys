@@ -3,58 +3,67 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Crestron.SimplSharp;
-using Newtonsoft.Json;
 
 namespace QscQsys
 {
-    public class QsysMatrixMixer
+    public class QsysMatrixMixer : QsysComponent
     {
-        private string _cName;
-        private string _coreId;
-        private bool _registered;
+        private readonly object _crosspointsLock = new object();
+        private readonly Dictionary<string, QsysMatrixMixerCrosspoint> _crosspoints = new Dictionary<string, QsysMatrixMixerCrosspoint>();
 
-        public void Initialize(string coreId, string Name)
+        public void Initialize(string coreId, string componentName)
         {
-            if (!_registered)
-            {
-                this._cName = Name;
-                this._coreId = coreId;
+            var controls = new List<ControlName>();
 
-                QsysCoreManager.CoreAdded += new EventHandler<CoreAddedEventArgs>(QsysCoreManager_CoreAdded);
+            lock (_crosspointsLock)
+            {
+                foreach (var crosspoint in _crosspoints)
+                {
+                    controls.Add(new ControlName() { Name = string.Format("{0}mute", crosspoint.Value.CrosspointName) });
+                    controls.Add(new ControlName() { Name = string.Format("{0}gain", crosspoint.Value.CrosspointName) });
+                }
+            }
+
+            var component = new Component(true) { Name = componentName, Controls = controls };
+            base.Initialize(coreId, component);
+        }
+
+        internal void RegisterCrosspoint(QsysMatrixMixerCrosspoint crosspoint)
+        {
+            lock (_crosspointsLock)
+            {
+                if(_crosspoints.ContainsKey(crosspoint.CrosspointName))
+                    return;
+
+                _crosspoints.Add(crosspoint.CrosspointName, crosspoint);
+                AddControl(string.Format("{0}mute", crosspoint.CrosspointName));
+                AddControl(string.Format("{0}gain", crosspoint.CrosspointName));
             }
         }
 
-        void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs e)
+        protected override void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
         {
-            if (!_registered && e.CoreId == _coreId)
-            {
-                _registered = true;
-            }
+            var crosspoint = _crosspoints.SingleOrDefault(x => e.Name.Contains(x.Key));
+
+            if (crosspoint.Equals(default(KeyValuePair<string, QsysMatrixMixerCrosspoint>)))
+                return;
+
+            crosspoint.Value.ComponentUpdate(e);
         }
 
-        /// <summary>
-        /// Sets a crosspoint mute ex. *=everything, 1 2 3=channels 1, 2, 3,  1-6=channels 1 through 6, 1-8 !3=channels 1 through 8 except 3, * !3-5=everything but 3 through 5
-        /// </summary>
-        /// <param name="inputs">The input channels.</param>
-        /// <param name="outputs">The output channels.</param>
-        /// <param name="value">The value of the crosspoint mute.</param>
-        public void SetCrossPointMute(string inputs, string outputs, bool value)
+        public void SetCrosspointMute(ushort input, ushort output, ushort value)
         {
             if (_registered)
             {
-                SetCrossPointMute set = new SetCrossPointMute() { Params = new SetCrossPointMuteParams() { Name = _cName, Inputs = inputs, Outputs = outputs, Value = value } };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(set));
+                SendComponentChangeDoubleValue(string.Format("input_{0}_output_{1}_mute", input, output), Convert.ToDouble(value));
             }
         }
 
-        public void SetCrossPointMute(string inputs, string outputs, ushort value)
+        public void SetCrosspointGain(ushort input, ushort output, ushort value)
         {
             if (_registered)
             {
-                SetCrossPointMute set = new SetCrossPointMute() { Params = new SetCrossPointMuteParams() { Name = _cName, Inputs = inputs, Outputs = outputs, Value = Convert.ToBoolean(value) } };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(set));
+                SendComponentChangePosition(string.Format("input_{0}_output_{1}_gain", input, output), QsysCoreManager.ScaleDown(value));
             }
         }
     }
