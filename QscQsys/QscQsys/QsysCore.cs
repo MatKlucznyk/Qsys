@@ -416,6 +416,7 @@ namespace QscQsys
 
                 var mixer = new QsysMatrixMixer();
                 mixer.Initialize(_coreId, cName);
+                _matrixMixers.Add(cName, mixer);
                 return mixer;
             }
         }
