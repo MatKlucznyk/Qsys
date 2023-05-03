@@ -6,12 +6,12 @@
 #DEFINE_CONSTANT true 1
 #DEFINE_CONSTANT false 0
 
-analog_input SetIntegerValue;
+analog_input SetUnsignedIntegerValue, SetSignedIntegerValue;
 
 analog_Output IntegerValueScaled, IntegerValueUnscaled;
 
 string_parameter  _skip_, _skip_, CoreID[100], NamedControlName[100];
-integer_parameter Scaled;
+integer_parameter ScaleUnsigned;
 
 #BEGIN_PARAMETER_PROPERTIES CoreID
    propValidUnits = unitString;
@@ -19,7 +19,7 @@ integer_parameter Scaled;
    propDefaultValue = "1";
 #END_PARAMETER_PROPERTIES
 
-#BEGIN_PARAMETER_PROPERTIES Scaled
+#BEGIN_PARAMETER_PROPERTIES ScaleUnsigned
    propValidUnits = unitDecimal;
    propDefaultUnit = unitDecimal;
    propDefaultValue = 0d;
@@ -27,16 +27,32 @@ integer_parameter Scaled;
 
 #END_PARAMETER_PROPERTIES
 
-
-
 QsysNamedControl integerControl;
 signed_long_integer intVal;
 integer changeSemephore;
 
-change SetIntegerValue
+threadsafe change SetUnsignedIntegerValue
+{
+    integer x;
+	
+	if(SetUnsignedIntegerValue = 0)
+	{
+		integerControl.SetUnsignedInteger(0, ScaleUnsigned);
+	}
+	else 
+	{
+		While(x != SetUnsignedIntegerValue)
+		{
+			x = SetUnsignedIntegerValue;
+			integerControl.SetUnsignedInteger(x, ScaleUnsigned);
+		}
+	}
+}
+
+change SetSignedIntegerValue
 {
     signed_long_integer x;
-    intVal = SetIntegerValue;
+    intVal = SetSignedIntegerValue;
 
     if(changeSemephore)
     {
@@ -44,12 +60,12 @@ change SetIntegerValue
         if(intVal = 0)
         {
             x = intVal;
-            integerControl.SetInteger(x, Scaled);
+            integerControl.SetSignedInteger(x, 0);
         }
         while(x != intVal)
         {
             x = intVal;
-            integerControl.SetInteger(x, Scaled);
+            integerControl.SetSignedInteger(x, 0);
         }
 
         changeSemephore = true;
