@@ -178,29 +178,30 @@ namespace QscQsys
             }
         }
 
-        public void SetInteger(int value, int scaled)
+        public void SetUnsignedInteger(ushort value, ushort scaled)
         {
             if (_registered)
             {
-                //double newValue;
-                //ControlIntegerChange integer;
-
                 if (scaled == 1)
                 {
-                    //newValue = QsysCoreManager.ScaleDown(value);
                     SendControlChangePosition(QsysCoreManager.ScaleDown(value));
-                    //integer = new ControlIntegerChange() { Params = new ControlIntegerParams() { Name = _cName, Position = newValue } };
                 }
                 else
                 {
-                    //newValue = value;
                     SendControlChangeDoubleValue((double)value);
-                    //integer = new ControlIntegerChange() { Params = new ControlIntegerParams() { Name = _cName, Value = newValue } };
                 }
+            }
+        }
 
-                 
-
-                //QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(integer, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        public void SetSignedInteger(int value, ushort scaled)
+        {
+            if (scaled == 1)
+            {
+                SendControlChangePosition(QsysCoreManager.ScaleDown(value));
+            }
+            else
+            {
+                SendControlChangeDoubleValue((double)value);
             }
         }
 
