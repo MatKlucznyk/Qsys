@@ -33,7 +33,7 @@ namespace QscQsys
 
         protected override void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
         {
-            if (e.Name.Contains(string.Format("select_{0}", _output)))
+            if (e.Name == string.Format("select_{0}", _output))
             {
                 _currentSelectedInput = Convert.ToInt16(e.Value);
 

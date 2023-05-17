@@ -103,6 +103,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>rem  S# preparation will execute after these operations
-copy "$(TargetDir)TCPClient.dll" "$(SolutionDir)Dependencies\"</PostBuildEvent>
+copy "$(TargetDir)TCPClient.dll" "$(SolutionDir)Dependencies\"
+copy "$(TargetDir)ExtensionMethods.dll" "$(SolutionDir)Dependencies\"</PostBuildEvent>
   </PropertyGroup>
 </Project>
