@@ -22,10 +22,11 @@ namespace QscQsys
 
         protected override void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
         {
-            //QsysMeterEvent(this, new QsysEventsArgs(eQscEventIds.MeterUpdate, cName, Convert.ToBoolean(e.Value), Convert.ToInt16(e.Value), e.SValue, null));
-
             if (onMeterChange != null)
-                onMeterChange(_cName, Convert.ToUInt16(e.Value));
+            {
+                var value = QsysCoreManager.ScaleUp(e.Position);
+                onMeterChange(_cName, Convert.ToUInt16(value));
+            }
         }
     }
 }

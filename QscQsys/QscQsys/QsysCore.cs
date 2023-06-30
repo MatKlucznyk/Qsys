@@ -425,7 +425,7 @@ namespace QscQsys
         #region TCP Client Events
         private void client_ResponseString(string response, SimplSharpString id)
         {
-            CrestronInvoke.BeginInvoke(x => ProcessResponse(response), null);   
+            ProcessResponse(response);  
         }
 
         private void client_ConnectionStatus(int status, SimplSharpString id)
@@ -510,7 +510,7 @@ namespace QscQsys
                     if (_debug == 2)
                         CrestronConsole.PrintLine("Response found ** {0} **", responseData);
 
-                    CrestronInvoke.BeginInvoke(x => ParseInternalResponse(responseData), null);
+                    ParseInternalResponse(responseData);
                 }
 
                 CMonitor.Exit(_responseLock);

@@ -20,7 +20,6 @@ String_Parameter _skip_,_skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, 
 integer waitTillStart, _port;
 string _username[100], _password[100];
 
-
 QsysCore processor;
 
 threadsafe Push Initialize
@@ -28,9 +27,9 @@ threadsafe Push Initialize
 	while(!waitTillStart)
 	{}
 	if(DeploymentMode = 1)
-		processor.Initialize(CoreID, DeploymentHost, _port, _username, _password, UseExternalConnection);
+	processor.Initialize(CoreID, DeploymentHost, _port, _username, _password, UseExternalConnection);
 	else if(DeploymentMode = 0)
-		processor.Initialize(CoreID, TestingHost, _port, _username, _password, UseExternalConnection);
+	processor.Initialize(CoreID, TestingHost, _port, _username, _password, UseExternalConnection);
 }
 
 Threadsafe Change DebugMode
@@ -68,17 +67,17 @@ Threadsafe Change Port
 Callback Function NewIsRegistered(string id, integer value)
 {
 	if(value = 1)
-		IsInitialized = ON;
+	IsInitialized = ON;
 	else
-		IsInitialized = OFF;
+	IsInitialized = OFF;
 }
 
 Callback Function NewIsConnected(string id, integer value)
 {
 	if(value = 1)
-		IsConnected = ON;
+	IsConnected = ON;
 	else
-		IsConnected = OFF;
+	IsConnected = OFF;
 }
 
 Callback Function NewCoreStatus(string id, string dName, integer redundant, integer emulator)
@@ -101,12 +100,6 @@ callback function NewSendingCommand(string id, string comm)
 	Command = tx;
 }
 
-/*EventHandler NewSendingCommandEvent(QsysCore sender, SendingCommandEventArgs e)
-{
-	Command = e.Comm;
-}*/
-
-
 callback GatherEventHandler RxGatherHandler(GatherEventArgs e)
 {
 	try
@@ -126,18 +119,17 @@ callback GatherEventHandler RxGatherHandler(GatherEventArgs e)
 Function Main()
 {    
 	_port = 1710;
-    if(GatherAsync("\x00", Response, RxGatherHandler, 500) = -1)
-    {
-    }
+	if(GatherAsync("\x00", Response, RxGatherHandler, 500) = -1)
+	{
+	}
 	
 	RegisterDelegate(processor, onIsRegistered, NewIsRegistered);  
 	RegisterDelegate(processor, onIsConnected, NewIsConnected);
 	RegisterDelegate(processor, onNewCoreStatus, NewCoreStatus);
 	RegisterDelegate(processor, onIsLoggedIn, NewIsLoggedIn);
-	//RegisterEvent(processor, SendingCommandEvent, NewSendingCommandEvent);
 	RegisterDelegate(processor, onSendingCommand, NewSendingCommand);
 	
-	
-	
+	//do not remove delay, we need to wait until all objects are instatiated and ready
+	delay(1000);
 	waitTillStart = 1;
 }

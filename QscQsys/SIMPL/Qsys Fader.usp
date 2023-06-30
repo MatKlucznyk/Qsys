@@ -89,13 +89,13 @@ Push MuteOff
 
 Push MuteToggle
 {
-	if(!MuteIsOn && MuteIsOff)
-	{
-		fader.Mute(true);
-	}
-	else if (MuteIsOn && !MuteIsOff)
+	if(MuteIsOn)
 	{
 		fader.Mute(false);
+	}
+	else
+	{
+		fader.Mute(true);
 	}
 }
 
@@ -157,7 +157,7 @@ Change VolumeDB
 			x = volDb;
 			fader.Decibels(x);
 		}
-
+		
 		volDbSemephore = true;
 	}
 }
@@ -170,19 +170,8 @@ Callback Function onVolumeChange(string cName, integer value)
 
 Callback Function onMuteChange(string cName, integer value)
 {
-	switch(value)
-	{
-		case (1):
-		{
-			MuteIsOff = OFF;
-			MuteIsOn = ON;
-		}
-		case (0):
-		{
-			MuteIsOff = ON;
-			MuteIsOn = OFF;
-		}
-	}
+	MuteIsOn = value;
+	MuteIsOff = !value;
 }
 
 callback function onGainStringChange(string cName, string value)
