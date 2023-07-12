@@ -4,6 +4,16 @@
         <name>QscQsys</name>
     </assembly>
     <members>
+        <member name="T:QscQsys.QsysInternalEventsArgs">
+            <summary>
+            Used only for internal methods.
+            </summary>
+        </member>
+        <member name="T:QscQsys.InternalEvents">
+            <summary>
+            Used only for internal methods.
+            </summary>
+        </member>
         <member name="M:QscQsys.QsysComponent.Initialize(System.String,QscQsys.Component)">
             <summary>
             Default constructor for a QsysComponent
@@ -15,6 +25,36 @@
             Clean up of unmanaged resources
             </summary>
         </member>
+        <member name="M:QscQsys.QsysFader.Volume(System.Int32)">
+            <summary>
+            Sets the current volume.
+            </summary>
+            <param name="value">The volume level to set to.</param>
+        </member>
+        <member name="M:QscQsys.QsysFader.Volume(System.UInt16)">
+            <summary>
+            Sets the current volume value.
+            </summary>
+            <param name="value">Volume value to set the fader to.</param>
+        </member>
+        <member name="M:QscQsys.QsysFader.Mute(System.Boolean)">
+            <summary>
+            Sets the current mute state.
+            </summary>
+            <param name="value">The state to set the mute.</param>
+        </member>
+        <member name="M:QscQsys.QsysFader.Mute(System.UInt16)">
+            <summary>
+            Sets the current mute state.
+            </summary>
+            <param name="value">The state to set the mute.</param>
+        </member>
+        <member name="M:QscQsys.QsysRouter.OutputMute(System.UInt16)">
+            <summary>
+            Sets the current mute state.
+            </summary>
+            <param name="value">The state to set the mute.</param>
+        </member>
         <member name="M:QscQsys.QsysMatrixMixerApi.SetCrossPointMute(System.String,System.String,System.Boolean)">
             <summary>
             Sets a crosspoint mute ex. *=everything, 1 2 3=channels 1, 2, 3,  1-6=channels 1 through 6, 1-8 !3=channels 1 through 8 except 3, * !3-5=everything but 3 through 5
@@ -22,16 +62,6 @@
             <param name="inputs">The input channels.</param>
             <param name="outputs">The output channels.</param>
             <param name="value">The value of the crosspoint mute.</param>
-        </member>
-        <member name="T:QscQsys.QsysInternalEventsArgs">
-            <summary>
-            Used only for internal methods.
-            </summary>
-        </member>
-        <member name="T:QscQsys.InternalEvents">
-            <summary>
-            Used only for internal methods.
-            </summary>
         </member>
         <member name="T:QscQsys.QsysCore">
             <summary>
@@ -124,30 +154,6 @@
             <summary>
             Get or set the network host address. If currently connectd, changing the host will reconnect with the new host address.
             </summary>
-        </member>
-        <member name="M:QscQsys.QsysFader.Volume(System.Int32)">
-            <summary>
-            Sets the current volume.
-            </summary>
-            <param name="value">The volume level to set to.</param>
-        </member>
-        <member name="M:QscQsys.QsysFader.Volume(System.UInt16)">
-            <summary>
-            Sets the current volume value.
-            </summary>
-            <param name="value">Volume value to set the fader to.</param>
-        </member>
-        <member name="M:QscQsys.QsysFader.Mute(System.Boolean)">
-            <summary>
-            Sets the current mute state.
-            </summary>
-            <param name="value">The state to set the mute.</param>
-        </member>
-        <member name="M:QscQsys.QsysFader.Mute(System.UInt16)">
-            <summary>
-            Sets the current mute state.
-            </summary>
-            <param name="value">The state to set the mute.</param>
         </member>
     </members>
 </doc>
