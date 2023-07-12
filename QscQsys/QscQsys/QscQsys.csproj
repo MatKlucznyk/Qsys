@@ -47,9 +47,9 @@
     <GenerateSerializationAssemblies>off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ExtensionMethods, Version=1.0.0.9886, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ExtensionMethods, Version=1.0.0.27412, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\ExtensionMethods\ExtensionMethods\bin\Debug\ExtensionMethods.dll</HintPath>
+      <HintPath>..\Dependencies\ExtensionMethods.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="SimplSharpCustomAttributesInterface, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1099c178b3b54c3b, processorArchitecture=MSIL">
@@ -71,9 +71,9 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
-    <Reference Include="TCPClient, Version=1.0.0.27282, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TCPClient, Version=1.0.0.17872, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\TCP\TCPClient\TCPClient\bin\TCPClient.dll</HintPath>
+      <HintPath>..\Dependencies\TCPClient.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
