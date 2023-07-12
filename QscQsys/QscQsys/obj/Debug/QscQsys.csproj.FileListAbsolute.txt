@@ -92,3 +92,15 @@ D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Project
 D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.dll
 D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.pdb
 D:\mathew.klucznyk\OneDrive - Global USS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.xml
+C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.xml
+C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.dll
+C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.pdb
+C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpCustomAttributesInterface.dll
+C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpHelperInterface.dll
+C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpNewtonsoft.dll
+C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpReflectionInterface.dll
+C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpSQLHelperInterface.dll
+C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\bin\Debug\Newtonsoft.Json.Compact.dll
+C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.dll
+C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.pdb
