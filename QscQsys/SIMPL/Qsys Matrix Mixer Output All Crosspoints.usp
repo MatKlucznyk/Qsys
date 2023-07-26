@@ -1,0 +1,59 @@
+#CATEGORY "46" "Qsys" // Custom
+#SYMBOL_NAME "Qsys Matrix Mixer Output All Crosspoints"
+#DEFINE_CONSTANT INPUTS 128
+
+
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+Digital_Input _skip_,_skip_,_skip_,_skip_,MuteOn[INPUTS], _skip_, MuteOff[INPUTS, INPUTS];
+Digital_Output _skip_,_skip_,_skip_,_skip_,MuteIsOn[INPUTS, INPUTS];
+
+QsysMatrixMixerOutputAllCrosspoints mixer;
+
+String_Parameter CoreID[100], ComponentName[100];
+Integer_Parameter InputCount, Output;
+
+#BEGIN_PARAMETER_PROPERTIES CoreID
+   propValidUnits = unitString;
+   propDefaultUnit = unitString;
+   propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
+#BEGIN_PARAMETER_PROPERTIES InputCount
+    propValidUnits = unitDecimal|unitHex;
+    propDefaultUnit = unitDecimal;
+    propBounds = 1d, INPUTS d;
+#END_PARAMETER_PROPERTIES
+
+#BEGIN_PARAMETER_PROPERTIES Output
+    propValidUnits = unitDecimal|unitHex;
+    propDefaultUnit = unitDecimal;
+#END_PARAMETER_PROPERTIES
+
+
+
+
+PUSH MuteOn
+{
+    integer i;
+    i = GetLastModifiedArrayIndex();
+    mixer.SetCrossPointMute(i, 1);
+}
+
+PUSH MuteOff
+{
+    integer i;
+    i = GetLastModifiedArrayIndex();
+    mixer.SetCrossPointMute(i, 0);
+}
+
+Callback Function onCrossPointMuteChange(string cName, integer i, integer value)
+{
+    MuteIsOn[i] = value;
+}
+
+Function Main()
+{      
+    RegisterDelegate(mixer, newCrossPointMuteChange, onCrossPointMuteChange);
+    mixer.Initialize(CoreID, ComponentName, InputCount, Output);            
+}
