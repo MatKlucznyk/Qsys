@@ -1,15 +1,17 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Snapshot Controller"
+#DEFINE_CONSTANT MAX_SNAPSHOTS 32
+
 
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
-Digital_Input Load, Save;
+Digital_Input _skip_, _skip_, _skip_, _skip_,Load, Save;
 Analog_Input Number;
 
-Digital_Output SnapshotActive[8,8];
+Digital_Output _skip_, _skip_, _skip_, _skip_,SnapshotActive[MAX_SNAPSHOTS];
 
-String_Parameter _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, CoreID[100], ComponentName[100];
-Integer_Parameter Mode;
+String_Parameter  CoreID[100], ComponentName[100];
+Integer_Parameter Mode, NumberOfSnapshots;
 
 #BEGIN_PARAMETER_PROPERTIES Mode
     propList = { 1d , "LatchRecallSave"} , { 2d , "PulseRecallSave" };
@@ -19,6 +21,12 @@ Integer_Parameter Mode;
    propValidUnits = unitString;
    propDefaultUnit = unitString;
    propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
+#BEGIN_PARAMETER_PROPERTIES NumberOfSnapshots
+   propValidUnits = unitDecimal;
+   propDefaultUnit = unitDecimal;
+   propDefaultValue = 8d;
 #END_PARAMETER_PROPERTIES
 
 
@@ -80,5 +88,5 @@ Function Main()
     
     
 
-    snapshot.Initialize(CoreID, ComponentName);
+    snapshot.Initialize(CoreID, ComponentName, NumberOfSnapshots);
 }
