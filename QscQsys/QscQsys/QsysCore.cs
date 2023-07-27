@@ -6,6 +6,7 @@ using Crestron.SimplSharp;             				// For Basic SIMPL# Classes
 using ExtensionMethods;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using QscQsys.Intermediaries;
 using TCP_Client;
 
 namespace QscQsys
@@ -15,6 +16,9 @@ namespace QscQsys
     /// </summary>
     public class QsysCore : IDisposable
     {
+
+        public const double TOLERANCE = .1d;
+
         #region Delegates
         public delegate void IsLoggedIn(SimplSharpString id, ushort value);
         public delegate void IsRegistered(SimplSharpString id, ushort value);
@@ -38,7 +42,7 @@ namespace QscQsys
         private readonly object _responseLock = new object();
         private readonly object _parseLock = new object();
         private readonly object _initLock = new object();
-        private readonly object _matrixMixersLock = new object();
+        
         private readonly CCriticalSection _connectionCritical = new CCriticalSection();
         private bool _isInitialized;
         private bool _isConnected;
@@ -60,12 +64,13 @@ namespace QscQsys
         private string _primaryCoreIpA;
         private string _backupCoreIpA;
 
-        internal readonly Dictionary<Component, InternalEvents> Components = new Dictionary<Component, InternalEvents>();
-        internal readonly Dictionary<Control, InternalEvents> Controls = new Dictionary<Control, InternalEvents>();
-        private readonly Dictionary<string, QsysMatrixMixer> _matrixMixers = new Dictionary<string, QsysMatrixMixer>();
+        private readonly Dictionary<string, NamedComponent> _components;
+        private readonly Dictionary<string, NamedControl> _controls;
 
         public QsysCore()
         {
+            _components = new Dictionary<string, NamedComponent>();
+            _controls = new Dictionary<string, NamedControl>();
             _heartbeatTimer = new CTimer(SendHeartbeat, Timeout.Infinite);
             _commandQueueTimer = new CTimer(CommandQueueDequeue, null, 0, 50);
             _waitForConnection = new CTimer(Initialize, Timeout.Infinite);
@@ -180,16 +185,8 @@ namespace QscQsys
         /// </summary>
         public ushort Port
         {
-            get
-            {
-                if (_primaryClient != null)
-                {
-                    return _primaryClient.Port;
-                }
-                else
-                {
-                    return ushort.MinValue;
-                }
+            get {
+                return _primaryClient == null ? ushort.MinValue : _primaryClient.Port;
             }
             set
             {
@@ -207,14 +204,7 @@ namespace QscQsys
         {
             get
             {
-                if (_primaryClient != null)
-                {
-                    return _primaryClient.Host;
-                }
-                else
-                {
-                    return string.Empty;
-                }
+                return _primaryClient == null ? string.Empty : _primaryClient.Host;
             }
             set
             {
@@ -245,14 +235,14 @@ namespace QscQsys
                     _externalConnection = Convert.ToBoolean(useExternalConnection);
 
                     if (username.Length > 0)
-                        this._username = username;
+                        _username = username;
                     else
-                        this._username = string.Empty;
+                        _username = string.Empty;
 
                     if (password.Length > 0)
-                        this._password = password;
+                        _password = password;
                     else
-                        this._password = string.Empty;
+                        _password = string.Empty;
 
                     QsysCoreManager.AddCore(this);
 
@@ -266,8 +256,8 @@ namespace QscQsys
                         _primaryClient.Debug = _debug;
 
                         _primaryClient.ID = id;
-                        _primaryClient.ConnectionStatus += new StatusEventHandler(client_ConnectionStatus);
-                        _primaryClient.ResponseString += new ResponseEventHandler(client_ResponseString);
+                        _primaryClient.ConnectionStatus += client_ConnectionStatus;
+                        _primaryClient.ResponseString += client_ResponseString;
                         _primaryClient.Connect(host, port);
                     }
                 }
@@ -279,6 +269,26 @@ namespace QscQsys
             }
         }
 
+        private void AddComponentToChangeGroup(NamedComponent component)
+        {
+            if (!component.Subscribe)
+                return;
+
+            var addComponent = QscQsys.AddComponentToChangeGroup.Instantiate(component.ToComponent());
+            Enqueue(JsonConvert.SerializeObject(addComponent));
+        }
+
+        private void AddControlToChangeGroup(NamedControl control)
+        {
+            AddControlsToChangeGroup(new[] {control});
+        }
+
+        private void AddControlsToChangeGroup(IEnumerable<NamedControl> controls)
+        {
+            var addControls = QscQsys.AddControlToChangeGroup.Instantiate(controls.Select(c => c.Name));
+            Enqueue(JsonConvert.SerializeObject(addControls));
+        } 
+
         private void Initialize(object o)
         {
             lock (_initLock)
@@ -286,40 +296,21 @@ namespace QscQsys
                 if (!_isConnected)
                     return;
 
-                lock (Components)
-                {
-                    foreach (var item in Components)
-                    {
-                        if (!_isConnected)
-                            return;
-
-                        if (item.Key.Subscribe)
-                        {
-                            var addComponent = new AddComoponentToChangeGroup() { method = "ChangeGroup.AddComponentControl", ComponentParams = new AddComponentToChangeGroupParams() { Component = item.Key } };
-                            _commandQueue.Enqueue(JsonConvert.SerializeObject(addComponent));
-                            StartAutoPoll();
-                        }
-                    }
-                }
-
-                lock (Controls)
-                {
-                    foreach (var item in Controls)
-                    {
-                        if (!_isConnected)
-                            return;
-
-                        if (item.Key.Subscribe)
-                        {
-                            var addControl = new AddControlToChangeGroup() { method = "ChangeGroup.AddControl", ControlParams = new AddControlToChangeGroupParams() { Controls = new List<string>() { item.Key.Name } } };
-                            _commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
-                            StartAutoPoll();
-                        }
-                    }
-                }
+                var components = GetNamedComponents().ToArray();
+                components.ForEach(AddComponentToChangeGroup);
+                
 
                 if (!_isConnected)
                     return;
+
+                var controls = GetNamedControls().ToArray();
+                AddControlsToChangeGroup(controls);
+
+                if (!_isConnected)
+                    return;
+
+                if(components.Any() || controls.Any())
+                    StartAutoPoll();
 
                 _heartbeatTimer.Reset(15000, 15000);
 
@@ -328,8 +319,99 @@ namespace QscQsys
 
                 _isInitialized = true;
 
+
                 if (onIsRegistered != null)
                     onIsRegistered(_coreId, 1);
+            }
+        }
+
+        public NamedControl LazyLoadNamedControl(string name)
+        {
+            NamedControl control;
+            lock (_controls)
+            {
+                if (_controls.TryGetValue(name, out control))
+                    return control;
+
+                control = new NamedControl(name, this);
+                _controls.Add(name, control);
+            }
+
+            AddControlToChangeGroup(control);
+            return control;
+        }
+
+        public bool TryGetNamedControl(string name, out NamedControl control)
+        {
+            lock (_controls)
+            {
+                return _controls.TryGetValue(name, out control);
+            }
+        }
+
+        public IEnumerable<NamedControl> GetNamedControls()
+        {
+            lock (_controls)
+            {
+                return _controls.Values.ToArray();
+            }
+        }
+
+        public NamedComponent LazyLoadNamedComponent(string name)
+        {
+            NamedComponent component;
+            lock (_components)
+            {
+                
+                if (_components.TryGetValue(name, out component))
+                    return component;
+
+                component = new NamedComponent(name, this);
+                _components.Add(name, component);
+                
+            }
+
+            Subscribe(component);
+            AddComponentToChangeGroup(component);
+
+            return component;
+        }
+
+        private void Subscribe(NamedComponent component)
+        {
+            if (component == null)
+                return;
+
+            component.OnComponentControlAdded += ComponentOnComponentControlAdded;
+        }
+
+        private void Unsubscribe(NamedComponent component)
+        {
+            if (component == null)
+                return;
+
+            component.OnComponentControlAdded -= ComponentOnComponentControlAdded;
+        }
+
+        private void ComponentOnComponentControlAdded(object sender, ComponentControlEventArgs args)
+        {
+            if (IsInitialized)
+                AddComponentToChangeGroup(args.Control.Component);
+        }
+
+        public bool TryGetNamedComponent(string name, out NamedComponent component)
+        {
+            lock (_components)
+            {
+                return _components.TryGetValue(name, out component);
+            }
+        }
+
+        public IEnumerable<NamedComponent> GetNamedComponents()
+        {
+            lock (_components)
+            {
+                return _components.Values.ToArray();
             }
         }
 
@@ -342,84 +424,6 @@ namespace QscQsys
             _commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
         }
 
-        internal bool RegisterComponent(Component component)
-        {
-            try
-            {
-                lock (Components)
-                {
-                    if (!Components.ContainsKey(component))
-                    {
-                        Components.Add(component, new InternalEvents());
-
-                        if (_isInitialized && _isConnected && component.Subscribe)
-                        {
-                            var addComponent = new AddComoponentToChangeGroup() { method = "ChangeGroup.AddComponentControl", ComponentParams = new AddComponentToChangeGroupParams() { Component = component } };
-                            _commandQueue.Enqueue(JsonConvert.SerializeObject(addComponent));
-
-                            StartAutoPoll();
-                        }
-                        if (_debug == 2)
-                            CrestronConsole.PrintLine("Registered {0} Component", component.Name);
-                    }
-                }
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                if (_debug == 1 || _debug == 2)
-                    ErrorLog.Error("Error registering QsysClient to the QsysProcessor: {0}", e.Message);
-                return false;
-            }
-        }
-
-        internal bool RegisterControl(Control control)
-        {
-            try
-            {
-                lock (Controls)
-                {
-                    if (!Controls.ContainsKey(control))
-                    {
-                        Controls.Add(control, new InternalEvents());
-
-                        if (_isInitialized && _isConnected && control.Subscribe)
-                        {
-                            var addControl = new AddControlToChangeGroup() { method = "ChangeGroup.AddControl", ControlParams = new AddControlToChangeGroupParams() { Controls = new List<string>() { control.Name } } };
-                            _commandQueue.Enqueue(JsonConvert.SerializeObject(addControl));
-
-                            StartAutoPoll();
-                        }
-
-                        if (_debug == 2)
-                            CrestronConsole.PrintLine("Registered {0} Control", control.Name);
-                    }
-                }
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                if (_debug == 1 || _debug == 2)
-                    ErrorLog.Error("Error registering QsysClient to the QsysProcessor: {0}", e.Message);
-                return false;
-            }
-        }
-
-        internal QsysMatrixMixer GetMatrixMixer(string cName)
-        {
-            lock (_matrixMixersLock)
-            {
-                if (_matrixMixers.ContainsKey(cName))
-                    return _matrixMixers[cName];
-
-                var mixer = new QsysMatrixMixer();
-                mixer.Initialize(_coreId, cName);
-                _matrixMixers.Add(cName, mixer);
-                return mixer;
-            }
-        }
         #endregion
 
         #region TCP Client Events
@@ -497,12 +501,12 @@ namespace QscQsys
             {
                 while (_rxData.ToString().Contains("\x00"))
                 {
-                    var responseData = string.Empty;
+                    string responseData;
 
                     lock (_parseLock)
                     {
                         responseData = _rxData.ToString();
-                        var delimeterPos = responseData.IndexOf("\x00");
+                        var delimeterPos = responseData.IndexOf("\x00", StringComparison.Ordinal);
                         responseData = responseData.Substring(0, delimeterPos);
                         _rxData.Remove(0, delimeterPos + 1);
                     }
@@ -527,11 +531,12 @@ namespace QscQsys
                     {
                         var response = JObject.Parse(returnString);
                         var changes = response["params"]["Changes"].Children().ToList();
-                        response = null;
 
                         foreach (JToken change in changes)
                         {
-                            var changeResult = JsonConvert.DeserializeObject<ChangeResult>(change.ToString(), new JsonSerializerSettings { MissingMemberHandling = MissingMemberHandling.Ignore });
+                            ChangeResult changeResult = JsonConvert.DeserializeObject<ChangeResult>(change.ToString(),
+                                                                                                    new JsonSerializerSettings
+                                                                                                    { MissingMemberHandling = MissingMemberHandling.Ignore });
 
                             if (changeResult.Component != null)
                             {
@@ -542,14 +547,14 @@ namespace QscQsys
                                 else
                                     choices = new List<string>();
 
-                                var components = Components.Where(x => x.Key.Name == changeResult.Component);
+                                NamedComponent component;
+                                if (!TryGetNamedComponent(changeResult.Component, out component))
+                                    continue;
 
-                                foreach (var component in components)
-                                {
-                                    if (component.Key != null)
-                                        component.Value.Fire(new QsysInternalEventsArgs("change", changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String, choices));
-                                }
-
+                                component.RaiseFeedbackReceived(new QsysInternalEventsArgs("change", changeResult.Name,
+                                                                                           changeResult.Value,
+                                                                                           changeResult.Position,
+                                                                                           changeResult.String, choices));
                             }
                             else if (changeResult.Name != null)
                             {
@@ -560,13 +565,15 @@ namespace QscQsys
                                 else
                                     choices = new List<string>();
 
-                                var control = Controls.First(x => x.Key.Name == changeResult.Name);
-                                if (control.Key != null)
-                                    control.Value.Fire(new QsysInternalEventsArgs("change", changeResult.Name, changeResult.Value, changeResult.Position, changeResult.String, choices));
+                                NamedControl control;
+                                if (!TryGetNamedControl(changeResult.Name, out control))
+                                    continue;
 
+                                control.RaiseFeedbackReceived(new QsysInternalEventsArgs("change", changeResult.Name,
+                                                                                         changeResult.Value,
+                                                                                         changeResult.Position,
+                                                                                         changeResult.String, choices));
                             }
-
-                            changeResult = null;
                         }
                     }
                     else if (returnString.Contains("EngineStatus"))
@@ -670,16 +677,18 @@ namespace QscQsys
 
                             if (responseData.Caller != string.Empty)
                             {
-                                var components = Components.Where(x => x.Key.Name == responseData.Caller);
+                                NamedComponent component;
 
-                                foreach (var component in components)
-                                {
-                                    if (component.Key != null)
-                                        component.Value.Fire(new QsysInternalEventsArgs(responseData.ValueType, responseData.Method, responseData.Value, responseData.Position, responseData.StringValue, null));
-                                }
+                                if (!TryGetNamedComponent(responseData.Caller, out component))
+                                    return;
+
+                                component.RaiseFeedbackReceived(new QsysInternalEventsArgs(responseData.ValueType,
+                                                                                           responseData.Method,
+                                                                                           responseData.Value,
+                                                                                           responseData.Position,
+                                                                                           responseData.StringValue,
+                                                                                           null));
                             }
-
-                            responseData = null;
                         }
                     }
                 }

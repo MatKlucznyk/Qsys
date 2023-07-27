@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using QscQsys.Intermediaries;
 
 namespace QscQsys
 {
@@ -73,6 +74,18 @@ namespace QscQsys
         public CoreRemovedEventArgs(string coreId)
         {
             this.CoreId = coreId;
+        }
+    }
+
+    public class ComponentControlEventArgs : EventArgs
+    {
+        private readonly NamedComponentControl _control;
+
+        public NamedComponentControl Control {get { return _control; }}
+
+        public ComponentControlEventArgs(NamedComponentControl control)
+        {
+            _control = control;
         }
     }
 }

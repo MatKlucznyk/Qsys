@@ -1,70 +1,106 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using Crestron.SimplSharp;
+using QscQsys.Intermediaries;
+using QscQsys.Utils;
 
 namespace QscQsys
 {
     public class QsysSnapshot : QsysComponent
     {
-        public delegate void RecalledSnapshot(SimplSharpString cName, ushort snapshot);
-        public delegate void UnrecalledSnapshot(SimplSharpString cName, ushort snapshot);
-        public RecalledSnapshot onRecalledSnapshot { get; set; }
-        public UnrecalledSnapshot onUnrecalledSnapshot { get; set; }
+        public delegate void SnapshotUpdate(SimplSharpString cName, ushort snapshot);
 
-        public void Initialize(string coreId, string componentName)
+        public SnapshotUpdate onRecalledSnapshot { get; set; }
+        public SnapshotUpdate onUnrecalledSnapshot { get; set; }
+
+        private readonly Dictionary<NamedComponentControl, int> _snapshotControls;
+
+        public int SnapshotCount { get; private set; }
+
+        public QsysSnapshot()
         {
-            var component = new Component(true)
-            {
-                Name = componentName,
-                Controls = new List<ControlName>() 
-                    { 
-                        new ControlName() { Name = "load_1" }, 
-                        new ControlName() { Name = "load_2" },
-                        new ControlName() { Name = "load_3" },
-                        new ControlName() { Name = "load_4" },
-                        new ControlName() { Name = "load_5" },
-                        new ControlName() { Name = "load_6" },
-                        new ControlName() { Name = "load_7" },
-                        new ControlName() { Name = "load_8" }
-                    }
-            };
-
-            base.Initialize(coreId, component);
+            _snapshotControls = new Dictionary<NamedComponentControl, int>();
         }
 
-        protected override void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
+        public void Initialize(string coreId, string componentName, ushort snapshotCount)
         {
-            if(e.Name.Contains("load"))
-            {
-                var load = Convert.ToUInt16(e.Name.Split('_')[1]);
+            SnapshotCount = snapshotCount;
+            InternalInitialize(coreId, componentName);
+        }
 
-                if (e.Position == 1.0)
+        protected override void HandleComponentUpdated(NamedComponent component)
+        {
+            base.HandleComponentUpdated(component);
+
+            lock (_snapshotControls)
+            {
+                foreach (var control in _snapshotControls.Keys)
+                    UnsubscribeSnapshotControl(control);
+                _snapshotControls.Clear();
+
+                if (component == null)
+                    return;
+
+                for (int i = 1; i <= SnapshotCount; i++)
                 {
-                    if (onRecalledSnapshot != null)
-                        onRecalledSnapshot(_cName, load);
-                }
-                else if (e.Position < 1.0)
-                {
-                    if (onUnrecalledSnapshot != null)
-                        onUnrecalledSnapshot(_cName, load);
+                    var control = component.LazyLoadComponentControl(ControlNameUtils.GetSnapshotLoadControlName(i));
+                    _snapshotControls.Add(control, i);
+                    SubscribeSnapshotControl(control);
                 }
             }
         }
+
+        #region Snapshot Control Callbacks
+
+        private void SubscribeSnapshotControl(NamedComponentControl snapshotControl)
+        {
+            if (snapshotControl == null)
+                return;
+
+            snapshotControl.OnFeedbackReceived += SnapshotControlOnFeedbackReceived;
+        }
+
+        private void UnsubscribeSnapshotControl(NamedComponentControl snapshotControl)
+        {
+            if (snapshotControl == null)
+                return;
+
+            snapshotControl.OnFeedbackReceived -= SnapshotControlOnFeedbackReceived;
+        }
+
+        private void SnapshotControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        {
+            var control = sender as NamedComponentControl;
+            if (control == null)
+                return;
+
+            int index;
+
+            lock (_snapshotControls)
+            {
+                if (!_snapshotControls.TryGetValue(control, out index))
+                    return;
+            }
+
+            bool state = Math.Abs(args.Position - 1.0) < QsysCore.TOLERANCE;
+
+            var callback = state ? onRecalledSnapshot : onUnrecalledSnapshot;
+            if (callback != null)
+                callback(ComponentName, (ushort)index);
+
+        }
+
+        #endregion
 
         public void LoadSnapshot(ushort number)
         {
-            if (_registered)
-            {
-                SendComponentChangeDoubleValue(string.Format("load_{0}", number), 1);
-            }
+            SendComponentChangeDoubleValue(ControlNameUtils.GetSnapshotLoadControlName(number), 1);
         }
 
         public void SaveSnapshot(ushort number)
         {
-            if (_registered)
-            {
-                SendComponentChangeDoubleValue(string.Format("save_{0}", number), number);
-            }
+            SendComponentChangeDoubleValue(ControlNameUtils.GetSnapshotSaveControlName(number), 1);
         }
     }
 }

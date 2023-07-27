@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace QscQsys
@@ -61,7 +62,7 @@ namespace QscQsys
         }
     }
 
-    public class AddComoponentToChangeGroup
+    public class AddComponentToChangeGroup
     {
         [JsonProperty]
         static string jsonrpc = "2.0";
@@ -71,6 +72,15 @@ namespace QscQsys
         public string method { get; set; }
         [JsonProperty("params")]
         public AddComponentToChangeGroupParams ComponentParams { get; set; }
+
+        public static AddComponentToChangeGroup Instantiate(Component component)
+        {
+            return new AddComponentToChangeGroup
+            {
+                method = "ChangeGroup.AddComponentControl",
+                ComponentParams = AddComponentToChangeGroupParams.Instantiate(component)
+            };
+        }
     }
 
     public class AddControlToChangeGroup
@@ -83,6 +93,16 @@ namespace QscQsys
         public string method { get; set; }
         [JsonProperty("params")]
         public AddControlToChangeGroupParams ControlParams { get; set; }
+
+        public static AddControlToChangeGroup Instantiate(IEnumerable<string> controls)
+        {
+            return new AddControlToChangeGroup
+            {
+                method = "ChangeGroup.AddControl",
+                ControlParams =
+                    AddControlToChangeGroupParams.Instantiate(controls)
+            };
+        }
     }
 
     public class AddControlToChangeGroupParams
@@ -90,6 +110,12 @@ namespace QscQsys
         [JsonProperty]
         static string Id = "crestron";
         public List<string> Controls { get; set; }
+
+        public static AddControlToChangeGroupParams Instantiate(IEnumerable<string> controls)
+        {
+            return new AddControlToChangeGroupParams 
+            {Controls = new List<string>(controls)};
+        }
     }
 
     public class AddComponentToChangeGroupParams
@@ -97,6 +123,14 @@ namespace QscQsys
         [JsonProperty]
         static string Id = "crestron";
         public Component Component { get; set; }
+
+        public static AddComponentToChangeGroupParams Instantiate(Component component)
+        {
+            return new AddComponentToChangeGroupParams
+            {
+                Component = component
+            };
+        }
 
     }
 
@@ -116,6 +150,20 @@ namespace QscQsys
         {
             return this.Name == other.Name;
         }
+
+        public static Component Instantiate(string name, IEnumerable<ControlName> controls)
+        {
+            return new Component(true)
+            {
+                Name = name,
+                Controls = new List<ControlName>(controls)
+            };
+        }
+
+        public static Component Instantiate(string name, IEnumerable<string> controls)
+        {
+            return Instantiate(name, controls.Select(controlName => ControlName.Instantiate(controlName)));
+        } 
     }
 
     public class Control : IEquatable<Control>
@@ -137,6 +185,14 @@ namespace QscQsys
     public class ControlName
     {
         public string Name { get; set; }
+
+        public static ControlName Instantiate(string name)
+        {
+            return new ControlName
+            {
+                Name = name
+            };
+        }
     }
 
     public class Heartbeat

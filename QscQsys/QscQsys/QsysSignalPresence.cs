@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Crestron.SimplSharp;
+using QscQsys.Intermediaries;
+using QscQsys.Utils;
 
 namespace QscQsys
 {
@@ -16,172 +18,322 @@ namespace QscQsys
         public InfiniteHoldChange newInfiniteHoldChange { get; set; }
 
         private ushort _count;
-        private ushort _threshold;
-        private ushort _holdTime;
-        private bool _infiniteHold;
+        public ushort Threshold { get; private set; }
+        public ushort HoldTime { get; private set; }
+        public bool InfiniteHoldValue { get; private set; }
+
+        private NamedComponentControl _thresholdControl;
+        private NamedComponentControl _holdTimeControl;
+        private NamedComponentControl _infiniteHoldControl;
+        private readonly Dictionary<NamedComponentControl, int> _signalPresenceControls;
+
+        public NamedComponentControl ThresholdControl
+        {
+            get { return _thresholdControl; }
+            private set
+            {
+                if (_thresholdControl == value)
+                    return;
+
+                UnsubscribeThresholdControl(_thresholdControl);
+                _thresholdControl = value;
+                SubscribeThresholdControl(_thresholdControl);
+            }
+        }
+
+        public NamedComponentControl HoldTimeControl
+        {
+            get { return _holdTimeControl; }
+            private set
+            {
+                if (_holdTimeControl == value)
+                    return;
+
+                UnsubscribeHoldTimeControl(_holdTimeControl);
+                _holdTimeControl = value;
+                SubscribeHoldTimeControl(_holdTimeControl);
+            }
+        }
+
+        public NamedComponentControl InfiniteHoldControl
+        {
+            get { return _infiniteHoldControl; }
+            private set
+            {
+                if (_infiniteHoldControl == value)
+                    return;
+
+                UnsubscribeInfiniteHoldControl(_infiniteHoldControl);
+                _infiniteHoldControl = value;
+                SubscribeInfiniteHoldControl(_infiniteHoldControl);
+            }
+        }
+
+        public QsysSignalPresence()
+        {
+            _signalPresenceControls = new Dictionary<NamedComponentControl, int>();
+        }
+
 
         public void Initialize(string coreId, string componentName, ushort count)
         {
             _count = count;
-
-            var component = new Component(true)
-                {
-                    Name = componentName,
-                    Controls = new List<ControlName>() 
-                    { 
-                        new ControlName() { Name = "threshold" }, 
-                        new ControlName() { Name = "hold_time" },
-                        new ControlName() {Name = "infinite_hold"} 
-                    }
-                };
-
-            for (int i = 1; i <= count; i++)
-            {
-                component.Controls.Add(new ControlName() { Name = string.Format("signal_presence_{0}", i) });
-            }
-
-            base.Initialize(coreId, component);
+            InternalInitialize(coreId, componentName);
         }
 
-        protected override void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
+        protected override void HandleComponentUpdated(NamedComponent component)
         {
-            if (e.Name == "threshold")
-            {
-                _threshold = (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position));
+            base.HandleComponentUpdated(component);
 
-                if (newPeakThresholdChange != null)
-                    newPeakThresholdChange(_cName, e.SValue);
-            }
-            else if (e.Name == "hold_time")
+            lock (_signalPresenceControls)
             {
-                _holdTime = (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position));
+                ThresholdControl = null;
+                HoldTimeControl = null;
+                InfiniteHoldControl = null;
 
-                if (newHoldTimeChange != null)
-                    newHoldTimeChange(_cName, e.SValue);
-            }
-            else if (e.Name == "infinite_hold")
-            {
-                _infiniteHold = Convert.ToBoolean(e.Value);
+                foreach (var control in _signalPresenceControls.Keys)
+                    UnsubscribeSignalPresenceControl(control);
+                _signalPresenceControls.Clear();
 
-                if (newInfiniteHoldChange != null)
-                    newInfiniteHoldChange(_cName, (ushort)e.Value);
-            }
-            else if(e.Name.Contains("signal_presence"))
-            {
-                if(e.Name.Contains("signal_presence_"))
+                if (component == null)
+                    return;
+
+                ThresholdControl = component.LazyLoadComponentControl(ControlNameUtils.GetThresholdControlName());
+                HoldTimeControl = component.LazyLoadComponentControl(ControlNameUtils.GetHoldTimeControlName());
+                InfiniteHoldControl = component.LazyLoadComponentControl(ControlNameUtils.GetInfiniteHoldControlName());
+                
+                for (int i = 1; i <= _count; i++)
                 {
-                    var splitName = e.Name.Split('_');
-
-                    if (newSignalPresenceChange != null)
-                        newSignalPresenceChange(_cName, Convert.ToUInt16(splitName[2]), (ushort)e.Value);
-                }
-                else
-                {
-                    if(newSignalPresenceChange != null)
-                        newSignalPresenceChange(_cName, 1, (ushort)e.Value);
+                    var control = component.LazyLoadComponentControl(ControlNameUtils.GetSignalPresenceMeterName(i, _count));
+                    _signalPresenceControls.Add(control, i);
+                    SubscribeSignalPresenceControl(control);
                 }
             }
         }
+
+        #region Threshold Control Callbacks
+
+        private void SubscribeThresholdControl(NamedComponentControl thresholdControl)
+        {
+            if (thresholdControl == null)
+                return;
+
+            thresholdControl.OnFeedbackReceived += ThresholdControlOnFeedbackReceived;
+        }
+
+        private void UnsubscribeThresholdControl(NamedComponentControl thresholdControl)
+        {
+            if (thresholdControl == null)
+                return;
+
+            thresholdControl.OnFeedbackReceived -= ThresholdControlOnFeedbackReceived;
+        }
+
+        private void ThresholdControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        {
+            Threshold = (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position));
+
+            var callback = newPeakThresholdChange;
+            if (callback != null)
+                callback(ComponentName, args.SValue);
+        }
+
+        #endregion
+
+        #region HoldTime Control Callbacks
+
+        private void SubscribeHoldTimeControl(NamedComponentControl holdTimeControl)
+        {
+            if (holdTimeControl == null)
+                return;
+
+            holdTimeControl.OnFeedbackReceived += HoldTimeControlOnFeedbackReceived;
+        }
+
+        private void UnsubscribeHoldTimeControl(NamedComponentControl holdTimeControl)
+        {
+            if (holdTimeControl == null)
+                return;
+
+            holdTimeControl.OnFeedbackReceived -= HoldTimeControlOnFeedbackReceived;
+        }
+
+        private void HoldTimeControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        {
+            HoldTime = (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position));
+
+            var callback = newHoldTimeChange;
+            if (callback != null)
+                callback(ComponentName, args.SValue);
+        }
+
+        #endregion
+
+        #region Infinite Hold Control Callbacks
+
+        private void SubscribeInfiniteHoldControl(NamedComponentControl infiniteHoldControl)
+        {
+            if (infiniteHoldControl == null)
+                return;
+
+            infiniteHoldControl.OnFeedbackReceived += InfiniteHoldControlOnFeedbackReceived;
+        }
+
+        private void UnsubscribeInfiniteHoldControl(NamedComponentControl infiniteHoldControl)
+        {
+            if (infiniteHoldControl == null)
+                return;
+
+            infiniteHoldControl.OnFeedbackReceived -= InfiniteHoldControlOnFeedbackReceived;
+        }
+
+        private void InfiniteHoldControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        {
+            InfiniteHoldValue = Convert.ToBoolean(args.Value);
+
+            var callback = newInfiniteHoldChange;
+            if (callback != null)
+                callback(ComponentName, Convert.ToUInt16(args.Value));
+        }
+
+        #endregion
+
+        #region Signal Presence Control Callbacks
+
+        private void SubscribeSignalPresenceControl(NamedComponentControl signalPresenceControl)
+        {
+            if (signalPresenceControl == null)
+                return;
+
+            signalPresenceControl.OnFeedbackReceived += SignalPresenceControlOnFeedbackReceived;
+        }
+
+        private void UnsubscribeSignalPresenceControl(NamedComponentControl signalPresenceControl)
+        {
+            if (signalPresenceControl == null)
+                return;
+
+            signalPresenceControl.OnFeedbackReceived -= SignalPresenceControlOnFeedbackReceived;
+        }
+
+        private void SignalPresenceControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        {
+            var control = sender as NamedComponentControl;
+            
+            if (control == null)
+                return;
+
+            int index;
+            lock (_signalPresenceControls)
+            {
+                if (!_signalPresenceControls.TryGetValue(control, out index))
+                    return;
+            }
+
+            var callback = newSignalPresenceChange;
+            if (callback != null)
+                callback(ComponentName, (ushort)index, Convert.ToUInt16(args.Value));
+        }
+
+        #endregion
 
         public void ThresholdIncrement()
         {
-            if (_registered)
+            if (Component == null)
+                return;
+
+            double newThreshold;
+
+            if ((Threshold + 6553.5) <= 65535)
             {
-                double newThreshold;
-
-                if ((_threshold + 6553.5) <= 65535)
-                {
-                    newThreshold = QsysCoreManager.ScaleDown(_threshold + 6553.5);
-                }
-                else
-                {
-                    newThreshold = QsysCoreManager.ScaleDown(65535);
-                }
-
-                SendComponentChangePosition("threshold", newThreshold);
+                newThreshold = QsysCoreManager.ScaleDown(Threshold + 6553.5);
             }
+            else
+            {
+                newThreshold = QsysCoreManager.ScaleDown(65535);
+            }
+
+            SendComponentChangePosition("threshold", newThreshold);
         }
 
         public void ThresholdDecrement()
         {
-            if (_registered)
+            if (Component == null)
+                return;
+
+            double newThreshold;
+
+            if ((Threshold - 6553.5) >= 0)
             {
-                double newThreshold;
-
-                if ((_threshold - 6553.5) >= 0)
-                {
-                    newThreshold = QsysCoreManager.ScaleDown(_threshold - 6553.5);
-                }
-                else
-                {
-                    newThreshold = QsysCoreManager.ScaleDown(0);
-                }
-
-                SendComponentChangePosition("threshold", newThreshold);
+                newThreshold = QsysCoreManager.ScaleDown(Threshold - 6553.5);
             }
+            else
+            {
+                newThreshold = QsysCoreManager.ScaleDown(0);
+            }
+
+            SendComponentChangePosition("threshold", newThreshold);
         }
 
         public void HoldTimeIncrement()
         {
-            if (_registered)
+            if (Component == null)
+                return;
+
+            double newHoldtime;
+
+            if ((HoldTime + 6553.5) <= 65535)
             {
-                double newHoldtime;
-
-                if ((_holdTime + 6553.5) <= 65535)
-                {
-                    newHoldtime = QsysCoreManager.ScaleDown(_holdTime + 6553.5);
-                }
-                else
-                {
-                    newHoldtime = QsysCoreManager.ScaleDown(65535);
-                }
-
-                SendComponentChangePosition("hold_time", newHoldtime);
+                newHoldtime = QsysCoreManager.ScaleDown(HoldTime + 6553.5);
             }
+            else
+            {
+                newHoldtime = QsysCoreManager.ScaleDown(65535);
+            }
+
+            SendComponentChangePosition("hold_time", newHoldtime);
         }
 
         public void HoldTimeDecrement()
         {
-            if (_registered)
+            if (Component == null)
+                return;
+
+            double newHoldtime;
+
+            if ((HoldTime - 6553.5) >= 0)
             {
-                double newHoldtime;
-
-                if ((_holdTime - 6553.5) >= 0)
-                {
-                    newHoldtime = QsysCoreManager.ScaleDown(_holdTime - 6553.5);
-                }
-                else
-                {
-                    newHoldtime = QsysCoreManager.ScaleDown(0);
-                }
-
-                SendComponentChangePosition("hold_time", newHoldtime);
+                newHoldtime = QsysCoreManager.ScaleDown(HoldTime - 6553.5);
             }
+            else
+            {
+                newHoldtime = QsysCoreManager.ScaleDown(0);
+            }
+
+            SendComponentChangePosition("hold_time", newHoldtime);
         }
 
         public void InfiniteHold(bool value)
         {
-            if (_infiniteHold != value && _registered)
-            {
-                SendComponentChangeDoubleValue("infinite_hold", Convert.ToDouble(value));
-            }
+            if (Component == null)
+                return;
+
+            SendComponentChangeDoubleValue("infinite_hold", Convert.ToDouble(value));
         }
 
         public void InfiniteHold(ushort value)
         {
-            if (_registered)
+            if (Component == null)
+                return;
+
+            switch (value)
             {
-                switch (value)
-                {
-                    case (0):
-                        this.InfiniteHold(false);
-                        break;
-                    case (1):
-                        this.InfiniteHold(true);
-                        break;
-                    default:
-                        break;
-                }
+                case (0):
+                    InfiniteHold(false);
+                    break;
+                case (1):
+                    InfiniteHold(true);
+                    break;
             }
         }
     }

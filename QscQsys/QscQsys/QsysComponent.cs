@@ -1,106 +1,211 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using QscQsys.Intermediaries;
 
 namespace QscQsys
 {
     public abstract class QsysComponent : IDisposable
     {
-        protected string _cName;
-        protected bool _registered;
-        protected string _coreId;
-        private Component _component;
+        //protected bool _registered;
+        //private Component _component;
+        private bool _isInitialized;
+        private NamedComponent _component;
         private bool _disposed;
 
-        public string ComponentName { get { return _cName; } }
-        public bool IsRegistered { get { return _registered; } }
-        public string CoreID { get { return _coreId; } }
+        public string ComponentName { get; private set; }
+        public bool IsRegistered { get { return Component != null; } }
+        public string CoreId { get; private set; }
+
+        public NamedComponent Component
+        {
+            get { return _component; }
+            private set
+            {
+                if (_component == value)
+                    return;
+
+                Unsubscribe(_component);
+                _component = value;
+                Subscribe(_component);
+
+                HandleComponentUpdated(_component);
+            }
+        }
+
+        protected virtual void HandleComponentUpdated(NamedComponent component)
+        { }
+
+        #region NamedComponent Callbacks
+
+        private void Subscribe(NamedComponent component)
+        {
+            if (component == null)
+                return;
+
+            component.OnFeedbackReceived += ComponentOnFeedbackReceived;
+        }
+
+        private void Unsubscribe(NamedComponent component)
+        {
+            if (component == null)
+                return;
+
+            component.OnFeedbackReceived -= ComponentOnFeedbackReceived;
+        }
+
+        protected virtual void ComponentOnFeedbackReceived(object sender, QsysInternalEventsArgs qsysInternalEventsArgs)
+        {
+        }
+
+        #endregion
 
         /// <summary>
-        /// Default constructor for a QsysComponent
+        /// Initialize to be called from concrete's initialize method
         /// </summary>
-        /// <param name="Name">The component name of the gain.</param>
-        public void Initialize(string coreId, Component component)
+        /// <param name="coreId"></param>
+        /// <param name="componentName"></param>
+        protected void InternalInitialize(string coreId, string componentName)
         {
-            if (!_registered)
-            {
-                _coreId = coreId;
-                _component = component;
-                _cName = component.Name;
+            if (_isInitialized)
+                return;
 
-                QsysCoreManager.CoreAdded += new EventHandler<CoreAddedEventArgs>(QsysCoreManager_CoreAdded);
+            _isInitialized = true;
 
-                RegisterWithCore();
-            }
+            CoreId = coreId;
+            ComponentName = componentName;
+
+            QsysCoreManager.CoreAdded += QsysCoreManager_CoreAdded;
+
+            RegisterWithCore();
         }
 
         private void RegisterWithCore()
         {
-            if (!_registered)
-            {
-                if (QsysCoreManager.Cores.ContainsKey(_coreId) && _component != null)
-                {
+            if (Component != null)
+                return;
 
-                    if (QsysCoreManager.Cores[_coreId].RegisterComponent(_component))
-                    {
-                        QsysCoreManager.Cores[_coreId].Components[_component].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Component_OnNewEvent);
+            QsysCore core;
+            if (!QsysCoreManager.TryGetCore(CoreId, out core))
+                return;
 
-                        _registered = true;
-                    }
-                }
-            }
+            Component = core.LazyLoadNamedComponent(ComponentName);
         }
 
-        protected void AddControl(string controlName)
+        protected NamedComponentControl AddControl(string controlName)
         {
-            if (_registered)
-            {
-                _component.Controls.Add(new ControlName() { Name = controlName });
-                var addComponent = new AddComoponentToChangeGroup() { method = "ChangeGroup.AddComponentControl", ComponentParams = new AddComponentToChangeGroupParams() { Component = _component } };
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(addComponent));
-            }
+            if (Component == null)
+                return null;
+
+            return Component.LazyLoadComponentControl(controlName);
         }
 
         private void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs e)
         {
-            if (e.CoreId == _coreId)
+            if (e.CoreId == CoreId)
             {
                 RegisterWithCore();
             }
         }
 
-        protected virtual void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
-        {
-        }
-
         protected void SendComponentChangePosition(string method, double position)
         {
-            if (_registered)
-            {
-                var change = new ComponentChange() { ID = JsonConvert.SerializeObject(new CustomResponseId() { ValueType = "position", Caller = _cName, Method = method, Position = position }), Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = method, Position = position } } } };
+            if (Component == null)
+                return;
 
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
-            }
+            var change = new ComponentChange()
+            {
+                ID =
+                    JsonConvert.SerializeObject(new CustomResponseId()
+                    {
+                        ValueType = "position",
+                        Caller = ComponentName,
+                        Method = method,
+                        Position = position
+                    }),
+                Params =
+                    new ComponentChangeParams()
+                    {
+                        Name = ComponentName,
+                        Controls =
+                            new List<ComponentSetValue>() {new ComponentSetValue() {Name = method, Position = position}}
+                    }
+            };
+
+            Component.Core.Enqueue(JsonConvert.SerializeObject(change, Formatting.None,
+                                                                               new JsonSerializerSettings
+                                                                               {
+                                                                                   NullValueHandling =
+                                                                                       NullValueHandling.Ignore
+                                                                               }));
         }
 
         protected void SendComponentChangeDoubleValue(string method, double value)
         {
-            if (_registered)
-            {
-                var change = new ComponentChange() { ID = JsonConvert.SerializeObject(new CustomResponseId() { ValueType = "value", Caller = _cName, Method = method, Value = value, StringValue = value.ToString() }), Params = new ComponentChangeParams() { Name = _cName, Controls = new List<ComponentSetValue>() { new ComponentSetValue() { Name = method, Value = value } } } };
+            if (Component == null)
+                return;
 
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
-            }
+            var change = new ComponentChange()
+            {
+                ID =
+                    JsonConvert.SerializeObject(new CustomResponseId()
+                    {
+                        ValueType = "value",
+                        Caller = ComponentName,
+                        Method = method,
+                        Value = value,
+                        StringValue = value.ToString()
+                    }),
+                Params =
+                    new ComponentChangeParams()
+                    {
+                        Name = ComponentName,
+                        Controls =
+                            new List<ComponentSetValue>() {new ComponentSetValue() {Name = method, Value = value}}
+                    }
+            };
+
+            Component.Core.Enqueue(JsonConvert.SerializeObject(change, Formatting.None,
+                                                                               new JsonSerializerSettings
+                                                                               {
+                                                                                   NullValueHandling =
+                                                                                       NullValueHandling.Ignore
+                                                                               }));
         }
 
         protected void SendComponentChangeStringValue(string method, string value)
         {
-            if (_registered)
-            {
-                var change = new ComponentChangeString() { ID = JsonConvert.SerializeObject(new CustomResponseId() { ValueType = "string_value", Caller = _cName, Method = method, StringValue = value }), Params = new ComponentChangeParamsString() { Name = _cName, Controls = new List<ComponentSetValueString>() { new ComponentSetValueString() { Name = method, Value = value } } } };
+            if (Component == null)
+                return;
 
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
-            }
+            var change = new ComponentChangeString()
+            {
+                ID =
+                    JsonConvert.SerializeObject(new CustomResponseId()
+                    {
+                        ValueType = "string_value",
+                        Caller = ComponentName,
+                        Method = method,
+                        StringValue = value
+                    }),
+                Params =
+                    new ComponentChangeParamsString()
+                    {
+                        Name = ComponentName,
+                        Controls =
+                            new List<ComponentSetValueString>()
+                            {
+                                new ComponentSetValueString() {Name = method, Value = value}
+                            }
+                    }
+            };
+
+            Component.Core.Enqueue(JsonConvert.SerializeObject(change, Formatting.None,
+                                                                               new JsonSerializerSettings
+                                                                               {
+                                                                                   NullValueHandling =
+                                                                                       NullValueHandling.Ignore
+                                                                               }));
         }
 
         /// <summary>
@@ -119,17 +224,7 @@ namespace QscQsys
             if (disposing)
             {
                 QsysCoreManager.CoreAdded -= QsysCoreManager_CoreAdded;
-                if (_registered)
-                {
-                    if (QsysCoreManager.Cores.ContainsKey(_coreId))
-                    {
-                        if (QsysCoreManager.Cores[_coreId].Components.ContainsKey(_component))
-                        {
-                            QsysCoreManager.Cores[_coreId].Components[_component].OnNewEvent -= Component_OnNewEvent;
-                        }
-                    }
-                    _registered = false;
-                }
+                Component = null;
             }
         }
     }

@@ -1,39 +1,86 @@
 ﻿using System;
-using System.Collections.Generic;
 using Crestron.SimplSharp;
+using QscQsys.Intermediaries;
 
 namespace QscQsys
 {
-    public class QsysNv32hDecoder : QsysComponent
+    public sealed class QsysNv32hDecoder : QsysComponent
     {
+        private const string CONTROL_NAME = "hdmi_out_0_select_index";
+
         public delegate void Nv32hDecoderInputChange(SimplSharpString cName, ushort input);
         public Nv32hDecoderInputChange newNv32hDecoderInputChange { get; set; }
 
+        private NamedComponentControl _inputControl;
+
+        public NamedComponentControl InputControl
+        {
+            get { return _inputControl; }
+            private set
+            {
+                if (_inputControl == value)
+                    return;
+
+                UnsubscribeInputControl(_inputControl);
+                _inputControl = value;
+                SubscribeInputControl(_inputControl);
+            }
+        }
+
         private int _currentSource;
 
-        public string ComponentName { get { return _cName; } }
         public int CurrentSource { get { return _currentSource; } }
 
         public void Initialize(string coreId, string componentName)
         {
-            var component = new Component(true) { Name = componentName, Controls = new List<ControlName>() { new ControlName() { Name = "hdmi_out_0_select_index" } } };
-            base.Initialize(coreId, component);
+            InternalInitialize(coreId, componentName);
         }
 
-        protected override void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
+        protected override void HandleComponentUpdated(NamedComponent component)
         {
-            _currentSource = Convert.ToInt16(e.Value);
+            base.HandleComponentUpdated(component);
 
-            if (newNv32hDecoderInputChange != null)
-                newNv32hDecoderInputChange(_cName, Convert.ToUInt16(_currentSource));
+            if (component == null)
+            {
+                InputControl = null;
+                return;
+            }
+
+            InputControl = component.LazyLoadComponentControl(CONTROL_NAME);
         }
 
         public void ChangeInput(int source)
         {
-            if (_registered)
-            {
-                SendComponentChangeDoubleValue("hdmi_out_0_select_index", source);
-            }
+            SendComponentChangeDoubleValue(CONTROL_NAME, source);
         }
+
+        #region Input Control Callbacks
+
+        private void SubscribeInputControl(NamedComponentControl inputControl)
+        {
+            if (inputControl == null)
+                return;
+
+            inputControl.OnFeedbackReceived += InputControlOnFeedbackReceived;
+        }
+
+        private void UnsubscribeInputControl(NamedComponentControl inputControl)
+        {
+            if (inputControl == null)
+                return;
+
+            inputControl.OnFeedbackReceived -= InputControlOnFeedbackReceived;
+        }
+
+        private void InputControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        {
+            _currentSource = Convert.ToInt16(args.Value);
+
+            var callback = newNv32hDecoderInputChange;
+            if (callback != null)
+                callback(ComponentName, Convert.ToUInt16(_currentSource));
+        }
+
+        #endregion
     }
 }

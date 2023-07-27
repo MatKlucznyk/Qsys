@@ -4,6 +4,7 @@ using System.Text;
 using Crestron.SimplSharp;
 using Newtonsoft.Json;
 using ExtensionMethods;
+using QscQsys.Intermediaries;
 
 namespace QscQsys
 {
@@ -22,10 +23,10 @@ namespace QscQsys
         public NamdControlListChange newNamedControlListChange { get; set; }
         public NamedControlListSelectedItem newNameControlListSelectedItemChange { get; set; }
 
-        private Control _control;
+        private NamedControl _control;
         private string _cName;
         private string _coreId;
-        private bool _registered;
+        private bool _isInitialized;
         private bool _isInteger;
         private bool _isList;
         private bool _disposed;
@@ -34,105 +35,110 @@ namespace QscQsys
         //public event EventHandler<QsysEventsArgs> QsysNamedControlEvent;
 
         public string ComponentName { get { return _cName; } }
-        public bool IsRegistered { get { return _registered; } }
+        public bool IsRegistered { get { return Control != null; } }
 
-        public void Initialize(string coreId, string Name, ushort type)
+        public NamedControl Control
         {
-            if (!_registered)
-            {  
-                _cName = Name;
-                this._coreId = coreId;
-                if (type == 1)
-                {
-                    _isInteger = true;
-                }
-                else if (type == 2)
-                {
-                    _isList = true;
-                }
-
-                QsysCoreManager.CoreAdded += new EventHandler<CoreAddedEventArgs>(QsysCoreManager_CoreAdded);
-                RegisterWithCore();
-            }
-        }
-
-        void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs e)
-        {
-            if (e.CoreId == _coreId)
+            get { return _control; }
+            private set
             {
-                RegisterWithCore();
+                if (_control == value)
+                    return;
+
+                Unsubscribe(_control);
+                _control = value;
+                Subscribe(_control);
             }
         }
 
-        private void RegisterWithCore()
+        public void Initialize(string coreId, string name, ushort type)
         {
-            if (!_registered)
+            if (_isInitialized)
+                return;
+            _isInitialized = true;
+            
+            _cName = name;
+            _coreId = coreId;
+            if (type == 1)
             {
-                if (QsysCoreManager.Cores.ContainsKey(_coreId))
-                {
-                    _control = new Control(true) { Name = _cName };
-
-                    if (QsysCoreManager.Cores[_coreId].RegisterControl(_control))
-                    {
-                        QsysCoreManager.Cores[_coreId].Controls[_control].OnNewEvent += new EventHandler<QsysInternalEventsArgs>(Control_OnNewEvent);
-
-                        _registered = true;
-                    }
-                }
+                _isInteger = true;
             }
+            else if (type == 2)
+            {
+                _isList = true;
+            }
+
+            QsysCoreManager.CoreAdded += QsysCoreManager_CoreAdded;
+            RegisterWithCore();
         }
 
-        //add event handling
-        private void Control_OnNewEvent(object o, QsysInternalEventsArgs e)
-        {
+        #region NamedControl Callbacks
 
+        private void Subscribe(NamedControl control)
+        {
+            if (control == null)
+                return;
+
+            control.OnFeedbackReceived += ControlOnFeedbackReceived;
+        }
+
+        private void Unsubscribe(NamedControl control)
+        {
+            if (control == null)
+                return;
+
+            control.OnFeedbackReceived -= ControlOnFeedbackReceived;
+        }
+
+        private void ControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        {
             if (!_isInteger && !_isList)
             {
                 //QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(e.Value), Convert.ToUInt16(e.Value), e.SValue, null));
 
                 if (newNamedControlStringChange != null)
-                    newNamedControlStringChange(_cName, e.SValue);
+                    newNamedControlStringChange(_cName, args.SValue);
             }
-            else if(_isInteger)
+            else if (_isInteger)
             {
                 //var uIntValue = (int)Math.Round(QsysCoreManager.ScaleUp(e.Position));
 
                 //QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(intValue), intValue, Convert.ToString(e.Position), null));
 
-                if (e.Type == "position")
+                if (args.Type == "position")
                 {
                     if (newNamedControlUIntChange != null)
                     {
-                        newNamedControlUIntChange(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
+                        newNamedControlUIntChange(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
                     }
                 }
-                else if (e.Type == "value")
+                else if (args.Type == "value")
                 {
                     if (newNamedControlIntChange != null)
                     {
-                        newNamedControlIntChange(_cName, (short)e.Value);
+                        newNamedControlIntChange(_cName, (short)args.Value);
                     }
                 }
-                else if (e.Type == "change")
+                else if (args.Type == "change")
                 {
                     if (newNamedControlUIntChange != null)
                     {
-                        newNamedControlUIntChange(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
+                        newNamedControlUIntChange(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
                     }
 
                     if (newNamedControlIntChange != null)
                     {
-                        newNamedControlIntChange(_cName, (short)e.Value);
+                        newNamedControlIntChange(_cName, (short)args.Value);
                     }
                 }
             }
             else if (_isList)
             {
-                _listData = e.Choices;
+                _listData = args.Choices;
 
                 if (newNameControlListSelectedItemChange != null)
                 {
-                    newNameControlListSelectedItemChange(Convert.ToUInt16(_listData.FindIndex(x => x == e.SValue) + 1), e.SValue);
+                    newNameControlListSelectedItemChange(Convert.ToUInt16(_listData.FindIndex(x => x == args.SValue) + 1), args.SValue);
                 }
 
                 if (newNamedControlListChange != null)
@@ -147,39 +153,64 @@ namespace QscQsys
             }
         }
 
+        #endregion
+
+        void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs e)
+        {
+            if (e.CoreId == _coreId)
+            {
+                RegisterWithCore();
+            }
+        }
+
+        private void RegisterWithCore()
+        {
+            if (Control != null)
+                return;
+
+            QsysCore core;
+            if (!QsysCoreManager.TryGetCore(_coreId, out core))
+            {
+                Control = null;
+                return;
+            }
+
+            Control = core.LazyLoadNamedControl(_cName);
+        }
+
         private void SendControlChangePosition(double value)
         {
-            if (_registered)
+            if (Control != null)
             {
                 var change = new ControlIntegerChange() { ID = JsonConvert.SerializeObject(new CustomResponseId() { ValueType = "position", Caller = _cName, Method = "Control.Set", Position = value }), Params = new ControlIntegerParams() { Name = _cName, Position = value } };
 
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                Control.Core.Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
         }
 
         private void SendControlChangeDoubleValue(double value)
         {
-            if (_registered)
+            if (Control != null)
             {
                 var change = new ControlIntegerChange() { ID = JsonConvert.SerializeObject(new CustomResponseId() { ValueType = "value", Caller = _cName, Method = "Control.Set", Value = value, StringValue = value.ToString() }), Params = new ControlIntegerParams() { Name = _cName, Value = value } };
 
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                Control.Core.Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
         }
 
         private void SendControlChangeStringValue(string value)
         {
-            if (_registered)
+            if (Control != null)
             {
                 var change = new ControlStringChange() { ID = JsonConvert.SerializeObject(new CustomResponseId() { ValueType = "string_value", Caller = _cName, Method = "Control.Set", StringValue = value }), Params = new ControlStringParams() { Name = _cName, Value = value } };
 
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                Control.Core.Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             }
         }
 
         public void SetUnsignedInteger(ushort value, ushort scaled)
         {
-            if (_registered)
+            if (Control != null)
             {
                 if (scaled == 1)
                 {
@@ -206,7 +237,7 @@ namespace QscQsys
 
         public void SetString(string value)
         {
-            if (_registered)
+            if (Control != null)
             {
                 //ControlStringChange str = new ControlStringChange() { Params = new ControlStringParams() { Name = _cName, Value = value } };
 
@@ -217,7 +248,7 @@ namespace QscQsys
 
         public void SetBoolean(int value)
         {
-            if (_registered)
+            if (Control != null)
             {
                 //ControlIntegerChange boolean = new ControlIntegerChange() { Params = new ControlIntegerParams() { Name = _cName, Value = value } };
 
@@ -229,7 +260,7 @@ namespace QscQsys
 
         public void SelectListItem(int index)
         {
-            if (_registered)
+            if (Control != null)
             {
                 if (_listData != null)
                 {
@@ -257,17 +288,7 @@ namespace QscQsys
             if (disposing)
             {
                 QsysCoreManager.CoreAdded -= QsysCoreManager_CoreAdded;
-                if (_registered)
-                {
-                    if (QsysCoreManager.Cores.ContainsKey(_coreId))
-                    {
-                        if (QsysCoreManager.Cores[_coreId].Controls.ContainsKey(_control))
-                        {
-                            QsysCoreManager.Cores[_coreId].Controls[_control].OnNewEvent -= Control_OnNewEvent;
-                        }
-                    }
-                    _registered = false;
-                }
+                Control = null;
             }
         }
     }

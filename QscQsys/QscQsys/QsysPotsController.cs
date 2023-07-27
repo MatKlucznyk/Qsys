@@ -5,11 +5,22 @@ using System.Text;
 using Crestron.SimplSharp;
 using Newtonsoft.Json;
 using ExtensionMethods;
+using QscQsys.Intermediaries;
 
 namespace QscQsys
 {
     public class QsysPotsController : QsysComponent
     {
+        private const string CONTROL_CALL_OFFHOOK = "call_offhook";
+        private const string CONTROL_CALL_RINGING = "call_ringing";
+        private const string CONTROL_CALL_AUTOANSWER = "call_autoanswer";
+        private const string CONTROL_CALL_DND = "call_dnd";
+        private const string CONTROL_CALL_STATUS = "call_status";
+        private const string CONTROL_RECENT_CALLS = "recent_calls";
+        private const string CONTROL_CALL_NUMBER = "call_number";
+        private const string CONTROL_CALL_CONNECT = "call_connect";
+        private const string CONTROL_CALL_DISCONNECT = "call_disconnect";
+
         public delegate void OffHookEvent(SimplSharpString cName, ushort value);
         public delegate void RingingEvent(SimplSharpString cName, ushort value);
         public delegate void DialingEvent(SimplSharpString cName, ushort value);
@@ -39,11 +50,11 @@ namespace QscQsys
         private bool _incomingCall;
         private bool _autoAnswer;
         private bool _dnd;
-        private StringBuilder _dialString = new StringBuilder();
+        private readonly StringBuilder _dialString;
         private string _currentlyCalling;
         private string _lastCalled;
         private string _callStatus;
-        private List<ListBoxChoice> _recentCalls = new List<ListBoxChoice>();
+        private readonly List<ListBoxChoice> _recentCalls;
 
         public bool IsOffhook { get { return _hookState; } }
         public bool IsRinging { get { return _ringingState; } }
@@ -57,106 +68,120 @@ namespace QscQsys
         public string CallStatus { get { return _callStatus; } }
         public List<ListBoxChoice> RecentCalls { get { return _recentCalls; } }
 
-        public void Initialize(string coreId, string componentName)
+        public QsysPotsController()
         {
-            var component = new Component(true)
-            {
-                Name = componentName,
-                Controls = new List<ControlName>(){new ControlName(){Name = "call_offhook"},
-                new ControlName(){Name = "call_ringing"}, 
-                new ControlName(){Name = "call_autoanswer"}, 
-                new ControlName(){Name = "call_dnd"}, 
-                new ControlName(){Name = "call_status"},
-                new ControlName(){Name = "recent_calls"}}
-            };
-            base.Initialize(coreId, component);
+            _dialString = new StringBuilder();
+            _recentCalls = new List<ListBoxChoice>();
         }
 
-        protected override void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
+        public void Initialize(string coreId, string componentName)
         {
-            switch (e.Name)
+            InternalInitialize(coreId, componentName);
+        }
+
+        protected override void HandleComponentUpdated(NamedComponent component)
+        {
+            base.HandleComponentUpdated(component);
+
+            if (component == null)
+                return;
+
+            AddControl(CONTROL_CALL_OFFHOOK);
+            AddControl(CONTROL_CALL_RINGING);
+            AddControl(CONTROL_CALL_AUTOANSWER);
+            AddControl(CONTROL_CALL_DND);
+            AddControl(CONTROL_CALL_STATUS);
+            AddControl(CONTROL_RECENT_CALLS);
+
+        }
+
+        protected override void ComponentOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        {
+            base.ComponentOnFeedbackReceived(sender, args);
+
+            switch (args.Name)
             {
-                case "call_offhook":
-                    if (e.Value == 1)
+                case CONTROL_CALL_OFFHOOK:
+                    if (Math.Abs(args.Value - 1) < QsysCore.TOLERANCE)
                     {
                         _hookState = true;
 
                         if (onOffHookEvent != null)
-                            onOffHookEvent(_cName, 1);
+                            onOffHookEvent(ComponentName, 1);
 
                         if (onCurrentlyCallingEvent != null)
-                            onCurrentlyCallingEvent(_cName, _currentlyCalling);
+                            onCurrentlyCallingEvent(ComponentName, _currentlyCalling);
                     }
-                    else if (e.Value == 0)
+                    else if (Math.Abs(args.Value) < QsysCore.TOLERANCE)
                     {
                         _hookState = false;
                         _dialString.Remove(0, _dialString.Length);
 
                         if (onOffHookEvent != null)
-                            onOffHookEvent(_cName, 0);
+                            onOffHookEvent(ComponentName, 0);
 
 
                         _lastCalled = _currentlyCalling;
                         _currentlyCalling = string.Empty;
- 
+
                         if (onCurrentlyCallingEvent != null)
-                            onCurrentlyCallingEvent(_cName, _currentlyCalling);
+                            onCurrentlyCallingEvent(ComponentName, _currentlyCalling);
 
                         if (onDialStringEvent != null)
-                            onDialStringEvent(_cName, _dialString.ToString());
+                            onDialStringEvent(ComponentName, _dialString.ToString());
                     }
                     break;
-                case "call_ringing":
-                    if (e.Value == 1)
+                case CONTROL_CALL_RINGING:
+                    if (Math.Abs(args.Value - 1) < QsysCore.TOLERANCE)
                     {
                         _ringingState = true;
 
                         if (onRingingEvent != null)
-                            onRingingEvent(_cName, 1);
+                            onRingingEvent(ComponentName, 1);
                     }
-                    else if (e.Value == 0)
+                    else if (Math.Abs(args.Value) < QsysCore.TOLERANCE)
                     {
                         _ringingState = false;
 
                         if (onRingingEvent != null)
-                            onRingingEvent(_cName, 0);
+                            onRingingEvent(ComponentName, 0);
                     }
                     break;
-                case "call_autoanswer":
-                    _autoAnswer = Convert.ToBoolean(e.Value);
+                case CONTROL_CALL_AUTOANSWER:
+                    _autoAnswer = Convert.ToBoolean(args.Value);
 
                     if (onAutoAnswerEvent != null)
-                        onAutoAnswerEvent(_cName, Convert.ToUInt16(e.Value));
-                    
-                    break;
-                case "call_dnd":
-                    _dnd = Convert.ToBoolean(e.Value);
-
-                    if(onDndEvent != null)
-                        onDndEvent(_cName, Convert.ToUInt16(e.Value));
+                        onAutoAnswerEvent(ComponentName, Convert.ToUInt16(args.Value));
 
                     break;
-                case "call_status":
-                    if (e.SValue.Length > 0)
+                case CONTROL_CALL_DND:
+                    _dnd = Convert.ToBoolean(args.Value);
+
+                    if (onDndEvent != null)
+                        onDndEvent(ComponentName, Convert.ToUInt16(args.Value));
+
+                    break;
+                case CONTROL_CALL_STATUS:
+                    if (args.SValue.Length > 0)
                     {
-                        _callStatus = e.SValue;
+                        _callStatus = args.SValue;
 
                         if (onCurrentCallStatusChange != null)
-                            onCurrentCallStatusChange(_cName, e.SValue);
+                            onCurrentCallStatusChange(ComponentName, args.SValue);
 
                         if (_callStatus.Contains("Dialing") && _dialingState == false)
                         {
                             _dialingState = true;
 
                             if (onDialingEvent != null)
-                                onDialingEvent(_cName, 1);
+                                onDialingEvent(ComponentName, 1);
                         }
-                        else if (_dialingState == true)
+                        else if (_dialingState)
                         {
                             _dialingState = false;
 
                             if (onDialingEvent != null)
-                                onDialingEvent(_cName, 0);
+                                onDialingEvent(ComponentName, 0);
                         }
 
                         if (_callStatus.Contains("Incoming Call"))
@@ -164,20 +189,20 @@ namespace QscQsys
                             _incomingCall = true;
 
                             if (onIncomingCallEvent != null)
-                                onIncomingCallEvent(_cName, 1);
+                                onIncomingCallEvent(ComponentName, 1);
                         }
-                        else if (_incomingCall == true)
+                        else if (_incomingCall)
                         {
                             _incomingCall = false;
 
                             if (onIncomingCallEvent != null)
-                                onIncomingCallEvent(_cName, 0);
+                                onIncomingCallEvent(ComponentName, 0);
                         }
                     }
                     break;
-                case "recent_calls":
+                case CONTROL_RECENT_CALLS:
                     _recentCalls.Clear();
-                    foreach (var choice in e.Choices)
+                    foreach (var choice in args.Choices)
                     {
                         var newChoice = JsonConvert.DeserializeObject<ListBoxChoice>(choice);
                         _recentCalls.Add(newChoice);
@@ -185,7 +210,7 @@ namespace QscQsys
 
                     if (onRecentCallsEvent != null)
                     {
-                        List<string> calls = new List<string>(){string.Empty, string.Empty, string.Empty, string.Empty, string.Empty};
+                        List<string> calls = new List<string> { string.Empty, string.Empty, string.Empty, string.Empty, string.Empty };
 
                         for (int i = 0; i <= 4; i++)
                         {
@@ -198,7 +223,7 @@ namespace QscQsys
                                 break;
                             }
                         }
-                        onRecentCallsEvent(_cName, calls[0], calls[1], calls[2], calls[3], calls[4]);
+                        onRecentCallsEvent(ComponentName, calls[0], calls[1], calls[2], calls[3], calls[4]);
                     }
                     if (onRecentCallListEvent != null)
                     {
@@ -206,173 +231,168 @@ namespace QscQsys
 
                         foreach (var call in calls)
                         {
-                            
+
                             var encodedBytes = XSig.GetBytes(calls.IndexOf(call), call);
-                            onRecentCallListEvent(_cName, Encoding.GetEncoding(28591).GetString(encodedBytes, 0, encodedBytes.Length));
+                            onRecentCallListEvent(ComponentName, Encoding.GetEncoding(28591).GetString(encodedBytes, 0, encodedBytes.Length));
                         }
                     }
 
-                    break;
-                default:
                     break;
             }
         }
 
         public void NumPad(string number)
         {
-            if (_registered)
-            {
-                _dialString.Append(number);
+            if (Component == null)
+                return;
 
-                if (_hookState)
-                {
-                    SendComponentChangeDoubleValue(string.Format("call_pinpad_{0}", number), 1);
-                }
+            _dialString.Append(number);
 
-                if (onDialingEvent != null)
-                    onDialStringEvent(_cName, _dialString.ToString());
-            }
+            if (_hookState)
+                SendComponentChangeDoubleValue(string.Format("call_pinpad_{0}", number), 1);
+
+            if (onDialingEvent != null)
+                onDialStringEvent(ComponentName, _dialString.ToString());
         }
 
         public void NumString(string number)
         {
-            if (_registered)
-            {
-                if (!_hookState)
-                {
-                    _dialString.Append(number);
+            if (Component == null)
+                return;
 
-                    if (onDialingEvent != null)
-                        onDialStringEvent(_cName, _dialString.ToString());
-                }
-            }
+            if (_hookState)
+                return;
+
+            _dialString.Append(number);
+
+            if (onDialingEvent != null)
+                onDialStringEvent(ComponentName, _dialString.ToString());
         }
 
         public void NumPadDelete()
         {
-            if (_registered)
-            {
-                if (_dialString.Length > 0)
-                {
-                    _dialString.Remove(_dialString.Length - 1, 1);
+            if (Component == null)
+                return;
 
-                    if (onDialingEvent != null)
-                        onDialStringEvent(_cName, _dialString.ToString());
-                }
-            }
+            if (_dialString.Length == 0)
+                return;
+
+            _dialString.Remove(_dialString.Length - 1, 1);
+
+            if (onDialingEvent != null)
+                onDialStringEvent(ComponentName, _dialString.ToString());
         }
 
         public void NumPadClear()
         {
-            if (_registered)
-            {
-                if (_dialString.Length > 0)
-                {
-                    _dialString.Remove(0, _dialString.Length);
+            if (Component == null)
+                return;
 
-                    if (onDialingEvent != null)
-                        onDialStringEvent(_cName, _dialString.ToString());
-                }
-            }
+            if (_dialString.Length == 0)
+                return;
+
+            _dialString.Remove(0, _dialString.Length);
+
+            if (onDialingEvent != null)
+                onDialStringEvent(ComponentName, _dialString.ToString());
         }
 
         public void Dial()
         {
-            if (_registered)
-            {
-                _currentlyCalling = _dialString.ToString();
-                _dialString.Remove(0, _dialString.Length);;
+            if (Component == null)
+                return;
 
-                DialNow();
-            }
+            _currentlyCalling = _dialString.ToString();
+            _dialString.Remove(0, _dialString.Length);
+
+            DialNow();
         }
 
         public void Dial(string number)
         {
-            if (_registered)
-            {
-                _currentlyCalling = _dialString.ToString() + number;
-                _dialString.Remove(0, _dialString.Length);
+            if (Component == null)
+                return;
 
-                DialNow();
-            }
+            _currentlyCalling = _dialString.ToString() + number;
+            _dialString.Remove(0, _dialString.Length);
+
+            DialNow();
         }
 
         private void DialNow()
         {
-            if (_registered)
-            {
-                if (onDialingEvent != null)
-                    onDialStringEvent(_cName, string.Empty);
+            if (Component == null)
+                return;
 
-                SendComponentChangeStringValue("call_number", _currentlyCalling);
+            if (onDialingEvent != null)
+                onDialStringEvent(ComponentName, string.Empty);
 
-                Connect();
-            }
+            SendComponentChangeStringValue(CONTROL_CALL_NUMBER, _currentlyCalling);
+
+            Connect();
         }
 
         public void Connect()
         {
-            if (_registered)
-            {
-                SendComponentChangeDoubleValue("call_connect", 1);
-            }
+            if (Component == null)
+                return;
+            
+            SendComponentChangeDoubleValue(CONTROL_CALL_CONNECT, 1);
         }
 
         public void Disconnect()
         {
-            if (_registered)
-            {
-                SendComponentChangeDoubleValue("call_disconnect", 1);
-            }
+            if (Component == null)
+                return;
+
+            SendComponentChangeDoubleValue(CONTROL_CALL_DISCONNECT, 1);
         }
 
         public void Redial()
         {
-            if (_registered)
-            {
-                _dialString = new StringBuilder();
-                _dialString.Append(_lastCalled);
-                Dial();
-            }
+            if (Component == null)
+                return;
+
+            _dialString.Remove(0, _dialString.Length);
+            _dialString.Append(_lastCalled);
+            Dial();
         }
 
         public void AutoAnswerToggle()
         {
-            if (_registered)
-            {
-                SendComponentChangeDoubleValue("call_autoanswer", Convert.ToDouble(!_autoAnswer));
-            }
+            if (Component == null)
+                return;
+            
+            SendComponentChangeDoubleValue(CONTROL_CALL_AUTOANSWER, Convert.ToDouble(!_autoAnswer));
         }
 
         public void DndToggle()
         {
-            if (_registered)
-            {
-                SendComponentChangeDoubleValue("call_dnd", Convert.ToDouble(!_dnd));
-            }
+            if (Component == null)
+                return;
+            
+            SendComponentChangeDoubleValue(CONTROL_CALL_DND, Convert.ToDouble(!_dnd));
         }
 
         public void SelectRecentCall(int index)
         {
-            if (_registered)
-            {
-                if (_recentCalls.Count >= index)
-                {
-                    _dialString.Remove(0, _dialString.Length);
+            if (Component == null)
+                return;
 
-                    var call = _recentCalls[index - 1].Text;
+            if (_recentCalls.Count < index)
+                return;
 
-                    if (call.Contains(' '))
-                    {
-                        call = call.Remove(call.IndexOf(' '), call.Length - call.IndexOf(' '));
-                    }
-                    _dialString.Append(call);
+            _dialString.Remove(0, _dialString.Length);
 
-                    if (onDialStringEvent != null)
-                        onDialStringEvent(_cName, call);
-                }
-            }
+            var call = _recentCalls[index - 1].Text;
+
+            if (call.Contains(' '))
+                call = call.Remove(call.IndexOf(' '), call.Length - call.IndexOf(' '));
+
+            _dialString.Append(call);
+
+            if (onDialStringEvent != null)
+                onDialStringEvent(ComponentName, call);
         }
     }
 }

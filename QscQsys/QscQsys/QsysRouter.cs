@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using Crestron.SimplSharp;
+using QscQsys.Intermediaries;
+using QscQsys.Utils;
 
 namespace QscQsys
 {
-    public class QsysRouter : QsysComponent
+    public sealed class QsysRouter : QsysComponent
     {
         public delegate void RouterInputChange(SimplSharpString cName, ushort input);
         public delegate void MuteChange(SimplSharpString cName, ushort value);
@@ -15,61 +16,71 @@ namespace QscQsys
         private int _currentSelectedInput;
         private bool _currentMute;
 
+        private NamedComponentControl _inputControl;
+        private NamedComponentControl _muteControl;
+
         public int CurrentSelectedInput { get { return _currentSelectedInput; } }
         public int Output { get { return _output; } }
-        public bool CurrentMute {get { return _currentMute; }}
+        public bool CurrentMute {get { return _currentMute; } }
+
+        public NamedComponentControl InputControl
+        {
+            get { return _inputControl; }
+            private set
+            {
+                if (_inputControl == value)
+                    return;
+
+                UnsubscribeInputControl(_inputControl);
+                _inputControl = value;
+                SubscribeInputControl(_inputControl);
+            }
+        }
+
+        public NamedComponentControl MuteControl
+        {
+            get { return _muteControl; }
+            private set
+            {
+                if (_muteControl == value)
+                    return;
+
+                UnsubscribeMuteControl(_muteControl);
+                _muteControl = value;
+                SubscribeMuteControl(_muteControl);
+            }
+        }
 
         public void Initialize(string coreId, string componentName, int output)
         {
             _output = output;
 
-            var component = new Component(true)
-            {
-                Name = componentName,
-                Controls = new List<ControlName>() { new ControlName() { Name = string.Format("select_{0}", output)}, new ControlName() { Name = string.Format("mute_{0}", output)} }
-            };
-
-            base.Initialize(coreId, component);
+            InternalInitialize(coreId, componentName);
         }
 
-        protected override void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
+        protected override void HandleComponentUpdated(NamedComponent component)
         {
-            if (e.Name == string.Format("select_{0}", _output))
-            {
-                _currentSelectedInput = Convert.ToInt16(e.Value);
+            base.HandleComponentUpdated(component);
 
-                if (newRouterInputChange != null)
-                    newRouterInputChange(_cName, Convert.ToUInt16(e.Value));
-            }
-            else if (e.Name == string.Format("mute_{0}", _output))
+            if (component == null)
             {
-                if (e.Value == 1)
-                {
-                    _currentMute = true;
-                } else if (e.Value == 0)
-                {
-                    _currentMute = false;
-                }
-
-                if (newOutputMuteChange != null)
-                    newOutputMuteChange(_cName, (ushort)e.Value);
+                InputControl = null;
+                MuteControl = null;
+                return;
             }
+
+            InputControl = component.LazyLoadComponentControl(ControlNameUtils.GetRouterSelectName(_output));
+            MuteControl = component.LazyLoadComponentControl(ControlNameUtils.GetRouterMuteName(_output));
         }
 
         public void InputSelect(int input)
         {
-            if (_registered)
-            {
-                SendComponentChangeDoubleValue(string.Format("select_{0}", _output), input);
-            }
+            SendComponentChangeDoubleValue(ControlNameUtils.GetRouterSelectName(_output), input);
         }
 
         public void OutputMute(bool value)
         {
-            if (_registered)
-            {
-                SendComponentChangeDoubleValue(string.Format("mute_{0}", _output), Convert.ToDouble(value));
-            }
+            SendComponentChangeDoubleValue(ControlNameUtils.GetRouterMuteName(_output), Convert.ToDouble(value));
         }
 
         /// <summary>
@@ -80,5 +91,63 @@ namespace QscQsys
         {
             OutputMute(Convert.ToBoolean(value));
         }
+
+        #region Input Control Callbacks
+
+        private void SubscribeInputControl(NamedComponentControl inputControl)
+        {
+            if (inputControl == null)
+                return;
+
+            inputControl.OnFeedbackReceived += InputControlOnFeedbackReceived;
+        }
+
+        private void UnsubscribeInputControl(NamedComponentControl inputControl)
+        {
+            if (inputControl == null)
+                return;
+
+            inputControl.OnFeedbackReceived -= InputControlOnFeedbackReceived;
+        }
+
+        private void InputControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        {
+            _currentSelectedInput = Convert.ToInt16(args.Value);
+
+            var callback = newRouterInputChange;
+            if (callback != null)
+                callback(ComponentName, Convert.ToUInt16(_currentSelectedInput));
+        }
+
+        #endregion
+
+        #region Mute Control Callbacks
+
+        private void SubscribeMuteControl(NamedComponentControl muteControl)
+        {
+            if (muteControl == null)
+                return;
+
+            muteControl.OnFeedbackReceived += MuteControlOnFeedbackReceived;
+        }
+
+        private void UnsubscribeMuteControl(NamedComponentControl muteControl)
+        {
+            if (muteControl == null)
+                return;
+
+            muteControl.OnFeedbackReceived -= MuteControlOnFeedbackReceived;
+        }
+
+        private void MuteControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        {
+            _currentMute = Math.Abs(args.Value) > QsysCore.TOLERANCE;
+
+            var callback = newOutputMuteChange;
+            if (callback != null)
+                callback(ComponentName, Convert.ToUInt16(_currentMute));
+        }
+
+        #endregion
     }
 }

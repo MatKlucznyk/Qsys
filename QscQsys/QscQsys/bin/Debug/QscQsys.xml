@@ -14,11 +14,12 @@
             Used only for internal methods.
             </summary>
         </member>
-        <member name="M:QscQsys.QsysComponent.Initialize(System.String,QscQsys.Component)">
+        <member name="M:QscQsys.QsysComponent.InternalInitialize(System.String,System.String)">
             <summary>
-            Default constructor for a QsysComponent
+            Initialize to be called from concrete's initialize method
             </summary>
-            <param name="Name">The component name of the gain.</param>
+            <param name="coreId"></param>
+            <param name="componentName"></param>
         </member>
         <member name="M:QscQsys.QsysComponent.Dispose">
             <summary>
@@ -153,6 +154,16 @@
         <member name="P:QscQsys.QsysCore.Host">
             <summary>
             Get or set the network host address. If currently connectd, changing the host will reconnect with the new host address.
+            </summary>
+        </member>
+        <member name="T:QscQsys.Intermediaries.NamedComponent">
+            <summary>
+            Acts as an intermediary between the QSys Core and the QsysNamedControls
+            </summary>
+        </member>
+        <member name="T:QscQsys.Intermediaries.NamedControl">
+            <summary>
+            Acts as an intermediary between the QSys Core and the QsysNamedControls
             </summary>
         </member>
     </members>

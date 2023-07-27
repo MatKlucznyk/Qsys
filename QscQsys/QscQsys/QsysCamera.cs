@@ -1,26 +1,41 @@
 ﻿using System;
-using System.Collections.Generic;
 using Crestron.SimplSharp;
+using QscQsys.Intermediaries;
 
 namespace QscQsys
 {
-    public class QsysCamera : QsysComponent
+    public sealed class QsysCamera : QsysComponent
     {
-        public delegate void PrivacyChange(SimplSharpString _cName, ushort privacyValue);
-        public delegate void BrightnessChange(SimplSharpString _cName, ushort brightnessValue);
-        public delegate void SaturationChange(SimplSharpString _cName, ushort saturationValue);
-        public delegate void SharpnessChange(SimplSharpString _cName, ushort sharpnessValue);
-        public delegate void ContrastChange(SimplSharpString _cName, ushort contrastValue);
-        public delegate void ExposureModeChange(SimplSharpString _cName, SimplSharpString mode);
-        public delegate void IrisChange(SimplSharpString _cName, SimplSharpString irisValue);
-        public delegate void ShutterChange(SimplSharpString _cName, SimplSharpString apertureValue);
-        public delegate void GainChange(SimplSharpString _cName, ushort gainValue);
-        public delegate void AutoWhiteBalanceSensitivityChange(SimplSharpString _cName, SimplSharpString awbSens);
-        public delegate void AutoWhiteBalanceModeChange(SimplSharpString _cName, SimplSharpString awbMode);
-        public delegate void WhiteBalanceHueChange(SimplSharpString _cName, ushort hueValue);
-        public delegate void WhiteBalanceRedGainChange(SimplSharpString _cName, ushort redGainValue);
-        public delegate void WhiteBalanceBlueGainChange(SimplSharpString _cName, ushort blueGainValue);
-        public delegate void AutoFocusChange(SimplSharpString _cName, ushort value);
+        public delegate void PrivacyChange(SimplSharpString componentName, ushort privacyValue);
+
+        public delegate void BrightnessChange(SimplSharpString componentName, ushort brightnessValue);
+
+        public delegate void SaturationChange(SimplSharpString componentName, ushort saturationValue);
+
+        public delegate void SharpnessChange(SimplSharpString componentName, ushort sharpnessValue);
+
+        public delegate void ContrastChange(SimplSharpString componentName, ushort contrastValue);
+
+        public delegate void ExposureModeChange(SimplSharpString componentName, SimplSharpString mode);
+
+        public delegate void IrisChange(SimplSharpString componentName, SimplSharpString irisValue);
+
+        public delegate void ShutterChange(SimplSharpString componentName, SimplSharpString apertureValue);
+
+        public delegate void GainChange(SimplSharpString componentName, ushort gainValue);
+
+        public delegate void AutoWhiteBalanceSensitivityChange(SimplSharpString componentName, SimplSharpString awbSens);
+
+        public delegate void AutoWhiteBalanceModeChange(SimplSharpString componentName, SimplSharpString awbMode);
+
+        public delegate void WhiteBalanceHueChange(SimplSharpString componentName, ushort hueValue);
+
+        public delegate void WhiteBalanceRedGainChange(SimplSharpString componentName, ushort redGainValue);
+
+        public delegate void WhiteBalanceBlueGainChange(SimplSharpString componentName, ushort blueGainValue);
+
+        public delegate void AutoFocusChange(SimplSharpString componentName, ushort value);
+
         public PrivacyChange onPrivacyChange { get; set; }
         public BrightnessChange onBrightnessChange { get; set; }
         public SaturationChange onSaturationChange { get; set; }
@@ -36,6 +51,23 @@ namespace QscQsys
         public WhiteBalanceRedGainChange onWhiteBalanceRedGainChange { get; set; }
         public WhiteBalanceBlueGainChange onWhiteBalanceBlueGainChange { get; set; }
         public AutoFocusChange onAutoFocusChange { get; set; }
+
+
+        private const string CONTROL_TOGGLE_PRIVACY = "toggle_privacy";
+        private const string CONTROL_IMAGE_BRIGHTNESS = "img_brightness";
+        private const string CONTROL_IMAGE_SATURATION = "img_saturation";
+        private const string CONTROL_IMAGE_SHARPNESS = "img_sharpness";
+        private const string CONTROL_IMAGE_CONTRAST = "img_contrast";
+        private const string CONTROL_EXPOSURE_MODE = "exp_mode";
+        private const string CONTROL_EXPOSURE_IRIS = "exp_iris";
+        private const string CONTROL_EXPOSURE_SHUTTER = "exp_shutter";
+        private const string CONTROL_EXPOSURE_GAIN = "exp_gain";
+        private const string CONTROL_WHITEBALANCE_AUTO_SENSITIVITY = "wb_awb_sensitivity";
+        private const string CONTROL_WHITEBALANCE_AUTO_MODE = "wb_awb_mode";
+        private const string CONTROL_WHITEBALANCE_HUE = "wb_hue";
+        private const string CONTROL_WHITEBALANCE_GAIN_RED = "wb_red_gain";
+        private const string CONTROL_WHITEBALANCE_GAIN_BLUE = "wb_blue_gain";
+        private const string CONTROL_FOCUS_AUTO = "focus_auto";
 
         private bool _currentPrivacy;
         private ushort _currentBri;
@@ -71,237 +103,226 @@ namespace QscQsys
 
         public void Initialize(string coreId, string componentName)
         {
-            var component = new Component(true)
-            {
-                Name = componentName,
-                Controls = new List<ControlName>() 
-                    { 
-                        new ControlName() { Name = "toggle_privacy" }, 
-                        new ControlName() { Name = "img_brightness" },
-                        new ControlName() { Name = "img_saturation" },
-                        new ControlName() { Name = "img_sharpness" },
-                        new ControlName() { Name = "img_contrast" },
-                        new ControlName() { Name = "exp_mode" },
-                        new ControlName() { Name = "exp_iris" },
-                        new ControlName() { Name = "exp_shutter" },
-                        new ControlName() { Name = "exp_gain" },
-                        new ControlName() { Name = "wb_awb_sensitivity" },
-                        new ControlName() { Name = "wb_awb_mode" },
-                        new ControlName() { Name = "wb_hue" },
-                        new ControlName() { Name = "wb_red_gain" },
-                        new ControlName() { Name = "wb_blue_gain" },
-                        new ControlName() { Name = "focus_auto" }
-
-                    }
-            };
-
-            base.Initialize(coreId, component);
+            InternalInitialize(coreId, componentName);
         }
 
-        protected override void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
+        protected override void HandleComponentUpdated(NamedComponent component)
         {
-            if (e.Name == "toggle_privacy")
-            {
-                _currentPrivacy = Convert.ToBoolean(e.Value);
+            base.HandleComponentUpdated(component);
 
-                if (onPrivacyChange != null)
-                    onPrivacyChange(_cName, Convert.ToUInt16(e.Value));
-            }
-            else if (e.Name == "img_brightness")
+            if (component == null)
+                return;
+
+            component.LazyLoadComponentControl(CONTROL_TOGGLE_PRIVACY);
+            component.LazyLoadComponentControl(CONTROL_IMAGE_BRIGHTNESS);
+            component.LazyLoadComponentControl(CONTROL_IMAGE_SATURATION);
+            component.LazyLoadComponentControl(CONTROL_IMAGE_SHARPNESS);
+            component.LazyLoadComponentControl(CONTROL_IMAGE_CONTRAST);
+            component.LazyLoadComponentControl(CONTROL_EXPOSURE_MODE);
+            component.LazyLoadComponentControl(CONTROL_EXPOSURE_IRIS);
+            component.LazyLoadComponentControl(CONTROL_EXPOSURE_SHUTTER);
+            component.LazyLoadComponentControl(CONTROL_EXPOSURE_GAIN);
+            component.LazyLoadComponentControl(CONTROL_WHITEBALANCE_AUTO_SENSITIVITY);
+            component.LazyLoadComponentControl(CONTROL_WHITEBALANCE_AUTO_MODE);
+            component.LazyLoadComponentControl(CONTROL_WHITEBALANCE_HUE);
+            component.LazyLoadComponentControl(CONTROL_WHITEBALANCE_GAIN_RED);
+            component.LazyLoadComponentControl(CONTROL_WHITEBALANCE_GAIN_BLUE);
+            component.LazyLoadComponentControl(CONTROL_FOCUS_AUTO);
+        }
+
+        protected override void ComponentOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        {
+            base.ComponentOnFeedbackReceived(sender, args);
+
+            switch (args.Name)
             {
-                if (onBrightnessChange != null)
-                {
-                    onBrightnessChange(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
-                }
-            }
-            else if (e.Name == "img_saturation")
-            {
-                if (onSaturationChange != null)
-                {
-                    onSaturationChange(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
-                }
-            }
-            else if (e.Name == "img_sharpness")
-            {
-                if (onSharpnessChange != null)
-                {
-                    onSharpnessChange(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
-                }
-            }
-            else if (e.Name == "img_contrast")
-            {
-                if (onContrastChange != null)
-                {
-                    onContrastChange(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
-                }
-            }
-            else if (e.Name == "exp_mode")
-            {
-                if (onExposureModeChange != null)
-                {
-                    onExposureModeChange(_cName, e.SValue);
-                }
-            }
-            else if (e.Name == "exp_iris")
-            {
-                if (onIrisChange != null)
-                {
-                    onIrisChange(_cName, e.SValue);
-                }
-            }
-            else if (e.Name == "exp_shutter")
-            {
-                if (onShutterChange != null)
-                {
-                    onShutterChange(_cName, e.SValue);
-                }
-            }
-            else if (e.Name == "exp_gain")
-            {
-                if (onGainChange != null)
-                {
-                    onGainChange(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
-                }
-            }
-            else if (e.Name == "wb_awb_sensitivity")
-            {
-                if (onAutoWhiteBalanceSensitivityChange != null)
-                {
-                    onAutoWhiteBalanceSensitivityChange(_cName, e.SValue);
-                }
-            }
-            else if (e.Name == "wb_awb_mode")
-            {
-                if (onAutoWhiteBalanceModeChange != null)
-                {
-                    onAutoWhiteBalanceModeChange(_cName, e.SValue);
-                }
-            }
-            else if (e.Name == "wb_hue")
-            {
-                if (onWhiteBalanceHueChange != null)
-                {
-                    onWhiteBalanceHueChange(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
-                }
-            }
-            else if (e.Name == "wb_red_gain")
-            {
-                if (onWhiteBalanceRedGainChange != null)
-                {
-                    onWhiteBalanceRedGainChange(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
-                }
-            }
-            else if (e.Name == "wb_blue_gain")
-            {
-                if (onWhiteBalanceBlueGainChange != null)
-                {
-                    onWhiteBalanceBlueGainChange(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(e.Position)));
-                }
-            }
-            else if (e.Name == "focus_auto")
-            {
-                if (onAutoFocusChange != null)
-                {
-                    onAutoFocusChange(_cName, (ushort)e.Value);
-                }
+                case CONTROL_TOGGLE_PRIVACY:
+                    _currentPrivacy = Convert.ToBoolean(args.Value);
+
+                    if (onPrivacyChange != null)
+                        onPrivacyChange(ComponentName, Convert.ToUInt16(args.Value));
+                    break;
+                case CONTROL_IMAGE_BRIGHTNESS:
+                    if (onBrightnessChange != null)
+                    {
+                        onBrightnessChange(ComponentName, (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
+                    }
+                    break;
+                case CONTROL_IMAGE_SATURATION:
+                    if (onSaturationChange != null)
+                    {
+                        onSaturationChange(ComponentName, (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
+                    }
+                    break;
+                case CONTROL_IMAGE_SHARPNESS:
+                    if (onSharpnessChange != null)
+                    {
+                        onSharpnessChange(ComponentName, (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
+                    }
+                    break;
+                case CONTROL_IMAGE_CONTRAST:
+                    if (onContrastChange != null)
+                    {
+                        onContrastChange(ComponentName, (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
+                    }
+                    break;
+                case CONTROL_EXPOSURE_MODE:
+                    if (onExposureModeChange != null)
+                    {
+                        onExposureModeChange(ComponentName, args.SValue);
+                    }
+                    break;
+                case CONTROL_EXPOSURE_IRIS:
+                    if (onIrisChange != null)
+                    {
+                        onIrisChange(ComponentName, args.SValue);
+                    }
+                    break;
+                case CONTROL_EXPOSURE_SHUTTER:
+                    if (onShutterChange != null)
+                    {
+                        onShutterChange(ComponentName, args.SValue);
+                    }
+                    break;
+                case CONTROL_EXPOSURE_GAIN:
+                    if (onGainChange != null)
+                    {
+                        onGainChange(ComponentName, (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
+                    }
+                    break;
+                case CONTROL_WHITEBALANCE_AUTO_SENSITIVITY:
+                    if (onAutoWhiteBalanceSensitivityChange != null)
+                    {
+                        onAutoWhiteBalanceSensitivityChange(ComponentName, args.SValue);
+                    }
+                    break;
+                case CONTROL_WHITEBALANCE_AUTO_MODE:
+                    if (onAutoWhiteBalanceModeChange != null)
+                    {
+                        onAutoWhiteBalanceModeChange(ComponentName, args.SValue);
+                    }
+                    break;
+                case CONTROL_WHITEBALANCE_HUE:
+                    if (onWhiteBalanceHueChange != null)
+                    {
+                        onWhiteBalanceHueChange(ComponentName,
+                                                (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
+                    }
+                    break;
+                case CONTROL_WHITEBALANCE_GAIN_RED:
+                    if (onWhiteBalanceRedGainChange != null)
+                    {
+                        onWhiteBalanceRedGainChange(ComponentName,
+                                                    (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
+                    }
+                    break;
+                case CONTROL_WHITEBALANCE_GAIN_BLUE:
+                    if (onWhiteBalanceBlueGainChange != null)
+                    {
+                        onWhiteBalanceBlueGainChange(ComponentName,
+                                                     (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
+                    }
+                    break;
+                case CONTROL_FOCUS_AUTO:
+                    if (onAutoFocusChange != null)
+                    {
+                        onAutoFocusChange(ComponentName, (ushort)args.Value);
+                    }
+                    break;
             }
         }
 
         public void StartPTZ(PtzTypes type)
         {
-            if (_registered)
+            if (!IsRegistered)
+                return;
+
+            switch (type)
             {
-                switch (type)
-                {
-                    case PtzTypes.Up:
-                        SendComponentChangeDoubleValue("tilt_up", 1);
-                        break;
-                    case PtzTypes.Down:
-                        SendComponentChangeDoubleValue("tilt_down", 1);
-                        break;
-                    case PtzTypes.Left:
-                        SendComponentChangeDoubleValue("pan_left", 1);
-                        break;
-                    case PtzTypes.Right:
-                        SendComponentChangeDoubleValue("pan_right", 1);
-                        break;
-                    case PtzTypes.ZoomIn:
-                        SendComponentChangeDoubleValue("zoom_in", 1);
-                        break;
-                    case PtzTypes.ZoomOut:
-                        SendComponentChangeDoubleValue("zoom_out", 1);
-                        break;
-                    default:
-                        break;
-                }
+                case PtzTypes.Up:
+                    SendComponentChangeDoubleValue("tilt_up", 1);
+                    break;
+                case PtzTypes.Down:
+                    SendComponentChangeDoubleValue("tilt_down", 1);
+                    break;
+                case PtzTypes.Left:
+                    SendComponentChangeDoubleValue("pan_left", 1);
+                    break;
+                case PtzTypes.Right:
+                    SendComponentChangeDoubleValue("pan_right", 1);
+                    break;
+                case PtzTypes.ZoomIn:
+                    SendComponentChangeDoubleValue("zoom_in", 1);
+                    break;
+                case PtzTypes.ZoomOut:
+                    SendComponentChangeDoubleValue("zoom_out", 1);
+                    break;
             }
         }
 
         public void StopPTZ(PtzTypes type)
         {
-            if (_registered)
+            if (!IsRegistered)
+                return;
+
+            switch (type)
             {
-                switch (type)
-                {
-                    case PtzTypes.Up:
-                        SendComponentChangeDoubleValue("tilt_up", 0);
-                        break;
-                    case PtzTypes.Down:
-                        SendComponentChangeDoubleValue("tilt_down", 0);
-                        break;
-                    case PtzTypes.Left:
-                        SendComponentChangeDoubleValue("pan_left", 0);
-                        break;
-                    case PtzTypes.Right:
-                        SendComponentChangeDoubleValue("pan_right", 0);
-                        break;
-                    case PtzTypes.ZoomIn:
-                        SendComponentChangeDoubleValue("zoom_in", 0);
-                        break;
-                    case PtzTypes.ZoomOut:
-                        SendComponentChangeDoubleValue("zoom_out", 0);
-                        break;
-                    default:
-                        break;
-                }
+                case PtzTypes.Up:
+                    SendComponentChangeDoubleValue("tilt_up", 0);
+                    break;
+                case PtzTypes.Down:
+                    SendComponentChangeDoubleValue("tilt_down", 0);
+                    break;
+                case PtzTypes.Left:
+                    SendComponentChangeDoubleValue("pan_left", 0);
+                    break;
+                case PtzTypes.Right:
+                    SendComponentChangeDoubleValue("pan_right", 0);
+                    break;
+                case PtzTypes.ZoomIn:
+                    SendComponentChangeDoubleValue("zoom_in", 0);
+                    break;
+                case PtzTypes.ZoomOut:
+                    SendComponentChangeDoubleValue("zoom_out", 0);
+                    break;
             }
         }
 
         public void AutoFocus()
         {
-            if (_registered)
-            {
-                SendComponentChangeDoubleValue("focus_auto", 1);
-            }
+            if (!IsRegistered)
+                return;
+
+            SendComponentChangeDoubleValue("focus_auto", 1);
         }
 
         public void FocusNear()
         {
-            if (_registered)
-            {
-                SendComponentChangeDoubleValue("focus_near", 1);
-            }
+            if (!IsRegistered)
+                return;
+
+            SendComponentChangeDoubleValue("focus_near", 1);
         }
 
         public void FocusNearStop()
         {
-            if(_registered)
-            {
-                SendComponentChangeDoubleValue("focus_near", 0);
-            }
+            if (!IsRegistered)
+                return;
+
+            SendComponentChangeDoubleValue("focus_near", 0);
         }
 
         public void FocusFar()
         {
-            if (_registered)
-            {
-                SendComponentChangeDoubleValue("focus_far", 1);
-            }
+            if (!IsRegistered)
+                return;
+
+            SendComponentChangeDoubleValue("focus_far", 1);
         }
 
         public void FocusFarStop()
         {
-            if (_registered)
+            if (IsRegistered)
             {
                 SendComponentChangeDoubleValue("focus_far", 0);
             }
@@ -309,15 +330,15 @@ namespace QscQsys
 
         public void RecallHome()
         {
-            if (_registered)
-            {
-                SendComponentChangeDoubleValue("preset_home_load", 1);
-            }
+            if (!IsRegistered)
+                return;
+
+            SendComponentChangeDoubleValue("preset_home_load", 1);
         }
 
         public void SaveHome()
         {
-            if (_registered)
+            if (IsRegistered)
             {
                 SendComponentChangeDoubleValue("preset_home_save_trigger", 1);
             }
@@ -325,10 +346,10 @@ namespace QscQsys
 
         public void PrivacyToggle(ushort value)
         {
-            if (_registered)
-            {
-                SendComponentChangeDoubleValue("toggle_privacy", value);
-            }
+            if (!IsRegistered)
+                return;
+
+            SendComponentChangeDoubleValue("toggle_privacy", value);
         }
 
         public void PrivacyToggle(bool value)
@@ -338,10 +359,10 @@ namespace QscQsys
 
         public void Brightness(int value)
         {
-            if (_registered)
-            {
-                SendComponentChangePosition("img_brightness", QsysCoreManager.ScaleDown(value));
-            }
+            if (!IsRegistered)
+                return;
+
+            SendComponentChangePosition("img_brightness", QsysCoreManager.ScaleDown(value));
         }
 
         public void Brightness(ushort value)
@@ -351,10 +372,10 @@ namespace QscQsys
 
         public void Saturation(int value)
         {
-            if (_registered)
-            {
-                SendComponentChangePosition("img_saturation", QsysCoreManager.ScaleDown(value));
-            }
+            if (!IsRegistered)
+                return;
+
+            SendComponentChangePosition("img_saturation", QsysCoreManager.ScaleDown(value));
         }
 
         public void Saturation(ushort value)
@@ -364,10 +385,10 @@ namespace QscQsys
 
         public void Sharpness(int value)
         {
-            if (_registered)
-            {
-                SendComponentChangePosition("img_sharpness", QsysCoreManager.ScaleDown(value));
-            }
+            if (!IsRegistered)
+                return;
+
+            SendComponentChangePosition("img_sharpness", QsysCoreManager.ScaleDown(value));
         }
 
         public void Sharpness(ushort value)
@@ -377,10 +398,10 @@ namespace QscQsys
 
         public void Contrast(int value)
         {
-            if (_registered)
-            {
-                SendComponentChangePosition("img_contrast", QsysCoreManager.ScaleDown(value));
-            }
+            if (!IsRegistered)
+                return;
+
+            SendComponentChangePosition("img_contrast", QsysCoreManager.ScaleDown(value));
         }
 
         public void Contrast(ushort value)
@@ -390,34 +411,34 @@ namespace QscQsys
 
         public void ExposureMode(string value)
         {
-            if (_registered)
-            {
-                SendComponentChangeStringValue("exp_mode", value);
-            }
+            if (!IsRegistered)
+                return;
+
+            SendComponentChangeStringValue("exp_mode", value);
         }
 
         public void Iris(string value)
         {
-            if (_registered)
-            {
-                SendComponentChangeStringValue("exp_iris", value);
-            }
+            if (!IsRegistered)
+                return;
+
+            SendComponentChangeStringValue("exp_iris", value);
         }
 
         public void Shutter(string value)
         {
-            if (_registered)
-            {
-                SendComponentChangeStringValue("exp_shutter", value);
-            }
+            if (!IsRegistered)
+                return;
+
+            SendComponentChangeStringValue("exp_shutter", value);
         }
 
         public void Gain(int value)
         {
-            if (_registered)
-            {
-                SendComponentChangePosition("exp_gain", QsysCoreManager.ScaleDown(value));
-            }
+            if (!IsRegistered)
+                return;
+
+            SendComponentChangePosition("exp_gain", QsysCoreManager.ScaleDown(value));
         }
 
         public void Gain(ushort value)
@@ -427,26 +448,26 @@ namespace QscQsys
 
         public void AutoWhiteBalanceMode(string value)
         {
-            if (_registered)
-            {
-                SendComponentChangeStringValue("wb_awb_mode", value);
-            }
+            if (!IsRegistered)
+                return;
+
+            SendComponentChangeStringValue("wb_awb_mode", value);
         }
 
         public void AutoWhiteBalanceSensitivity(string value)
         {
-            if (_registered)
-            {
-                SendComponentChangeStringValue("wb_awb_sensitivity", value);
-            }
+            if (!IsRegistered)
+                return;
+
+            SendComponentChangeStringValue("wb_awb_sensitivity", value);
         }
 
         public void Hue(int value)
         {
-            if (_registered)
-            {
-                SendComponentChangePosition("wb_hue", QsysCoreManager.ScaleDown(value));
-            }
+            if (!IsRegistered)
+                return;
+
+            SendComponentChangePosition("wb_hue", QsysCoreManager.ScaleDown(value));
         }
 
         public void Hue(ushort value)
@@ -456,10 +477,10 @@ namespace QscQsys
 
         public void RedGain(int value)
         {
-            if (_registered)
-            {
-                SendComponentChangePosition("wb_red_gain", QsysCoreManager.ScaleDown(value));
-            }
+            if (!IsRegistered)
+                return;
+
+            SendComponentChangePosition("wb_red_gain", QsysCoreManager.ScaleDown(value));
         }
 
         public void RedGain(ushort value)
@@ -469,10 +490,10 @@ namespace QscQsys
 
         public void BlueGain(int value)
         {
-            if (_registered)
-            {
-                SendComponentChangePosition("wb_blue_gain", QsysCoreManager.ScaleDown(value));
-            }
+            if (!IsRegistered)
+                return;
+
+            SendComponentChangePosition("wb_blue_gain", QsysCoreManager.ScaleDown(value));
         }
 
         public void BlueGain(ushort value)
@@ -482,62 +503,62 @@ namespace QscQsys
 
         public void TiltUp()
         {
-            StartPTZ(QsysCamera.PtzTypes.Up);
+            StartPTZ(PtzTypes.Up);
         }
 
         public void StopTiltUp()
         {
-            StopPTZ(QsysCamera.PtzTypes.Up);
+            StopPTZ(PtzTypes.Up);
         }
 
         public void TiltDown()
         {
-            StartPTZ(QsysCamera.PtzTypes.Down);
+            StartPTZ(PtzTypes.Down);
         }
 
         public void StopTiltDown()
         {
-            StopPTZ(QsysCamera.PtzTypes.Down);
+            StopPTZ(PtzTypes.Down);
         }
 
         public void PanLeft()
         {
-            StartPTZ(QsysCamera.PtzTypes.Left);
+            StartPTZ(PtzTypes.Left);
         }
 
         public void StopPanLeft()
         {
-            StopPTZ(QsysCamera.PtzTypes.Left);
+            StopPTZ(PtzTypes.Left);
         }
 
         public void PanRight()
         {
-            StartPTZ(QsysCamera.PtzTypes.Right);
+            StartPTZ(PtzTypes.Right);
         }
 
         public void StopPanRight()
         {
-            StopPTZ(QsysCamera.PtzTypes.Right);
+            StopPTZ(PtzTypes.Right);
         }
 
         public void ZoomIn()
         {
-            StartPTZ(QsysCamera.PtzTypes.ZoomIn);
+            StartPTZ(PtzTypes.ZoomIn);
         }
 
         public void StopZoomIn()
         {
-            StopPTZ(QsysCamera.PtzTypes.ZoomIn);
+            StopPTZ(PtzTypes.ZoomIn);
         }
 
         public void ZoomOut()
         {
-            StartPTZ(QsysCamera.PtzTypes.ZoomOut);
+            StartPTZ(PtzTypes.ZoomOut);
         }
 
         public void StopZoomOut()
         {
-            StopPTZ(QsysCamera.PtzTypes.ZoomOut);
+            StopPTZ(PtzTypes.ZoomOut);
         }
 
         public enum PtzTypes

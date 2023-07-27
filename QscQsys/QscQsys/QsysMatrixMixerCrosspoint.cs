@@ -1,95 +1,155 @@
 ﻿using System;
 using Crestron.SimplSharp;
+using QscQsys.Intermediaries;
+using QscQsys.Utils;
 
 namespace QscQsys
 {
-    public class QsysMatrixMixerCrosspoint
+    public sealed class QsysMatrixMixerCrosspoint : QsysComponent
     {
         public delegate void CrossPointMuteChange(SimplSharpString cName, ushort value);
         public delegate void CrossPointGainChange(SimplSharpString cName, ushort value);
         public CrossPointMuteChange newCrossPointMuteChange { get; set; }
         public CrossPointGainChange newCrossPointGainChange { get; set; }
 
-        private QsysMatrixMixer _mixer;
+
 
         private ushort _input;
         private ushort _output;
-        private string _cName;
-        private string _coreId;
-        private string _crossName;
-        private bool _registered;
+        private bool _initialized;
 
-        internal string CrosspointName { get { return _crossName; } }
+        private NamedComponentControl _muteControl;
+        private NamedComponentControl _gainControl;
 
-        public void Initialize(string coreId, string name, ushort input, ushort output)
+        private string MuteControlName
         {
-            if (!_registered)
+            get { return ControlNameUtils.GetMatrixCrosspointMuteName(_input, _output); }
+        }
+
+        private string GainControlName
+        {
+            get { return ControlNameUtils.GetMatrixCrosspointGainName(_input, _output); }
+        }
+
+        public NamedComponentControl MuteControl
+        {
+            get { return _muteControl; }
+            private set
             {
-                _cName = name;
-                _coreId = coreId;
-                _input = input;
-                _output = output;
-                _crossName = string.Format("input_{0}_output_{1}_", input, output);
+                if (_muteControl == value)
+                    return;
 
-                QsysCoreManager.CoreAdded += new EventHandler<CoreAddedEventArgs>(QsysCoreManager_CoreAdded);
-
-                RegisterWithMatrixMixer();
+                UnsubscribeMuteControl(_muteControl);
+                _muteControl = value;
+                SubscribeMuteControl(_muteControl);
             }
         }
 
-        void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs e)
+        public NamedComponentControl GainControl
         {
-            if (e.CoreId == _coreId)
+            get { return _gainControl; }
+            private set
             {
-                RegisterWithMatrixMixer();
+                if (_gainControl == value)
+                    return;
+
+                UnsubscribeGainControl(_gainControl);
+                _gainControl = value;
+                SubscribeGainControl(_gainControl);
             }
         }
 
-        private void RegisterWithMatrixMixer()
+        public void Initialize(string coreId, string componentName, ushort input, ushort output)
         {
-            if (!_registered)
-            {
-                if (QsysCoreManager.Cores.ContainsKey(_coreId))
-                {
-                    _mixer = QsysCoreManager.Cores[_coreId].GetMatrixMixer(_cName);
+            if (_initialized)
+                return;
 
-                    if (_mixer != null)
-                    {
-                        _mixer.RegisterCrosspoint(this);
-                        _registered = true;
-                    }
-                }
-            }
+            _initialized = true;
+
+            _input = input;
+            _output = output;
+            InternalInitialize(coreId, componentName);
         }
 
-        internal void ComponentUpdate(QsysInternalEventsArgs e)
+        protected override void HandleComponentUpdated(NamedComponent component)
         {
-            if (e.Name == string.Format("{0}mute", _crossName))
+            base.HandleComponentUpdated(component);
+
+            if (component == null)
             {
-                if (newCrossPointMuteChange != null)
-                {
-                    newCrossPointMuteChange(_crossName, Convert.ToUInt16(e.Value));
-                }
+                MuteControl = null;
+                GainControl = null;
+                return;
             }
-            else if (e.Name == string.Format("{0}gain", _crossName))
-            {
-                if (newCrossPointGainChange != null)
-                {
-                    newCrossPointGainChange(_crossName, Convert.ToUInt16(QsysCoreManager.ScaleUp(e.Position)));
-                }
-            }
+
+            MuteControl = component.LazyLoadComponentControl(MuteControlName);
+            GainControl = component.LazyLoadComponentControl(GainControlName);
         }
+
         public void SetCrossPointMute(ushort value)
         {
-            if (_registered)
-            {
-                _mixer.SetCrosspointMute(_input, _output, value);
-            }
+
+            SendComponentChangeDoubleValue(MuteControlName,
+                                           Convert.ToDouble(value));
         }
 
         public void SetCrossPointGain(ushort value)
         {
-            _mixer.SetCrosspointGain(_input, _output, value);
+            SendComponentChangePosition(GainControlName, QsysCoreManager.ScaleDown(value));
         }
+
+        #region Mute Control Callbacks
+
+        private void SubscribeMuteControl(NamedComponentControl muteControl)
+        {
+            if (muteControl == null)
+                return;
+
+            muteControl.OnFeedbackReceived += MuteControlOnFeedbackReceived;
+        }
+
+        private void UnsubscribeMuteControl(NamedComponentControl muteControl)
+        {
+            if (muteControl == null)
+                return;
+
+            muteControl.OnFeedbackReceived -= MuteControlOnFeedbackReceived;
+        }
+
+        private void MuteControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        {
+            var callback = newCrossPointMuteChange;
+            if (callback != null)
+                callback(MuteControlName, Convert.ToUInt16(args.Value));
+        }
+
+        #endregion
+
+        #region Gain Control Callbacks
+
+        private void SubscribeGainControl(NamedComponentControl gainControl)
+        {
+            if (gainControl == null)
+                return;
+
+            gainControl.OnFeedbackReceived += GainControlOnFeedbackReceived;
+        }
+
+        private void UnsubscribeGainControl(NamedComponentControl gainControl)
+        {
+            if (gainControl == null)
+                return;
+
+            gainControl.OnFeedbackReceived -= GainControlOnFeedbackReceived;
+        }
+
+        private void GainControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        {
+            var callback = newCrossPointGainChange;
+            if (callback != null)
+                callback(GainControlName, Convert.ToUInt16(QsysCoreManager.ScaleUp(args.Position)));
+        }
+
+        #endregion
     }
 }

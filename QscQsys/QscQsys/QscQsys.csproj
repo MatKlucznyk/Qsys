@@ -77,12 +77,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Intermediaries\NamedComponent.cs" />
+    <Compile Include="Intermediaries\NamedComponentControl.cs" />
+    <Compile Include="Intermediaries\NamedControl.cs" />
     <Compile Include="Json.cs" />
     <Compile Include="QsysBackupCore.cs" />
     <Compile Include="QsysCamera.cs" />
     <Compile Include="QsysComponent.cs" />
     <Compile Include="QsysCoreManager.cs" />
-    <Compile Include="QsysMatrixMixer.cs" />
     <Compile Include="QsysMatrixMixerApi.cs" />
     <Compile Include="QsysMatrixMixerCrosspoint.cs" />
     <Compile Include="QsysMeter.cs" />
@@ -98,6 +100,7 @@
     <Compile Include="QsysSnapshot.cs" />
     <Compile Include="QsysSoftphoneController.cs" />
     <Compile Include="QsysNamedControl.cs" />
+    <Compile Include="Utils\ControlNameUtils.cs" />
     <None Include="Properties\ControlSystem.cfg" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />

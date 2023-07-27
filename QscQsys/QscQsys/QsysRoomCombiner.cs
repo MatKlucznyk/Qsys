@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using Crestron.SimplSharp;
+using QscQsys.Intermediaries;
 
 namespace QscQsys
 {
@@ -11,68 +12,78 @@ namespace QscQsys
         public WallStateChange onWallStateChange { get; set; }
         public RoomCombinedChange onRoomCombinedChange { get; set; }
 
+        private int _walls;
+        private int _rooms;
         private bool[] _wallState;
         private bool[] _roomCombined;
 
-        public bool[] WallState { get { return _wallState; } }
-        public bool[] RoomCombined { get { return _roomCombined; } }
+        public bool[] WallState { get { return _wallState.ToArray(); } }
+        public bool[] RoomCombined { get { return _roomCombined.ToArray(); } }
 
 
         public void Initialize(string coreId, string componentName, int rooms, int walls)
         {
+            _walls = walls;
+            _rooms = rooms;
             _wallState = new bool[walls];
             _roomCombined = new bool[rooms];
 
-            var component = new Component(true) { Name = componentName, Controls = new List<ControlName>() };
-
-            for (int i = 1; i <= _wallState.Length; i++)
-            {
-                component.Controls.Add(new ControlName { Name = string.Format("wall_{0}_open", i) });
-            }
-
-            for (int i = 1; i <= _roomCombined.Length; i++)
-            {
-                component.Controls.Add(new ControlName { Name = string.Format("output_{0}_combined", i) });
-            }
-
-            base.Initialize(coreId, component);
+            InternalInitialize(coreId, componentName);
         }
 
-        protected override void Component_OnNewEvent(object sender, QsysInternalEventsArgs e)
+        protected override void HandleComponentUpdated(NamedComponent component)
         {
-            if (e.Name.Contains("open"))
+            base.HandleComponentUpdated(component);
+
+            if (component == null)
+                return;
+
+            for (int wall = 1; wall <= _walls; wall++)
             {
-                var wall = e.Name.Split('_');
+                component.LazyLoadComponentControl(string.Format("wall_{0}_open", wall));
+            }
 
-                _wallState[Convert.ToInt16(wall[1]) - 1] = Convert.ToBoolean(e.Value);
+            for (int room = 1; room <= _rooms; room++)
+            {
+                component.LazyLoadComponentControl(string.Format("output_{0}_combined", room));
+            }
+        }
 
-                //QsysRoomCombinerEvent(this, new QsysEventsArgs(eQscEventIds.RoomCombinerWallStateChange, cName, Convert.ToBoolean(e.Value), Convert.ToInt16(wall[1]), e.SValue, null));
+        protected override void ComponentOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        {
+            base.ComponentOnFeedbackReceived(sender, args);
+
+            if (args.Name.Contains("open"))
+            {
+                var wall = args.Name.Split('_');
+
+                _wallState[Convert.ToInt16(wall[1]) - 1] = Convert.ToBoolean(args.Value);
 
                 if (onWallStateChange != null)
-                    onWallStateChange(_cName, Convert.ToUInt16(wall[1]), Convert.ToUInt16(e.Value));
+                    onWallStateChange(ComponentName, Convert.ToUInt16(wall[1]), Convert.ToUInt16(args.Value));
             }
-            else if (e.Name.Contains("combined"))
+            else if (args.Name.Contains("combined"))
             {
-                var room = e.Name.Split('_');
+                var room = args.Name.Split('_');
 
-                _roomCombined[Convert.ToInt16(room[1]) - 1] = Convert.ToBoolean(e.Value);
+                _roomCombined[Convert.ToInt16(room[1]) - 1] = Convert.ToBoolean(args.Value);
 
                 if (onRoomCombinedChange != null)
-                    onRoomCombinedChange(_cName, Convert.ToUInt16(room[1]), Convert.ToUInt16(e.Value));
+                    onRoomCombinedChange(ComponentName, Convert.ToUInt16(room[1]), Convert.ToUInt16(args.Value));
             }
         }
 
         public void SetWall(int wall, bool state)
         {
-            if (_registered)
+            if (Component == null)
+                return;
+
+            if (_walls < wall)
+                return;
+
+            if (_wallState[wall - 1] != state)
             {
-                if (_wallState.Length >= wall)
-                {
-                    if (_wallState[wall - 1] != state)
-                    {
-                        SendComponentChangeDoubleValue(string.Format("wall_{0}_open", wall), Convert.ToDouble(state));
-                    }
-                }
+                SendComponentChangeDoubleValue(string.Format("wall_{0}_open", wall), Convert.ToDouble(state));
             }
         }
 
