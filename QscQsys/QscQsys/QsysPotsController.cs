@@ -86,13 +86,12 @@ namespace QscQsys
             if (component == null)
                 return;
 
-            AddControl(CONTROL_CALL_OFFHOOK);
-            AddControl(CONTROL_CALL_RINGING);
-            AddControl(CONTROL_CALL_AUTOANSWER);
-            AddControl(CONTROL_CALL_DND);
-            AddControl(CONTROL_CALL_STATUS);
-            AddControl(CONTROL_RECENT_CALLS);
-
+            component.LazyLoadComponentControl(CONTROL_CALL_OFFHOOK);
+            component.LazyLoadComponentControl(CONTROL_CALL_RINGING);
+            component.LazyLoadComponentControl(CONTROL_CALL_AUTOANSWER);
+            component.LazyLoadComponentControl(CONTROL_CALL_DND);
+            component.LazyLoadComponentControl(CONTROL_CALL_STATUS);
+            component.LazyLoadComponentControl(CONTROL_RECENT_CALLS);
         }
 
         protected override void ComponentOnFeedbackReceived(object sender, QsysInternalEventsArgs args)

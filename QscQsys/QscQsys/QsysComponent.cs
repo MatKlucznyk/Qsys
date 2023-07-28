@@ -92,14 +92,6 @@ namespace QscQsys
             Component = core.LazyLoadNamedComponent(ComponentName);
         }
 
-        protected NamedComponentControl AddControl(string controlName)
-        {
-            if (Component == null)
-                return null;
-
-            return Component.LazyLoadComponentControl(controlName);
-        }
-
         private void QsysCoreManager_CoreAdded(object sender, CoreEventArgs e)
         {
             if (e.CoreId == CoreId)
