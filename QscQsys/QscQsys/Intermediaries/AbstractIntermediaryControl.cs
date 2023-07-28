@@ -26,6 +26,10 @@ namespace QscQsys.Intermediaries
             }
         }
 
+        public abstract void SendChangePosition(double position);
+        public abstract void SendChangeDoubleValue(double value);
+        public abstract void SendChangeStringValue(string value);
+
         public abstract QsysCore Core { get; }
 
         protected AbstractIntermediaryControl(string name)

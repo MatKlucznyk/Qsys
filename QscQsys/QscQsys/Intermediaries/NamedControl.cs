@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Data;
+using Newtonsoft.Json;
 
 namespace QscQsys.Intermediaries
 {
@@ -22,6 +22,73 @@ namespace QscQsys.Intermediaries
             var control = new NamedControl(name, core);
             updateCallback = control.StateChanged;
             return control;
+        }
+
+        public override void SendChangePosition(double value)
+        {
+            var change = new ControlIntegerChange()
+            {
+                ID =
+                    JsonConvert.SerializeObject(new CustomResponseId()
+                    {
+                        ValueType = "position",
+                        Caller = Name,
+                        Method = "Control.Set",
+                        Position = value
+                    }),
+                Params = new ControlIntegerParams() {Name = Name, Position = value}
+            };
+
+            Core.Enqueue(JsonConvert.SerializeObject(change, Formatting.None,
+                                                     new JsonSerializerSettings
+                                                     {
+                                                         NullValueHandling = NullValueHandling.Ignore
+                                                     }));
+        }
+
+        public override void SendChangeDoubleValue(double value)
+        {
+            var change = new ControlIntegerChange()
+            {
+                ID =
+                    JsonConvert.SerializeObject(new CustomResponseId()
+                    {
+                        ValueType = "value",
+                        Caller = Name,
+                        Method = "Control.Set",
+                        Value = value,
+                        StringValue = value.ToString()
+                    }),
+                Params = new ControlIntegerParams() {Name = Name, Value = value}
+            };
+
+            Core.Enqueue(JsonConvert.SerializeObject(change, Formatting.None,
+                                                     new JsonSerializerSettings
+                                                     {
+                                                         NullValueHandling = NullValueHandling.Ignore
+                                                     }));
+        }
+
+        public override void SendChangeStringValue(string value)
+        {
+            var change = new ControlStringChange()
+            {
+                ID =
+                    JsonConvert.SerializeObject(new CustomResponseId()
+                    {
+                        ValueType = "string_value",
+                        Caller = Name,
+                        Method = "Control.Set",
+                        StringValue = value
+                    }),
+                Params = new ControlStringParams() {Name = Name, Value = value}
+            };
+
+            Core.Enqueue(JsonConvert.SerializeObject(change, Formatting.None,
+                                                     new JsonSerializerSettings
+                                                     {
+                                                         NullValueHandling = NullValueHandling.Ignore
+                                                     }));
         }
     }
 }

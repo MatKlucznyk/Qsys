@@ -2,6 +2,10 @@
 {
     public interface IQsysIntermediaryControl : IQsysIntermediary
     {
-         QsysStateData State { get; }
+        QsysStateData State { get; }
+
+        void SendChangePosition(double position);
+        void SendChangeDoubleValue(double value);
+        void SendChangeStringValue(string value);
     }
 }
