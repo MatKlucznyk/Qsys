@@ -53,6 +53,9 @@ namespace QscQsys
                 Unsubscribe(_control);
                 _control = value;
                 Subscribe(_control);
+
+                if (_control != null)
+                    UpdateState(_control.State);
             }
         }
 
@@ -97,12 +100,17 @@ namespace QscQsys
 
         private void ControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
         {
+            UpdateState(args.Data);
+        }
+
+        private void UpdateState(QsysStateData state)
+        {
             if (!_isInteger && !_isList)
             {
                 //QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(e.Value), Convert.ToUInt16(e.Value), e.SValue, null));
 
                 if (newNamedControlStringChange != null)
-                    newNamedControlStringChange(_cName, args.StringValue);
+                    newNamedControlStringChange(_cName, state.StringValue);
             }
             else if (_isInteger)
             {
@@ -110,41 +118,41 @@ namespace QscQsys
 
                 //QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(intValue), intValue, Convert.ToString(e.Position), null));
 
-                if (args.Type == "position")
+                if (state.Type == "position")
                 {
                     if (newNamedControlUIntChange != null)
                     {
-                        newNamedControlUIntChange(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
+                        newNamedControlUIntChange(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(state.Position)));
                     }
                 }
-                else if (args.Type == "value")
+                else if (state.Type == "value")
                 {
                     if (newNamedControlIntChange != null)
                     {
-                        newNamedControlIntChange(_cName, (short)args.Value);
+                        newNamedControlIntChange(_cName, (short)state.Value);
                     }
                 }
-                else if (args.Type == "change")
+                else if (state.Type == "change")
                 {
                     if (newNamedControlUIntChange != null)
                     {
-                        newNamedControlUIntChange(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
+                        newNamedControlUIntChange(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(state.Position)));
                     }
 
                     if (newNamedControlIntChange != null)
                     {
-                        newNamedControlIntChange(_cName, (short)args.Value);
+                        newNamedControlIntChange(_cName, (short)state.Value);
                     }
                 }
             }
             else if (_isList)
             {
                 _listData.Clear();
-                _listData.AddRange(args.Choices);
+                _listData.AddRange(state.Choices);
 
                 if (newNameControlListSelectedItemChange != null)
                 {
-                    newNameControlListSelectedItemChange(Convert.ToUInt16(_listData.FindIndex(x => x == args.StringValue) + 1), args.StringValue);
+                    newNameControlListSelectedItemChange(Convert.ToUInt16(_listData.FindIndex(x => x == state.StringValue) + 1), state.StringValue);
                 }
 
                 if (newNamedControlListChange != null)
