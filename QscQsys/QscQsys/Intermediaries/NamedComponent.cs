@@ -12,6 +12,7 @@ namespace QscQsys.Intermediaries
         private readonly string _name;
         private readonly QsysCore _core;
         private readonly Dictionary<string, NamedComponentControl> _controls;
+        private readonly Dictionary<string, Action<QsysStateData>>  _controlUpdateCallbacks; 
         private bool _subscribe;
 
         public event EventHandler<QsysInternalEventsArgs> OnFeedbackReceived;
@@ -24,23 +25,24 @@ namespace QscQsys.Intermediaries
 
         public bool Subscribe { get { return _subscribe; } }
 
-        public NamedComponent(string name, QsysCore core)
+        private NamedComponent(string name, QsysCore core)
         {
             _subscribe = true;
             _controls = new Dictionary<string, NamedComponentControl>();
+            _controlUpdateCallbacks = new Dictionary<string, Action<QsysStateData>>();
             _name = name;
             _core = core;
         }
 
-        internal void RaiseFeedbackReceived(QsysInternalEventsArgs args)
+        private void UpdateState(QsysStateData state)
         {
             var handler = OnFeedbackReceived;
             if (handler != null)
-                handler(this, args);
+                handler(this, new QsysInternalEventsArgs(state));
 
-            NamedComponentControl control;
-            if (TryGetComponentControl(args.Name, out control))
-                control.RaiseFeedbackReceived(args);
+            Action<QsysStateData> updateCallback;
+            if (TryGetComponentUpdateCallback(state.Name, out updateCallback))
+                updateCallback(state);
         }
 
         public NamedComponentControl LazyLoadComponentControl(string name)
@@ -52,8 +54,10 @@ namespace QscQsys.Intermediaries
                 if (_controls.TryGetValue(name, out control))
                     return control;
 
-                control = new NamedComponentControl(name, this);
+                Action<QsysStateData> updateCallback;
+                control = NamedComponentControl.Create(name, this, out updateCallback);
                 _controls.Add(name, control);
+                _controlUpdateCallbacks.Add(name, updateCallback);
             }
 
             var handler = OnComponentControlAdded;
@@ -71,6 +75,14 @@ namespace QscQsys.Intermediaries
             }
         }
 
+        private bool TryGetComponentUpdateCallback(string name, out Action<QsysStateData> updateCallback)
+        {
+            lock (_controls)
+            {
+                return _controlUpdateCallbacks.TryGetValue(name, out updateCallback);
+            }
+        }
+
         public IEnumerable<NamedComponentControl> GetComponentControls()
         {
             lock (_controls)
@@ -85,6 +97,13 @@ namespace QscQsys.Intermediaries
                 Name,
                 GetComponentControls().Select(control => control.ToControlName())
                 );
+        }
+
+        public static NamedComponent Create(string name, QsysCore core, out Action<QsysStateData> updateCallback)
+        {
+            var component = new NamedComponent(name, core);
+            updateCallback = component.UpdateState;
+            return component;
         }
 
     }

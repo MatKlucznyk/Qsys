@@ -12,7 +12,7 @@ using TCP_Client;
 namespace QscQsys
 {
     /// <summary>
-    /// Q-SYS Core class that manages connection and parses responses to be dsitributed to components and named control classes
+    /// Q-SYS Core class that manages connection and parses responses to be distributed to components and named control classes
     /// </summary>
     public class QsysCore : IDisposable
     {
@@ -65,12 +65,16 @@ namespace QscQsys
         private string _backupCoreIpA;
 
         private readonly Dictionary<string, NamedComponent> _components;
+        private readonly Dictionary<string, Action<QsysStateData>>  _componentUpdateCallbacks;
         private readonly Dictionary<string, NamedControl> _controls;
+        private readonly Dictionary<string, Action<QsysStateData>>  _controlUpdateCallbacks;
 
         public QsysCore()
         {
             _components = new Dictionary<string, NamedComponent>();
+            _componentUpdateCallbacks = new Dictionary<string, Action<QsysStateData>>();
             _controls = new Dictionary<string, NamedControl>();
+            _controlUpdateCallbacks = new Dictionary<string, Action<QsysStateData>>();
             _heartbeatTimer = new CTimer(SendHeartbeat, Timeout.Infinite);
             _commandQueueTimer = new CTimer(CommandQueueDequeue, null, 0, 50);
             _waitForConnection = new CTimer(Initialize, Timeout.Infinite);
@@ -333,8 +337,10 @@ namespace QscQsys
                 if (_controls.TryGetValue(name, out control))
                     return control;
 
-                control = new NamedControl(name, this);
+                Action<QsysStateData> updateCallback;
+                control = NamedControl.Create(name, this, out updateCallback);
                 _controls.Add(name, control);
+                _controlUpdateCallbacks.Add(name, updateCallback);
             }
 
             AddControlToChangeGroup(control);
@@ -346,6 +352,14 @@ namespace QscQsys
             lock (_controls)
             {
                 return _controls.TryGetValue(name, out control);
+            }
+        }
+
+        private bool TryGetNamedControlUpdateCallback(string name, out Action<QsysStateData> updateCallback)
+        {
+            lock (_controls)
+            {
+                return _controlUpdateCallbacks.TryGetValue(name, out updateCallback);
             }
         }
 
@@ -366,8 +380,10 @@ namespace QscQsys
                 if (_components.TryGetValue(name, out component))
                     return component;
 
-                component = new NamedComponent(name, this);
+                Action<QsysStateData> updateCallback;
+                component = NamedComponent.Create(name, this, out updateCallback);
                 _components.Add(name, component);
+                _componentUpdateCallbacks.Add(name, updateCallback);
                 
             }
 
@@ -404,6 +420,14 @@ namespace QscQsys
             lock (_components)
             {
                 return _components.TryGetValue(name, out component);
+            }
+        }
+
+        private bool TryGetNamedComponentUpdateCallback(string name, out Action<QsysStateData> updateCallback)
+        {
+            lock (_components)
+            {
+                return _componentUpdateCallbacks.TryGetValue(name, out updateCallback);
             }
         }
 
@@ -547,14 +571,14 @@ namespace QscQsys
                                 else
                                     choices = new List<string>();
 
-                                NamedComponent component;
-                                if (!TryGetNamedComponent(changeResult.Component, out component))
+                                Action<QsysStateData> updateCallback;
+                                if (!TryGetNamedComponentUpdateCallback(changeResult.Component, out updateCallback))
                                     continue;
 
-                                component.RaiseFeedbackReceived(new QsysInternalEventsArgs("change", changeResult.Name,
-                                                                                           changeResult.Value,
-                                                                                           changeResult.Position,
-                                                                                           changeResult.String, choices));
+                                updateCallback(new QsysStateData("change", changeResult.Name,
+                                                                 changeResult.Value,
+                                                                 changeResult.Position,
+                                                                 changeResult.String, choices));
                             }
                             else if (changeResult.Name != null)
                             {
@@ -565,14 +589,14 @@ namespace QscQsys
                                 else
                                     choices = new List<string>();
 
-                                NamedControl control;
-                                if (!TryGetNamedControl(changeResult.Name, out control))
+                                Action<QsysStateData> controlUpdateCallback;
+                                if (!TryGetNamedControlUpdateCallback(changeResult.Name, out controlUpdateCallback))
                                     continue;
 
-                                control.RaiseFeedbackReceived(new QsysInternalEventsArgs("change", changeResult.Name,
-                                                                                         changeResult.Value,
-                                                                                         changeResult.Position,
-                                                                                         changeResult.String, choices));
+                                controlUpdateCallback(new QsysStateData("change", changeResult.Name,
+                                                                        changeResult.Value,
+                                                                        changeResult.Position,
+                                                                        changeResult.String, choices));
                             }
                         }
                     }
@@ -677,17 +701,16 @@ namespace QscQsys
 
                             if (responseData.Caller != string.Empty)
                             {
-                                NamedComponent component;
-
-                                if (!TryGetNamedComponent(responseData.Caller, out component))
+                                Action<QsysStateData> updateCallback;
+                                if (!TryGetNamedComponentUpdateCallback(responseData.Caller, out updateCallback))
                                     return;
 
-                                component.RaiseFeedbackReceived(new QsysInternalEventsArgs(responseData.ValueType,
-                                                                                           responseData.Method,
-                                                                                           responseData.Value,
-                                                                                           responseData.Position,
-                                                                                           responseData.StringValue,
-                                                                                           null));
+                                updateCallback(new QsysStateData(responseData.ValueType,
+                                                                 responseData.Method,
+                                                                 responseData.Value,
+                                                                 responseData.Position,
+                                                                 responseData.StringValue,
+                                                                 null));
                             }
                         }
                     }

@@ -10,19 +10,22 @@ namespace QscQsys.Intermediaries
 
         public override QsysCore Core { get { return _component.Core; } }
 
-        public NamedComponentControl(string name, NamedComponent component):base(name)
+        private NamedComponentControl(string name, NamedComponent component):base(name)
         {
             _component = component;
-        }
-
-        internal void RaiseFeedbackReceived(QsysInternalEventsArgs args)
-        {
-            State = args.Data;
         }
 
         public ControlName ToControlName()
         {
             return ControlName.Instantiate(Name);
+        }
+
+        public static NamedComponentControl Create(string name, NamedComponent component,
+                                                   out Action<QsysStateData> updateCallback)
+        {
+            var control = new NamedComponentControl(name, component);
+            updateCallback = control.StateChanged;
+            return control;
         }
     }
 }

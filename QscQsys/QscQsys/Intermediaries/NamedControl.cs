@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 
 namespace QscQsys.Intermediaries
 {
@@ -11,14 +12,16 @@ namespace QscQsys.Intermediaries
 
         public override QsysCore Core {get { return _core; }}
 
-        public NamedControl(string name, QsysCore core) : base(name)
+        private NamedControl(string name, QsysCore core) : base(name)
         {
             _core = core;
         }
 
-        internal void RaiseFeedbackReceived(QsysInternalEventsArgs args)
+        public static NamedControl Create(string name, QsysCore core, out Action<QsysStateData> updateCallback)
         {
-            State = args.Data;
+            var control = new NamedControl(name, core);
+            updateCallback = control.StateChanged;
+            return control;
         }
     }
 }

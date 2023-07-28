@@ -33,5 +33,10 @@ namespace QscQsys.Intermediaries
             _name = name;
         }
 
+        protected void StateChanged(QsysStateData state)
+        {
+            State = state;
+        }
+
     }
 }
