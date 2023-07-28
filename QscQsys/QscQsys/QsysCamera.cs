@@ -169,19 +169,19 @@ namespace QscQsys
                 case CONTROL_EXPOSURE_MODE:
                     if (onExposureModeChange != null)
                     {
-                        onExposureModeChange(ComponentName, args.SValue);
+                        onExposureModeChange(ComponentName, args.StringValue);
                     }
                     break;
                 case CONTROL_EXPOSURE_IRIS:
                     if (onIrisChange != null)
                     {
-                        onIrisChange(ComponentName, args.SValue);
+                        onIrisChange(ComponentName, args.StringValue);
                     }
                     break;
                 case CONTROL_EXPOSURE_SHUTTER:
                     if (onShutterChange != null)
                     {
-                        onShutterChange(ComponentName, args.SValue);
+                        onShutterChange(ComponentName, args.StringValue);
                     }
                     break;
                 case CONTROL_EXPOSURE_GAIN:
@@ -193,13 +193,13 @@ namespace QscQsys
                 case CONTROL_WHITEBALANCE_AUTO_SENSITIVITY:
                     if (onAutoWhiteBalanceSensitivityChange != null)
                     {
-                        onAutoWhiteBalanceSensitivityChange(ComponentName, args.SValue);
+                        onAutoWhiteBalanceSensitivityChange(ComponentName, args.StringValue);
                     }
                     break;
                 case CONTROL_WHITEBALANCE_AUTO_MODE:
                     if (onAutoWhiteBalanceModeChange != null)
                     {
-                        onAutoWhiteBalanceModeChange(ComponentName, args.SValue);
+                        onAutoWhiteBalanceModeChange(ComponentName, args.StringValue);
                     }
                     break;
                 case CONTROL_WHITEBALANCE_HUE:

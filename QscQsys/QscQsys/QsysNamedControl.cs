@@ -30,12 +30,17 @@ namespace QscQsys
         private bool _isInteger;
         private bool _isList;
         private bool _disposed;
-        private List<string> _listData;
+        private readonly List<string> _listData;
 
         //public event EventHandler<QsysEventsArgs> QsysNamedControlEvent;
 
         public string ComponentName { get { return _cName; } }
         public bool IsRegistered { get { return Control != null; } }
+
+        public QsysNamedControl()
+        {
+            _listData = new List<string>();
+        }
 
         public NamedControl Control
         {
@@ -97,7 +102,7 @@ namespace QscQsys
                 //QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(e.Value), Convert.ToUInt16(e.Value), e.SValue, null));
 
                 if (newNamedControlStringChange != null)
-                    newNamedControlStringChange(_cName, args.SValue);
+                    newNamedControlStringChange(_cName, args.StringValue);
             }
             else if (_isInteger)
             {
@@ -134,11 +139,12 @@ namespace QscQsys
             }
             else if (_isList)
             {
-                _listData = args.Choices;
+                _listData.Clear();
+                _listData.AddRange(args.Choices);
 
                 if (newNameControlListSelectedItemChange != null)
                 {
-                    newNameControlListSelectedItemChange(Convert.ToUInt16(_listData.FindIndex(x => x == args.SValue) + 1), args.SValue);
+                    newNameControlListSelectedItemChange(Convert.ToUInt16(_listData.FindIndex(x => x == args.StringValue) + 1), args.StringValue);
                 }
 
                 if (newNamedControlListChange != null)
@@ -155,7 +161,7 @@ namespace QscQsys
 
         #endregion
 
-        void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs e)
+        void QsysCoreManager_CoreAdded(object sender, CoreEventArgs e)
         {
             if (e.CoreId == _coreId)
             {

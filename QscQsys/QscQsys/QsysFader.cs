@@ -106,7 +106,7 @@ namespace QscQsys
 
             if (args.Type == "value" || args.Type == "change")
             {
-                _currentGainString = args.SValue;
+                _currentGainString = args.StringValue;
 
                 var callback = newGainStringChange;
                 if (callback != null && !string.IsNullOrEmpty(_currentGainString))

@@ -162,12 +162,12 @@ namespace QscQsys
 
                     break;
                 case CONTROL_CALL_STATUS:
-                    if (args.SValue.Length > 0)
+                    if (args.StringValue.Length > 0)
                     {
-                        _callStatus = args.SValue;
+                        _callStatus = args.StringValue;
 
                         if (onCurrentCallStatusChange != null)
-                            onCurrentCallStatusChange(ComponentName, args.SValue);
+                            onCurrentCallStatusChange(ComponentName, args.StringValue);
 
                         if (_callStatus.Contains("Dialing") && _dialingState == false)
                         {

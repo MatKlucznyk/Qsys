@@ -77,6 +77,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Intermediaries\IQsysIntermediary.cs" />
+    <Compile Include="Intermediaries\IQsysIntermediaryControl.cs" />
     <Compile Include="Intermediaries\NamedComponent.cs" />
     <Compile Include="Intermediaries\NamedComponentControl.cs" />
     <Compile Include="Intermediaries\NamedControl.cs" />

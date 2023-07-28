@@ -4,13 +4,13 @@ using Crestron.SimplSharp;
 
 namespace QscQsys
 {
-    internal class QsysCoreManager
+    public static class QsysCoreManager
     {
         private static readonly object _coresLock = new object();
         private static readonly Dictionary<string, QsysCore> _cores = new Dictionary<string, QsysCore>();
 
-        internal static event EventHandler<CoreAddedEventArgs> CoreAdded;
-        internal static event EventHandler<CoreRemovedEventArgs> CoreRemoved;
+        internal static event EventHandler<CoreEventArgs> CoreAdded;
+        internal static event EventHandler<CoreEventArgs> CoreRemoved;
 
         internal static bool Is3Series
         {
@@ -38,7 +38,7 @@ namespace QscQsys
                     {
                         _cores.Add(core.CoreId, core);
 
-                        OnCoreAdded(new CoreAddedEventArgs(core.CoreId));
+                        RaiseCoreAdded(new CoreEventArgs(core.CoreId));
                     }
                 }
             }
@@ -58,7 +58,7 @@ namespace QscQsys
                     {
                         _cores.Remove(core.CoreId);
 
-                        OnCoreRemoved(new CoreRemovedEventArgs(core.CoreId));
+                        RaiseCoreRemoved(new CoreEventArgs(core.CoreId));
                     }
                 }
             }
@@ -68,34 +68,30 @@ namespace QscQsys
             }
         }
 
-        private static void OnCoreAdded(CoreAddedEventArgs e)
+        private static void RaiseCoreAdded(CoreEventArgs e)
         {
-            EventHandler<CoreAddedEventArgs> handler = CoreAdded; ;
+            var handler = CoreAdded; ;
 
             if (handler != null)
-            {
                 handler(null, e);
-            }
         }
 
-        private static void OnCoreRemoved(CoreRemovedEventArgs e)
+        private static void RaiseCoreRemoved(CoreEventArgs e)
         {
-            EventHandler<CoreRemovedEventArgs> handler = CoreRemoved;
+            var handler = CoreRemoved;
 
             if (handler != null)
-            {
                 handler(null, e);
-            }
         }
 
-        internal static double ScaleUp(double level)
+        public static double ScaleUp(double level)
         {
             double scaleLevel = level;
             double levelScaled = (scaleLevel * 65535.0);
             return levelScaled;
         }
 
-        internal static double ScaleDown(double level)
+        public static double ScaleDown(double level)
         {
             double scaleLevel = level;
             double levelScaled = (scaleLevel / 65535.0);

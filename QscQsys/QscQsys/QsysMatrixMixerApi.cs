@@ -26,7 +26,7 @@ namespace QscQsys
                 Core = core;
         }
 
-        void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs args)
+        void QsysCoreManager_CoreAdded(object sender, CoreEventArgs args)
         {
             QsysCore core;
             if (QsysCoreManager.TryGetCore(CoreId, out core))

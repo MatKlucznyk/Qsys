@@ -135,7 +135,7 @@ namespace QscQsys
 
             var callback = newPeakThresholdChange;
             if (callback != null)
-                callback(ComponentName, args.SValue);
+                callback(ComponentName, args.StringValue);
         }
 
         #endregion
@@ -164,7 +164,7 @@ namespace QscQsys
 
             var callback = newHoldTimeChange;
             if (callback != null)
-                callback(ComponentName, args.SValue);
+                callback(ComponentName, args.StringValue);
         }
 
         #endregion

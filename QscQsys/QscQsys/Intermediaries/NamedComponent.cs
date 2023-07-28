@@ -7,7 +7,7 @@ namespace QscQsys.Intermediaries
     /// <summary>
     /// Acts as an intermediary between the QSys Core and the QsysNamedControls
     /// </summary>
-    public sealed class NamedComponent
+    public sealed class NamedComponent : IQsysIntermediary
     {
         private readonly string _name;
         private readonly QsysCore _core;

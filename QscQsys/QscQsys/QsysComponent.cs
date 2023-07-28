@@ -100,7 +100,7 @@ namespace QscQsys
             return Component.LazyLoadComponentControl(controlName);
         }
 
-        private void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs e)
+        private void QsysCoreManager_CoreAdded(object sender, CoreEventArgs e)
         {
             if (e.CoreId == CoreId)
             {
