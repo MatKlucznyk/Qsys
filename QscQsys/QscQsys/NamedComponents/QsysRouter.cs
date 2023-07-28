@@ -75,12 +75,14 @@ namespace QscQsys.NamedComponents
 
         public void InputSelect(int input)
         {
-            SendComponentChangeDoubleValue(ControlNameUtils.GetRouterSelectName(_output), input);
+            if (InputControl != null)
+                InputControl.SendChangeDoubleValue(input);
         }
 
         public void OutputMute(bool value)
         {
-            SendComponentChangeDoubleValue(ControlNameUtils.GetRouterMuteName(_output), Convert.ToDouble(value));
+            if (MuteControl != null)
+                MuteControl.SendChangeDoubleValue(Convert.ToDouble(value));
         }
 
         /// <summary>

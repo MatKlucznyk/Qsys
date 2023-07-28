@@ -151,7 +151,8 @@ namespace QscQsys.NamedComponents
         /// <param name="value">The volume level to set to.</param>
         public void Volume(int value)
         {
-            SendComponentChangePosition(ControlNameUtils.GetGainControlName(), QsysCoreManager.ScaleDown(value));
+            if (GainControl != null)
+                GainControl.SendChangePosition(QsysCoreManager.ScaleDown(value));
         }
 
         /// <summary>
@@ -165,7 +166,8 @@ namespace QscQsys.NamedComponents
 
         public void Decibels(double value)
         {
-            SendComponentChangeDoubleValue(ControlNameUtils.GetGainControlName(), value);
+            if (GainControl != null)
+                GainControl.SendChangeDoubleValue(value);
         }
 
         public void Decibels(short value)
@@ -179,7 +181,8 @@ namespace QscQsys.NamedComponents
         /// <param name="value">The state to set the mute.</param>
         public void Mute(bool value)
         {
-            SendComponentChangeDoubleValue(ControlNameUtils.GetMuteControlName(), Convert.ToDouble(value));
+            if (MuteControl != null)
+                MuteControl.SendChangeDoubleValue(Convert.ToDouble(value));
         }
 
         /// <summary>

@@ -88,14 +88,14 @@ namespace QscQsys.NamedComponents
 
         public void SetCrossPointMute(ushort value)
         {
-
-            SendComponentChangeDoubleValue(MuteControlName,
-                                           Convert.ToDouble(value));
+            if (MuteControl != null)
+                MuteControl.SendChangeDoubleValue(Convert.ToDouble(value));
         }
 
         public void SetCrossPointGain(ushort value)
         {
-            SendComponentChangePosition(GainControlName, QsysCoreManager.ScaleDown(value));
+            if (GainControl != null)
+                GainControl.SendChangePosition(QsysCoreManager.ScaleDown(value));
         }
 
         #region Mute Control Callbacks

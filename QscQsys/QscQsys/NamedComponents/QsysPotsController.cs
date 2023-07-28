@@ -248,7 +248,7 @@ namespace QscQsys.NamedComponents
             _dialString.Append(number);
 
             if (_hookState)
-                SendComponentChangeDoubleValue(string.Format("call_pinpad_{0}", number), 1);
+                Component.SendChangeDoubleValue(string.Format("call_pinpad_{0}", number), 1);
 
             if (onDialingEvent != null)
                 onDialStringEvent(ComponentName, _dialString.ToString());
@@ -323,10 +323,11 @@ namespace QscQsys.NamedComponents
             if (Component == null)
                 return;
 
-            if (onDialingEvent != null)
-                onDialStringEvent(ComponentName, string.Empty);
+            var callback = onDialStringEvent;
+            if (callback != null)
+                callback(ComponentName, string.Empty);
 
-            SendComponentChangeStringValue(CONTROL_CALL_NUMBER, _currentlyCalling);
+            Component.SendChangeStringValue(CONTROL_CALL_NUMBER, _currentlyCalling);
 
             Connect();
         }
@@ -335,8 +336,8 @@ namespace QscQsys.NamedComponents
         {
             if (Component == null)
                 return;
-            
-            SendComponentChangeDoubleValue(CONTROL_CALL_CONNECT, 1);
+
+            Component.SendChangeDoubleValue(CONTROL_CALL_CONNECT, 1);
         }
 
         public void Disconnect()
@@ -344,7 +345,7 @@ namespace QscQsys.NamedComponents
             if (Component == null)
                 return;
 
-            SendComponentChangeDoubleValue(CONTROL_CALL_DISCONNECT, 1);
+            Component.SendChangeDoubleValue(CONTROL_CALL_DISCONNECT, 1);
         }
 
         public void Redial()
@@ -361,16 +362,16 @@ namespace QscQsys.NamedComponents
         {
             if (Component == null)
                 return;
-            
-            SendComponentChangeDoubleValue(CONTROL_CALL_AUTOANSWER, Convert.ToDouble(!_autoAnswer));
+
+            Component.SendChangeDoubleValue(CONTROL_CALL_AUTOANSWER, Convert.ToDouble(!_autoAnswer));
         }
 
         public void DndToggle()
         {
             if (Component == null)
                 return;
-            
-            SendComponentChangeDoubleValue(CONTROL_CALL_DND, Convert.ToDouble(!_dnd));
+
+            Component.SendChangeDoubleValue(CONTROL_CALL_DND, Convert.ToDouble(!_dnd));
         }
 
         public void SelectRecentCall(int index)

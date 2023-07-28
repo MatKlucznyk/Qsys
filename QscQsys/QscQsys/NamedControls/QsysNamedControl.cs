@@ -3,20 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using Crestron.SimplSharp;
 using ExtensionMethods;
-using Newtonsoft.Json;
 using QscQsys.Intermediaries;
 
 namespace QscQsys.NamedControls
 {
-    public class QsysNamedControl: IDisposable
+    public sealed class QsysNamedControl: IDisposable
     {
         public delegate void NamedControlUIntChange(SimplSharpString cName, ushort uIntData);
         public delegate void NamedControlIntChange(SimplSharpString cName, short intData);
         public delegate void NamedControlStringChange(SimplSharpString cNmae, SimplSharpString stringData);
         public delegate void NamdControlListChange(SimplSharpString cName, ushort itemsCount, SimplSharpString xsig);
-        //public delegate void NamedControlChange(SimplSharpString cName, ushort uIntData, short intData, SimplSharpString stringData, SimplSharpString choicesData);
         public delegate void NamedControlListSelectedItem(ushort index, SimplSharpString name);
-        //public NamedControlChange newNamedControlChange { get; set; }
         public NamedControlUIntChange newNamedControlUIntChange { get; set; }
         public NamedControlIntChange newNamedControlIntChange { get; set; }
         public NamedControlStringChange newNamedControlStringChange { get; set; }
@@ -31,8 +28,6 @@ namespace QscQsys.NamedControls
         private bool _isList;
         private bool _disposed;
         private readonly List<string> _listData;
-
-        //public event EventHandler<QsysEventsArgs> QsysNamedControlEvent;
 
         public string ComponentName { get { return _cName; } }
         public bool IsRegistered { get { return Control != null; } }
@@ -80,6 +75,135 @@ namespace QscQsys.NamedControls
             RegisterWithCore();
         }
 
+        #region Set Values
+
+        public void SetUnsignedInteger(ushort value, ushort scaled)
+        {
+            if (Control == null)
+                return;
+
+            if (scaled == 1)
+                Control.SendChangePosition(QsysCoreManager.ScaleDown(value));
+            else
+                Control.SendChangeDoubleValue(value);
+        }
+
+        public void SetSignedInteger(int value, ushort scaled)
+        {
+            if (Control == null)
+                return;
+
+            if (scaled == 1)
+                Control.SendChangePosition(QsysCoreManager.ScaleDown(value));
+            else
+                Control.SendChangeDoubleValue(value);
+        }
+
+        public void SetString(string value)
+        {
+            if (Control == null)
+                return;
+
+            Control.SendChangeStringValue(value);
+        }
+
+        public void SetBoolean(int value)
+        {
+            if (Control == null)
+                return;
+
+            Control.SendChangeDoubleValue((double)value);
+        }
+
+        #endregion
+
+        #region Update States
+
+        private void UpdateState(QsysStateData state)
+        {
+            if (!_isInteger && !_isList)
+            {
+                UpdateStringState(state);
+            }
+            else if (_isInteger)
+            {
+                UpdatateIntegerState(state);
+            }
+            else if (_isList)
+            {
+                UpdateListState(state);
+            }
+        }
+
+        private void UpdateListState(QsysStateData state)
+        {
+            _listData.Clear();
+            _listData.AddRange(state.Choices);
+
+            var listSelectedCallback = newNameControlListSelectedItemChange;
+            if (listSelectedCallback != null)
+            {
+                listSelectedCallback(Convert.ToUInt16(_listData.FindIndex(x => x == state.StringValue) + 1),
+                                     state.StringValue);
+            }
+
+            var listItemCallback = newNamedControlListChange;
+            if (listItemCallback != null)
+            {
+                for (int i = 0; i < _listData.Count; i++)
+                {
+                    var encodedBytes = XSig.GetBytes(i + 1, _listData[i]);
+                    listItemCallback(_cName, Convert.ToUInt16(_listData.Count),
+                                     Encoding.GetEncoding(28591).GetString(encodedBytes, 0, encodedBytes.Length));
+                }
+            }
+        }
+
+        private void UpdatateIntegerState(QsysStateData state)
+        {
+            var positionCallback = newNamedControlUIntChange;
+            var valueCallback = newNamedControlIntChange;
+            switch (state.Type)
+            {
+                case "position":
+
+                    if (positionCallback != null)
+                        positionCallback(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(state.Position)));
+                    break;
+                case "value":
+
+                    if (valueCallback != null)
+                        valueCallback(_cName, (short)state.Value);
+                    break;
+                case "change":
+                    if (positionCallback != null)
+                        positionCallback(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(state.Position)));
+                    if (valueCallback != null)
+                        valueCallback(_cName, (short)state.Value);
+                    break;
+            }
+        }
+
+        private void UpdateStringState(QsysStateData state)
+        {
+            var stringCallback = newNamedControlStringChange;
+            if (stringCallback != null)
+                stringCallback(_cName, state.StringValue);
+        }
+
+        public void SelectListItem(int index)
+        {
+            if (Control == null)
+                return;
+
+            if (index < 0 || index > _listData.Count)
+                return;
+
+            Control.SendChangeStringValue(_listData[index]);
+        }
+
+        #endregion
+
         #region NamedControl Callbacks
 
         private void Subscribe(NamedControl control)
@@ -103,71 +227,9 @@ namespace QscQsys.NamedControls
             UpdateState(args.Data);
         }
 
-        private void UpdateState(QsysStateData state)
-        {
-            if (!_isInteger && !_isList)
-            {
-                //QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(e.Value), Convert.ToUInt16(e.Value), e.SValue, null));
-
-                if (newNamedControlStringChange != null)
-                    newNamedControlStringChange(_cName, state.StringValue);
-            }
-            else if (_isInteger)
-            {
-                //var uIntValue = (int)Math.Round(QsysCoreManager.ScaleUp(e.Position));
-
-                //QsysNamedControlEvent(this, new QsysEventsArgs(eQscEventIds.NamedControlChange, e.Name, Convert.ToBoolean(intValue), intValue, Convert.ToString(e.Position), null));
-
-                if (state.Type == "position")
-                {
-                    if (newNamedControlUIntChange != null)
-                    {
-                        newNamedControlUIntChange(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(state.Position)));
-                    }
-                }
-                else if (state.Type == "value")
-                {
-                    if (newNamedControlIntChange != null)
-                    {
-                        newNamedControlIntChange(_cName, (short)state.Value);
-                    }
-                }
-                else if (state.Type == "change")
-                {
-                    if (newNamedControlUIntChange != null)
-                    {
-                        newNamedControlUIntChange(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(state.Position)));
-                    }
-
-                    if (newNamedControlIntChange != null)
-                    {
-                        newNamedControlIntChange(_cName, (short)state.Value);
-                    }
-                }
-            }
-            else if (_isList)
-            {
-                _listData.Clear();
-                _listData.AddRange(state.Choices);
-
-                if (newNameControlListSelectedItemChange != null)
-                {
-                    newNameControlListSelectedItemChange(Convert.ToUInt16(_listData.FindIndex(x => x == state.StringValue) + 1), state.StringValue);
-                }
-
-                if (newNamedControlListChange != null)
-                {
-                    for (int i = 0; i < _listData.Count; i++)
-                    {
-                        var encodedBytes = XSig.GetBytes(i + 1, _listData[i]);
-                        newNamedControlListChange(_cName, Convert.ToUInt16(_listData.Count), Encoding.GetEncoding(28591).GetString(encodedBytes, 0, encodedBytes.Length));
-                        //newNamedControlChange(_cName, Convert.ToUInt16(_listData.Count), Convert.ToInt16(_listData.Count), e.SValue, Encoding.GetEncoding(28591).GetString(encodedBytes, 0, encodedBytes.Length));
-                    }
-                }
-            }
-        }
-
         #endregion
+
+        #region CoreManager Callbacks
 
         void QsysCoreManager_CoreAdded(object sender, CoreEventArgs e)
         {
@@ -192,102 +254,7 @@ namespace QscQsys.NamedControls
             Control = core.LazyLoadNamedControl(_cName);
         }
 
-        private void SendControlChangePosition(double value)
-        {
-            if (Control != null)
-            {
-                var change = new ControlIntegerChange() { ID = JsonConvert.SerializeObject(new CustomResponseId() { ValueType = "position", Caller = _cName, Method = "Control.Set", Position = value }), Params = new ControlIntegerParams() { Name = _cName, Position = value } };
-
-                Control.Core.Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
-            }
-        }
-
-        private void SendControlChangeDoubleValue(double value)
-        {
-            if (Control != null)
-            {
-                var change = new ControlIntegerChange() { ID = JsonConvert.SerializeObject(new CustomResponseId() { ValueType = "value", Caller = _cName, Method = "Control.Set", Value = value, StringValue = value.ToString() }), Params = new ControlIntegerParams() { Name = _cName, Value = value } };
-
-                Control.Core.Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
-            }
-        }
-
-        private void SendControlChangeStringValue(string value)
-        {
-            if (Control != null)
-            {
-                var change = new ControlStringChange() { ID = JsonConvert.SerializeObject(new CustomResponseId() { ValueType = "string_value", Caller = _cName, Method = "Control.Set", StringValue = value }), Params = new ControlStringParams() { Name = _cName, Value = value } };
-
-                Control.Core.Enqueue(JsonConvert.SerializeObject(change, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
-            }
-        }
-
-        public void SetUnsignedInteger(ushort value, ushort scaled)
-        {
-            if (Control != null)
-            {
-                if (scaled == 1)
-                {
-                    SendControlChangePosition(QsysCoreManager.ScaleDown(value));
-                }
-                else
-                {
-                    SendControlChangeDoubleValue((double)value);
-                }
-            }
-        }
-
-        public void SetSignedInteger(int value, ushort scaled)
-        {
-            if (scaled == 1)
-            {
-                SendControlChangePosition(QsysCoreManager.ScaleDown(value));
-            }
-            else
-            {
-                SendControlChangeDoubleValue((double)value);
-            }
-        }
-
-        public void SetString(string value)
-        {
-            if (Control != null)
-            {
-                //ControlStringChange str = new ControlStringChange() { Params = new ControlStringParams() { Name = _cName, Value = value } };
-
-                //QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(str));
-                SendControlChangeStringValue(value);
-            }
-        }
-
-        public void SetBoolean(int value)
-        {
-            if (Control != null)
-            {
-                //ControlIntegerChange boolean = new ControlIntegerChange() { Params = new ControlIntegerParams() { Name = _cName, Value = value } };
-
-                //QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(boolean, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
-
-                SendControlChangeDoubleValue((double)value);
-            }
-        }
-
-        public void SelectListItem(int index)
-        {
-            if (Control != null)
-            {
-                if (_listData != null)
-                {
-                    if (index >= 0 && index < _listData.Count)
-                    {
-                        //ControlStringChange str = new ControlStringChange() { Params = new ControlStringParams() { Name = _cName, Value = _listData[index] } };
-
-                        //QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(str));
-                        SendControlChangeStringValue(_listData[index]);
-                    }
-                }
-            }
-        }
+        #endregion
 
         public void Dispose()
         {

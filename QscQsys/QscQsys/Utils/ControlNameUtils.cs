@@ -1,4 +1,7 @@
-﻿namespace QscQsys.Utils
+﻿using System;
+using QscQsys.NamedComponents;
+
+namespace QscQsys.Utils
 {
     public static class ControlNameUtils
     {
@@ -17,6 +20,9 @@
         private const string SIGNAL_PRESENCE_METER_CONTROL_NAME_FORMAT = SIGNAL_PRESENCE + "_{0}";
         private const string SNAPSHOT_LOAD_CONTROL_NAME_FORMAT = "load_{0}";
         private const string SNAPSHOT_SAVE_CONTROL_NAME_FORMAT = "save_{0}";
+        private const string ROOM_COMBINER_WALL_OPEN_NAME_FORMAT = "wall_{0}_open";
+        private const string ROOM_COMBINER_OUTPUT_COMBINED_NAME_FORMAT = "output_{0}_combined";
+
 
         public static string GetMatrixCrosspointMuteName(int input, int output)
         {
@@ -62,6 +68,16 @@
             return string.Format(SNAPSHOT_SAVE_CONTROL_NAME_FORMAT, index);
         }
 
+        public static string GetRoomCombinerWallOpenName(int index)
+        {
+            return string.Format(ROOM_COMBINER_WALL_OPEN_NAME_FORMAT, index);
+        }
+
+        public static string GetRoomCombinerOutputCombinedName(int index)
+        {
+            return string.Format(ROOM_COMBINER_OUTPUT_COMBINED_NAME_FORMAT, index);
+        }
+
         public static string GetMuteControlName()
         {
             return MUTE;
@@ -85,6 +101,27 @@
         public static string GetInfiniteHoldControlName()
         {
             return INFINITE_HOLD;
+        }
+
+        public static string GetControlNameForPtzType(QsysCamera.PtzTypes type)
+        {
+            switch (type)
+            {
+                case QsysCamera.PtzTypes.Up:
+                    return "tilt_up";
+                case QsysCamera.PtzTypes.Down:
+                    return "tilt_down";
+                case QsysCamera.PtzTypes.Left:
+                    return "pan_left";
+                case QsysCamera.PtzTypes.Right:
+                    return "pan_right";
+                case QsysCamera.PtzTypes.ZoomIn:
+                    return "zoom_in";
+                case QsysCamera.PtzTypes.ZoomOut:
+                    return "zoom_out";
+                default:
+                    throw new ArgumentOutOfRangeException("type");
+            }
         }
     }
 }

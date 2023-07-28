@@ -2,6 +2,7 @@
 using System.Linq;
 using Crestron.SimplSharp;
 using QscQsys.Intermediaries;
+using QscQsys.Utils;
 
 namespace QscQsys.NamedComponents
 {
@@ -40,12 +41,12 @@ namespace QscQsys.NamedComponents
 
             for (int wall = 1; wall <= _walls; wall++)
             {
-                component.LazyLoadComponentControl(string.Format("wall_{0}_open", wall));
+                component.LazyLoadComponentControl(ControlNameUtils.GetRoomCombinerWallOpenName(wall));
             }
 
             for (int room = 1; room <= _rooms; room++)
             {
-                component.LazyLoadComponentControl(string.Format("output_{0}_combined", room));
+                component.LazyLoadComponentControl(ControlNameUtils.GetRoomCombinerOutputCombinedName(room));
             }
         }
 
@@ -81,10 +82,8 @@ namespace QscQsys.NamedComponents
             if (_walls < wall)
                 return;
 
-            if (_wallState[wall - 1] != state)
-            {
-                SendComponentChangeDoubleValue(string.Format("wall_{0}_open", wall), Convert.ToDouble(state));
-            }
+            Component.SendChangeDoubleValue(ControlNameUtils.GetRoomCombinerWallOpenName(wall),
+                                                Convert.ToDouble(state));
         }
 
         public void SetWall(ushort wall, ushort value)

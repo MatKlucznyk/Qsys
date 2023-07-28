@@ -16,10 +16,12 @@ namespace QscQsys.NamedComponents
         private ushort _output;
         private bool _initialized;
         private readonly Dictionary<NamedComponentControl, int> _muteControls;
+        private readonly Dictionary<int, NamedComponentControl> _muteControlsByInput;
 
         public QsysMatrixMixerOutputAllCrosspoints()
         {
             _muteControls = new Dictionary<NamedComponentControl, int>();
+            _muteControlsByInput = new Dictionary<int, NamedComponentControl>();
         }
 
         public void Initialize(string coreId, string componentName, ushort inputCount, ushort output)
@@ -44,6 +46,7 @@ namespace QscQsys.NamedComponents
                 foreach (var control in _muteControls.Keys)
                     UnsubscribeMuteControl(control);
                 _muteControls.Clear();
+                _muteControlsByInput.Clear();
 
                 if (component == null)
                     return;
@@ -53,7 +56,9 @@ namespace QscQsys.NamedComponents
                     string controlName = ControlNameUtils.GetMatrixCrosspointMuteName(input, _output);
                     var control = component.LazyLoadComponentControl(controlName);
                     _muteControls.Add(control, input);
+                    _muteControlsByInput.Add(input, control);
                     SubscribeMuteControl(control);
+                    UpdateState(input, control.State);
                 }
             }
         }
@@ -87,18 +92,28 @@ namespace QscQsys.NamedComponents
                     return;
             }
 
-            bool muted = Math.Abs(args.Value) > QsysCore.TOLERANCE;
+            UpdateState(inputNumber, args.Data);
+        }
+
+        private void UpdateState(int input, QsysStateData state)
+        {
+            bool muted = state.BoolValue;
 
             var callback = newCrossPointMuteChange;
             if (callback != null)
-                callback(args.Name, (ushort)inputNumber, Convert.ToUInt16(muted));
-
+                callback(state.Name, (ushort)input, Convert.ToUInt16(muted));
         }
 
         public void SetCrossPointMute(ushort input, ushort value)
         {
-            string muteControlName = ControlNameUtils.GetMatrixCrosspointMuteName(input, _output);
-            SendComponentChangeDoubleValue(muteControlName, Convert.ToDouble(value));
+            NamedComponentControl control;
+            lock (_muteControls)
+            {
+                if (!_muteControlsByInput.TryGetValue(input, out control))
+                    return;
+            }
+
+            control.SendChangeDoubleValue(Convert.ToDouble(value));
         }
     }
 }

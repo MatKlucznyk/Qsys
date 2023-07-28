@@ -1,6 +1,7 @@
 ﻿using System;
 using Crestron.SimplSharp;
 using QscQsys.Intermediaries;
+using QscQsys.Utils;
 
 namespace QscQsys.NamedComponents
 {
@@ -234,122 +235,84 @@ namespace QscQsys.NamedComponents
 
         public void StartPTZ(PtzTypes type)
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            switch (type)
-            {
-                case PtzTypes.Up:
-                    SendComponentChangeDoubleValue("tilt_up", 1);
-                    break;
-                case PtzTypes.Down:
-                    SendComponentChangeDoubleValue("tilt_down", 1);
-                    break;
-                case PtzTypes.Left:
-                    SendComponentChangeDoubleValue("pan_left", 1);
-                    break;
-                case PtzTypes.Right:
-                    SendComponentChangeDoubleValue("pan_right", 1);
-                    break;
-                case PtzTypes.ZoomIn:
-                    SendComponentChangeDoubleValue("zoom_in", 1);
-                    break;
-                case PtzTypes.ZoomOut:
-                    SendComponentChangeDoubleValue("zoom_out", 1);
-                    break;
-            }
+            string controlName = ControlNameUtils.GetControlNameForPtzType(type);
+            Component.SendChangeDoubleValue(controlName, 1);
         }
 
         public void StopPTZ(PtzTypes type)
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            switch (type)
-            {
-                case PtzTypes.Up:
-                    SendComponentChangeDoubleValue("tilt_up", 0);
-                    break;
-                case PtzTypes.Down:
-                    SendComponentChangeDoubleValue("tilt_down", 0);
-                    break;
-                case PtzTypes.Left:
-                    SendComponentChangeDoubleValue("pan_left", 0);
-                    break;
-                case PtzTypes.Right:
-                    SendComponentChangeDoubleValue("pan_right", 0);
-                    break;
-                case PtzTypes.ZoomIn:
-                    SendComponentChangeDoubleValue("zoom_in", 0);
-                    break;
-                case PtzTypes.ZoomOut:
-                    SendComponentChangeDoubleValue("zoom_out", 0);
-                    break;
-            }
+            string controlName = ControlNameUtils.GetControlNameForPtzType(type);
+            Component.SendChangeDoubleValue(controlName, 0);
         }
 
         public void AutoFocus()
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            SendComponentChangeDoubleValue("focus_auto", 1);
+            Component.SendChangeDoubleValue("focus_auto", 1);
         }
 
         public void FocusNear()
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            SendComponentChangeDoubleValue("focus_near", 1);
+            Component.SendChangeDoubleValue("focus_near", 1);
         }
 
         public void FocusNearStop()
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            SendComponentChangeDoubleValue("focus_near", 0);
+            Component.SendChangeDoubleValue("focus_near", 0);
         }
 
         public void FocusFar()
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            SendComponentChangeDoubleValue("focus_far", 1);
+            Component.SendChangeDoubleValue("focus_far", 1);
         }
 
         public void FocusFarStop()
         {
-            if (IsRegistered)
-            {
-                SendComponentChangeDoubleValue("focus_far", 0);
-            }
+            if (Component == null)
+                return;
+
+            Component.SendChangeDoubleValue("focus_far", 0);
         }
 
         public void RecallHome()
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            SendComponentChangeDoubleValue("preset_home_load", 1);
+            Component.SendChangeDoubleValue("preset_home_load", 1);
         }
 
         public void SaveHome()
         {
-            if (IsRegistered)
-            {
-                SendComponentChangeDoubleValue("preset_home_save_trigger", 1);
-            }
+            if (Component == null)
+                return;
+
+            Component.SendChangeDoubleValue("preset_home_save_trigger", 1);
         }
 
         public void PrivacyToggle(ushort value)
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            SendComponentChangeDoubleValue("toggle_privacy", value);
+            Component.SendChangeDoubleValue("toggle_privacy", value);
         }
 
         public void PrivacyToggle(bool value)
@@ -359,10 +322,10 @@ namespace QscQsys.NamedComponents
 
         public void Brightness(int value)
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            SendComponentChangePosition("img_brightness", QsysCoreManager.ScaleDown(value));
+            Component.SendChangePosition("img_brightness", QsysCoreManager.ScaleDown(value));
         }
 
         public void Brightness(ushort value)
@@ -372,10 +335,10 @@ namespace QscQsys.NamedComponents
 
         public void Saturation(int value)
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            SendComponentChangePosition("img_saturation", QsysCoreManager.ScaleDown(value));
+            Component.SendChangePosition("img_saturation", QsysCoreManager.ScaleDown(value));
         }
 
         public void Saturation(ushort value)
@@ -385,10 +348,10 @@ namespace QscQsys.NamedComponents
 
         public void Sharpness(int value)
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            SendComponentChangePosition("img_sharpness", QsysCoreManager.ScaleDown(value));
+            Component.SendChangePosition("img_sharpness", QsysCoreManager.ScaleDown(value));
         }
 
         public void Sharpness(ushort value)
@@ -398,10 +361,10 @@ namespace QscQsys.NamedComponents
 
         public void Contrast(int value)
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            SendComponentChangePosition("img_contrast", QsysCoreManager.ScaleDown(value));
+            Component.SendChangePosition("img_contrast", QsysCoreManager.ScaleDown(value));
         }
 
         public void Contrast(ushort value)
@@ -411,34 +374,34 @@ namespace QscQsys.NamedComponents
 
         public void ExposureMode(string value)
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            SendComponentChangeStringValue("exp_mode", value);
+            Component.SendChangeStringValue("exp_mode", value);
         }
 
         public void Iris(string value)
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            SendComponentChangeStringValue("exp_iris", value);
+            Component.SendChangeStringValue("exp_iris", value);
         }
 
         public void Shutter(string value)
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            SendComponentChangeStringValue("exp_shutter", value);
+            Component.SendChangeStringValue("exp_shutter", value);
         }
 
         public void Gain(int value)
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            SendComponentChangePosition("exp_gain", QsysCoreManager.ScaleDown(value));
+            Component.SendChangePosition("exp_gain", QsysCoreManager.ScaleDown(value));
         }
 
         public void Gain(ushort value)
@@ -448,26 +411,26 @@ namespace QscQsys.NamedComponents
 
         public void AutoWhiteBalanceMode(string value)
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            SendComponentChangeStringValue("wb_awb_mode", value);
+            Component.SendChangeStringValue("wb_awb_mode", value);
         }
 
         public void AutoWhiteBalanceSensitivity(string value)
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            SendComponentChangeStringValue("wb_awb_sensitivity", value);
+            Component.SendChangeStringValue("wb_awb_sensitivity", value);
         }
 
         public void Hue(int value)
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            SendComponentChangePosition("wb_hue", QsysCoreManager.ScaleDown(value));
+            Component.SendChangePosition("wb_hue", QsysCoreManager.ScaleDown(value));
         }
 
         public void Hue(ushort value)
@@ -477,10 +440,10 @@ namespace QscQsys.NamedComponents
 
         public void RedGain(int value)
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            SendComponentChangePosition("wb_red_gain", QsysCoreManager.ScaleDown(value));
+            Component.SendChangePosition("wb_red_gain", QsysCoreManager.ScaleDown(value));
         }
 
         public void RedGain(ushort value)
@@ -490,10 +453,10 @@ namespace QscQsys.NamedComponents
 
         public void BlueGain(int value)
         {
-            if (!IsRegistered)
+            if (Component == null)
                 return;
 
-            SendComponentChangePosition("wb_blue_gain", QsysCoreManager.ScaleDown(value));
+            Component.SendChangePosition("wb_blue_gain", QsysCoreManager.ScaleDown(value));
         }
 
         public void BlueGain(ushort value)

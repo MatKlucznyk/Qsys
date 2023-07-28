@@ -66,7 +66,7 @@ namespace QscQsys.Intermediaries
 
         #region SendData
 
-        private void SendComponentChangePosition(string method, double position)
+        internal void SendChangePosition(string method, double position)
         {
             var change = new ComponentChange()
             {
@@ -95,7 +95,7 @@ namespace QscQsys.Intermediaries
                                                                                }));
         }
 
-        private void SendComponentChangeDoubleValue(string method, double value)
+        internal void SendChangeDoubleValue(string method, double value)
         {
             var change = new ComponentChange()
             {
@@ -125,7 +125,7 @@ namespace QscQsys.Intermediaries
                                                                                }));
         }
 
-        private void SendComponentChangeStringValue(string method, string value)
+        internal void SendChangeStringValue(string method, string value)
         {
             var change = new ComponentChangeString()
             {

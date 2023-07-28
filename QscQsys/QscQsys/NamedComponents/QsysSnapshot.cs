@@ -94,12 +94,14 @@ namespace QscQsys.NamedComponents
 
         public void LoadSnapshot(ushort number)
         {
-            SendComponentChangeDoubleValue(ControlNameUtils.GetSnapshotLoadControlName(number), 1);
+            if (Component != null)
+                Component.SendChangeDoubleValue(ControlNameUtils.GetSnapshotLoadControlName(number), 1);
         }
 
         public void SaveSnapshot(ushort number)
         {
-            SendComponentChangeDoubleValue(ControlNameUtils.GetSnapshotSaveControlName(number), 1);
+            if (Component != null)
+                Component.SendChangeDoubleValue(ControlNameUtils.GetSnapshotSaveControlName(number), 1);
         }
     }
 }

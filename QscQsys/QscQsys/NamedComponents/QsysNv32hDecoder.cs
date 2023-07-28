@@ -51,7 +51,8 @@ namespace QscQsys.NamedComponents
 
         public void ChangeInput(int source)
         {
-            SendComponentChangeDoubleValue(CONTROL_NAME, source);
+            if (InputControl != null)
+                InputControl.SendChangeDoubleValue(source);
         }
 
         #region Input Control Callbacks

@@ -111,6 +111,68 @@ namespace QscQsys.NamedComponents
             }
         }
 
+        #region S+ Control
+
+        public void ThresholdIncrement()
+        {
+            if (ThresholdControl == null)
+                return;
+
+            double newThreshold = QsysCoreManager.ScaleDown(Math.Min((Threshold + 6553.5), 65535));
+            ThresholdControl.SendChangePosition(newThreshold);
+        }
+
+        public void ThresholdDecrement()
+        {
+            if (ThresholdControl == null)
+                return;
+
+            double newThreshold = QsysCoreManager.ScaleDown(Math.Max(Threshold - 6553.5, 0));
+            ThresholdControl.SendChangePosition(newThreshold);
+        }
+
+        public void HoldTimeIncrement()
+        {
+            if (HoldTimeControl == null)
+                return;
+
+            double newHoldtime = QsysCoreManager.ScaleDown(Math.Min(HoldTime + 6553.5, 65535));
+            HoldTimeControl.SendChangePosition(newHoldtime);
+        }
+
+        public void HoldTimeDecrement()
+        {
+            if (HoldTimeControl == null)
+                return;
+
+            double newHoldtime = QsysCoreManager.ScaleDown(Math.Max(HoldTime - 6553.5, 0));
+            HoldTimeControl.SendChangePosition(newHoldtime);
+        }
+
+        public void InfiniteHold(bool value)
+        {
+            if (InfiniteHoldControl != null)
+                InfiniteHoldControl.SendChangeDoubleValue(Convert.ToDouble(value));
+        }
+
+        public void InfiniteHold(ushort value)
+        {
+            if (Component == null)
+                return;
+
+            switch (value)
+            {
+                case (0):
+                    InfiniteHold(false);
+                    break;
+                case (1):
+                    InfiniteHold(true);
+                    break;
+            }
+        }
+
+        #endregion
+
         #region Threshold Control Callbacks
 
         private void SubscribeThresholdControl(NamedComponentControl thresholdControl)
@@ -236,105 +298,5 @@ namespace QscQsys.NamedComponents
         }
 
         #endregion
-
-        public void ThresholdIncrement()
-        {
-            if (Component == null)
-                return;
-
-            double newThreshold;
-
-            if ((Threshold + 6553.5) <= 65535)
-            {
-                newThreshold = QsysCoreManager.ScaleDown(Threshold + 6553.5);
-            }
-            else
-            {
-                newThreshold = QsysCoreManager.ScaleDown(65535);
-            }
-
-            SendComponentChangePosition("threshold", newThreshold);
-        }
-
-        public void ThresholdDecrement()
-        {
-            if (Component == null)
-                return;
-
-            double newThreshold;
-
-            if ((Threshold - 6553.5) >= 0)
-            {
-                newThreshold = QsysCoreManager.ScaleDown(Threshold - 6553.5);
-            }
-            else
-            {
-                newThreshold = QsysCoreManager.ScaleDown(0);
-            }
-
-            SendComponentChangePosition("threshold", newThreshold);
-        }
-
-        public void HoldTimeIncrement()
-        {
-            if (Component == null)
-                return;
-
-            double newHoldtime;
-
-            if ((HoldTime + 6553.5) <= 65535)
-            {
-                newHoldtime = QsysCoreManager.ScaleDown(HoldTime + 6553.5);
-            }
-            else
-            {
-                newHoldtime = QsysCoreManager.ScaleDown(65535);
-            }
-
-            SendComponentChangePosition("hold_time", newHoldtime);
-        }
-
-        public void HoldTimeDecrement()
-        {
-            if (Component == null)
-                return;
-
-            double newHoldtime;
-
-            if ((HoldTime - 6553.5) >= 0)
-            {
-                newHoldtime = QsysCoreManager.ScaleDown(HoldTime - 6553.5);
-            }
-            else
-            {
-                newHoldtime = QsysCoreManager.ScaleDown(0);
-            }
-
-            SendComponentChangePosition("hold_time", newHoldtime);
-        }
-
-        public void InfiniteHold(bool value)
-        {
-            if (Component == null)
-                return;
-
-            SendComponentChangeDoubleValue("infinite_hold", Convert.ToDouble(value));
-        }
-
-        public void InfiniteHold(ushort value)
-        {
-            if (Component == null)
-                return;
-
-            switch (value)
-            {
-                case (0):
-                    InfiniteHold(false);
-                    break;
-                case (1):
-                    InfiniteHold(true);
-                    break;
-            }
-        }
     }
 }
