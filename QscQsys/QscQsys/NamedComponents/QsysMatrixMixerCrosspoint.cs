@@ -5,7 +5,7 @@ using QscQsys.Utils;
 
 namespace QscQsys.NamedComponents
 {
-    public sealed class QsysMatrixMixerCrosspoint : QsysComponent
+    public sealed class QsysMatrixMixerCrosspoint : AbstractQsysComponent
     {
         public delegate void CrossPointMuteChange(SimplSharpString cName, ushort value);
         public delegate void CrossPointGainChange(SimplSharpString cName, ushort value);

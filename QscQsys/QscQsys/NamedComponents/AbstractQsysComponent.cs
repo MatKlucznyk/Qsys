@@ -5,7 +5,7 @@ using QscQsys.Intermediaries;
 
 namespace QscQsys.NamedComponents
 {
-    public abstract class QsysComponent : IDisposable
+    public abstract class AbstractQsysComponent : IDisposable
     {
         //protected bool _registered;
         //private Component _component;
@@ -33,10 +33,30 @@ namespace QscQsys.NamedComponents
             }
         }
 
-        protected virtual void HandleComponentUpdated(NamedComponent component)
-        { }
+        /// <summary>
+        /// Initialize to be called from concrete's initialize method
+        /// </summary>
+        /// <param name="coreId"></param>
+        /// <param name="componentName"></param>
+        protected void InternalInitialize(string coreId, string componentName)
+        {
+            if (_isInitialized)
+                return;
+
+            _isInitialized = true;
+
+            CoreId = coreId;
+            ComponentName = componentName;
+
+            QsysCoreManager.CoreAdded += QsysCoreManager_CoreAdded;
+
+            RegisterWithCore();
+        }
 
         #region NamedComponent Callbacks
+
+        protected virtual void HandleComponentUpdated(NamedComponent component)
+        { }
 
         private void Subscribe(NamedComponent component)
         {
@@ -60,24 +80,14 @@ namespace QscQsys.NamedComponents
 
         #endregion
 
-        /// <summary>
-        /// Initialize to be called from concrete's initialize method
-        /// </summary>
-        /// <param name="coreId"></param>
-        /// <param name="componentName"></param>
-        protected void InternalInitialize(string coreId, string componentName)
+        #region Core Manger Callbacks
+
+        private void QsysCoreManager_CoreAdded(object sender, CoreEventArgs e)
         {
-            if (_isInitialized)
-                return;
-
-            _isInitialized = true;
-
-            CoreId = coreId;
-            ComponentName = componentName;
-
-            QsysCoreManager.CoreAdded += QsysCoreManager_CoreAdded;
-
-            RegisterWithCore();
+            if (e.CoreId == CoreId)
+            {
+                RegisterWithCore();
+            }
         }
 
         private void RegisterWithCore()
@@ -92,13 +102,9 @@ namespace QscQsys.NamedComponents
             Component = core.LazyLoadNamedComponent(ComponentName);
         }
 
-        private void QsysCoreManager_CoreAdded(object sender, CoreEventArgs e)
-        {
-            if (e.CoreId == CoreId)
-            {
-                RegisterWithCore();
-            }
-        }
+        #endregion
+
+        #region SendData
 
         protected void SendComponentChangePosition(string method, double position)
         {
@@ -199,6 +205,8 @@ namespace QscQsys.NamedComponents
                                                                                        NullValueHandling.Ignore
                                                                                }));
         }
+
+        #endregion
 
         /// <summary>
         /// Clean up of unmanaged resources

@@ -5,7 +5,7 @@ using QscQsys.Intermediaries;
 
 namespace QscQsys.NamedComponents
 {
-    public class QsysRoomCombiner : QsysComponent
+    public class QsysRoomCombiner : AbstractQsysComponent
     {
         public delegate void WallStateChange(SimplSharpString cName, ushort wall, ushort value);
         public delegate void RoomCombinedChange(SimplSharpString cName, ushort room, ushort value);

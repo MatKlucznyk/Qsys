@@ -6,7 +6,7 @@ using QscQsys.Utils;
 
 namespace QscQsys.NamedComponents
 {
-    public class QsysSnapshot : QsysComponent
+    public class QsysSnapshot : AbstractQsysComponent
     {
         public delegate void SnapshotUpdate(SimplSharpString cName, ushort snapshot);
 

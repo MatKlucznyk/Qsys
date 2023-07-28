@@ -5,7 +5,7 @@ using QscQsys.Utils;
 
 namespace QscQsys.NamedComponents
 {
-    public sealed class QsysRouter : QsysComponent
+    public sealed class QsysRouter : AbstractQsysComponent
     {
         public delegate void RouterInputChange(SimplSharpString cName, ushort input);
         public delegate void MuteChange(SimplSharpString cName, ushort value);

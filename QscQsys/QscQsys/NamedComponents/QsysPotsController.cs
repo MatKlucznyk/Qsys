@@ -9,7 +9,7 @@ using QscQsys.Intermediaries;
 
 namespace QscQsys.NamedComponents
 {
-    public class QsysPotsController : QsysComponent
+    public class QsysPotsController : AbstractQsysComponent
     {
         private const string CONTROL_CALL_OFFHOOK = "call_offhook";
         private const string CONTROL_CALL_RINGING = "call_ringing";

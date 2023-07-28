@@ -5,7 +5,7 @@ using QscQsys.Utils;
 
 namespace QscQsys.NamedComponents
 {
-    public sealed class QsysMeter : QsysComponent
+    public sealed class QsysMeter : AbstractQsysComponent
     {
         public delegate void MeterChange(SimplSharpString cName, ushort meterValue);
         public MeterChange onMeterChange { get; set; }

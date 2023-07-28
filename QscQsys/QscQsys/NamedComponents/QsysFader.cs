@@ -5,7 +5,7 @@ using QscQsys.Utils;
 
 namespace QscQsys.NamedComponents
 {
-    public class QsysFader : QsysComponent
+    public class QsysFader : AbstractQsysComponent
     {
         public delegate void VolumeChange(SimplSharpString cName, ushort value);
         public delegate void MuteChange(SimplSharpString cName, ushort value);

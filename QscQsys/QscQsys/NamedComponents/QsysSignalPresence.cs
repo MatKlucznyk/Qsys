@@ -6,7 +6,7 @@ using QscQsys.Utils;
 
 namespace QscQsys.NamedComponents
 {
-    public class QsysSignalPresence : QsysComponent
+    public class QsysSignalPresence : AbstractQsysComponent
     {
         public delegate void SignalPresenceChange(SimplSharpString cName, ushort index, ushort value);
         public delegate void PeakThresholdChange(SimplSharpString cName, SimplSharpString value);

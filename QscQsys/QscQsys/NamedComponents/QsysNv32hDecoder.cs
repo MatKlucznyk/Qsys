@@ -4,7 +4,7 @@ using QscQsys.Intermediaries;
 
 namespace QscQsys.NamedComponents
 {
-    public sealed class QsysNv32hDecoder : QsysComponent
+    public sealed class QsysNv32hDecoder : AbstractQsysComponent
     {
         private const string CONTROL_NAME = "hdmi_out_0_select_index";
 

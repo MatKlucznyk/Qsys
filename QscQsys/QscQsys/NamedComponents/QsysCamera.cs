@@ -4,7 +4,7 @@ using QscQsys.Intermediaries;
 
 namespace QscQsys.NamedComponents
 {
-    public sealed class QsysCamera : QsysComponent
+    public sealed class QsysCamera : AbstractQsysComponent
     {
         public delegate void PrivacyChange(SimplSharpString componentName, ushort privacyValue);
 

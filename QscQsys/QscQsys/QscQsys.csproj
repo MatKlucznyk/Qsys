@@ -86,7 +86,7 @@
     <Compile Include="Json.cs" />
     <Compile Include="QsysBackupCore.cs" />
     <Compile Include="NamedComponents\QsysCamera.cs" />
-    <Compile Include="NamedComponents\QsysComponent.cs" />
+    <Compile Include="NamedComponents\AbstractQsysComponent.cs" />
     <Compile Include="QsysCoreManager.cs" />
     <Compile Include="QsysMatrixMixerApi.cs" />
     <Compile Include="NamedComponents\QsysMatrixMixerCrosspoint.cs" />
