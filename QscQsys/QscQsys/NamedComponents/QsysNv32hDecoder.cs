@@ -2,7 +2,7 @@
 using Crestron.SimplSharp;
 using QscQsys.Intermediaries;
 
-namespace QscQsys
+namespace QscQsys.NamedComponents
 {
     public sealed class QsysNv32hDecoder : QsysComponent
     {

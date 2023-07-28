@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Crestron.SimplSharp;
-using Newtonsoft.Json;
 using ExtensionMethods;
+using Newtonsoft.Json;
 using QscQsys.Intermediaries;
 
-namespace QscQsys
+namespace QscQsys.NamedComponents
 {
     public class QsysPotsController : QsysComponent
     {

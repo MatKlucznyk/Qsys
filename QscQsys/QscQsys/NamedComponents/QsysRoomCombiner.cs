@@ -3,7 +3,7 @@ using System.Linq;
 using Crestron.SimplSharp;
 using QscQsys.Intermediaries;
 
-namespace QscQsys
+namespace QscQsys.NamedComponents
 {
     public class QsysRoomCombiner : QsysComponent
     {

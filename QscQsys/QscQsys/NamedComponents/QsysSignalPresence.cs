@@ -4,7 +4,7 @@ using Crestron.SimplSharp;
 using QscQsys.Intermediaries;
 using QscQsys.Utils;
 
-namespace QscQsys
+namespace QscQsys.NamedComponents
 {
     public class QsysSignalPresence : QsysComponent
     {

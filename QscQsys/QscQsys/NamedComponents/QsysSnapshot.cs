@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using Crestron.SimplSharp;
 using QscQsys.Intermediaries;
 using QscQsys.Utils;
 
-namespace QscQsys
+namespace QscQsys.NamedComponents
 {
     public class QsysSnapshot : QsysComponent
     {

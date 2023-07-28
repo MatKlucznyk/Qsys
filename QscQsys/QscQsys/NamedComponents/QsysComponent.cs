@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using QscQsys.Intermediaries;
 
-namespace QscQsys
+namespace QscQsys.NamedComponents
 {
     public abstract class QsysComponent : IDisposable
     {

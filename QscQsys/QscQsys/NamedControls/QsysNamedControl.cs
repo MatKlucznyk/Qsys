@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using Crestron.SimplSharp;
-using Newtonsoft.Json;
 using ExtensionMethods;
+using Newtonsoft.Json;
 using QscQsys.Intermediaries;
 
-namespace QscQsys
+namespace QscQsys.NamedControls
 {
     public class QsysNamedControl: IDisposable
     {
