@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using Crestron.SimplSharp;
 using ExtensionMethods;
+using JetBrains.Annotations;
 using QscQsys.Intermediaries;
 using QscQsys.Utils;
 
 namespace QscQsys.NamedControls
 {
+    [PublicAPI("S+")]
     public sealed class QsysNamedControl: IDisposable
     {
         public delegate void NamedControlUIntChange(SimplSharpString cName, ushort uIntData);
@@ -15,16 +17,22 @@ namespace QscQsys.NamedControls
         public delegate void NamedControlStringChange(SimplSharpString cNmae, SimplSharpString stringData);
         public delegate void NamdControlListChange(SimplSharpString cName, ushort itemsCount, SimplSharpString xsig);
         public delegate void NamedControlListSelectedItem(ushort index, SimplSharpString name);
+        [PublicAPI("S+")]
         public NamedControlUIntChange newNamedControlUIntChange { get; set; }
+        [PublicAPI("S+")]
         public NamedControlIntChange newNamedControlIntChange { get; set; }
+        [PublicAPI("S+")]
         public NamedControlStringChange newNamedControlStringChange { get; set; }
+        [PublicAPI("S+")]
         public NamdControlListChange newNamedControlListChange { get; set; }
+        [PublicAPI("S+")]
         public NamedControlListSelectedItem newNameControlListSelectedItemChange { get; set; }
 
         private NamedControl _control;
         private bool _disposed;
         private readonly List<string> _listData;
 
+        [PublicAPI]
         public string ControlName { get; private set; }
         private string CoreId { get; set; }
         private bool IsInitialized { get; set; }
@@ -53,6 +61,7 @@ namespace QscQsys.NamedControls
             }
         }
 
+        [PublicAPI("S+")]
         public void Initialize(string coreId, string name, ushort type)
         {
             if (IsInitialized)
@@ -76,6 +85,7 @@ namespace QscQsys.NamedControls
 
         #region Set Values
 
+        [PublicAPI("S+")]
         public void SetUnsignedInteger(ushort value, ushort scaled)
         {
             if (Control == null)
@@ -87,6 +97,7 @@ namespace QscQsys.NamedControls
                 Control.SendChangeDoubleValue(value);
         }
 
+        [PublicAPI("S+")]
         public void SetSignedInteger(int value, ushort scaled)
         {
             if (Control == null)
@@ -98,6 +109,7 @@ namespace QscQsys.NamedControls
                 Control.SendChangeDoubleValue(value);
         }
 
+        [PublicAPI("S+")]
         public void SetBoolean(ushort value)
         {
             if (Control == null)
@@ -106,12 +118,25 @@ namespace QscQsys.NamedControls
             Control.SendChangeBoolValue(value.BoolFromSplus());
         }
 
+        [PublicAPI("S+")]
         public void SetString(string value)
         {
             if (Control == null)
                 return;
 
             Control.SendChangeStringValue(value);
+        }
+
+        [PublicAPI("S+")]
+        public void SelectListItem(int index)
+        {
+            if (Control == null)
+                return;
+
+            if (index < 0 || index > _listData.Count)
+                return;
+
+            Control.SendChangeStringValue(_listData[index]);
         }
 
         #endregion
@@ -188,17 +213,6 @@ namespace QscQsys.NamedControls
             var stringCallback = newNamedControlStringChange;
             if (stringCallback != null)
                 stringCallback(ControlName, state.StringValue);
-        }
-
-        public void SelectListItem(int index)
-        {
-            if (Control == null)
-                return;
-
-            if (index < 0 || index > _listData.Count)
-                return;
-
-            Control.SendChangeStringValue(_listData[index]);
         }
 
         #endregion

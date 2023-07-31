@@ -1,10 +1,12 @@
 ﻿using System;
 using Crestron.SimplSharp;
+using JetBrains.Annotations;
 using QscQsys.Intermediaries;
 using QscQsys.Utils;
 
 namespace QscQsys.NamedComponents
 {
+    [PublicAPI("S+")]
     public sealed class QsysCamera : AbstractQsysComponent
     {
         public delegate void PrivacyChange(SimplSharpString componentName, ushort privacyValue);
@@ -37,20 +39,35 @@ namespace QscQsys.NamedComponents
 
         public delegate void AutoFocusChange(SimplSharpString componentName, ushort value);
 
+        [PublicAPI("S+")]
         public PrivacyChange onPrivacyChange { get; set; }
+        [PublicAPI("S+")]
         public BrightnessChange onBrightnessChange { get; set; }
+        [PublicAPI("S+")]
         public SaturationChange onSaturationChange { get; set; }
+        [PublicAPI("S+")]
         public SharpnessChange onSharpnessChange { get; set; }
+        [PublicAPI("S+")]
         public ContrastChange onContrastChange { get; set; }
+        [PublicAPI("S+")]
         public ExposureModeChange onExposureModeChange { get; set; }
+        [PublicAPI("S+")]
         public IrisChange onIrisChange { get; set; }
+        [PublicAPI("S+")]
         public ShutterChange onShutterChange { get; set; }
+        [PublicAPI("S+")]
         public GainChange onGainChange { get; set; }
+        [PublicAPI("S+")]
         public AutoWhiteBalanceSensitivityChange onAutoWhiteBalanceSensitivityChange { get; set; }
+        [PublicAPI("S+")]
         public AutoWhiteBalanceModeChange onAutoWhiteBalanceModeChange { get; set; }
+        [PublicAPI("S+")]
         public WhiteBalanceHueChange onWhiteBalanceHueChange { get; set; }
+        [PublicAPI("S+")]
         public WhiteBalanceRedGainChange onWhiteBalanceRedGainChange { get; set; }
+        [PublicAPI("S+")]
         public WhiteBalanceBlueGainChange onWhiteBalanceBlueGainChange { get; set; }
+        [PublicAPI("S+")]
         public AutoFocusChange onAutoFocusChange { get; set; }
 
 
