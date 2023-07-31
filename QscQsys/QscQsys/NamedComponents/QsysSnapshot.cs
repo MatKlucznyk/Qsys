@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
 using Crestron.SimplSharp;
 using QscQsys.Intermediaries;
@@ -82,7 +82,7 @@ namespace QscQsys.NamedComponents
                     return;
             }
 
-            bool state = Math.Abs(args.Position - 1.0) < QsysCore.TOLERANCE;
+            bool state = args.BoolValue;
 
             var callback = state ? onRecalledSnapshot : onUnrecalledSnapshot;
             if (callback != null)

@@ -17,19 +17,6 @@ namespace QscQsys.Intermediaries
             _component = component;
         }
 
-        public ControlName ToControlName()
-        {
-            return ControlName.Instantiate(Name);
-        }
-
-        public static NamedComponentControl Create(string name, NamedComponent component,
-                                                   out Action<QsysStateData> updateCallback)
-        {
-            var control = new NamedComponentControl(name, component);
-            updateCallback = control.StateChanged;
-            return control;
-        }
-
         #region Send Data
 
         public override void SendChangePosition(double position)
@@ -54,11 +41,11 @@ namespace QscQsys.Intermediaries
             };
 
             Component.Core.Enqueue(JsonConvert.SerializeObject(change, Formatting.None,
-                                                                               new JsonSerializerSettings
-                                                                               {
-                                                                                   NullValueHandling =
-                                                                                       NullValueHandling.Ignore
-                                                                               }));
+                                                               new JsonSerializerSettings
+                                                               {
+                                                                   NullValueHandling =
+                                                                       NullValueHandling.Ignore
+                                                               }));
         }
 
         public override void SendChangeDoubleValue(double value)
@@ -87,11 +74,11 @@ namespace QscQsys.Intermediaries
             };
 
             Component.Core.Enqueue(JsonConvert.SerializeObject(change, Formatting.None,
-                                                                               new JsonSerializerSettings
-                                                                               {
-                                                                                   NullValueHandling =
-                                                                                       NullValueHandling.Ignore
-                                                                               }));
+                                                               new JsonSerializerSettings
+                                                               {
+                                                                   NullValueHandling =
+                                                                       NullValueHandling.Ignore
+                                                               }));
         }
 
         public override void SendChangeStringValue(string value)
@@ -122,13 +109,26 @@ namespace QscQsys.Intermediaries
             };
 
             Component.Core.Enqueue(JsonConvert.SerializeObject(change, Formatting.None,
-                                                                               new JsonSerializerSettings
-                                                                               {
-                                                                                   NullValueHandling =
-                                                                                       NullValueHandling.Ignore
-                                                                               }));
+                                                               new JsonSerializerSettings
+                                                               {
+                                                                   NullValueHandling =
+                                                                       NullValueHandling.Ignore
+                                                               }));
         }
 
         #endregion
+
+        public ControlName ToControlName()
+        {
+            return ControlName.Instantiate(Name);
+        }
+
+        public static NamedComponentControl Create(string name, NamedComponent component,
+                                                   out Action<QsysStateData> updateCallback)
+        {
+            var control = new NamedComponentControl(name, component);
+            updateCallback = control.StateChanged;
+            return control;
+        }
     }
 }

@@ -146,25 +146,25 @@ namespace QscQsys.NamedComponents
                 case CONTROL_IMAGE_BRIGHTNESS:
                     if (onBrightnessChange != null)
                     {
-                        onBrightnessChange(ComponentName, (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
+                        onBrightnessChange(ComponentName, SimplUtils.ScaleToUshort(args.Position));
                     }
                     break;
                 case CONTROL_IMAGE_SATURATION:
                     if (onSaturationChange != null)
                     {
-                        onSaturationChange(ComponentName, (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
+                        onSaturationChange(ComponentName, SimplUtils.ScaleToUshort(args.Position));
                     }
                     break;
                 case CONTROL_IMAGE_SHARPNESS:
                     if (onSharpnessChange != null)
                     {
-                        onSharpnessChange(ComponentName, (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
+                        onSharpnessChange(ComponentName, SimplUtils.ScaleToUshort(args.Position));
                     }
                     break;
                 case CONTROL_IMAGE_CONTRAST:
                     if (onContrastChange != null)
                     {
-                        onContrastChange(ComponentName, (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
+                        onContrastChange(ComponentName, SimplUtils.ScaleToUshort(args.Position));
                     }
                     break;
                 case CONTROL_EXPOSURE_MODE:
@@ -188,7 +188,7 @@ namespace QscQsys.NamedComponents
                 case CONTROL_EXPOSURE_GAIN:
                     if (onGainChange != null)
                     {
-                        onGainChange(ComponentName, (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
+                        onGainChange(ComponentName, SimplUtils.ScaleToUshort(args.Position));
                     }
                     break;
                 case CONTROL_WHITEBALANCE_AUTO_SENSITIVITY:
@@ -206,22 +206,19 @@ namespace QscQsys.NamedComponents
                 case CONTROL_WHITEBALANCE_HUE:
                     if (onWhiteBalanceHueChange != null)
                     {
-                        onWhiteBalanceHueChange(ComponentName,
-                                                (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
+                        onWhiteBalanceHueChange(ComponentName,SimplUtils.ScaleToUshort(args.Position));
                     }
                     break;
                 case CONTROL_WHITEBALANCE_GAIN_RED:
                     if (onWhiteBalanceRedGainChange != null)
                     {
-                        onWhiteBalanceRedGainChange(ComponentName,
-                                                    (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
+                        onWhiteBalanceRedGainChange(ComponentName,SimplUtils.ScaleToUshort(args.Position));
                     }
                     break;
                 case CONTROL_WHITEBALANCE_GAIN_BLUE:
                     if (onWhiteBalanceBlueGainChange != null)
                     {
-                        onWhiteBalanceBlueGainChange(ComponentName,
-                                                     (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position)));
+                        onWhiteBalanceBlueGainChange(ComponentName,SimplUtils.ScaleToUshort(args.Position));
                     }
                     break;
                 case CONTROL_FOCUS_AUTO:
@@ -320,56 +317,36 @@ namespace QscQsys.NamedComponents
             PrivacyToggle(Convert.ToUInt16(value));
         }
 
-        public void Brightness(int value)
-        {
-            if (Component == null)
-                return;
-
-            Component.SendChangePosition("img_brightness", QsysCoreManager.ScaleDown(value));
-        }
-
         public void Brightness(ushort value)
         {
-            Brightness((int)value);
-        }
-
-        public void Saturation(int value)
-        {
             if (Component == null)
                 return;
 
-            Component.SendChangePosition("img_saturation", QsysCoreManager.ScaleDown(value));
+            Component.SendChangePosition("img_brightness", SimplUtils.ScaleToDouble(value));
         }
 
         public void Saturation(ushort value)
         {
-            Saturation((int)value);
-        }
-
-        public void Sharpness(int value)
-        {
             if (Component == null)
                 return;
 
-            Component.SendChangePosition("img_sharpness", QsysCoreManager.ScaleDown(value));
+            Component.SendChangePosition("img_saturation", SimplUtils.ScaleToDouble(value));
         }
 
         public void Sharpness(ushort value)
         {
-            Sharpness((int)value);
-        }
-
-        public void Contrast(int value)
-        {
             if (Component == null)
                 return;
 
-            Component.SendChangePosition("img_contrast", QsysCoreManager.ScaleDown(value));
+            Component.SendChangePosition("img_sharpness", SimplUtils.ScaleToDouble(value));
         }
 
         public void Contrast(ushort value)
         {
-            Contrast((int)value);
+            if (Component == null)
+                return;
+
+            Component.SendChangePosition("img_contrast", SimplUtils.ScaleToDouble(value));
         }
 
         public void ExposureMode(string value)
@@ -396,17 +373,12 @@ namespace QscQsys.NamedComponents
             Component.SendChangeStringValue("exp_shutter", value);
         }
 
-        public void Gain(int value)
+        public void Gain(ushort value)
         {
             if (Component == null)
                 return;
 
-            Component.SendChangePosition("exp_gain", QsysCoreManager.ScaleDown(value));
-        }
-
-        public void Gain(ushort value)
-        {
-            Gain((int)value);
+            Component.SendChangePosition("exp_gain", SimplUtils.ScaleToDouble(value));
         }
 
         public void AutoWhiteBalanceMode(string value)
@@ -425,43 +397,28 @@ namespace QscQsys.NamedComponents
             Component.SendChangeStringValue("wb_awb_sensitivity", value);
         }
 
-        public void Hue(int value)
-        {
-            if (Component == null)
-                return;
-
-            Component.SendChangePosition("wb_hue", QsysCoreManager.ScaleDown(value));
-        }
-
         public void Hue(ushort value)
         {
-            Hue((int)value);
-        }
-
-        public void RedGain(int value)
-        {
             if (Component == null)
                 return;
 
-            Component.SendChangePosition("wb_red_gain", QsysCoreManager.ScaleDown(value));
+            Component.SendChangePosition("wb_hue", SimplUtils.ScaleToDouble(value));
         }
 
         public void RedGain(ushort value)
         {
-            RedGain((int)value);
-        }
-
-        public void BlueGain(int value)
-        {
             if (Component == null)
                 return;
 
-            Component.SendChangePosition("wb_blue_gain", QsysCoreManager.ScaleDown(value));
+            Component.SendChangePosition("wb_red_gain", SimplUtils.ScaleToDouble(value));
         }
 
         public void BlueGain(ushort value)
         {
-            BlueGain((int)value);
+            if (Component == null)
+                return;
+
+            Component.SendChangePosition("wb_blue_gain", SimplUtils.ScaleToDouble(value));
         }
 
         public void TiltUp()

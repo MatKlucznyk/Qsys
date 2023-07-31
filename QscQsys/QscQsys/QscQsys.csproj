@@ -105,6 +105,7 @@
     <Compile Include="NamedComponents\QsysSoftphoneController.cs" />
     <Compile Include="NamedControls\QsysNamedControl.cs" />
     <Compile Include="Utils\ControlNameUtils.cs" />
+    <Compile Include="Utils\SimplUtils.cs" />
     <None Include="Properties\ControlSystem.cfg" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />

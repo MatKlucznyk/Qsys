@@ -30,6 +30,11 @@ namespace QscQsys.Intermediaries
         public abstract void SendChangeDoubleValue(double value);
         public abstract void SendChangeStringValue(string value);
 
+        public virtual void SendChangeBoolValue(bool value)
+        {
+            SendChangeDoubleValue(value ? 1 : 0);
+        }
+
         public abstract QsysCore Core { get; }
 
         protected AbstractIntermediaryControl(string name)

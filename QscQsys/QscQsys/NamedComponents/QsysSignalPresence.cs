@@ -8,6 +8,8 @@ namespace QscQsys.NamedComponents
 {
     public class QsysSignalPresence : AbstractQsysComponent
     {
+        private const int INCREMENT_VALUE = 6553;
+
         public delegate void SignalPresenceChange(SimplSharpString cName, ushort index, ushort value);
         public delegate void PeakThresholdChange(SimplSharpString cName, SimplSharpString value);
         public delegate void HoldTimeChange(SimplSharpString cName, SimplSharpString value);
@@ -118,7 +120,7 @@ namespace QscQsys.NamedComponents
             if (ThresholdControl == null)
                 return;
 
-            double newThreshold = QsysCoreManager.ScaleDown(Math.Min((Threshold + 6553.5), 65535));
+            double newThreshold = SimplUtils.ScaleToDouble(Math.Min((Threshold + INCREMENT_VALUE), ushort.MaxValue));
             ThresholdControl.SendChangePosition(newThreshold);
         }
 
@@ -127,7 +129,7 @@ namespace QscQsys.NamedComponents
             if (ThresholdControl == null)
                 return;
 
-            double newThreshold = QsysCoreManager.ScaleDown(Math.Max(Threshold - 6553.5, 0));
+            double newThreshold = SimplUtils.ScaleToDouble(Math.Max(Threshold - INCREMENT_VALUE, ushort.MinValue));
             ThresholdControl.SendChangePosition(newThreshold);
         }
 
@@ -136,7 +138,7 @@ namespace QscQsys.NamedComponents
             if (HoldTimeControl == null)
                 return;
 
-            double newHoldtime = QsysCoreManager.ScaleDown(Math.Min(HoldTime + 6553.5, 65535));
+            double newHoldtime = SimplUtils.ScaleToDouble(Math.Min(HoldTime + INCREMENT_VALUE, ushort.MaxValue));
             HoldTimeControl.SendChangePosition(newHoldtime);
         }
 
@@ -145,7 +147,7 @@ namespace QscQsys.NamedComponents
             if (HoldTimeControl == null)
                 return;
 
-            double newHoldtime = QsysCoreManager.ScaleDown(Math.Max(HoldTime - 6553.5, 0));
+            double newHoldtime = SimplUtils.ScaleToDouble(Math.Max(HoldTime - INCREMENT_VALUE, ushort.MinValue));
             HoldTimeControl.SendChangePosition(newHoldtime);
         }
 
@@ -193,7 +195,7 @@ namespace QscQsys.NamedComponents
 
         private void ThresholdControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
         {
-            Threshold = (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position));
+            Threshold = SimplUtils.ScaleToUshort(args.Position);
 
             var callback = newPeakThresholdChange;
             if (callback != null)
@@ -222,7 +224,7 @@ namespace QscQsys.NamedComponents
 
         private void HoldTimeControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
         {
-            HoldTime = (ushort)Math.Round(QsysCoreManager.ScaleUp(args.Position));
+            HoldTime = SimplUtils.ScaleToUshort(args.Position);
 
             var callback = newHoldTimeChange;
             if (callback != null)
@@ -251,11 +253,11 @@ namespace QscQsys.NamedComponents
 
         private void InfiniteHoldControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
         {
-            InfiniteHoldValue = Convert.ToBoolean(args.Value);
+            InfiniteHoldValue = args.BoolValue;
 
             var callback = newInfiniteHoldChange;
             if (callback != null)
-                callback(ComponentName, Convert.ToUInt16(args.Value));
+                callback(ComponentName, InfiniteHoldValue.BoolToSplus());
         }
 
         #endregion
@@ -294,7 +296,7 @@ namespace QscQsys.NamedComponents
 
             var callback = newSignalPresenceChange;
             if (callback != null)
-                callback(ComponentName, (ushort)index, Convert.ToUInt16(args.Value));
+                callback(ComponentName, (ushort)index, args.BoolValue.BoolToSplus());
         }
 
         #endregion

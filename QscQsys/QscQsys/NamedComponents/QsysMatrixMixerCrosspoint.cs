@@ -1,5 +1,4 @@
-﻿using System;
-using Crestron.SimplSharp;
+﻿using Crestron.SimplSharp;
 using QscQsys.Intermediaries;
 using QscQsys.Utils;
 
@@ -89,13 +88,13 @@ namespace QscQsys.NamedComponents
         public void SetCrossPointMute(ushort value)
         {
             if (MuteControl != null)
-                MuteControl.SendChangeDoubleValue(Convert.ToDouble(value));
+                MuteControl.SendChangeBoolValue(value.BoolFromSplus());
         }
 
         public void SetCrossPointGain(ushort value)
         {
             if (GainControl != null)
-                GainControl.SendChangePosition(QsysCoreManager.ScaleDown(value));
+                GainControl.SendChangePosition(SimplUtils.ScaleToDouble(value));
         }
 
         #region Mute Control Callbacks
@@ -120,7 +119,7 @@ namespace QscQsys.NamedComponents
         {
             var callback = newCrossPointMuteChange;
             if (callback != null)
-                callback(MuteControlName, Convert.ToUInt16(args.Value));
+                callback(MuteControlName, args.BoolValue.BoolToSplus());
         }
 
         #endregion
@@ -147,7 +146,7 @@ namespace QscQsys.NamedComponents
         {
             var callback = newCrossPointGainChange;
             if (callback != null)
-                callback(GainControlName, Convert.ToUInt16(QsysCoreManager.ScaleUp(args.Position)));
+                callback(GainControlName, SimplUtils.ScaleToUshort(args.Position));
         }
 
         #endregion

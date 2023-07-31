@@ -97,11 +97,9 @@ namespace QscQsys.NamedComponents
 
         private void UpdateState(int input, QsysStateData state)
         {
-            bool muted = state.BoolValue;
-
             var callback = newCrossPointMuteChange;
             if (callback != null)
-                callback(state.Name, (ushort)input, Convert.ToUInt16(muted));
+                callback(state.Name, (ushort)input, state.BoolValue.BoolToSplus());
         }
 
         public void SetCrossPointMute(ushort input, ushort value)
@@ -113,7 +111,7 @@ namespace QscQsys.NamedComponents
                     return;
             }
 
-            control.SendChangeDoubleValue(Convert.ToDouble(value));
+            control.SendChangeBoolValue(value.BoolFromSplus());
         }
     }
 }

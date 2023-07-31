@@ -61,7 +61,7 @@ namespace QscQsys.NamedComponents
                 _wallState[Convert.ToInt16(wall[1]) - 1] = Convert.ToBoolean(args.Value);
 
                 if (onWallStateChange != null)
-                    onWallStateChange(ComponentName, Convert.ToUInt16(wall[1]), Convert.ToUInt16(args.Value));
+                    onWallStateChange(ComponentName, Convert.ToUInt16(wall[1]), args.BoolValue.BoolToSplus());
             }
             else if (args.Name.Contains("combined"))
             {
@@ -70,7 +70,7 @@ namespace QscQsys.NamedComponents
                 _roomCombined[Convert.ToInt16(room[1]) - 1] = Convert.ToBoolean(args.Value);
 
                 if (onRoomCombinedChange != null)
-                    onRoomCombinedChange(ComponentName, Convert.ToUInt16(room[1]), Convert.ToUInt16(args.Value));
+                    onRoomCombinedChange(ComponentName, Convert.ToUInt16(room[1]), args.BoolValue.BoolToSplus());
             }
         }
 
@@ -88,7 +88,7 @@ namespace QscQsys.NamedComponents
 
         public void SetWall(ushort wall, ushort value)
         {
-            SetWall(wall, Convert.ToBoolean(value));
+            SetWall(wall, value.BoolFromSplus());
         }
     }
 }

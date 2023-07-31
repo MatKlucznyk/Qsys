@@ -82,7 +82,7 @@ namespace QscQsys.NamedComponents
         public void OutputMute(bool value)
         {
             if (MuteControl != null)
-                MuteControl.SendChangeDoubleValue(Convert.ToDouble(value));
+                MuteControl.SendChangeBoolValue(value);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace QscQsys.NamedComponents
         /// <param name="value">The state to set the mute.</param>
         public void OutputMute(ushort value)
         {
-            OutputMute(Convert.ToBoolean(value));
+            OutputMute(value.BoolFromSplus());
         }
 
         #region Input Control Callbacks
@@ -143,11 +143,11 @@ namespace QscQsys.NamedComponents
 
         private void MuteControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
         {
-            _currentMute = Math.Abs(args.Value) > QsysCore.TOLERANCE;
+            _currentMute = args.BoolValue;
 
             var callback = newOutputMuteChange;
             if (callback != null)
-                callback(ComponentName, Convert.ToUInt16(_currentMute));
+                callback(ComponentName, _currentMute.BoolToSplus());
         }
 
         #endregion

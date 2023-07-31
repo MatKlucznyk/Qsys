@@ -70,7 +70,7 @@ namespace QscQsys.NamedComponents
             if (callback == null)
                 return;
 
-            double value = QsysCoreManager.ScaleUp(args.Position);
+            double value = SimplUtils.ScaleToUshort(args.Position);
             callback(ControlNameUtils.GetMeterName(_meterIndex), Convert.ToUInt16(value));
         }
 

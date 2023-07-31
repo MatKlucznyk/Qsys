@@ -1,5 +1,4 @@
-﻿using System;
-using Crestron.SimplSharp;
+﻿using Crestron.SimplSharp;
 using QscQsys.Intermediaries;
 using QscQsys.Utils;
 
@@ -97,7 +96,7 @@ namespace QscQsys.NamedComponents
         {
             if (args.Type == "position" || args.Type == "change")
             {
-                _currentLvl = (int)Math.Round(QsysCoreManager.ScaleUp(args.Position));
+                _currentLvl = SimplUtils.ScaleToUshort(args.Position);
 
                 var callback = newVolumeChange;
                 if (callback != null)
@@ -136,24 +135,14 @@ namespace QscQsys.NamedComponents
 
         private void MuteControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
         {
-            _currentMute = Math.Abs(args.Value) > QsysCore.TOLERANCE;
+            _currentMute = args.BoolValue;
 
             var callback = newMuteChange;
             if (callback != null)
-                callback(ComponentName, Convert.ToUInt16(_currentMute));
+                callback(ComponentName, _currentMute.BoolToSplus());
         }
 
         #endregion
-
-        /// <summary>
-        /// Sets the current volume.
-        /// </summary>
-        /// <param name="value">The volume level to set to.</param>
-        public void Volume(int value)
-        {
-            if (GainControl != null)
-                GainControl.SendChangePosition(QsysCoreManager.ScaleDown(value));
-        }
 
         /// <summary>
         /// Sets the current volume value.
@@ -161,7 +150,8 @@ namespace QscQsys.NamedComponents
         /// <param name="value">Volume value to set the fader to.</param>
         public void Volume(ushort value)
         {
-            this.Volume((int)value);
+            if (GainControl != null)
+                GainControl.SendChangePosition(SimplUtils.ScaleToDouble(value));
         }
 
         public void Decibels(double value)
@@ -172,7 +162,7 @@ namespace QscQsys.NamedComponents
 
         public void Decibels(short value)
         {
-            this.Decibels((double)value);
+            Decibels((double)value);
         }
 
         /// <summary>
@@ -182,7 +172,7 @@ namespace QscQsys.NamedComponents
         public void Mute(bool value)
         {
             if (MuteControl != null)
-                MuteControl.SendChangeDoubleValue(Convert.ToDouble(value));
+                MuteControl.SendChangeBoolValue(value);
         }
 
         /// <summary>
@@ -191,7 +181,7 @@ namespace QscQsys.NamedComponents
         /// <param name="value">The state to set the mute.</param>
         public void Mute(ushort value)
         {
-            Mute(Convert.ToBoolean(value));
+            Mute(value.BoolFromSplus());
         }
 
         protected override void Dispose(bool disposing)

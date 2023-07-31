@@ -4,6 +4,7 @@ using System.Text;
 using Crestron.SimplSharp;
 using ExtensionMethods;
 using QscQsys.Intermediaries;
+using QscQsys.Utils;
 
 namespace QscQsys.NamedControls
 {
@@ -21,15 +22,14 @@ namespace QscQsys.NamedControls
         public NamedControlListSelectedItem newNameControlListSelectedItemChange { get; set; }
 
         private NamedControl _control;
-        private string _coreId;
-        private bool _isInitialized;
-        private bool _isInteger;
-        private bool _isList;
         private bool _disposed;
         private readonly List<string> _listData;
 
         public string ControlName { get; private set; }
-        public bool IsRegistered { get { return Control != null; } }
+        private string CoreId { get; set; }
+        private bool IsInitialized { get; set; }
+        private bool IsInteger { get; set; }
+        private bool IsList { get; set; }
 
         public QsysNamedControl()
         {
@@ -55,19 +55,19 @@ namespace QscQsys.NamedControls
 
         public void Initialize(string coreId, string name, ushort type)
         {
-            if (_isInitialized)
+            if (IsInitialized)
                 return;
-            _isInitialized = true;
+            IsInitialized = true;
             
             ControlName = name;
-            _coreId = coreId;
+            CoreId = coreId;
             if (type == 1)
             {
-                _isInteger = true;
+                IsInteger = true;
             }
             else if (type == 2)
             {
-                _isList = true;
+                IsList = true;
             }
 
             QsysCoreManager.CoreAdded += QsysCoreManager_CoreAdded;
@@ -82,7 +82,7 @@ namespace QscQsys.NamedControls
                 return;
 
             if (scaled == 1)
-                Control.SendChangePosition(QsysCoreManager.ScaleDown(value));
+                Control.SendChangePosition(SimplUtils.ScaleToDouble(value));
             else
                 Control.SendChangeDoubleValue(value);
         }
@@ -93,9 +93,17 @@ namespace QscQsys.NamedControls
                 return;
 
             if (scaled == 1)
-                Control.SendChangePosition(QsysCoreManager.ScaleDown(value));
+                Control.SendChangePosition(SimplUtils.ScaleToDouble(value));
             else
                 Control.SendChangeDoubleValue(value);
+        }
+
+        public void SetBoolean(ushort value)
+        {
+            if (Control == null)
+                return;
+
+            Control.SendChangeBoolValue(value.BoolFromSplus());
         }
 
         public void SetString(string value)
@@ -106,29 +114,21 @@ namespace QscQsys.NamedControls
             Control.SendChangeStringValue(value);
         }
 
-        public void SetBoolean(int value)
-        {
-            if (Control == null)
-                return;
-
-            Control.SendChangeDoubleValue((double)value);
-        }
-
         #endregion
 
         #region Update States
 
         private void UpdateState(QsysStateData state)
         {
-            if (!_isInteger && !_isList)
+            if (!IsInteger && !IsList)
             {
                 UpdateStringState(state);
             }
-            else if (_isInteger)
+            else if (IsInteger)
             {
                 UpdatateIntegerState(state);
             }
-            else if (_isList)
+            else if (IsList)
             {
                 UpdateListState(state);
             }
@@ -167,7 +167,7 @@ namespace QscQsys.NamedControls
                 case "position":
 
                     if (positionCallback != null)
-                        positionCallback(ControlName, (ushort)Math.Round(QsysCoreManager.ScaleUp(state.Position)));
+                        positionCallback(ControlName, SimplUtils.ScaleToUshort(state.Position));
                     break;
                 case "value":
 
@@ -176,7 +176,7 @@ namespace QscQsys.NamedControls
                     break;
                 case "change":
                     if (positionCallback != null)
-                        positionCallback(ControlName, (ushort)Math.Round(QsysCoreManager.ScaleUp(state.Position)));
+                        positionCallback(ControlName, SimplUtils.ScaleToUshort(state.Position));
                     if (valueCallback != null)
                         valueCallback(ControlName, (short)state.Value);
                     break;
@@ -232,7 +232,7 @@ namespace QscQsys.NamedControls
 
         void QsysCoreManager_CoreAdded(object sender, CoreEventArgs e)
         {
-            if (e.CoreId == _coreId)
+            if (e.CoreId == CoreId)
                 RegisterWithCore();
         }
 
@@ -241,7 +241,7 @@ namespace QscQsys.NamedControls
             Control = null;
 
             QsysCore core;
-            if (QsysCoreManager.TryGetCore(_coreId, out core))
+            if (QsysCoreManager.TryGetCore(CoreId, out core))
                 Control = core.LazyLoadNamedControl(ControlName);
         }
 

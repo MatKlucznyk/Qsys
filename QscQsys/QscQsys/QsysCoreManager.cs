@@ -83,19 +83,5 @@ namespace QscQsys
             if (handler != null)
                 handler(null, e);
         }
-
-        public static double ScaleUp(double level)
-        {
-            double scaleLevel = level;
-            double levelScaled = (scaleLevel * 65535.0);
-            return levelScaled;
-        }
-
-        public static double ScaleDown(double level)
-        {
-            double scaleLevel = level;
-            double levelScaled = (scaleLevel / 65535.0);
-            return levelScaled;
-        }
     }
 }
