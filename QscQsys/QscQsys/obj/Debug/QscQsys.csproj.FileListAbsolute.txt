@@ -105,3 +105,4 @@ C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\obj\Debug\QscQ
 C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.pdb
 C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\bin\Debug\ExtensionMethods.dll
 C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\bin\Debug\TCPClient.dll
+C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.xml
