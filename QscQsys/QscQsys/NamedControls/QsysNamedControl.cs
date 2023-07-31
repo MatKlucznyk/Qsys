@@ -21,7 +21,6 @@ namespace QscQsys.NamedControls
         public NamedControlListSelectedItem newNameControlListSelectedItemChange { get; set; }
 
         private NamedControl _control;
-        private string _cName;
         private string _coreId;
         private bool _isInitialized;
         private bool _isInteger;
@@ -29,7 +28,7 @@ namespace QscQsys.NamedControls
         private bool _disposed;
         private readonly List<string> _listData;
 
-        public string ComponentName { get { return _cName; } }
+        public string ControlName { get; private set; }
         public bool IsRegistered { get { return Control != null; } }
 
         public QsysNamedControl()
@@ -60,7 +59,7 @@ namespace QscQsys.NamedControls
                 return;
             _isInitialized = true;
             
-            _cName = name;
+            ControlName = name;
             _coreId = coreId;
             if (type == 1)
             {
@@ -153,7 +152,7 @@ namespace QscQsys.NamedControls
                 for (int i = 0; i < _listData.Count; i++)
                 {
                     var encodedBytes = XSig.GetBytes(i + 1, _listData[i]);
-                    listItemCallback(_cName, Convert.ToUInt16(_listData.Count),
+                    listItemCallback(ControlName, Convert.ToUInt16(_listData.Count),
                                      Encoding.GetEncoding(28591).GetString(encodedBytes, 0, encodedBytes.Length));
                 }
             }
@@ -168,18 +167,18 @@ namespace QscQsys.NamedControls
                 case "position":
 
                     if (positionCallback != null)
-                        positionCallback(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(state.Position)));
+                        positionCallback(ControlName, (ushort)Math.Round(QsysCoreManager.ScaleUp(state.Position)));
                     break;
                 case "value":
 
                     if (valueCallback != null)
-                        valueCallback(_cName, (short)state.Value);
+                        valueCallback(ControlName, (short)state.Value);
                     break;
                 case "change":
                     if (positionCallback != null)
-                        positionCallback(_cName, (ushort)Math.Round(QsysCoreManager.ScaleUp(state.Position)));
+                        positionCallback(ControlName, (ushort)Math.Round(QsysCoreManager.ScaleUp(state.Position)));
                     if (valueCallback != null)
-                        valueCallback(_cName, (short)state.Value);
+                        valueCallback(ControlName, (short)state.Value);
                     break;
             }
         }
@@ -188,7 +187,7 @@ namespace QscQsys.NamedControls
         {
             var stringCallback = newNamedControlStringChange;
             if (stringCallback != null)
-                stringCallback(_cName, state.StringValue);
+                stringCallback(ControlName, state.StringValue);
         }
 
         public void SelectListItem(int index)
@@ -234,24 +233,16 @@ namespace QscQsys.NamedControls
         void QsysCoreManager_CoreAdded(object sender, CoreEventArgs e)
         {
             if (e.CoreId == _coreId)
-            {
                 RegisterWithCore();
-            }
         }
 
         private void RegisterWithCore()
         {
-            if (Control != null)
-                return;
+            Control = null;
 
             QsysCore core;
-            if (!QsysCoreManager.TryGetCore(_coreId, out core))
-            {
-                Control = null;
-                return;
-            }
-
-            Control = core.LazyLoadNamedControl(_cName);
+            if (QsysCoreManager.TryGetCore(_coreId, out core))
+                Control = core.LazyLoadNamedControl(ControlName);
         }
 
         #endregion
