@@ -182,7 +182,7 @@ namespace QscQsys.NamedComponents
             if (thresholdControl == null)
                 return;
 
-            thresholdControl.OnFeedbackReceived += ThresholdControlOnFeedbackReceived;
+            thresholdControl.OnStateChanged += ThresholdControlOnStateChanged;
         }
 
         private void UnsubscribeThresholdControl(NamedComponentControl thresholdControl)
@@ -190,10 +190,10 @@ namespace QscQsys.NamedComponents
             if (thresholdControl == null)
                 return;
 
-            thresholdControl.OnFeedbackReceived -= ThresholdControlOnFeedbackReceived;
+            thresholdControl.OnStateChanged -= ThresholdControlOnStateChanged;
         }
 
-        private void ThresholdControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        private void ThresholdControlOnStateChanged(object sender, QsysInternalEventsArgs args)
         {
             Threshold = SimplUtils.ScaleToUshort(args.Position);
 
@@ -211,7 +211,7 @@ namespace QscQsys.NamedComponents
             if (holdTimeControl == null)
                 return;
 
-            holdTimeControl.OnFeedbackReceived += HoldTimeControlOnFeedbackReceived;
+            holdTimeControl.OnStateChanged += HoldTimeControlOnStateChanged;
         }
 
         private void UnsubscribeHoldTimeControl(NamedComponentControl holdTimeControl)
@@ -219,10 +219,10 @@ namespace QscQsys.NamedComponents
             if (holdTimeControl == null)
                 return;
 
-            holdTimeControl.OnFeedbackReceived -= HoldTimeControlOnFeedbackReceived;
+            holdTimeControl.OnStateChanged -= HoldTimeControlOnStateChanged;
         }
 
-        private void HoldTimeControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        private void HoldTimeControlOnStateChanged(object sender, QsysInternalEventsArgs args)
         {
             HoldTime = SimplUtils.ScaleToUshort(args.Position);
 
@@ -240,7 +240,7 @@ namespace QscQsys.NamedComponents
             if (infiniteHoldControl == null)
                 return;
 
-            infiniteHoldControl.OnFeedbackReceived += InfiniteHoldControlOnFeedbackReceived;
+            infiniteHoldControl.OnStateChanged += InfiniteHoldControlOnStateChanged;
         }
 
         private void UnsubscribeInfiniteHoldControl(NamedComponentControl infiniteHoldControl)
@@ -248,10 +248,10 @@ namespace QscQsys.NamedComponents
             if (infiniteHoldControl == null)
                 return;
 
-            infiniteHoldControl.OnFeedbackReceived -= InfiniteHoldControlOnFeedbackReceived;
+            infiniteHoldControl.OnStateChanged -= InfiniteHoldControlOnStateChanged;
         }
 
-        private void InfiniteHoldControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        private void InfiniteHoldControlOnStateChanged(object sender, QsysInternalEventsArgs args)
         {
             InfiniteHoldValue = args.BoolValue;
 
@@ -269,7 +269,7 @@ namespace QscQsys.NamedComponents
             if (signalPresenceControl == null)
                 return;
 
-            signalPresenceControl.OnFeedbackReceived += SignalPresenceControlOnFeedbackReceived;
+            signalPresenceControl.OnStateChanged += SignalPresenceControlOnStateChanged;
         }
 
         private void UnsubscribeSignalPresenceControl(NamedComponentControl signalPresenceControl)
@@ -277,10 +277,10 @@ namespace QscQsys.NamedComponents
             if (signalPresenceControl == null)
                 return;
 
-            signalPresenceControl.OnFeedbackReceived -= SignalPresenceControlOnFeedbackReceived;
+            signalPresenceControl.OnStateChanged -= SignalPresenceControlOnStateChanged;
         }
 
-        private void SignalPresenceControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        private void SignalPresenceControlOnStateChanged(object sender, QsysInternalEventsArgs args)
         {
             var control = sender as NamedComponentControl;
             

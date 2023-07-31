@@ -278,7 +278,7 @@ namespace QscQsys
             if (!component.Subscribe)
                 return;
 
-            var addComponent = QscQsys.AddComponentToChangeGroup.Instantiate(component.ToComponent());
+            var addComponent = QscQsys.AddComponentToChangeGroup.Instantiate(component.ToComponentSubscribeControls());
             Enqueue(JsonConvert.SerializeObject(addComponent));
         }
 
@@ -289,7 +289,7 @@ namespace QscQsys
 
         private void AddControlsToChangeGroup(IEnumerable<NamedControl> controls)
         {
-            var addControls = QscQsys.AddControlToChangeGroup.Instantiate(controls.Select(c => c.Name));
+            var addControls = QscQsys.AddControlToChangeGroup.Instantiate(controls.Where(c => c.Subscribe).Select(c => c.Name));
             Enqueue(JsonConvert.SerializeObject(addControls));
         } 
 
@@ -329,21 +329,130 @@ namespace QscQsys
             }
         }
 
+        private void StartAutoPoll()
+        {
+            if (!_isConnected || _changeGroupCreated)
+                return;
+
+            _changeGroupCreated = true;
+            _commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
+        }
+
+        #endregion
+
+        #region Named Components
+
+        public NamedComponent LazyLoadNamedComponent(string name)
+        {
+            NamedComponent component;
+            lock (_components)
+            {
+                
+                if (_components.TryGetValue(name, out component))
+                    return component;
+
+                Action<QsysStateData> updateCallback;
+                component = NamedComponent.Create(name, this, out updateCallback);
+                _components.Add(name, component);
+                _componentUpdateCallbacks.Add(name, updateCallback);
+                
+            }
+
+            SubscribeComponent(component);
+            AddComponentToChangeGroup(component);
+
+            return component;
+        }
+
+        public bool TryGetNamedComponent(string name, out NamedComponent component)
+        {
+            lock (_components)
+            {
+                return _components.TryGetValue(name, out component);
+            }
+        }
+
+        private bool TryGetNamedComponentUpdateCallback(string name, out Action<QsysStateData> updateCallback)
+        {
+            lock (_components)
+            {
+                return _componentUpdateCallbacks.TryGetValue(name, out updateCallback);
+            }
+        }
+
+        public IEnumerable<NamedComponent> GetNamedComponents()
+        {
+            lock (_components)
+            {
+                return _components.Values.ToArray();
+            }
+        }
+
+        #endregion
+
+        #region Named Component Callbacks
+
+        private void SubscribeComponent(NamedComponent component)
+        {
+            if (component == null)
+                return;
+
+            component.OnComponentControlAdded += ComponentOnComponentControlAdded;
+            component.OnComponentSubscribeChanged += ComponentOnComponentSubscribeChanged;
+        }
+
+        private void UnsubscribeComponent(NamedComponent component)
+        {
+            if (component == null)
+                return;
+
+            component.OnComponentControlAdded -= ComponentOnComponentControlAdded;
+            component.OnComponentSubscribeChanged -= ComponentOnComponentSubscribeChanged;
+        }
+
+        private void ComponentOnComponentControlAdded(object sender, ComponentControlEventArgs args)
+        {
+            if (IsInitialized && args.Control.Subscribe)
+                AddComponentToChangeGroup(args.Control.Component);
+        }
+
+        private void ComponentOnComponentSubscribeChanged(object sender, ComponentControlSubscribeEventArgs args)
+        {
+            if (args.Subscribe)
+                AddComponentToChangeGroup(args.Control.Component);
+        }
+
+        #endregion
+
+        #region Named Controls
+
         public NamedControl LazyLoadNamedControl(string name)
+        {
+            return LazyLoadNamedControl(name, true);
+        }
+
+        public NamedControl LazyLoadNamedControl(string name, bool subscribe)
         {
             NamedControl control;
             lock (_controls)
             {
                 if (_controls.TryGetValue(name, out control))
+                {
+                    // Set subscribe on existing controls (if needed)
+                    if (subscribe)
+                        control.SetSubscribe();
                     return control;
+                }
 
                 Action<QsysStateData> updateCallback;
-                control = NamedControl.Create(name, this, out updateCallback);
+                control = NamedControl.Create(name, this, subscribe, out updateCallback);
                 _controls.Add(name, control);
                 _controlUpdateCallbacks.Add(name, updateCallback);
             }
 
-            AddControlToChangeGroup(control);
+            SubscribeControl(control);
+            if (subscribe)
+                AddControlToChangeGroup(control);
             return control;
         }
 
@@ -371,81 +480,34 @@ namespace QscQsys
             }
         }
 
-        public NamedComponent LazyLoadNamedComponent(string name)
+        #endregion
+
+        #region NamedControlCallbacks
+
+        private void SubscribeControl(NamedControl control)
         {
-            NamedComponent component;
-            lock (_components)
-            {
-                
-                if (_components.TryGetValue(name, out component))
-                    return component;
-
-                Action<QsysStateData> updateCallback;
-                component = NamedComponent.Create(name, this, out updateCallback);
-                _components.Add(name, component);
-                _componentUpdateCallbacks.Add(name, updateCallback);
-                
-            }
-
-            Subscribe(component);
-            AddComponentToChangeGroup(component);
-
-            return component;
-        }
-
-        private void Subscribe(NamedComponent component)
-        {
-            if (component == null)
+            if (control == null)
                 return;
 
-            component.OnComponentControlAdded += ComponentOnComponentControlAdded;
+            control.OnSubscribeChanged += ControlOnSubscribeChanged;
         }
 
-        private void Unsubscribe(NamedComponent component)
+        private void UnsubscribeControl(NamedControl control)
         {
-            if (component == null)
+            if (control == null)
                 return;
 
-            component.OnComponentControlAdded -= ComponentOnComponentControlAdded;
+            control.OnSubscribeChanged -= ControlOnSubscribeChanged;
         }
 
-        private void ComponentOnComponentControlAdded(object sender, ComponentControlEventArgs args)
+        private void ControlOnSubscribeChanged(object sender, BoolEventArgs args)
         {
-            if (IsInitialized)
-                AddComponentToChangeGroup(args.Control.Component);
-        }
-
-        public bool TryGetNamedComponent(string name, out NamedComponent component)
-        {
-            lock (_components)
-            {
-                return _components.TryGetValue(name, out component);
-            }
-        }
-
-        private bool TryGetNamedComponentUpdateCallback(string name, out Action<QsysStateData> updateCallback)
-        {
-            lock (_components)
-            {
-                return _componentUpdateCallbacks.TryGetValue(name, out updateCallback);
-            }
-        }
-
-        public IEnumerable<NamedComponent> GetNamedComponents()
-        {
-            lock (_components)
-            {
-                return _components.Values.ToArray();
-            }
-        }
-
-        private void StartAutoPoll()
-        {
-            if (!_isConnected || _changeGroupCreated)
+            if (!args.Data)
                 return;
 
-            _changeGroupCreated = true;
-            _commandQueue.Enqueue(JsonConvert.SerializeObject(new CreateChangeGroup()));
+            var control = sender as NamedControl;
+            if (control != null)
+                AddControlToChangeGroup(control);
         }
 
         #endregion

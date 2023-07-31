@@ -123,10 +123,11 @@ namespace QscQsys.Intermediaries
             return ControlName.Instantiate(Name);
         }
 
-        public static NamedComponentControl Create(string name, NamedComponent component,
+        public static NamedComponentControl Create(string name, NamedComponent component, bool subscribe,
                                                    out Action<QsysStateData> updateCallback)
         {
             var control = new NamedComponentControl(name, component);
+            control.Subscribe = subscribe;
             updateCallback = control.StateChanged;
             return control;
         }

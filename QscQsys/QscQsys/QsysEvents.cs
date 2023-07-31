@@ -72,6 +72,17 @@ namespace QscQsys
         }
     }
 
+    public sealed class BoolEventArgs : EventArgs
+    {
+        private bool _data;
+        public bool Data { get { return _data; } }
+
+        public BoolEventArgs(bool data)
+        {
+            _data = data;
+        }
+    }
+
     public sealed class CoreEventArgs : EventArgs
     {
         private string _coreId;
@@ -93,6 +104,21 @@ namespace QscQsys
         public ComponentControlEventArgs(NamedComponentControl control)
         {
             _control = control;
+        }
+    }
+
+    public sealed class ComponentControlSubscribeEventArgs : EventArgs
+    {
+        private readonly NamedComponentControl _control;
+        private readonly bool _subscribe;
+
+        public NamedComponentControl Control { get { return _control; } }
+        public bool Subscribe { get { return _subscribe; } }
+
+        public ComponentControlSubscribeEventArgs(NamedComponentControl control, bool subscribe)
+        {
+            _control = control;
+            _subscribe = subscribe;
         }
     }
 }

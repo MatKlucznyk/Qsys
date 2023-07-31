@@ -17,9 +17,10 @@ namespace QscQsys.Intermediaries
             _core = core;
         }
 
-        public static NamedControl Create(string name, QsysCore core, out Action<QsysStateData> updateCallback)
+        public static NamedControl Create(string name, QsysCore core, bool subscribe, out Action<QsysStateData> updateCallback)
         {
             var control = new NamedControl(name, core);
+            control.Subscribe = subscribe;
             updateCallback = control.StateChanged;
             return control;
         }

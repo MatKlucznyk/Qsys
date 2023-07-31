@@ -81,7 +81,7 @@ namespace QscQsys.NamedComponents
             if (gainControl == null)
                 return;
 
-            gainControl.OnFeedbackReceived += GainControlOnFeedbackReceived;
+            gainControl.OnStateChanged += GainControlOnStateChanged;
         }
 
         private void UnsubscribeGainControl(NamedComponentControl gainControl)
@@ -89,10 +89,10 @@ namespace QscQsys.NamedComponents
             if (gainControl == null)
                 return;
 
-            gainControl.OnFeedbackReceived += GainControlOnFeedbackReceived;
+            gainControl.OnStateChanged += GainControlOnStateChanged;
         }
 
-        private void GainControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        private void GainControlOnStateChanged(object sender, QsysInternalEventsArgs args)
         {
             if (args.Type == "position" || args.Type == "change")
             {
@@ -122,7 +122,7 @@ namespace QscQsys.NamedComponents
             if (muteControl == null)
                 return;
 
-            muteControl.OnFeedbackReceived += MuteControlOnFeedbackReceived;
+            muteControl.OnStateChanged += MuteControlOnStateChanged;
         }
 
         private void UnsubscribeMuteControl(NamedComponentControl muteControl)
@@ -130,10 +130,10 @@ namespace QscQsys.NamedComponents
             if (muteControl == null)
                 return;
 
-            muteControl.OnFeedbackReceived += MuteControlOnFeedbackReceived;
+            muteControl.OnStateChanged += MuteControlOnStateChanged;
         }
 
-        private void MuteControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        private void MuteControlOnStateChanged(object sender, QsysInternalEventsArgs args)
         {
             _currentMute = args.BoolValue;
 

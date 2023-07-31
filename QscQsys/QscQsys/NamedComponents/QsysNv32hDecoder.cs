@@ -62,7 +62,7 @@ namespace QscQsys.NamedComponents
             if (inputControl == null)
                 return;
 
-            inputControl.OnFeedbackReceived += InputControlOnFeedbackReceived;
+            inputControl.OnStateChanged += InputControlOnStateChanged;
         }
 
         private void UnsubscribeInputControl(NamedComponentControl inputControl)
@@ -70,10 +70,10 @@ namespace QscQsys.NamedComponents
             if (inputControl == null)
                 return;
 
-            inputControl.OnFeedbackReceived -= InputControlOnFeedbackReceived;
+            inputControl.OnStateChanged -= InputControlOnStateChanged;
         }
 
-        private void InputControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        private void InputControlOnStateChanged(object sender, QsysInternalEventsArgs args)
         {
             _currentSource = Convert.ToInt16(args.Value);
 

@@ -53,7 +53,7 @@ namespace QscQsys.NamedComponents
             if (meter == null)
                 return;
 
-            meter.OnFeedbackReceived += MeterOnFeedbackReceived;
+            meter.OnStateChanged += MeterOnStateChanged;
         }
 
         private void UnsubscribeMeter(NamedComponentControl meter)
@@ -61,10 +61,10 @@ namespace QscQsys.NamedComponents
             if (meter == null)
                 return;
 
-            meter.OnFeedbackReceived += MeterOnFeedbackReceived;
+            meter.OnStateChanged += MeterOnStateChanged;
         }
 
-        private void MeterOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        private void MeterOnStateChanged(object sender, QsysInternalEventsArgs args)
         {
             var callback = onMeterChange;
             if (callback == null)

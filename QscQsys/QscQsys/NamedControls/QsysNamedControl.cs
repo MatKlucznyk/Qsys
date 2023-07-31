@@ -224,7 +224,7 @@ namespace QscQsys.NamedControls
             if (control == null)
                 return;
 
-            control.OnFeedbackReceived += ControlOnFeedbackReceived;
+            control.OnStateChanged += ControlOnStateChanged;
         }
 
         private void Unsubscribe(NamedControl control)
@@ -232,10 +232,10 @@ namespace QscQsys.NamedControls
             if (control == null)
                 return;
 
-            control.OnFeedbackReceived -= ControlOnFeedbackReceived;
+            control.OnStateChanged -= ControlOnStateChanged;
         }
 
-        private void ControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        private void ControlOnStateChanged(object sender, QsysInternalEventsArgs args)
         {
             UpdateState(args.Data);
         }

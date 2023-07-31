@@ -101,7 +101,7 @@ namespace QscQsys.NamedComponents
             if (inputControl == null)
                 return;
 
-            inputControl.OnFeedbackReceived += InputControlOnFeedbackReceived;
+            inputControl.OnStateChanged += InputControlOnStateChanged;
         }
 
         private void UnsubscribeInputControl(NamedComponentControl inputControl)
@@ -109,10 +109,10 @@ namespace QscQsys.NamedComponents
             if (inputControl == null)
                 return;
 
-            inputControl.OnFeedbackReceived -= InputControlOnFeedbackReceived;
+            inputControl.OnStateChanged -= InputControlOnStateChanged;
         }
 
-        private void InputControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        private void InputControlOnStateChanged(object sender, QsysInternalEventsArgs args)
         {
             _currentSelectedInput = Convert.ToInt16(args.Value);
 
@@ -130,7 +130,7 @@ namespace QscQsys.NamedComponents
             if (muteControl == null)
                 return;
 
-            muteControl.OnFeedbackReceived += MuteControlOnFeedbackReceived;
+            muteControl.OnStateChanged += MuteControlOnStateChanged;
         }
 
         private void UnsubscribeMuteControl(NamedComponentControl muteControl)
@@ -138,10 +138,10 @@ namespace QscQsys.NamedComponents
             if (muteControl == null)
                 return;
 
-            muteControl.OnFeedbackReceived -= MuteControlOnFeedbackReceived;
+            muteControl.OnStateChanged -= MuteControlOnStateChanged;
         }
 
-        private void MuteControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        private void MuteControlOnStateChanged(object sender, QsysInternalEventsArgs args)
         {
             _currentMute = args.BoolValue;
 

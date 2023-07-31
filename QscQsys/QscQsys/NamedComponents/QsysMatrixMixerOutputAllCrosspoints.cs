@@ -68,7 +68,7 @@ namespace QscQsys.NamedComponents
             if (control == null)
                 return;
 
-            control.OnFeedbackReceived += ControlOnFeedbackReceived;
+            control.OnStateChanged += ControlOnStateChanged;
         }
 
         private void UnsubscribeMuteControl(NamedComponentControl control)
@@ -76,10 +76,10 @@ namespace QscQsys.NamedComponents
             if (control == null)
                 return;
 
-            control.OnFeedbackReceived -= ControlOnFeedbackReceived;
+            control.OnStateChanged -= ControlOnStateChanged;
         }
 
-        private void ControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        private void ControlOnStateChanged(object sender, QsysInternalEventsArgs args)
         {
             NamedComponentControl control = sender as NamedComponentControl;
             if (control == null)

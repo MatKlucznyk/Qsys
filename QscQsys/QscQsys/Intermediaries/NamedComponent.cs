@@ -26,6 +26,8 @@ namespace QscQsys.Intermediaries
 
         public event EventHandler<ComponentControlEventArgs> OnComponentControlAdded;
 
+        public event EventHandler<ComponentControlSubscribeEventArgs> OnComponentSubscribeChanged;
+
         #endregion
 
         #region Properties
@@ -63,6 +65,16 @@ namespace QscQsys.Intermediaries
             if (TryGetComponentUpdateCallback(state.Name, out updateCallback))
                 updateCallback(state);
         }
+
+        public Component ToComponentSubscribeControls()
+        {
+            return Component.Instantiate(
+                                         Name,
+                                         GetComponentControlsSubscribe().Select(control => control.ToControlName())
+                );
+        }
+
+        #endregion
 
         #region SendData
 
@@ -163,18 +175,29 @@ namespace QscQsys.Intermediaries
 
         public NamedComponentControl LazyLoadComponentControl(string name)
         {
+            return LazyLoadComponentControl(name, true);
+        }
+
+        public NamedComponentControl LazyLoadComponentControl(string name, bool subscribe)
+        {
             NamedComponentControl control;
 
             lock (_controls)
-            {                
+            {
                 if (_controls.TryGetValue(name, out control))
+                {
+                    if (subscribe)
+                        control.SetSubscribe();
                     return control;
+                }
 
                 Action<QsysStateData> updateCallback;
-                control = NamedComponentControl.Create(name, this, out updateCallback);
+                control = NamedComponentControl.Create(name, this, subscribe, out updateCallback);
                 _controls.Add(name, control);
                 _controlUpdateCallbacks.Add(name, updateCallback);
             }
+
+            SubscribeControl(control);
 
             var handler = OnComponentControlAdded;
             if (handler != null)
@@ -207,14 +230,44 @@ namespace QscQsys.Intermediaries
             }
         }
 
+        public IEnumerable<NamedComponentControl> GetComponentControlsSubscribe()
+        {
+            lock (_controls)
+            {
+                return _controls.Values.Where(c => c.Subscribe).ToArray();
+            }
+        } 
+
         #endregion
 
-        public Component ToComponent()
+        #region Control Callbacks
+
+        private void SubscribeControl(NamedComponentControl control)
         {
-            return Component.Instantiate(
-                Name,
-                GetComponentControls().Select(control => control.ToControlName())
-                );
+            if (control == null)
+                return;
+
+            control.OnSubscribeChanged += ControlOnSubscribeChanged;
+        }
+
+        private void UnsubscribeControl(NamedComponentControl control)
+        {
+            if (control == null)
+                return;
+
+            control.OnSubscribeChanged -= ControlOnSubscribeChanged;
+        }
+
+        private void ControlOnSubscribeChanged(object sender, BoolEventArgs args)
+        {
+            var control = sender as NamedComponentControl;
+            
+            if (control == null)
+                return;
+
+            var handler = OnComponentSubscribeChanged;
+            if (handler != null)
+                handler(this, new ComponentControlSubscribeEventArgs(control, args.Data));
         }
 
         #endregion

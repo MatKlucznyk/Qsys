@@ -57,7 +57,7 @@ namespace QscQsys.NamedComponents
             if (snapshotControl == null)
                 return;
 
-            snapshotControl.OnFeedbackReceived += SnapshotControlOnFeedbackReceived;
+            snapshotControl.OnStateChanged += SnapshotControlOnStateChanged;
         }
 
         private void UnsubscribeSnapshotControl(NamedComponentControl snapshotControl)
@@ -65,10 +65,10 @@ namespace QscQsys.NamedComponents
             if (snapshotControl == null)
                 return;
 
-            snapshotControl.OnFeedbackReceived -= SnapshotControlOnFeedbackReceived;
+            snapshotControl.OnStateChanged -= SnapshotControlOnStateChanged;
         }
 
-        private void SnapshotControlOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
+        private void SnapshotControlOnStateChanged(object sender, QsysInternalEventsArgs args)
         {
             var control = sender as NamedComponentControl;
             if (control == null)

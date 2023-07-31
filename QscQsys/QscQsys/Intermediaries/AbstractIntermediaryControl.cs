@@ -3,10 +3,14 @@ namespace QscQsys.Intermediaries
 {
     public abstract class AbstractIntermediaryControl : IQsysIntermediaryControl
     {
-        public event EventHandler<QsysInternalEventsArgs> OnFeedbackReceived;
+        public event EventHandler<QsysInternalEventsArgs> OnStateChanged;
+        public event EventHandler<BoolEventArgs> OnSubscribeChanged;
 
         private readonly string _name;
         private QsysStateData _state;
+        private bool _subscribe;
+
+        public abstract QsysCore Core { get; }
 
         public string Name { get { return _name; } }
 
@@ -20,9 +24,25 @@ namespace QscQsys.Intermediaries
 
                 _state = value;
 
-                var handler = OnFeedbackReceived;
+                var handler = OnStateChanged;
                 if (handler != null)
                     handler(this, new QsysInternalEventsArgs(_state));
+            }
+        }
+
+        public bool Subscribe
+        {
+            get { return _subscribe; }
+            protected set
+            {
+                if (_subscribe == value)
+                    return;
+
+                _subscribe = value;
+
+                var handler = OnSubscribeChanged;
+                if (handler != null)
+                    handler(this, new BoolEventArgs(_subscribe));
             }
         }
 
@@ -30,12 +50,10 @@ namespace QscQsys.Intermediaries
         public abstract void SendChangeDoubleValue(double value);
         public abstract void SendChangeStringValue(string value);
 
-        public virtual void SendChangeBoolValue(bool value)
+        public void SendChangeBoolValue(bool value)
         {
             SendChangeDoubleValue(value ? 1 : 0);
         }
-
-        public abstract QsysCore Core { get; }
 
         protected AbstractIntermediaryControl(string name)
         {
@@ -45,6 +63,12 @@ namespace QscQsys.Intermediaries
         protected void StateChanged(QsysStateData state)
         {
             State = state;
+        }
+
+
+        public void SetSubscribe()
+        {
+            Subscribe = true;
         }
 
     }
