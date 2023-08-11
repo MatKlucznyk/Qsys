@@ -804,42 +804,44 @@ namespace QscQsys
 
         private void CommandQueueDequeue(object o)
         {
+            var externalSendCallback = onSendingCommand;
+
+            if (!_externalConnection && _primaryClient == null)
+                return;
+            if (_externalConnection && externalSendCallback == null)
+                return;
+            if (_commandQueue.IsEmpty)
+                return;
+
             try
             {
-                if (!_commandQueue.IsEmpty)
-                {
-                    var data = _commandQueue.TryToDequeue();
+                string data = _commandQueue.TryToDequeue();
 
-                    if (data != null)
+                if (data == null)
+                    return;
+
+                if (_debug == 2)
+                    CrestronConsole.PrintLine("Command sent -->{0}<--", data);
+
+                if (!_externalConnection)
+                    _primaryClient.SendCommand(data + "\x00");
+                else
+                {
+                    data = data + "\x00";
+                    var xs = data.Chunk(200);
+
+                    foreach (var x in xs)
                     {
                         if (_debug == 2)
-                        {
-                            CrestronConsole.PrintLine("Command sent -->{0}<--", data);
-                        }
-
-                        if (!_externalConnection)
-                            _primaryClient.SendCommand(data + "\x00");
-                        //else if (SendingCommandEvent != null)
-                        //    SendingCommandEvent(this, new SendingCommandEventArgs(data + "\x00"));
-                        else if (onSendingCommand != null)
-                        {
-                            data = data + "\x00";
-                            var xs = data.Chunk(200);
-
-                            foreach (var x in xs)
-                            {
-                                if (_debug == 2)
-                                    CrestronConsole.PrintLine("Command chuck sent externally length={0} -->{1}<--", x.Length, x);
-                                onSendingCommand(_coreId, x);
-                            }
-                        }
+                            CrestronConsole.PrintLine("Command chuck sent externally length={0} -->{1}<--", x.Length, x);
+                        externalSendCallback(_coreId, x);
                     }
                 }
             }
             catch (Exception e)
             {
                 if (_debug > 0)
-                    ErrorLog.Error("Error in QsysProcessor CommandQueueDequeue: {0}", e.Message);
+                    ErrorLog.Exception(string.Format("Error in QsysProcessor CommandQueueDequeue: {0}", e.Message), e);
 
                 _commandQueue.Clear();
             }
