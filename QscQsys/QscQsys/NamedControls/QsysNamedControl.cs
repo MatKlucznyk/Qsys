@@ -145,6 +145,9 @@ namespace QscQsys.NamedControls
 
         private void UpdateState(QsysStateData state)
         {
+            if (state == null)
+                return;
+
             if (!IsInteger && !IsList)
             {
                 UpdateStringState(state);

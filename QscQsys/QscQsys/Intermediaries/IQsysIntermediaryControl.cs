@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace QscQsys.Intermediaries
 {
@@ -7,6 +8,7 @@ namespace QscQsys.Intermediaries
         event EventHandler<QsysInternalEventsArgs> OnStateChanged;
         event EventHandler<BoolEventArgs> OnSubscribeChanged;
 
+        [CanBeNull]
         QsysStateData State { get; }
         bool Subscribe { get; }
 

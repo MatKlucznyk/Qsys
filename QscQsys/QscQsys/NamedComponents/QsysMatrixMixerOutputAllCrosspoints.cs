@@ -97,6 +97,9 @@ namespace QscQsys.NamedComponents
 
         private void UpdateState(int input, QsysStateData state)
         {
+            if (state == null)
+                return;
+
             var callback = newCrossPointMuteChange;
             if (callback != null)
                 callback(state.Name, (ushort)input, state.BoolValue.BoolToSplus());
