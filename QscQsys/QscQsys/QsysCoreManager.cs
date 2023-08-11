@@ -35,16 +35,14 @@ namespace QscQsys
                 lock (_coresLock)
                 {
                     if (!_cores.ContainsKey(core.CoreId))
-                    {
                         _cores.Add(core.CoreId, core);
-
-                        RaiseCoreAdded(new CoreEventArgs(core.CoreId));
-                    }
                 }
+
+                RaiseCoreAdded(new CoreEventArgs(core.CoreId));
             }
             catch (Exception e)
             {
-                ErrorLog.Error("Error in QsysCoreManager AddCore: {0}", e.Message);
+                ErrorLog.Exception(string.Format("Error in QsysCoreManager AddCore: {0}", e.Message), e);
             }
         }
 
@@ -54,26 +52,31 @@ namespace QscQsys
             {
                 lock (_coresLock)
                 {
-                    if(_cores.ContainsKey(core.CoreId))
-                    {
+                    if (_cores.ContainsKey(core.CoreId))
                         _cores.Remove(core.CoreId);
-
-                        RaiseCoreRemoved(new CoreEventArgs(core.CoreId));
-                    }
                 }
+
+                RaiseCoreRemoved(new CoreEventArgs(core.CoreId));
             }
             catch (Exception e)
             {
-                ErrorLog.Error("Error in QsysCoreManager RemoveCore: {0}", e.Message);
+                ErrorLog.Exception(string.Format("Error in QsysCoreManager RemoveCore: {0}", e.Message), e);
             }
         }
 
         private static void RaiseCoreAdded(CoreEventArgs e)
         {
-            var handler = CoreAdded; ;
+            try
+            {
+                var handler = CoreAdded;
 
-            if (handler != null)
-                handler(null, e);
+                if (handler != null)
+                    handler(null, e);
+            }
+            catch (Exception ex)
+            {
+                ErrorLog.Exception("RaiseCoreAdded Exception:", ex);
+            }
         }
 
         private static void RaiseCoreRemoved(CoreEventArgs e)

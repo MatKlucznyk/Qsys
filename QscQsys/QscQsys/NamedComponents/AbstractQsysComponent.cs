@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Crestron.SimplSharp;
 using Newtonsoft.Json;
 using QscQsys.Intermediaries;
 
@@ -85,15 +86,11 @@ namespace QscQsys.NamedComponents
         private void QsysCoreManager_CoreAdded(object sender, CoreEventArgs e)
         {
             if (e.CoreId == CoreId)
-            {
                 RegisterWithCore();
-            }
         }
 
         private void RegisterWithCore()
         {
-            if (Component != null)
-                return;
 
             QsysCore core;
             if (!QsysCoreManager.TryGetCore(CoreId, out core))
