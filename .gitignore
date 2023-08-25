@@ -23,6 +23,7 @@ Log/
 *.vtz
 *.hash
 *.dip
+*.projectinfo
 
 # we are choosing to ignore CEDs and SGDs, as they will be regenerated when the touchpanel is recompiled
 *.ced

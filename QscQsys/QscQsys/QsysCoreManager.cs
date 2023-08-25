@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Crestron.SimplSharp;
 
 namespace QscQsys
 {
-    internal class QsysCoreManager
+    public static class QsysCoreManager
     {
         private static readonly object _coresLock = new object();
-        internal static Dictionary<string, QsysCore> Cores = new Dictionary<string, QsysCore>();
+        private static readonly Dictionary<string, QsysCore> _cores = new Dictionary<string, QsysCore>();
 
-        internal static event EventHandler<CoreAddedEventArgs> CoreAdded;
-        internal static event EventHandler<CoreRemovedEventArgs> CoreRemoved;
+        internal static event EventHandler<CoreEventArgs> CoreAdded;
+        internal static event EventHandler<CoreEventArgs> CoreRemoved;
 
         internal static bool Is3Series
         {
@@ -22,23 +20,29 @@ namespace QscQsys
             }
         }
 
+        public static bool TryGetCore(string coreId, out QsysCore core)
+        {
+            lock (_coresLock)
+            {
+                return _cores.TryGetValue(coreId, out core);
+            }
+        }
+
         internal static void AddCore(QsysCore core)
         {
             try
             {
                 lock (_coresLock)
                 {
-                    if (!Cores.ContainsKey(core.CoreId))
-                    {
-                        Cores.Add(core.CoreId, core);
-
-                        OnCoreAdded(new CoreAddedEventArgs(core.CoreId));
-                    }
+                    if (!_cores.ContainsKey(core.CoreId))
+                        _cores.Add(core.CoreId, core);
                 }
+
+                RaiseCoreAdded(new CoreEventArgs(core.CoreId));
             }
             catch (Exception e)
             {
-                ErrorLog.Error("Error in QsysCoreManager AddCore: {0}", e.Message);
+                ErrorLog.Exception(string.Format("Error in QsysCoreManager AddCore: {0}", e.Message), e);
             }
         }
 
@@ -48,52 +52,39 @@ namespace QscQsys
             {
                 lock (_coresLock)
                 {
-                    if(Cores.ContainsKey(core.CoreId))
-                    {
-                        Cores.Remove(core.CoreId);
-
-                        OnCoreRemoved(new CoreRemovedEventArgs(core.CoreId));
-                    }
+                    if (_cores.ContainsKey(core.CoreId))
+                        _cores.Remove(core.CoreId);
                 }
+
+                RaiseCoreRemoved(new CoreEventArgs(core.CoreId));
             }
             catch (Exception e)
             {
-                ErrorLog.Error("Error in QsysCoreManager RemoveCore: {0}", e.Message);
+                ErrorLog.Exception(string.Format("Error in QsysCoreManager RemoveCore: {0}", e.Message), e);
             }
         }
 
-        private static void OnCoreAdded(CoreAddedEventArgs e)
+        private static void RaiseCoreAdded(CoreEventArgs e)
         {
-            EventHandler<CoreAddedEventArgs> handler = CoreAdded; ;
+            try
+            {
+                var handler = CoreAdded;
+
+                if (handler != null)
+                    handler(null, e);
+            }
+            catch (Exception ex)
+            {
+                ErrorLog.Exception("RaiseCoreAdded Exception:", ex);
+            }
+        }
+
+        private static void RaiseCoreRemoved(CoreEventArgs e)
+        {
+            var handler = CoreRemoved;
 
             if (handler != null)
-            {
                 handler(null, e);
-            }
-        }
-
-        private static void OnCoreRemoved(CoreRemovedEventArgs e)
-        {
-            EventHandler<CoreRemovedEventArgs> handler = CoreRemoved;
-
-            if (handler != null)
-            {
-                handler(null, e);
-            }
-        }
-
-        internal static double ScaleUp(double level)
-        {
-            double scaleLevel = level;
-            double levelScaled = (scaleLevel * 65535.0);
-            return levelScaled;
-        }
-
-        internal static double ScaleDown(double level)
-        {
-            double scaleLevel = level;
-            double levelScaled = (scaleLevel / 65535.0);
-            return levelScaled;
         }
     }
 }

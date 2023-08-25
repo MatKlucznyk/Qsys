@@ -77,27 +77,36 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Annotations.cs" />
+    <Compile Include="Intermediaries\AbstractIntermediaryControl.cs" />
+    <Compile Include="Intermediaries\IQsysIntermediary.cs" />
+    <Compile Include="Intermediaries\IQsysIntermediaryControl.cs" />
+    <Compile Include="Intermediaries\NamedComponent.cs" />
+    <Compile Include="Intermediaries\NamedComponentControl.cs" />
+    <Compile Include="Intermediaries\NamedControl.cs" />
     <Compile Include="Json.cs" />
     <Compile Include="QsysBackupCore.cs" />
-    <Compile Include="QsysCamera.cs" />
-    <Compile Include="QsysComponent.cs" />
+    <Compile Include="NamedComponents\QsysCamera.cs" />
+    <Compile Include="NamedComponents\AbstractQsysComponent.cs" />
     <Compile Include="QsysCoreManager.cs" />
-    <Compile Include="QsysMatrixMixer.cs" />
     <Compile Include="QsysMatrixMixerApi.cs" />
-    <Compile Include="QsysMatrixMixerCrosspoint.cs" />
-    <Compile Include="QsysMeter.cs" />
-    <Compile Include="QsysNv32hDecoder.cs" />
-    <Compile Include="QsysPotsController.cs" />
+    <Compile Include="NamedComponents\QsysMatrixMixerCrosspoint.cs" />
+    <Compile Include="NamedComponents\QsysMatrixMixerOutputAllCrosspoints.cs" />
+    <Compile Include="NamedComponents\QsysMeter.cs" />
+    <Compile Include="NamedComponents\QsysNv32hDecoder.cs" />
+    <Compile Include="NamedComponents\QsysPotsController.cs" />
     <Compile Include="QsysCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QsysEvents.cs" />
-    <Compile Include="QsysFader.cs" />
-    <Compile Include="QsysRoomCombiner.cs" />
-    <Compile Include="QsysRouter.cs" />
-    <Compile Include="QsysSignalPresence.cs" />
-    <Compile Include="QsysSnapshot.cs" />
-    <Compile Include="QsysSoftphoneController.cs" />
-    <Compile Include="QsysNamedControl.cs" />
+    <Compile Include="NamedComponents\QsysFader.cs" />
+    <Compile Include="NamedComponents\QsysRoomCombiner.cs" />
+    <Compile Include="NamedComponents\QsysRouter.cs" />
+    <Compile Include="NamedComponents\QsysSignalPresence.cs" />
+    <Compile Include="NamedComponents\QsysSnapshot.cs" />
+    <Compile Include="NamedComponents\QsysSoftphoneController.cs" />
+    <Compile Include="NamedControls\QsysNamedControl.cs" />
+    <Compile Include="Utils\ControlNameUtils.cs" />
+    <Compile Include="Utils\SimplUtils.cs" />
     <None Include="Properties\ControlSystem.cfg" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />

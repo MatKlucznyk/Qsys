@@ -1,30 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Crestron.SimplSharp;
+using QscQsys.Intermediaries;
 
 namespace QscQsys
 {
-    /// <summary>
-    /// Used only for internal methods.
-    /// </summary>
-    public class QsysInternalEventsArgs : EventArgs
+    public sealed class QsysStateData
     {
-        public string Type;
-        public string Name;
-        public double Value;
-        public double Position;
-        public string SValue;
-        public List<string> Choices;
+        private readonly string _type;
+        private readonly string _name;
+        private readonly double _value;
+        private readonly double _position;
+        private readonly string _stringValue;
+        private readonly List<string> _choices;
 
-        public QsysInternalEventsArgs(string type, string name, double data, double position, string sData, List<string> choices)
+        public string Type { get { return _type; } }
+        public string Name { get { return _name; } }
+        public double Value { get { return _value; } }
+        public double Position {get { return _position; }}
+        public string StringValue {get { return _stringValue; }}
+        public IEnumerable<string> Choices {get { return _choices.ToArray(); }}
+
+        public bool BoolValue
         {
-            this.Type = type;
-            this.Name = name;
-            this.Value = data;
-            this.Position = position;
-            this.SValue = sData;
-            this.Choices = choices;
+            get { return Math.Abs(_value) > QsysCore.TOLERANCE; }
+        }
+
+        public QsysStateData(string type, string name, double value, double position, string stringValue,
+                             IEnumerable<string> choices)
+        {
+            _type = type;
+            _name = name;
+            _value = value;
+            _position = position;
+            _stringValue = stringValue;
+            
+            _choices = new List<string>();
+            if (choices != null)
+                _choices.AddRange(choices);
 
         }
     }
@@ -32,48 +44,81 @@ namespace QscQsys
     /// <summary>
     /// Used only for internal methods.
     /// </summary>
-    internal class InternalEvents
+    public sealed class QsysInternalEventsArgs : EventArgs
     {
-        private event EventHandler<QsysInternalEventsArgs> onNewEvent = delegate { };
+        private readonly QsysStateData _data;
 
-        public event EventHandler<QsysInternalEventsArgs> OnNewEvent
+        public QsysStateData Data { get { return _data; } }
+
+        public string Type { get { return Data.Type; } }
+        public string Name { get { return Data.Name; } }
+
+        public double Value { get { return Data.Value; } }
+
+        public double Position { get { return Data.Position; } }
+        public string StringValue { get { return Data.StringValue; } }
+        public bool BoolValue { get { return Data.BoolValue; } }
+        public IEnumerable<string> Choices { get { return Data.Choices; } }
+
+        public QsysInternalEventsArgs(string type, string name, double data, double position, string sData,
+                                      IEnumerable<string> choices)
+            : this(new QsysStateData(type, name, data, position, sData, choices))
         {
-            add
-            {
-                if (!onNewEvent.GetInvocationList().Contains(value))
-                {
-                    onNewEvent += value;
-                }
-            }
-            remove
-            {
-                onNewEvent -= value;
-            }
         }
 
-        internal void Fire(QsysInternalEventsArgs e)
+        public QsysInternalEventsArgs(QsysStateData data)
         {
-            onNewEvent(null, e);
-        }
-    }
-
-    internal class CoreAddedEventArgs : EventArgs
-    {
-        public string CoreId;
-
-        public CoreAddedEventArgs(string coreId)
-        {
-            this.CoreId = coreId;
+            _data = data;
         }
     }
 
-    internal class CoreRemovedEventArgs : EventArgs
+    public sealed class BoolEventArgs : EventArgs
     {
-        public string CoreId;
+        private bool _data;
+        public bool Data { get { return _data; } }
 
-        public CoreRemovedEventArgs(string coreId)
+        public BoolEventArgs(bool data)
         {
-            this.CoreId = coreId;
+            _data = data;
+        }
+    }
+
+    public sealed class CoreEventArgs : EventArgs
+    {
+        private string _coreId;
+
+        public string CoreId { get { return _coreId; } }
+
+        public CoreEventArgs(string coreId)
+        {
+            _coreId = coreId;
+        }
+    }
+
+    public sealed class ComponentControlEventArgs : EventArgs
+    {
+        private readonly NamedComponentControl _control;
+
+        public NamedComponentControl Control {get { return _control; }}
+
+        public ComponentControlEventArgs(NamedComponentControl control)
+        {
+            _control = control;
+        }
+    }
+
+    public sealed class ComponentControlSubscribeEventArgs : EventArgs
+    {
+        private readonly NamedComponentControl _control;
+        private readonly bool _subscribe;
+
+        public NamedComponentControl Control { get { return _control; } }
+        public bool Subscribe { get { return _subscribe; } }
+
+        public ComponentControlSubscribeEventArgs(NamedComponentControl control, bool subscribe)
+        {
+            _control = control;
+            _subscribe = subscribe;
         }
     }
 }

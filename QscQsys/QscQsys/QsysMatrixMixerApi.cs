@@ -1,35 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Crestron.SimplSharp;
 using Newtonsoft.Json;
 
 namespace QscQsys
 {
     public class QsysMatrixMixerApi
     {
-        private string _cName;
-        private string _coreId;
-        private bool _registered;
+        private bool _initialized;
+        public string CoreId { get; private set; }
+        public QsysCore Core { get; private set; }
+        public string ComponentName { get; private set; }
 
-        public void Initialize(string coreId, string Name)
+        public void Initialize(string coreId, string name)
         {
-            if (!_registered)
-            {
-                this._cName = Name;
-                this._coreId = coreId;
+            if (_initialized)
+                return;
+            _initialized = true;
 
-                QsysCoreManager.CoreAdded += new EventHandler<CoreAddedEventArgs>(QsysCoreManager_CoreAdded);
-            }
+            ComponentName = name;
+            CoreId = coreId;
+
+            QsysCoreManager.CoreAdded += QsysCoreManager_CoreAdded; 
+
+            QsysCore core;
+            if (QsysCoreManager.TryGetCore(CoreId, out core))
+                Core = core;
         }
 
-        void QsysCoreManager_CoreAdded(object sender, CoreAddedEventArgs e)
+        void QsysCoreManager_CoreAdded(object sender, CoreEventArgs args)
         {
-            if (!_registered && e.CoreId == _coreId)
-            {
-                _registered = true;
-            }
+            QsysCore core;
+            if (QsysCoreManager.TryGetCore(CoreId, out core))
+                Core = core;
+            else
+                Core = null;
         }
 
         /// <summary>
@@ -40,22 +43,26 @@ namespace QscQsys
         /// <param name="value">The value of the crosspoint mute.</param>
         public void SetCrossPointMute(string inputs, string outputs, bool value)
         {
-            if (_registered)
-            {
-                var set = new SetCrossPointMute() { Params = new SetCrossPointMuteParams() { Name = _cName, Inputs = inputs, Outputs = outputs, Value = value } };
+            if (Core == null)
+                return;
 
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(set));
-            }
+            var set = new SetCrossPointMute()
+            {
+                Params =
+                    new SetCrossPointMuteParams
+                    {
+                        Name = ComponentName,
+                        Inputs = inputs,
+                        Outputs = outputs,
+                        Value = value
+                    }
+            };
+            Core.Enqueue(JsonConvert.SerializeObject(set));
         }
 
         public void SetCrossPointMute(string inputs, string outputs, ushort value)
         {
-            if (_registered)
-            {
-                var set = new SetCrossPointMute() { Params = new SetCrossPointMuteParams() { Name = _cName, Inputs = inputs, Outputs = outputs, Value = Convert.ToBoolean(value) } };
-
-                QsysCoreManager.Cores[_coreId].Enqueue(JsonConvert.SerializeObject(set));
-            }
+            SetCrossPointMute(inputs, outputs, Convert.ToBoolean(value));
         }
     }
 }
