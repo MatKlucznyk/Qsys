@@ -106,3 +106,17 @@ C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\obj\Debug\QscQ
 C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\bin\Debug\ExtensionMethods.dll
 C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\bin\Debug\TCPClient.dll
 C:\Users\astin\ICDPF\Infrastructure\External\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.xml
+Z:\iporter\Repos\isaaacporter\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.xml
+Z:\iporter\Repos\isaaacporter\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.dll
+Z:\iporter\Repos\isaaacporter\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.pdb
+Z:\iporter\Repos\isaaacporter\Qsys\QscQsys\QscQsys\bin\Debug\ExtensionMethods.dll
+Z:\iporter\Repos\isaaacporter\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpCustomAttributesInterface.dll
+Z:\iporter\Repos\isaaacporter\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpHelperInterface.dll
+Z:\iporter\Repos\isaaacporter\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpNewtonsoft.dll
+Z:\iporter\Repos\isaaacporter\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpReflectionInterface.dll
+Z:\iporter\Repos\isaaacporter\Qsys\QscQsys\QscQsys\bin\Debug\TCPClient.dll
+Z:\iporter\Repos\isaaacporter\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpSQLHelperInterface.dll
+Z:\iporter\Repos\isaaacporter\Qsys\QscQsys\QscQsys\bin\Debug\Newtonsoft.Json.Compact.dll
+Z:\iporter\Repos\isaaacporter\Qsys\QscQsys\QscQsys\obj\Debug\ResolveAssemblyReference.cache
+Z:\iporter\Repos\isaaacporter\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.dll
+Z:\iporter\Repos\isaaacporter\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.pdb
