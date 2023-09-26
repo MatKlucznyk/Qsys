@@ -39,6 +39,8 @@ namespace QscQsys.NamedComponents
 
         public delegate void AutoFocusChange(SimplSharpString componentName, ushort value);
 
+        public delegate void AutoFrameChange(SimplSharpString componentName, ushort autoFrameEnableValue);
+
         [PublicAPI("S+")]
         public PrivacyChange onPrivacyChange { get; set; }
         [PublicAPI("S+")]
@@ -69,6 +71,8 @@ namespace QscQsys.NamedComponents
         public WhiteBalanceBlueGainChange onWhiteBalanceBlueGainChange { get; set; }
         [PublicAPI("S+")]
         public AutoFocusChange onAutoFocusChange { get; set; }
+        [PublicAPI("S+")]
+        public AutoFrameChange onAutoFrameChange { get; set; }
 
 
         private const string CONTROL_TOGGLE_PRIVACY = "toggle_privacy";
@@ -86,6 +90,7 @@ namespace QscQsys.NamedComponents
         private const string CONTROL_WHITEBALANCE_GAIN_RED = "wb_red_gain";
         private const string CONTROL_WHITEBALANCE_GAIN_BLUE = "wb_blue_gain";
         private const string CONTROL_FOCUS_AUTO = "focus_auto";
+        private const string CONTROL_AUTOFRAME_TOGGLE = "autoframe_enable";
 
         private bool _currentPrivacy;
         private ushort _currentBri;
@@ -102,6 +107,7 @@ namespace QscQsys.NamedComponents
         private ushort _currentRed;
         private ushort _currentBlue;
         private ushort _currentAutoFocus;
+        private bool _currentAutoFrame;
 
         public bool PrivacyValue { get { return _currentPrivacy; } }
         public ushort BrightnessValue { get { return _currentBri; } }
@@ -118,6 +124,7 @@ namespace QscQsys.NamedComponents
         public ushort RedGainValue { get { return _currentRed; } }
         public ushort BlueGainValue { get { return _currentBlue; } }
         public ushort AutoFocusValue { get { return _currentAutoFocus; } }
+        public bool AutoFrameValue { get { return _currentAutoFrame; } }
 
         public void Initialize(string coreId, string componentName)
         {
@@ -146,6 +153,7 @@ namespace QscQsys.NamedComponents
             component.LazyLoadComponentControl(CONTROL_WHITEBALANCE_GAIN_RED);
             component.LazyLoadComponentControl(CONTROL_WHITEBALANCE_GAIN_BLUE);
             component.LazyLoadComponentControl(CONTROL_FOCUS_AUTO);
+            component.LazyLoadComponentControl(CONTROL_AUTOFRAME_TOGGLE);
         }
 
         protected override void ComponentOnFeedbackReceived(object sender, QsysInternalEventsArgs args)
@@ -242,6 +250,13 @@ namespace QscQsys.NamedComponents
                     if (onAutoFocusChange != null)
                     {
                         onAutoFocusChange(ComponentName, (ushort)args.Value);
+                    }
+                    break;
+                case CONTROL_AUTOFRAME_TOGGLE:
+                    _currentAutoFrame = Convert.ToBoolean(args.Value);
+                    if (onAutoFrameChange != null)
+                    {
+                        onAutoFrameChange(ComponentName, (ushort)args.Value);
                     }
                     break;
             }
@@ -436,6 +451,19 @@ namespace QscQsys.NamedComponents
                 return;
 
             Component.SendChangePosition("wb_blue_gain", SimplUtils.ScaleToDouble(value));
+        }
+
+        public void AutoFrameToggle(ushort value)
+        {
+            if (Component == null)
+                return;
+
+            Component.SendChangeDoubleValue("autoframe_enable", value);
+        }
+
+        public void AutoFrameToggle(bool value)
+        {
+            PrivacyToggle(Convert.ToUInt16(value));
         }
 
         public void TiltUp()
