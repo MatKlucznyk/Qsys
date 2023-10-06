@@ -16,11 +16,23 @@
             Clean up of unmanaged resources
             </summary>
         </member>
-        <member name="M:QscQsys.NamedComponents.QsysRouter.OutputMute(System.UInt16)">
+        <member name="T:QscQsys.Intermediaries.NamedControl">
             <summary>
-            Sets the current mute state.
+            Acts as an intermediary between the QSys Core and the QsysNamedControls
             </summary>
-            <param name="value">The state to set the mute.</param>
+        </member>
+        <member name="T:QscQsys.Intermediaries.NamedComponent">
+            <summary>
+            Acts as an intermediary between the QSys Core and the QsysNamedControls
+            </summary>
+        </member>
+        <member name="M:QscQsys.QsysMatrixMixerApi.SetCrossPointMute(System.String,System.String,System.Boolean)">
+            <summary>
+            Sets a crosspoint mute ex. *=everything, 1 2 3=channels 1, 2, 3,  1-6=channels 1 through 6, 1-8 !3=channels 1 through 8 except 3, * !3-5=everything but 3 through 5
+            </summary>
+            <param name="inputs">The input channels.</param>
+            <param name="outputs">The output channels.</param>
+            <param name="value">The value of the crosspoint mute.</param>
         </member>
         <member name="M:QscQsys.Utils.SimplUtils.ScaleToUshort(System.Double)">
             <summary>
@@ -50,103 +62,6 @@
             <param name="level"></param>
             <exception cref="T:System.ArgumentOutOfRangeException">If level is below 0 or above 65535</exception>
             <returns></returns>
-        </member>
-        <member name="T:QscQsys.QsysCore">
-            <summary>
-            Q-SYS Core class that manages connection and parses responses to be distributed to components and named control classes
-            </summary>
-        </member>
-        <member name="M:QscQsys.QsysCore.Debug(System.UInt16)">
-            <summary>
-            Set debug mode.
-            </summary>
-            <param name="value">Debug level to set.</param>
-            <remarks>
-            Debug level 0 = off
-            Debug level 1 = Main communications
-            Debug level 2 = Main communications and verbose console
-            </remarks>
-        </member>
-        <member name="M:QscQsys.QsysCore.Initialize(System.String,System.String,System.UInt16,System.String,System.String,System.UInt16)">
-            <summary>
-            Initialzes all methods that are required to setup the class. Connection is established on port 1702.
-            </summary>
-        </member>
-        <member name="M:QscQsys.QsysCore.NewExternalResponse(System.String)">
-            <summary>
-            Enqueue response from SIMPL to be parsed
-            </summary>
-            <param name="response">Response from SIMPL to be parsed</param>
-        </member>
-        <member name="M:QscQsys.QsysCore.Dispose">
-            <summary>
-            Clean up of unmanaged resources
-            </summary>
-        </member>
-        <member name="P:QscQsys.QsysCore.IsInitialized">
-            <summary>
-            Get initialzation status
-            </summary>
-        </member>
-        <member name="P:QscQsys.QsysCore.IsDisposed">
-            <summary>
-            Get disposed status
-            </summary>
-        </member>
-        <member name="P:QscQsys.QsysCore.IsConnected">
-            <summary>
-            Get connection status
-            </summary>
-        </member>
-        <member name="P:QscQsys.QsysCore.IsAuthenticatedIn">
-            <summary>
-            Get authentication status
-            </summary>
-        </member>
-        <member name="P:QscQsys.QsysCore.IsDebugMode">
-            <summary>
-            Get debug mode
-            </summary>
-        </member>
-        <member name="P:QscQsys.QsysCore.MaxLogonAttemps">
-            <summary>
-            Get or set  max logon attempts
-            </summary>
-        </member>
-        <member name="P:QscQsys.QsysCore.IsRedundant">
-            <summary>
-            Get redundant status
-            </summary>
-        </member>
-        <member name="P:QscQsys.QsysCore.IsEmulator">
-            <summary>
-            Get emulator status
-            </summary>
-        </member>
-        <member name="P:QscQsys.QsysCore.DesignName">
-            <summary>
-            Get running design name
-            </summary>
-        </member>
-        <member name="P:QscQsys.QsysCore.CoreId">
-            <summary>
-            Get core ID
-            </summary>
-        </member>
-        <member name="P:QscQsys.QsysCore.Port">
-            <summary>
-            Get or set the network port. If currently connected, changing the port will reconnect with the new port number.
-            </summary>
-        </member>
-        <member name="P:QscQsys.QsysCore.Host">
-            <summary>
-            Get or set the network host address. If currently connectd, changing the host will reconnect with the new host address.
-            </summary>
-        </member>
-        <member name="T:QscQsys.Intermediaries.NamedComponent">
-            <summary>
-            Acts as an intermediary between the QSys Core and the QsysNamedControls
-            </summary>
         </member>
         <member name="T:JetBrains.Annotations.CanBeNullAttribute">
             <summary>
@@ -508,10 +423,11 @@
             <c>System.Web.WebPages.WebPageBase.RenderSection(String)</c>
             </summary>
         </member>
-        <member name="T:QscQsys.Intermediaries.NamedControl">
+        <member name="M:QscQsys.NamedComponents.QsysRouter.OutputMute(System.UInt16)">
             <summary>
-            Acts as an intermediary between the QSys Core and the QsysNamedControls
+            Sets the current mute state.
             </summary>
+            <param name="value">The state to set the mute.</param>
         </member>
         <member name="M:QscQsys.NamedComponents.QsysFader.Volume(System.UInt16)">
             <summary>
@@ -531,18 +447,102 @@
             </summary>
             <param name="value">The state to set the mute.</param>
         </member>
+        <member name="T:QscQsys.QsysCore">
+            <summary>
+            Q-SYS Core class that manages connection and parses responses to be distributed to components and named control classes
+            </summary>
+        </member>
+        <member name="M:QscQsys.QsysCore.Debug(System.UInt16)">
+            <summary>
+            Set debug mode.
+            </summary>
+            <param name="value">Debug level to set.</param>
+            <remarks>
+            Debug level 0 = off
+            Debug level 1 = Main communications
+            Debug level 2 = Main communications and verbose console
+            </remarks>
+        </member>
+        <member name="M:QscQsys.QsysCore.Initialize(System.String,System.String,System.String,System.UInt16,System.String,System.String,System.UInt16)">
+            <summary>
+            Initialzes all methods that are required to setup the class. Connection is established on port 1702.
+            </summary>
+        </member>
+        <member name="M:QscQsys.QsysCore.NewExternalResponse(System.String)">
+            <summary>
+            Enqueue response from SIMPL to be parsed
+            </summary>
+            <param name="response">Response from SIMPL to be parsed</param>
+        </member>
+        <member name="M:QscQsys.QsysCore.Dispose">
+            <summary>
+            Clean up of unmanaged resources
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.IsInitialized">
+            <summary>
+            Get initialzation status
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.IsDisposed">
+            <summary>
+            Get disposed status
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.PrimaryIsConnected">
+            <summary>
+            Get connection status
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.IsAuthenticated">
+            <summary>
+            Get authentication status
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.IsDebugMode">
+            <summary>
+            Get debug mode
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.MaxLogonAttemps">
+            <summary>
+            Get or set  max logon attempts
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.IsRedundant">
+            <summary>
+            Get redundant status
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.IsEmulator">
+            <summary>
+            Get emulator status
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.DesignName">
+            <summary>
+            Get running design name
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.CoreId">
+            <summary>
+            Get core ID
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.Port">
+            <summary>
+            Get or set the network port. If currently connected, changing the port will reconnect with the new port number.
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.PrimaryHost">
+            <summary>
+            Get or set the network host address. If currently connectd, changing the host will reconnect with the new host address.
+            </summary>
+        </member>
         <member name="T:QscQsys.QsysInternalEventsArgs">
             <summary>
             Used only for internal methods.
             </summary>
-        </member>
-        <member name="M:QscQsys.QsysMatrixMixerApi.SetCrossPointMute(System.String,System.String,System.Boolean)">
-            <summary>
-            Sets a crosspoint mute ex. *=everything, 1 2 3=channels 1, 2, 3,  1-6=channels 1 through 6, 1-8 !3=channels 1 through 8 except 3, * !3-5=everything but 3 through 5
-            </summary>
-            <param name="inputs">The input channels.</param>
-            <param name="outputs">The output channels.</param>
-            <param name="value">The value of the crosspoint mute.</param>
         </member>
     </members>
 </doc>

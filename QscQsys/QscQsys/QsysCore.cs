@@ -20,32 +20,53 @@ namespace QscQsys
         public const double TOLERANCE = .1d;
 
         #region Delegates
+
         public delegate void IsLoggedIn(SimplSharpString id, ushort value);
+
         public delegate void IsRegistered(SimplSharpString id, ushort value);
-        public delegate void IsConnectedStatus(SimplSharpString id, ushort value);
-        public delegate void CoreStatus(SimplSharpString id, SimplSharpString designName, ushort isRedundant, ushort isEmulator);
+
+        public delegate void PrimaryIsConnectedStatus(SimplSharpString id, ushort value);
+
+        public delegate void BackupIsConnectedStatus(SimplSharpString id, ushort value);
+
+        public delegate void CoreStatus(
+            SimplSharpString id, SimplSharpString designName, ushort isRedundant, ushort isEmulator);
+
+        public delegate void PrimaryIsActive();
+
+        public delegate void BackupIsActive();
+
         public delegate void SendingCommand(SimplSharpString id, SimplSharpString command);
-        public IsLoggedIn onIsLoggedIn { get; set; }
-        public IsRegistered onIsRegistered { get; set; }
-        public IsConnectedStatus onIsConnected { get; set; }
-        public CoreStatus onNewCoreStatus { get; set; }
-        public SendingCommand onSendingCommand { get; set; }
+
+        public IsLoggedIn OnIsLoggedIn { get; set; }
+        public IsRegistered OnIsRegistered { get; set; }
+        public PrimaryIsConnectedStatus OnPrimaryIsConnected { get; set; }
+        public BackupIsConnectedStatus OnBackupIsConnected { get; set; }
+        public CoreStatus OnNewCoreStatus { get; set; }
+        public PrimaryIsActive OnPrimaryIsActive { get; set; }
+        public BackupIsActive OnBackupIsActive { get; set; }
+        public SendingCommand OnSendingCommand { get; set; }
+
         #endregion
 
         private readonly CrestronQueue<string> _commandQueue = new CrestronQueue<string>(1000);
-        private CTimer _commandQueueTimer;
-        private CTimer _heartbeatTimer;
-        private CTimer _waitForConnection;
+        private readonly CTimer _commandQueueTimer;
+        private readonly CTimer _heartbeatTimer;
+        private readonly CTimer _waitForConnection;
         private TCPClientDevice _primaryClient;
-        private TCPClientDevice _secondaryClient;
-        private StringBuilder _rxData = new StringBuilder();
-        private readonly object _responseLock = new object();
-        private readonly object _parseLock = new object();
+        private TCPClientDevice _backupClient;
+        private StringBuilder _primaryRxData = new StringBuilder();
+        private StringBuilder _backupRxData = new StringBuilder();
+        private readonly object _primaryResponseLock = new object();
+        private readonly object _backupResponseLock = new object();
+        private readonly object _primaryParseLock = new object();
+        private readonly object _backupParseLock = new object();
         private readonly object _initLock = new object();
-        
+
         private readonly CCriticalSection _connectionCritical = new CCriticalSection();
         private bool _isInitialized;
-        private bool _isConnected;
+        private bool _primaryIsConnected;
+        private bool _backupIsConnected;
         private bool _isLoggedIn;
         private bool _disposed;
         private ushort _debug;
@@ -61,13 +82,11 @@ namespace QscQsys
         private string _coreId;
         private string _username;
         private string _password;
-        private string _primaryCoreIpA;
-        private string _backupCoreIpA;
 
         private readonly Dictionary<string, NamedComponent> _components;
-        private readonly Dictionary<string, Action<QsysStateData>>  _componentUpdateCallbacks;
+        private readonly Dictionary<string, Action<QsysStateData>> _componentUpdateCallbacks;
         private readonly Dictionary<string, NamedControl> _controls;
-        private readonly Dictionary<string, Action<QsysStateData>>  _controlUpdateCallbacks;
+        private readonly Dictionary<string, Action<QsysStateData>> _controlUpdateCallbacks;
 
         public QsysCore()
         {
@@ -80,61 +99,103 @@ namespace QscQsys
             _waitForConnection = new CTimer(Initialize, Timeout.Infinite);
         }
 
-
         #region Properties
+
         /// <summary>
         /// Get initialzation status
         /// </summary>
-        public bool IsInitialized { get { return _isInitialized; } }
+        public bool IsInitialized
+        {
+            get { return _isInitialized; }
+        }
 
         /// <summary>
         /// Get disposed status
         /// </summary>
-        public bool IsDisposed { get { return _disposed; } }
+        public bool IsDisposed
+        {
+            get { return _disposed; }
+        }
 
         /// <summary>
         /// Get connection status
         /// </summary>
-        public bool IsConnected { get { return _isConnected; } }
+        public bool PrimaryIsConnected
+        {
+            get { return _primaryIsConnected; }
+        }
+
+        public bool SecondaryIsConnected
+        {
+            get { return _backupIsConnected; }
+        }
 
         /// <summary>
         /// Get authentication status
         /// </summary>
-        public bool IsAuthenticatedIn { get { return _isLoggedIn; } }
+        public bool IsAuthenticated
+        {
+            get { return _isLoggedIn; }
+        }
 
         /// <summary>
         /// Get debug mode
         /// </summary>
-        public ushort IsDebugMode { get { return _debug; } }
+        public ushort IsDebugMode
+        {
+            get { return _debug; }
+        }
 
         /// <summary>
         /// Get or set  max logon attempts
         /// </summary>
-        public ushort MaxLogonAttemps { get { return _maxLogonAttempts; } set { _maxLogonAttempts = value; } }   
+        public ushort MaxLogonAttemps
+        {
+            get { return _maxLogonAttempts; }
+            set { _maxLogonAttempts = value; }
+        }
 
         /// <summary>
         /// Get redundant status
         /// </summary>
-        public bool IsRedundant { get { return _isRedundant; } }
+        public bool IsRedundant
+        {
+            get { return _isRedundant; }
+        }
 
         /// <summary>
         /// Get emulator status
         /// </summary>
-        public bool IsEmulator { get { return _isEmulator; } }
+        public bool IsEmulator
+        {
+            get { return _isEmulator; }
+        }
 
         /// <summary>
         /// Get running design name
         /// </summary>
-        public string DesignName { get { return _designName; } }
+        public string DesignName
+        {
+            get { return _designName; }
+        }
 
-        public bool PrimaryCoreActive { get { return _primaryCoreActive; } }
+        public bool PrimaryCoreActive
+        {
+            get { return _primaryCoreActive; }
+        }
 
-        public bool SecondaryCoreActive { get { return _backupCoreActive; } }
+        public bool BackupCoreActive
+        {
+            get { return _backupCoreActive; }
+        }
 
         /// <summary>
         /// Get core ID
         /// </summary>
-        public string CoreId { get { return _coreId; } }
+        public string CoreId
+        {
+            get { return _coreId; }
+        }
 
         /// <summary>
         /// Set debug mode.
@@ -169,7 +230,7 @@ namespace QscQsys
                     CrestronConsole.PrintLine("********Qsys Running On 4-Series Or Greater********");
                     ErrorLog.Notice("********Qsys Running On 4-Series Or Greater********");
                 }
-                
+
                 if (_debug == 1)
                 {
                     ErrorLog.Notice("Qsys debug level: Main communications");
@@ -181,7 +242,7 @@ namespace QscQsys
                 ErrorLog.Notice("Qsys TCP ID 1710");
             }
 
-            
+
         }
 
         /// <summary>
@@ -189,14 +250,17 @@ namespace QscQsys
         /// </summary>
         public ushort Port
         {
-            get {
-                return _primaryClient == null ? ushort.MinValue : _primaryClient.Port;
-            }
+            get { return _primaryClient == null ? ushort.MinValue : _primaryClient.Port; }
             set
             {
                 if (_primaryClient != null)
                 {
                     _primaryClient.Port = value;
+                }
+
+                if (_backupClient != null)
+                {
+                    _backupClient.Port = value;
                 }
             }
         }
@@ -204,12 +268,9 @@ namespace QscQsys
         /// <summary>
         /// Get or set the network host address. If currently connectd, changing the host will reconnect with the new host address.
         /// </summary>
-        public string Host
+        public string PrimaryHost
         {
-            get
-            {
-                return _primaryClient == null ? string.Empty : _primaryClient.Host;
-            }
+            get { return _primaryClient == null ? string.Empty : _primaryClient.Host; }
             set
             {
                 if (_primaryClient != null)
@@ -219,13 +280,41 @@ namespace QscQsys
             }
         }
 
-        #endregion
+        public string BackupHost
+        {
+            get { return _backupClient == null ? string.Empty : _backupClient.Host; }
+            set
+            {
+                if (_backupClient == null) return;
+                if (_backupClient.Host == string.Empty)
+                {
+                    _backupClient.Host = value;
+                    _backupClient.Connect();
+                    return;
+                }
+
+                _backupClient.Host = value;
+            }
+        }
+
+        public string Username
+        {
+            get { return _username; }
+            set { _username = value; }
+        }
+
+        public string Password
+        {
+            set { _password = value; }
+        }
+
+    #endregion
 
         #region Initialization
         /// <summary>
         /// Initialzes all methods that are required to setup the class. Connection is established on port 1702.
         /// </summary>
-        public void Initialize(string id, string host, ushort port, string username, string password, ushort useExternalConnection)
+        public void Initialize(string id, string primaryHost, string backupHost, ushort port, string username, string password, ushort useExternalConnection)
         {
             lock (_initLock)
             {
@@ -238,32 +327,33 @@ namespace QscQsys
 
                     _externalConnection = Convert.ToBoolean(useExternalConnection);
 
-                    if (username.Length > 0)
-                        _username = username;
-                    else
-                        _username = string.Empty;
+                    _username = username.Length > 0 ? username : string.Empty;
 
-                    if (password.Length > 0)
-                        _password = password;
-                    else
-                        _password = string.Empty;
+                    _password = password.Length > 0 ? password : string.Empty;
 
                     QsysCoreManager.AddCore(this);
 
                     if (_debug > 1)
                         ErrorLog.Notice("QsysProcessor is initializing");
 
-                    if (!_externalConnection)
+                    if (_externalConnection)
                     {
-                        _primaryClient = new TCPClientDevice();
-
-                        _primaryClient.Debug = _debug;
-
-                        _primaryClient.ID = id;
-                        _primaryClient.ConnectionStatus += client_ConnectionStatus;
-                        _primaryClient.ResponseString += client_ResponseString;
-                        _primaryClient.Connect(host, port);
+                        _primaryCoreActive = true;
+                        if (OnPrimaryIsActive != null)
+                            OnPrimaryIsActive();
+                        return;
                     }
+
+                    _primaryClient = new TCPClientDevice {Debug = _debug, ID = id + "-primary"};
+                    _backupClient = new TCPClientDevice {Debug = _debug, ID = id + "-backup"};
+
+                    _primaryClient.ConnectionStatus += primaryClient_ConnectionStatus;
+                    _primaryClient.ResponseString += primaryClient_ResponseString;
+                    _backupClient.ConnectionStatus += backupClient_ConnectionStatus;
+                    _backupClient.ResponseString += backupClient_ResponseString;
+                    _primaryClient.Connect(primaryHost, port);
+                    if(backupHost != string.Empty)
+                        _backupClient.Connect(backupHost, port);
                 }
                 catch (Exception e)
                 {
@@ -297,20 +387,21 @@ namespace QscQsys
         {
             lock (_initLock)
             {
-                if (!_isConnected)
+
+                if(( _primaryCoreActive && !_primaryIsConnected) || (_backupCoreActive && !_backupIsConnected))
                     return;
 
                 var components = GetNamedComponents().ToArray();
                 components.ForEach(AddComponentToChangeGroup);
-                
 
-                if (!_isConnected)
+
+                if ((_primaryCoreActive && !_primaryIsConnected) || (_backupCoreActive && !_backupIsConnected))
                     return;
 
                 var controls = GetNamedControls().ToArray();
                 AddControlsToChangeGroup(controls);
 
-                if (!_isConnected)
+                if ((_primaryCoreActive && !_primaryIsConnected) || (_backupCoreActive && !_backupIsConnected))
                     return;
 
                 if(components.Any() || controls.Any())
@@ -324,14 +415,14 @@ namespace QscQsys
                 _isInitialized = true;
 
 
-                if (onIsRegistered != null)
-                    onIsRegistered(_coreId, 1);
+                if (OnIsRegistered != null)
+                    OnIsRegistered(_coreId, 1);
             }
         }
 
         private void StartAutoPoll()
         {
-            if (!_isConnected || _changeGroupCreated)
+            if (((_primaryCoreActive && !_primaryIsConnected) || (_backupCoreActive && !_backupIsConnected)) || _changeGroupCreated)
                 return;
 
             _changeGroupCreated = true;
@@ -513,55 +604,169 @@ namespace QscQsys
         #endregion
 
         #region TCP Client Events
-        private void client_ResponseString(string response, SimplSharpString id)
+        private void primaryClient_ResponseString(string response, SimplSharpString id)
         {
-            ProcessResponse(response);  
+            //ParseInternalResponse(true, response);
+            //ProcessResponse(true, response);
+
+            lock (_primaryParseLock)
+            {
+                _primaryRxData.Append(response); //Append received data to the COM buffer
+            }
+
+            if (!CMonitor.TryEnter(_primaryResponseLock)) return;
+            while (_primaryRxData.ToString().Contains("\x00"))
+            {
+                string responseData;
+
+                lock (_primaryParseLock)
+                {
+                    responseData = _primaryRxData.ToString();
+                    var delimeterPos = responseData.IndexOf("\x00", StringComparison.Ordinal);
+                    responseData = responseData.Substring(0, delimeterPos);
+                    _primaryRxData.Remove(0, delimeterPos + 1);
+                }
+
+                if (_debug == 2)
+                    CrestronConsole.PrintLine("Primary response found ** {0} **", responseData);
+
+                ParseInternalResponse(true, responseData);
+            }
+
+            CMonitor.Exit(_primaryResponseLock);
         }
 
-        private void client_ConnectionStatus(int status, SimplSharpString id)
+        private void backupClient_ResponseString(string response, SimplSharpString id)
+        {
+            //ParseInternalResponse(false, response);
+            //ProcessResponse(false, response);
+
+            lock (_backupParseLock)
+            {
+                _backupRxData.Append(response); //Append received data to the COM buffer
+            }
+
+            if (!CMonitor.TryEnter(_backupResponseLock)) return;
+            while (_backupRxData.ToString().Contains("\x00"))
+            {
+                string responseData;
+
+                lock (_backupParseLock)
+                {
+                    responseData = _backupRxData.ToString();
+                    var delimeterPos = responseData.IndexOf("\x00", StringComparison.Ordinal);
+                    responseData = responseData.Substring(0, delimeterPos);
+                    _backupRxData.Remove(0, delimeterPos + 1);
+                }
+
+                if (_debug == 2)
+                    CrestronConsole.PrintLine("Backup response found ** {0} **", responseData);
+
+                ParseInternalResponse(false, responseData);
+            }
+
+            CMonitor.Exit(_backupResponseLock);
+        }
+
+        private void primaryClient_ConnectionStatus(int status, SimplSharpString id)
         {
             try
             {
                 _connectionCritical.Enter();
-                if (status == 2 && !_isConnected)
+                if (status == 2 && !_primaryIsConnected)
                 {
-                    _isConnected = true;
+                    _primaryIsConnected = true;
 
                     if (_debug > 0)
-                        ErrorLog.Notice("QsysProcessor is connected.");
+                        ErrorLog.Notice("QsysProcessor primary is connected.");
 
-                    if (onIsConnected != null)
-                        onIsConnected(_coreId, 1);
+                    if (OnPrimaryIsConnected != null)
+                        OnPrimaryIsConnected(_coreId, 1);
                 }
-                else if (_isConnected && status != 2)
+                else if (_primaryIsConnected && status != 2)
                 {
-                    _isConnected = false;
+                    _primaryIsConnected = false;
 
                     if (_debug > 0)
-                        ErrorLog.Error("QsysProcessor disconnected!");
+                        ErrorLog.Error("QsysProcessor primary disconnected!");
 
-                    _commandQueue.Clear();
-                    _changeGroupCreated = false;
-                    _isLoggedIn = false;
-                    _isInitialized = false;
+                    if (_primaryCoreActive)
+                    {
+                        _changeGroupCreated = false;
+                        _isLoggedIn = false;
+                        _isInitialized = false;
 
-                    _heartbeatTimer.Stop();
-                    _commandQueue.Clear();
+                        _heartbeatTimer.Stop();
+                        _commandQueue.Clear();
 
-                    if (onIsRegistered != null)
-                        onIsRegistered(_coreId, 0);
+                        if (OnIsRegistered != null)
+                            OnIsRegistered(_coreId, 0);
 
-                    if (onIsLoggedIn != null)
-                        onIsLoggedIn(_coreId, 0);
+                        if (OnIsLoggedIn != null)
+                            OnIsLoggedIn(_coreId, 0);
+                    }
 
-                    if (onIsConnected != null)
-                        onIsConnected(_coreId, 0);
+                    if (OnPrimaryIsConnected != null)
+                        OnPrimaryIsConnected(_coreId, 0);
                 }
             }
             catch (Exception e)
             {
                 if (_debug > 0)
-                    ErrorLog.Error("Error in QsysProcessor client_ConnectionStatus: {0}", e.Message);
+                    ErrorLog.Error("Error in QsysProcessor primaryClient_ConnectionStatus: {0}", e.Message);
+            }
+            finally
+            {
+                _connectionCritical.Leave();
+            }
+        }
+
+        private void backupClient_ConnectionStatus(int status, SimplSharpString id)
+        {
+            try
+            {
+                _connectionCritical.Enter();
+                if (status == 2 && !_backupIsConnected)
+                {
+                    _backupIsConnected = true;
+
+                    if (_debug > 0)
+                        ErrorLog.Notice("QsysProcessor backup is connected.");
+
+                    if (OnBackupIsConnected != null)
+                        OnBackupIsConnected(_coreId, 1);
+                }
+                else if (_backupIsConnected && status != 2)
+                {
+                    _backupIsConnected = false;
+
+                    if (_debug > 0)
+                        ErrorLog.Error("QsysProcessor backup disconnected!");
+
+                    if (_backupCoreActive)
+                    {
+                        _changeGroupCreated = false;
+                        _isLoggedIn = false;
+                        _isInitialized = false;
+
+                        _heartbeatTimer.Stop();
+                        _commandQueue.Clear();
+
+                        if (OnIsRegistered != null)
+                            OnIsRegistered(_coreId, 0);
+
+                        if (OnIsLoggedIn != null)
+                            OnIsLoggedIn(_coreId, 0);
+                    }
+
+                    if (OnBackupIsConnected != null)
+                        OnPrimaryIsConnected(_coreId, 0);
+                }
+            }
+            catch (Exception e)
+            {
+                if (_debug > 0)
+                    ErrorLog.Error("Error in QsysProcessor backupClient_ConnectionStatus: {0}", e.Message);
             }
             finally
             {
@@ -576,103 +781,142 @@ namespace QscQsys
         #endregion
 
         #region Parsing
-        private void ProcessResponse(string response)
+        /*private void ProcessResponse(bool primaryCore, string response)
         {
             lock (_parseLock)
             {
                 _rxData.Append(response); //Append received data to the COM buffer
             }
 
-            if (CMonitor.TryEnter(_responseLock))
+            if (!CMonitor.TryEnter(_responseLock)) return;
+            while (_rxData.ToString().Contains("\x00"))
             {
-                while (_rxData.ToString().Contains("\x00"))
+                string responseData;
+
+                lock (_parseLock)
                 {
-                    string responseData;
-
-                    lock (_parseLock)
-                    {
-                        responseData = _rxData.ToString();
-                        var delimeterPos = responseData.IndexOf("\x00", StringComparison.Ordinal);
-                        responseData = responseData.Substring(0, delimeterPos);
-                        _rxData.Remove(0, delimeterPos + 1);
-                    }
-
-                    if (_debug == 2)
-                        CrestronConsole.PrintLine("Response found ** {0} **", responseData);
-
-                    ParseInternalResponse(responseData);
+                    responseData = _rxData.ToString();
+                    var delimeterPos = responseData.IndexOf("\x00", StringComparison.Ordinal);
+                    responseData = responseData.Substring(0, delimeterPos);
+                    _rxData.Remove(0, delimeterPos + 1);
                 }
 
-                CMonitor.Exit(_responseLock);
-            }
-        }
+                if (_debug == 2)
+                    CrestronConsole.PrintLine("Response found ** {0} **", responseData);
 
-        private void ParseInternalResponse(string returnString)
+                ParseInternalResponse(primaryCore, responseData);
+            }
+
+            CMonitor.Exit(_responseLock);
+        }*/
+
+        private void ParseInternalResponse(bool primaryCore, string returnString)
         {
             try
             {
-                if (returnString.Length > 0 && ((_isConnected && !_externalConnection) || _externalConnection))
+                if (returnString.Length <= 0) return;
+
+                if (returnString.Contains("Changes") && !returnString.Contains("\"Changes\":[]"))
                 {
-                    if (returnString.Contains("Changes") && !returnString.Contains("\"Changes\":[]"))
+                    var response = JObject.Parse(returnString);
+                    var changes = response["params"]["Changes"].Children().ToList();
+
+                    foreach (var change in changes)
                     {
-                        var response = JObject.Parse(returnString);
-                        var changes = response["params"]["Changes"].Children().ToList();
+                        var changeResult = JsonConvert.DeserializeObject<ChangeResult>(change.ToString(),
+                            new JsonSerializerSettings
+                            { MissingMemberHandling = MissingMemberHandling.Ignore });
 
-                        foreach (JToken change in changes)
+                        if (changeResult.Component != null)
                         {
-                            ChangeResult changeResult = JsonConvert.DeserializeObject<ChangeResult>(change.ToString(),
-                                                                                                    new JsonSerializerSettings
-                                                                                                    { MissingMemberHandling = MissingMemberHandling.Ignore });
+                            var choices = changeResult.Choices != null ? changeResult.Choices.ToList() : new List<string>();
 
-                            if (changeResult.Component != null)
-                            {
-                                List<string> choices;
+                            Action<QsysStateData> updateCallback;
+                            if (!TryGetNamedComponentUpdateCallback(changeResult.Component, out updateCallback))
+                                continue;
 
-                                if (changeResult.Choices != null)
-                                    choices = changeResult.Choices.ToList();
-                                else
-                                    choices = new List<string>();
+                            updateCallback(new QsysStateData("change", changeResult.Name,
+                                changeResult.Value,
+                                changeResult.Position,
+                                changeResult.String, choices));
+                        }
+                        else if (changeResult.Name != null)
+                        {
+                            List<string> choices = changeResult.Choices != null ? changeResult.Choices.ToList() : new List<string>();
 
-                                Action<QsysStateData> updateCallback;
-                                if (!TryGetNamedComponentUpdateCallback(changeResult.Component, out updateCallback))
-                                    continue;
+                            Action<QsysStateData> controlUpdateCallback;
+                            if (!TryGetNamedControlUpdateCallback(changeResult.Name, out controlUpdateCallback))
+                                continue;
 
-                                updateCallback(new QsysStateData("change", changeResult.Name,
-                                                                 changeResult.Value,
-                                                                 changeResult.Position,
-                                                                 changeResult.String, choices));
-                            }
-                            else if (changeResult.Name != null)
-                            {
-                                List<string> choices;
-
-                                if (changeResult.Choices != null)
-                                    choices = changeResult.Choices.ToList();
-                                else
-                                    choices = new List<string>();
-
-                                Action<QsysStateData> controlUpdateCallback;
-                                if (!TryGetNamedControlUpdateCallback(changeResult.Name, out controlUpdateCallback))
-                                    continue;
-
-                                controlUpdateCallback(new QsysStateData("change", changeResult.Name,
-                                                                        changeResult.Value,
-                                                                        changeResult.Position,
-                                                                        changeResult.String, choices));
-                            }
+                            controlUpdateCallback(new QsysStateData("change", changeResult.Name,
+                                changeResult.Value,
+                                changeResult.Position,
+                                changeResult.String, choices));
                         }
                     }
-                    else if (returnString.Contains("EngineStatus"))
-                    {
-                        var response = JObject.Parse(returnString);
+                }
+                else if (returnString.Contains("EngineStatus"))
+                {
+                    var response = JObject.Parse(returnString);
 
-                        if (_externalConnection)
+                    if (_externalConnection)
+                    {
+                        _isLoggedIn = false;
+                    }
+                    if (response["params"] != null)
+                    {
+                        var engineStatus = response["params"];
+
+                        if (engineStatus["State"] != null)
                         {
-                            _isLoggedIn = false;
+                            if (primaryCore && engineStatus["State"].ToObject<string>() == "Active")
+                            {
+                                if (_backupCoreActive)
+                                {
+                                    _backupCoreActive = false;
+                                    _changeGroupCreated = false;
+                                    _isLoggedIn = false;
+                                    _isInitialized = false;
+
+                                    _heartbeatTimer.Stop();
+                                    _commandQueue.Clear();
+
+                                    if (OnIsRegistered != null)
+                                        OnIsRegistered(_coreId, 0);
+
+                                    if (OnIsLoggedIn != null)
+                                        OnIsLoggedIn(_coreId, 0);
+                                }
+                                _primaryCoreActive = true;
+                                if (OnPrimaryIsActive != null)
+                                    OnPrimaryIsActive();
+                            }
+                            else if (!primaryCore && engineStatus["State"].ToObject<string>() == "Active")
+                            {
+                                if (_primaryCoreActive)
+                                {
+                                    _primaryCoreActive = false;
+                                    _changeGroupCreated = false;
+                                    _isLoggedIn = false;
+                                    _isInitialized = false;
+
+                                    _heartbeatTimer.Stop();
+                                    _commandQueue.Clear();
+
+                                    if (OnIsRegistered != null)
+                                        OnIsRegistered(_coreId, 0);
+
+                                    if (OnIsLoggedIn != null)
+                                        OnIsLoggedIn(_coreId, 0);
+                                }
+                                _backupCoreActive = true;
+                                if (OnBackupIsActive != null)
+                                    OnBackupIsActive();
+                            }
                         }
-                        if (response["params"] != null)
+
+                        if ((primaryCore && _primaryCoreActive) || (!primaryCore && _backupCoreActive))
                         {
-                            JToken engineStatus = response["params"];
 
                             if (engineStatus["DesignName"] != null)
                             {
@@ -689,91 +933,91 @@ namespace QscQsys
                                 _isEmulator = Convert.ToBoolean(engineStatus["IsEmulator"].ToString());
                             }
 
-                            if (onNewCoreStatus != null)
-                                onNewCoreStatus(_coreId, _designName, Convert.ToUInt16(_isRedundant), Convert.ToUInt16(_isEmulator));
+                            if (OnNewCoreStatus != null)
+                                OnNewCoreStatus(_coreId, _designName, Convert.ToUInt16(_isRedundant), Convert.ToUInt16(_isEmulator));
                         }
+                    }
 
-                        if (!_isLoggedIn)
+                    if (!_isLoggedIn)
+                    {
+                        if (_debug == 1 || _debug == 2)
+                            ErrorLog.Notice("QsysProcessor server ready, starting to send intialization strings.");
+
+                        if (_password.Length > 0 && _username.Length > 0)
                         {
-                            if (_debug == 1 || _debug == 2)
-                                ErrorLog.Notice("QsysProcessor server ready, starting to send intialization strings.");
+                            _logonAttempts = 1;
+                            _commandQueue.Enqueue(JsonConvert.SerializeObject(new Logon { Params = new LogonParams { User = _username, Password = _password } }));
+                        }
+                        else if((primaryCore && _primaryCoreActive) || (!primaryCore && _backupCoreActive))
+                        {
+                            _isLoggedIn = true;
 
-                            if (_password.Length > 0 && _username.Length > 0)
+                            if (OnIsLoggedIn != null)
                             {
-                                _logonAttempts = 1;
-                                _commandQueue.Enqueue(JsonConvert.SerializeObject(new Logon() { Params = new LogonParams() { User = _username, Password = _password } }));
+                                OnIsLoggedIn(_coreId, 1);
                             }
-                            else
+
+                            _waitForConnection.Reset(5000);
+                        }
+                    }
+                }
+                else if (returnString.Contains("error"))
+                {
+                    var response = JObject.Parse(returnString);
+
+                    if (_logonAttempts < _maxLogonAttempts)
+                    {
+                        var error = response["error"];
+
+                        if (error["code"] != null)
+                        {
+                            if (error["code"].ToString().Replace("\'", string.Empty) == "10")
                             {
-                                _isLoggedIn = true;
-
-                                if (onIsLoggedIn != null)
-                                {
-                                    onIsLoggedIn(_coreId, 1);
-                                }
-
-                                _waitForConnection.Reset(5000);
+                                _logonAttempts++;
+                                _commandQueue.Enqueue(JsonConvert.SerializeObject(new Logon { Params = new LogonParams { User = _username, Password = _password } }));
                             }
                         }
                     }
-                    else if (returnString.Contains("error"))
+                    else
                     {
-                        var response = JObject.Parse(returnString);
-
-                        if (_logonAttempts < _maxLogonAttempts)
+                        if (_debug > 0)
                         {
-                            JToken error = response["error"];
-
-                            if (error["code"] != null)
-                            {
-                                if (error["code"].ToString().Replace("\'", string.Empty) == "10")
-                                {
-                                    _logonAttempts++;
-                                    _commandQueue.Enqueue(JsonConvert.SerializeObject(new Logon() { Params = new LogonParams() { User = _username, Password = _password } }));
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (_debug > 0)
-                            {
-                                ErrorLog.Error("Error in QsysProcessor max logon attempts reached");
-                            }
+                            ErrorLog.Error("Error in QsysProcessor max logon attempts reached");
                         }
                     }
-                    else if (returnString.Contains("\"id\":") && returnString.Contains("\"result\":true"))
+                }
+                else if (returnString.Contains("\"id\":") && returnString.Contains("\"result\":true"))
+                {
+                    var response = JObject.Parse(returnString);
+
+                    if (response["id"] != null)
                     {
-                        var response = JObject.Parse(returnString);
+                        var responseData = JsonConvert.DeserializeObject<CustomResponseId>(response["id"].ToObject<string>());
 
-                        if (response["id"] != null)
+                        if (responseData.Method == "Logon")
                         {
-                            var responseData = JsonConvert.DeserializeObject<CustomResponseId>(response["id"].ToObject<string>());
+                            _isLoggedIn = true;
 
-                            if (responseData.Method == "Logon")
+                            if (OnIsLoggedIn != null)
                             {
-                                _isLoggedIn = true;
-
-                                if (onIsLoggedIn != null)
-                                {
-                                    onIsLoggedIn(_coreId, 1);
-                                }
-
-                                _waitForConnection.Reset(5000);
+                                OnIsLoggedIn(_coreId, 1);
                             }
 
-                            if (responseData.Caller != string.Empty)
-                            {
-                                Action<QsysStateData> updateCallback;
-                                if (!TryGetNamedComponentUpdateCallback(responseData.Caller, out updateCallback))
-                                    return;
+                            _waitForConnection.Reset(5000);
+                        }
 
-                                updateCallback(new QsysStateData(responseData.ValueType,
-                                                                 responseData.Method,
-                                                                 responseData.Value,
-                                                                 responseData.Position,
-                                                                 responseData.StringValue,
-                                                                 null));
-                            }
+                        if (responseData.Caller != string.Empty)
+                        {
+                            Action<QsysStateData> updateCallback;
+                            if (!TryGetNamedComponentUpdateCallback(responseData.Caller, out updateCallback))
+                                return;
+
+                            updateCallback(new QsysStateData(responseData.ValueType,
+                                responseData.Method,
+                                responseData.Value,
+                                responseData.Position,
+                                responseData.StringValue,
+                                null));
                         }
                     }
                 }
@@ -791,7 +1035,8 @@ namespace QscQsys
         /// <param name="response">Response from SIMPL to be parsed</param>
         public void NewExternalResponse(string response)
         {
-            ProcessResponse(response);
+            ParseInternalResponse(true, response);
+            //ProcessResponse(true, response);
         }
         #endregion
 
@@ -804,10 +1049,16 @@ namespace QscQsys
 
         private void CommandQueueDequeue(object o)
         {
-            var externalSendCallback = onSendingCommand;
+            var externalSendCallback = OnSendingCommand;
 
-            if (!_externalConnection && _primaryClient == null)
-                return;
+            if (!_externalConnection)
+            {
+                if (_primaryCoreActive && _primaryClient == null)
+                    return;
+
+                if (_backupCoreActive && _backupClient == null)
+                    return;
+            }
             if (_externalConnection && externalSendCallback == null)
                 return;
             if (_commandQueue.IsEmpty)
@@ -815,7 +1066,7 @@ namespace QscQsys
 
             try
             {
-                string data = _commandQueue.TryToDequeue();
+                var data = _commandQueue.TryToDequeue();
 
                 if (data == null)
                     return;
@@ -824,7 +1075,21 @@ namespace QscQsys
                     CrestronConsole.PrintLine("Command sent -->{0}<--", data);
 
                 if (!_externalConnection)
-                    _primaryClient.SendCommand(data + "\x00");
+                {
+                    if (data.Contains("NoOp"))
+                    {
+                        _primaryClient.SendCommand(data + "\x00");
+                        _backupClient.SendCommand(data + "\x00");
+                    }
+                    else if (_primaryCoreActive)
+                    {
+                        _primaryClient.SendCommand(data + "\x00");
+                    }
+                    else if (_backupCoreActive)
+                    {
+                        _backupClient.SendCommand(data + "\x00");
+                    }
+                }
                 else
                 {
                     data = data + "\x00";
@@ -876,7 +1141,8 @@ namespace QscQsys
                 _commandQueueTimer.Dispose();
                 _commandQueue.Dispose();
 
-                _rxData = null;
+                _primaryRxData = null;
+                _backupRxData = null;
             }
         }
     }

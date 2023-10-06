@@ -6,8 +6,8 @@ namespace QscQsys
 {
     public static class QsysCoreManager
     {
-        private static readonly object _coresLock = new object();
-        private static readonly Dictionary<string, QsysCore> _cores = new Dictionary<string, QsysCore>();
+        private static readonly object CoresLock = new object();
+        private static readonly Dictionary<string, QsysCore> Cores = new Dictionary<string, QsysCore>();
 
         internal static event EventHandler<CoreEventArgs> CoreAdded;
         internal static event EventHandler<CoreEventArgs> CoreRemoved;
@@ -22,9 +22,9 @@ namespace QscQsys
 
         public static bool TryGetCore(string coreId, out QsysCore core)
         {
-            lock (_coresLock)
+            lock (CoresLock)
             {
-                return _cores.TryGetValue(coreId, out core);
+                return Cores.TryGetValue(coreId, out core);
             }
         }
 
@@ -32,10 +32,10 @@ namespace QscQsys
         {
             try
             {
-                lock (_coresLock)
+                lock (CoresLock)
                 {
-                    if (!_cores.ContainsKey(core.CoreId))
-                        _cores.Add(core.CoreId, core);
+                    if (!Cores.ContainsKey(core.CoreId))
+                        Cores.Add(core.CoreId, core);
                 }
 
                 RaiseCoreAdded(new CoreEventArgs(core.CoreId));
@@ -50,10 +50,10 @@ namespace QscQsys
         {
             try
             {
-                lock (_coresLock)
+                lock (CoresLock)
                 {
-                    if (_cores.ContainsKey(core.CoreId))
-                        _cores.Remove(core.CoreId);
+                    if (Cores.ContainsKey(core.CoreId))
+                        Cores.Remove(core.CoreId);
                 }
 
                 RaiseCoreRemoved(new CoreEventArgs(core.CoreId));
