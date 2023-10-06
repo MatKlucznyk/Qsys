@@ -12,7 +12,7 @@ using TCP_Client;
 namespace QscQsys
 {
     /// <summary>
-    /// Q-SYS Core class that manages connection and parses responses to be distributed to components and named control classes
+    /// Q-SYS Core class that manages connection and parses responses to be distributed to components and named control classes.
     /// </summary>
     public class QsysCore : IDisposable
     {
@@ -88,6 +88,9 @@ namespace QscQsys
         private readonly Dictionary<string, NamedControl> _controls;
         private readonly Dictionary<string, Action<QsysStateData>> _controlUpdateCallbacks;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QsysCore"/> class.
+        /// </summary>
         public QsysCore()
         {
             _components = new Dictionary<string, NamedComponent>();
@@ -102,7 +105,7 @@ namespace QscQsys
         #region Properties
 
         /// <summary>
-        /// Get initialzation status
+        /// Gets initialzation status.
         /// </summary>
         public bool IsInitialized
         {
@@ -110,7 +113,7 @@ namespace QscQsys
         }
 
         /// <summary>
-        /// Get disposed status
+        /// Gets disposed status.
         /// </summary>
         public bool IsDisposed
         {
@@ -118,20 +121,23 @@ namespace QscQsys
         }
 
         /// <summary>
-        /// Get connection status
+        /// Gets primary core connection status.
         /// </summary>
         public bool PrimaryIsConnected
         {
             get { return _primaryIsConnected; }
         }
 
+        /// <summary>
+        /// Gets backup core connection status.
+        /// </summary>
         public bool SecondaryIsConnected
         {
             get { return _backupIsConnected; }
         }
 
         /// <summary>
-        /// Get authentication status
+        /// Gets authentication status.
         /// </summary>
         public bool IsAuthenticated
         {
@@ -139,7 +145,7 @@ namespace QscQsys
         }
 
         /// <summary>
-        /// Get debug mode
+        /// Gets debug mode.
         /// </summary>
         public ushort IsDebugMode
         {
@@ -147,7 +153,7 @@ namespace QscQsys
         }
 
         /// <summary>
-        /// Get or set  max logon attempts
+        /// Gets or sets the max logon attempts made when trying to authorize with the core.
         /// </summary>
         public ushort MaxLogonAttemps
         {
@@ -156,7 +162,7 @@ namespace QscQsys
         }
 
         /// <summary>
-        /// Get redundant status
+        /// Gets redundant status.
         /// </summary>
         public bool IsRedundant
         {
@@ -164,7 +170,7 @@ namespace QscQsys
         }
 
         /// <summary>
-        /// Get emulator status
+        /// Gets emulator status.
         /// </summary>
         public bool IsEmulator
         {
@@ -172,25 +178,31 @@ namespace QscQsys
         }
 
         /// <summary>
-        /// Get running design name
+        /// Gets running design name.
         /// </summary>
         public string DesignName
         {
             get { return _designName; }
         }
 
+        /// <summary>
+        /// Gets a bool representing the primary core active status.
+        /// </summary>
         public bool PrimaryCoreActive
         {
             get { return _primaryCoreActive; }
         }
 
+        /// <summary>
+        /// Gets a bool representing the backup core active status.
+        /// </summary>
         public bool BackupCoreActive
         {
             get { return _backupCoreActive; }
         }
 
         /// <summary>
-        /// Get core ID
+        /// Get the core ID.
         /// </summary>
         public string CoreId
         {
@@ -215,34 +227,36 @@ namespace QscQsys
                 _primaryClient.Debug = _debug;
             }
 
-            if (_debug > 0)
+            if (_backupClient != null)
             {
-                CrestronConsole.PrintLine("********Qsys Debug Mode Active********");
-                CrestronConsole.PrintLine("See log for details");
-                ErrorLog.Notice("********Qsys Debug Mode Active********");
-                if (QsysCoreManager.Is3Series)
-                {
-                    CrestronConsole.PrintLine("********Qsys Running On 3-Series********");
-                    ErrorLog.Notice("********Qsys Running On 3-Series********");
-                }
-                else
-                {
-                    CrestronConsole.PrintLine("********Qsys Running On 4-Series Or Greater********");
-                    ErrorLog.Notice("********Qsys Running On 4-Series Or Greater********");
-                }
-
-                if (_debug == 1)
-                {
-                    ErrorLog.Notice("Qsys debug level: Main communications");
-                }
-                else if (_debug == 2)
-                {
-                    ErrorLog.Notice("Qsys debug level: Main communications and verbose console");
-                }
-                ErrorLog.Notice("Qsys TCP ID 1710");
+                _backupClient.Debug = _debug;
             }
 
+            if (_debug <= 0) return;
+            CrestronConsole.PrintLine("********Qsys Debug Mode Active********");
+            CrestronConsole.PrintLine("See log for details");
+            ErrorLog.Notice("********Qsys Debug Mode Active********");
+            if (QsysCoreManager.Is3Series)
+            {
+                CrestronConsole.PrintLine("********Qsys Running On 3-Series********");
+                ErrorLog.Notice("********Qsys Running On 3-Series********");
+            }
+            else
+            {
+                CrestronConsole.PrintLine("********Qsys Running On 4-Series Or Greater********");
+                ErrorLog.Notice("********Qsys Running On 4-Series Or Greater********");
+            }
 
+            switch (_debug)
+            {
+                case 1:
+                    ErrorLog.Notice("Qsys debug level: Main communications");
+                    break;
+                case 2:
+                    ErrorLog.Notice("Qsys debug level: Main communications and verbose console");
+                    break;
+            }
+            ErrorLog.Notice("Qsys TCP ID 1710");
         }
 
         /// <summary>
@@ -266,7 +280,7 @@ namespace QscQsys
         }
 
         /// <summary>
-        /// Get or set the network host address. If currently connectd, changing the host will reconnect with the new host address.
+        /// Gets or sets the primary core network host address. If currently connected, changing the host will reconnect with the new host address.
         /// </summary>
         public string PrimaryHost
         {
@@ -280,6 +294,9 @@ namespace QscQsys
             }
         }
 
+        /// <summary>
+        /// Gets or sets the backup core network host address. If currently connected, changing the host will reconnect with the new host address.
+        /// </summary>
         public string BackupHost
         {
             get { return _backupClient == null ? string.Empty : _backupClient.Host; }
@@ -297,12 +314,18 @@ namespace QscQsys
             }
         }
 
+        /// <summary>
+        /// Gets or sets the username used to authenticate with the core.
+        /// </summary>
         public string Username
         {
             get { return _username; }
             set { _username = value; }
         }
 
+        /// <summary>
+        /// Sets the password used to authenticate with the core.
+        /// </summary>
         public string Password
         {
             set { _password = value; }
@@ -417,6 +440,25 @@ namespace QscQsys
 
                 if (OnIsRegistered != null)
                     OnIsRegistered(_coreId, 1);
+            }
+        }
+
+        private void ResetInitialization()
+        {
+            lock (_initLock)
+            {
+                _changeGroupCreated = false;
+                _isLoggedIn = false;
+                _isInitialized = false;
+
+                _heartbeatTimer.Stop();
+                _commandQueue.Clear();
+
+                if (OnIsRegistered != null)
+                    OnIsRegistered(_coreId, 0);
+
+                if (OnIsLoggedIn != null)
+                    OnIsLoggedIn(_coreId, 0);
             }
         }
 
@@ -606,12 +648,9 @@ namespace QscQsys
         #region TCP Client Events
         private void primaryClient_ResponseString(string response, SimplSharpString id)
         {
-            //ParseInternalResponse(true, response);
-            //ProcessResponse(true, response);
-
             lock (_primaryParseLock)
             {
-                _primaryRxData.Append(response); //Append received data to the COM buffer
+                _primaryRxData.Append(response);
             }
 
             if (!CMonitor.TryEnter(_primaryResponseLock)) return;
@@ -638,12 +677,9 @@ namespace QscQsys
 
         private void backupClient_ResponseString(string response, SimplSharpString id)
         {
-            //ParseInternalResponse(false, response);
-            //ProcessResponse(false, response);
-
             lock (_backupParseLock)
             {
-                _backupRxData.Append(response); //Append received data to the COM buffer
+                _backupRxData.Append(response);
             }
 
             if (!CMonitor.TryEnter(_backupResponseLock)) return;
@@ -690,21 +726,7 @@ namespace QscQsys
                     if (_debug > 0)
                         ErrorLog.Error("QsysProcessor primary disconnected!");
 
-                    if (_primaryCoreActive)
-                    {
-                        _changeGroupCreated = false;
-                        _isLoggedIn = false;
-                        _isInitialized = false;
-
-                        _heartbeatTimer.Stop();
-                        _commandQueue.Clear();
-
-                        if (OnIsRegistered != null)
-                            OnIsRegistered(_coreId, 0);
-
-                        if (OnIsLoggedIn != null)
-                            OnIsLoggedIn(_coreId, 0);
-                    }
+                    if (_primaryCoreActive) ResetInitialization();
 
                     if (OnPrimaryIsConnected != null)
                         OnPrimaryIsConnected(_coreId, 0);
@@ -743,24 +765,10 @@ namespace QscQsys
                     if (_debug > 0)
                         ErrorLog.Error("QsysProcessor backup disconnected!");
 
-                    if (_backupCoreActive)
-                    {
-                        _changeGroupCreated = false;
-                        _isLoggedIn = false;
-                        _isInitialized = false;
-
-                        _heartbeatTimer.Stop();
-                        _commandQueue.Clear();
-
-                        if (OnIsRegistered != null)
-                            OnIsRegistered(_coreId, 0);
-
-                        if (OnIsLoggedIn != null)
-                            OnIsLoggedIn(_coreId, 0);
-                    }
+                    if (_backupCoreActive) ResetInitialization();
 
                     if (OnBackupIsConnected != null)
-                        OnPrimaryIsConnected(_coreId, 0);
+                        OnBackupIsConnected(_coreId, 0);
                 }
             }
             catch (Exception e)
@@ -781,35 +789,6 @@ namespace QscQsys
         #endregion
 
         #region Parsing
-        /*private void ProcessResponse(bool primaryCore, string response)
-        {
-            lock (_parseLock)
-            {
-                _rxData.Append(response); //Append received data to the COM buffer
-            }
-
-            if (!CMonitor.TryEnter(_responseLock)) return;
-            while (_rxData.ToString().Contains("\x00"))
-            {
-                string responseData;
-
-                lock (_parseLock)
-                {
-                    responseData = _rxData.ToString();
-                    var delimeterPos = responseData.IndexOf("\x00", StringComparison.Ordinal);
-                    responseData = responseData.Substring(0, delimeterPos);
-                    _rxData.Remove(0, delimeterPos + 1);
-                }
-
-                if (_debug == 2)
-                    CrestronConsole.PrintLine("Response found ** {0} **", responseData);
-
-                ParseInternalResponse(primaryCore, responseData);
-            }
-
-            CMonitor.Exit(_responseLock);
-        }*/
-
         private void ParseInternalResponse(bool primaryCore, string returnString)
         {
             try
@@ -873,19 +852,9 @@ namespace QscQsys
                             {
                                 if (_backupCoreActive)
                                 {
+
                                     _backupCoreActive = false;
-                                    _changeGroupCreated = false;
-                                    _isLoggedIn = false;
-                                    _isInitialized = false;
-
-                                    _heartbeatTimer.Stop();
-                                    _commandQueue.Clear();
-
-                                    if (OnIsRegistered != null)
-                                        OnIsRegistered(_coreId, 0);
-
-                                    if (OnIsLoggedIn != null)
-                                        OnIsLoggedIn(_coreId, 0);
+                                    ResetInitialization();
                                 }
                                 _primaryCoreActive = true;
                                 if (OnPrimaryIsActive != null)
@@ -896,18 +865,7 @@ namespace QscQsys
                                 if (_primaryCoreActive)
                                 {
                                     _primaryCoreActive = false;
-                                    _changeGroupCreated = false;
-                                    _isLoggedIn = false;
-                                    _isInitialized = false;
-
-                                    _heartbeatTimer.Stop();
-                                    _commandQueue.Clear();
-
-                                    if (OnIsRegistered != null)
-                                        OnIsRegistered(_coreId, 0);
-
-                                    if (OnIsLoggedIn != null)
-                                        OnIsLoggedIn(_coreId, 0);
+                                    ResetInitialization();
                                 }
                                 _backupCoreActive = true;
                                 if (OnBackupIsActive != null)

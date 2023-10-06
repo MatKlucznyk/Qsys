@@ -3,34 +3,37 @@
 
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
-Digital_Input Initialize, UseExternalConnection;
+digital_input Initialize, UseExternalConnection;
 
 analog_input DebugMode, Port;
 
 string_input PrimaryIpAddress[255], BackupIpAddress[255], Username[100], Password[100];
 
-Buffer_Input Response[65534];
+buffer_input Response[65534];
 
-Digital_Output IsInitialized, PrimaryIsConnected, BackupIsConnected, PrimaryIsActive, BackupIsActive, IsLoggedIn, IsRedundant, IsEmulator;
+digital_output IsInitialized, PrimaryIsConnected, BackupIsConnected, PrimaryIsActive, BackupIsActive,
+IsLoggedIn, IsRedundant, IsEmulator;
 
-String_Output DesignName, Command;
+string_output DesignName, Command;
 
-String_Parameter _skip_,_skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_,
-Default_PrimaryIpAddress[255], Default_BackupIpAddress[255], CoreID[100];
+string_parameter _skip_,_skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_,
+Default_PrimaryIpAddress[255], Default_BackupIpAddress[255];
+integer_parameter Default_Port;
+string_parameter Default_Username[100], Default_Password[100], CoreID[100];
 
 integer waitTillStart, _port;
 string _primaryIpa[255], _backupIpa[255], _username[100], _password[100];
 
 QsysCore processor;
 
-threadsafe Push Initialize
+threadsafe push Initialize
 {
 	while(!waitTillStart)
 	{}
 	processor.Initialize(CoreID, _primaryIpa, _backupIpa, _port, _username, _password, UseExternalConnection);
 }
 
-Threadsafe Change DebugMode
+change DebugMode
 {
 	processor.Debug(DebugMode);
 }
@@ -47,30 +50,30 @@ change BackupIpAddress
 	processor.BackupHost = _backupIpa;
 }
 
-Change Username
+change Username
 {
 	_username = Username;
 	processor.Username = _username;
 }
 
-Change Password
+change Password
 {
 	_password = Password;
 	processor.Password = _password;
 }
 
-Change Port
+change Port
 {
 	_port = Port;
 	processor.Port = _port;
 }
 
-Callback Function NewIsRegistered(string id, integer value)
+callback function NewIsRegistered(string id, integer value)
 {
 	IsInitialized = value;
 }
 
-Callback Function NewPrimaryIsConnected(string id, integer value)
+callback function NewPrimaryIsConnected(string id, integer value)
 {
 	PrimaryIsConnected = value;
 }
@@ -80,7 +83,7 @@ callback function NewBackupIsConnected(string id, integer value)
 	BackupIsConnected = value;
 }
 
-Callback Function NewCoreStatus(string id, string dName, integer redundant, integer emulator)
+callback function NewCoreStatus(string id, string dName, integer redundant, integer emulator)
 {
 	DesignName = dName;
 	IsRedundant = redundant;
@@ -132,9 +135,11 @@ Function Main()
 {    
 	WaitForInitializationComplete();
 	
-	_port = 1710;
+	_port = Default_Port;
 	_primaryIpa = Default_PrimaryIpAddress;
 	_backupIpa = Default_BackupIpAddress;
+	_username = Default_Username;
+	_password = Default_Password;
 	if(GatherAsync("\x00", Response, RxGatherHandler, 500) = -1)
 	{
 	}

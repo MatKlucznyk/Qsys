@@ -449,7 +449,12 @@
         </member>
         <member name="T:QscQsys.QsysCore">
             <summary>
-            Q-SYS Core class that manages connection and parses responses to be distributed to components and named control classes
+            Q-SYS Core class that manages connection and parses responses to be distributed to components and named control classes.
+            </summary>
+        </member>
+        <member name="M:QscQsys.QsysCore.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:QscQsys.QsysCore"/> class.
             </summary>
         </member>
         <member name="M:QscQsys.QsysCore.Debug(System.UInt16)">
@@ -481,52 +486,67 @@
         </member>
         <member name="P:QscQsys.QsysCore.IsInitialized">
             <summary>
-            Get initialzation status
+            Gets initialzation status.
             </summary>
         </member>
         <member name="P:QscQsys.QsysCore.IsDisposed">
             <summary>
-            Get disposed status
+            Gets disposed status.
             </summary>
         </member>
         <member name="P:QscQsys.QsysCore.PrimaryIsConnected">
             <summary>
-            Get connection status
+            Gets primary core connection status.
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.SecondaryIsConnected">
+            <summary>
+            Gets backup core connection status.
             </summary>
         </member>
         <member name="P:QscQsys.QsysCore.IsAuthenticated">
             <summary>
-            Get authentication status
+            Gets authentication status.
             </summary>
         </member>
         <member name="P:QscQsys.QsysCore.IsDebugMode">
             <summary>
-            Get debug mode
+            Gets debug mode.
             </summary>
         </member>
         <member name="P:QscQsys.QsysCore.MaxLogonAttemps">
             <summary>
-            Get or set  max logon attempts
+            Gets or sets the max logon attempts made when trying to authorize with the core.
             </summary>
         </member>
         <member name="P:QscQsys.QsysCore.IsRedundant">
             <summary>
-            Get redundant status
+            Gets redundant status.
             </summary>
         </member>
         <member name="P:QscQsys.QsysCore.IsEmulator">
             <summary>
-            Get emulator status
+            Gets emulator status.
             </summary>
         </member>
         <member name="P:QscQsys.QsysCore.DesignName">
             <summary>
-            Get running design name
+            Gets running design name.
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.PrimaryCoreActive">
+            <summary>
+            Gets a bool representing the primary core active status.
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.BackupCoreActive">
+            <summary>
+            Gets a bool representing the backup core active status.
             </summary>
         </member>
         <member name="P:QscQsys.QsysCore.CoreId">
             <summary>
-            Get core ID
+            Get the core ID.
             </summary>
         </member>
         <member name="P:QscQsys.QsysCore.Port">
@@ -536,7 +556,22 @@
         </member>
         <member name="P:QscQsys.QsysCore.PrimaryHost">
             <summary>
-            Get or set the network host address. If currently connectd, changing the host will reconnect with the new host address.
+            Gets or sets the primary core network host address. If currently connected, changing the host will reconnect with the new host address.
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.BackupHost">
+            <summary>
+            Gets or sets the backup core network host address. If currently connected, changing the host will reconnect with the new host address.
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.Username">
+            <summary>
+            Gets or sets the username used to authenticate with the core.
+            </summary>
+        </member>
+        <member name="P:QscQsys.QsysCore.Password">
+            <summary>
+            Sets the password used to authenticate with the core.
             </summary>
         </member>
         <member name="T:QscQsys.QsysInternalEventsArgs">
