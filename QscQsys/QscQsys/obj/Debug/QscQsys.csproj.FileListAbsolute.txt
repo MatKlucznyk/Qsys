@@ -120,3 +120,17 @@ Z:\iporter\Repos\isaaacporter\Qsys\QscQsys\QscQsys\bin\Debug\Newtonsoft.Json.Com
 Z:\iporter\Repos\isaaacporter\Qsys\QscQsys\QscQsys\obj\Debug\ResolveAssemblyReference.cache
 Z:\iporter\Repos\isaaacporter\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.dll
 Z:\iporter\Repos\isaaacporter\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.pdb
+C:\Users\mathew.klucznyk.GUSS\OneDrive - GUSS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.xml
+C:\Users\mathew.klucznyk.GUSS\OneDrive - GUSS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.dll
+C:\Users\mathew.klucznyk.GUSS\OneDrive - GUSS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\QscQsys.pdb
+C:\Users\mathew.klucznyk.GUSS\OneDrive - GUSS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\ExtensionMethods.dll
+C:\Users\mathew.klucznyk.GUSS\OneDrive - GUSS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpCustomAttributesInterface.dll
+C:\Users\mathew.klucznyk.GUSS\OneDrive - GUSS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpHelperInterface.dll
+C:\Users\mathew.klucznyk.GUSS\OneDrive - GUSS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpNewtonsoft.dll
+C:\Users\mathew.klucznyk.GUSS\OneDrive - GUSS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpReflectionInterface.dll
+C:\Users\mathew.klucznyk.GUSS\OneDrive - GUSS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\TCPClient.dll
+C:\Users\mathew.klucznyk.GUSS\OneDrive - GUSS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\SimplSharpSQLHelperInterface.dll
+C:\Users\mathew.klucznyk.GUSS\OneDrive - GUSS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\bin\Debug\Newtonsoft.Json.Compact.dll
+C:\Users\mathew.klucznyk.GUSS\OneDrive - GUSS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\mathew.klucznyk.GUSS\OneDrive - GUSS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.dll
+C:\Users\mathew.klucznyk.GUSS\OneDrive - GUSS\Crestron Modules\Mat\SIMPLSharp Projects\Qsys\QscQsys\QscQsys\obj\Debug\QscQsys.pdb

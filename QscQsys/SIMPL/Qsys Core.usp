@@ -3,84 +3,87 @@
 
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
-Digital_Input Initialize, UseExternalConnection;
+digital_input Initialize, UseExternalConnection;
 
-analog_input DebugMode, DeploymentMode, Port;
+analog_input DebugMode, Port;
 
-string_input TestingHost[255], DeploymentHost[255], Username[100], Password[100];
+string_input PrimaryIpAddress[255], BackupIpAddress[255], Username[100], Password[100];
 
-Buffer_Input Response[65534];
+buffer_input Response[65534];
 
-Digital_Output IsInitialized, IsConnected, IsLoggedIn, IsRedundant, IsEmulator;
+digital_output IsInitialized, PrimaryIsConnected, BackupIsConnected, PrimaryIsActive, BackupIsActive,
+IsLoggedIn, IsRedundant, IsEmulator;
 
-String_Output DesignName, Command;
+string_output DesignName, Command;
 
-String_Parameter _skip_,_skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, CoreID[100];
+string_parameter _skip_,_skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_,
+Default_PrimaryIpAddress[255], Default_BackupIpAddress[255];
+integer_parameter Default_Port;
+string_parameter Default_Username[100], Default_Password[100], CoreID[100];
 
 integer waitTillStart, _port;
-string _username[100], _password[100];
+string _primaryIpa[255], _backupIpa[255], _username[100], _password[100];
 
 QsysCore processor;
 
-threadsafe Push Initialize
+threadsafe push Initialize
 {
 	while(!waitTillStart)
 	{}
-	if(DeploymentMode = 1)
-	processor.Initialize(CoreID, DeploymentHost, _port, _username, _password, UseExternalConnection);
-	else if(DeploymentMode = 0)
-	processor.Initialize(CoreID, TestingHost, _port, _username, _password, UseExternalConnection);
+	processor.Initialize(CoreID, _primaryIpa, _backupIpa, _port, _username, _password, UseExternalConnection);
 }
 
-Threadsafe Change DebugMode
+change DebugMode
 {
 	processor.Debug(DebugMode);
 }
 
-threadsafe change TestingHost, DeploymentHost, DeploymentMode
+change PrimaryIpAddress
 {
-	if(DeploymentMode = 0 && len(TestingHost))
-	{
-		processor.Host = TestingHost;
-	}
-	else if(DeploymentMode = 1 && len(DeploymentHost))
-	{
-		processor.Host = DeploymentHost;
-	}
+	_primaryIpa = PrimaryIpAddress;
+	processor.PrimaryHost = _primaryIpa;
 }
 
-Threadsafe Change Username
+change BackupIpAddress
+{
+	_backupIpa = BackupIpAddress;
+	processor.BackupHost = _backupIpa;
+}
+
+change Username
 {
 	_username = Username;
+	processor.Username = _username;
 }
 
-Threadsafe Change Password
+change Password
 {
 	_password = Password;
+	processor.Password = _password;
 }
 
-Threadsafe Change Port
+change Port
 {
 	_port = Port;
+	processor.Port = _port;
 }
 
-Callback Function NewIsRegistered(string id, integer value)
+callback function NewIsRegistered(string id, integer value)
 {
-	if(value = 1)
-	IsInitialized = ON;
-	else
-	IsInitialized = OFF;
+	IsInitialized = value;
 }
 
-Callback Function NewIsConnected(string id, integer value)
+callback function NewPrimaryIsConnected(string id, integer value)
 {
-	if(value = 1)
-	IsConnected = ON;
-	else
-	IsConnected = OFF;
+	PrimaryIsConnected = value;
 }
 
-Callback Function NewCoreStatus(string id, string dName, integer redundant, integer emulator)
+callback function NewBackupIsConnected(string id, integer value)
+{
+	BackupIsConnected = value;
+}
+
+callback function NewCoreStatus(string id, string dName, integer redundant, integer emulator)
 {
 	DesignName = dName;
 	IsRedundant = redundant;
@@ -98,6 +101,18 @@ callback function NewSendingCommand(string id, string comm)
 	
 	tx = comm;
 	Command = tx;
+}
+
+callback function NewPrimaryIsActive()
+{
+	BackupIsActive = OFF;
+	PrimaryIsActive = ON;
+}
+
+callback function NewBackupIsActive()
+{
+	PrimaryIsActive = OFF;
+	BackupIsActive = ON;
 }
 
 callback GatherEventHandler RxGatherHandler(GatherEventArgs e)
@@ -118,16 +133,25 @@ callback GatherEventHandler RxGatherHandler(GatherEventArgs e)
 
 Function Main()
 {    
-	_port = 1710;
+	WaitForInitializationComplete();
+	
+	_port = Default_Port;
+	_primaryIpa = Default_PrimaryIpAddress;
+	_backupIpa = Default_BackupIpAddress;
+	_username = Default_Username;
+	_password = Default_Password;
 	if(GatherAsync("\x00", Response, RxGatherHandler, 500) = -1)
 	{
 	}
 	
-	RegisterDelegate(processor, onIsRegistered, NewIsRegistered);  
-	RegisterDelegate(processor, onIsConnected, NewIsConnected);
-	RegisterDelegate(processor, onNewCoreStatus, NewCoreStatus);
-	RegisterDelegate(processor, onIsLoggedIn, NewIsLoggedIn);
-	RegisterDelegate(processor, onSendingCommand, NewSendingCommand);
+	RegisterDelegate(processor, OnIsRegistered, NewIsRegistered);  
+	RegisterDelegate(processor, OnPrimaryIsConnected, NewPrimaryIsConnected);
+	RegisterDelegate(processor, OnBackupIsConnected, NewBackupIsConnected);
+	RegisterDelegate(processor, OnNewCoreStatus, NewCoreStatus);
+	RegisterDelegate(processor, OnPrimaryIsActive, NewPrimaryIsActive);
+	RegisterDelegate(processor, OnBackupIsActive, NewBackupIsActive);
+	RegisterDelegate(processor, OnIsLoggedIn, NewIsLoggedIn);
+	RegisterDelegate(processor, OnSendingCommand, NewSendingCommand);
 	
 	//do not remove delay, we need to wait until all objects are instatiated and ready
 	delay(1000);
