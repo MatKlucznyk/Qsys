@@ -1091,13 +1091,12 @@ namespace QscQsys
                 _isInitialized = false;
 
                 _waitForConnection.Dispose();
-
-                _primaryClient.Dispose();
-
                 _heartbeatTimer.Dispose();
-
                 _commandQueueTimer.Dispose();
                 _commandQueue.Dispose();
+
+                _primaryClient.Dispose();
+                _backupClient.Dispose();              
 
                 _primaryRxData = null;
                 _backupRxData = null;
