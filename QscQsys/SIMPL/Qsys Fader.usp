@@ -16,9 +16,6 @@ Digital_Output MuteIsOn, MuteIsOff;
 String_Output _skip_, _skip_, VolumeValue;
 Analog_Output VolumePrecentage;
 
-
-QsysFader fader;
-
 String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_, _skip_, CoreID[100], ComponentName[100];                                       
 
 Integer_Parameter VolumeStep, VolumeRepeatTime, VolumeHoldTillRepeatTime;
@@ -33,47 +30,50 @@ propDefaultUnit = unitString;
 propDefaultValue = "1";
 #END_PARAMETER_PROPERTIES
 
-
+QsysFader fader;
 integer currentVolume;
-integer newDirection;
 signed_integer volDb;
 integer volDbSemephore;
+CMutex _volRampMutex;
+integer _volRampDirection;
 
-function VolumeRepeat(integer direction)
+function VolumeRepeat()
 {
-	newDirection = direction;
-	
-	if(newDirection = 1 && currentVolume <= 65535 - VolumeStep)
+	if(_volRampDirection = 1 && currentVolume <= 65535 - VolumeStep)
 	fader.Volume(currentVolume + VolumeStep);
-	else if(newDirection = 1 && currentVolume > 65535 - VolumeStep)
+	else if(_volRampDirection = 1 && currentVolume > 65535 - VolumeStep)
 	fader.Volume(65535);
-	else if(newDirection = 0 && currentVolume >= 0 + VolumeStep)
+	else if(_volRampDirection = 2 && currentVolume >= 0 + VolumeStep)
 	fader.Volume(currentVolume - VolumeStep);
-	else if(newDirection = 0 && currentVolume < 0 + VolumeStep)
+	else if(_volRampDirection = 2 && currentVolume < 0 + VolumeStep)
 	fader.Volume(0);
 	
-	wait(VolumeRepeatTime, vRepeat)
+	if(_volRampDirection > 0)
 	{
-		VolumeRepeat(newDirection);
+		wait(VolumeRepeatTime, vRepeat)
+		{
+			VolumeRepeat();
+		}
 	}
 }
 
-function VolumeSet(integer direction)
+function VolumeSet()
 {
-	newDirection = direction;
-	
-	if(newDirection = 1 && currentVolume <= 65535 - VolumeStep)
+	if(_volRampDirection = 1 && currentVolume <= 65535 - VolumeStep)
 	fader.Volume(currentVolume + VolumeStep);
-	else if(newDirection = 1 && currentVolume > 65535 - VolumeStep)
+	else if(_volRampDirection = 1 && currentVolume > 65535 - VolumeStep)
 	fader.Volume(65535);
-	else if(newDirection = 0 && currentVolume >= 0 + VolumeStep)
+	else if(_volRampDirection = 2 && currentVolume >= 0 + VolumeStep)
 	fader.Volume(currentVolume - VolumeStep);
-	else if(newDirection = 0 && currentVolume < 0 + VolumeStep)
+	else if(_volRampDirection = 2 && currentVolume < 0 + VolumeStep)
 	fader.Volume(0);
 	
-	wait(VolumeHoldTillRepeatTime, vHold)
+	if(_volRampDirection > 0)
 	{
-		VolumeRepeat(newDirection);
+		wait(VolumeHoldTillRepeatTime, vHold)
+		{
+			VolumeRepeat();
+		}
 	}
 }
 
@@ -101,24 +101,36 @@ Push MuteToggle
 
 Push VolumeUp
 {
-	VolumeSet(true);
+	_volRampMutex.WaitForMutex();
+	_volRampDirection = 1;
+	VolumeSet();
+	_volRampMutex.ReleaseMutex();
 }
 
 Release VolumeUp
 {
+	_volRampMutex.WaitForMutex();
+	_volRampDirection = 0;
 	CancelWait(vHold);
 	CancelWait(vRepeat);
+	_volRampMutex.ReleaseMutex();
 }
 
 Push VolumeDown
 {
-	VolumeSet(false);
+	_volRampMutex.WaitForMutex();
+	_volRampDirection = 2;
+	VolumeSet();
+	_volRampMutex.ReleaseMutex();
 }
 
 Release VolumeDown
 {
+	_volRampMutex.WaitForMutex();
+	_volRampDirection = 0;
 	CancelWait(vHold);
 	CancelWait(vRepeat);
+	_volRampMutex.ReleaseMutex();
 }
 
 Threadsafe Change Volume
@@ -187,4 +199,5 @@ Function Main()
 	fader.Initialize(CoreID, ComponentName);                                  
 	
 	volDbSemephore = true;
+	_volRampDirection = 0;
 }
