@@ -14,109 +14,137 @@ String_Parameter _skip_,_skip_,_skip_,_skip_,_skip_, CoreID[100], ComponentName[
 Integer_Parameter Input, Output, GainStep, GainRepeatTime;
 
 #BEGIN_PARAMETER_PROPERTIES GainRepeatTime
-    propValidUnits = unitTime;
+propValidUnits = unitTime;
 #END_PARAMETER_PROPERTIES
 
 #BEGIN_PARAMETER_PROPERTIES CoreID
-   propValidUnits = unitString;
-   propDefaultUnit = unitString;
-   propDefaultValue = "1";
+propValidUnits = unitString;
+propDefaultUnit = unitString;
+propDefaultValue = "1";
 #END_PARAMETER_PROPERTIES
 
 
 integer currentGain;
-integer newDirection;
+CMutex _volRampMutex;
+integer _volRampDirection;
 
-function GainRepeat(integer direction)
+function GainRepeat()
 {
-	newDirection = direction;
-
-    if(newDirection = 1 && currentGain <= 65535 - GainStep)
-    	mixer.SetCrossPointGain(currentGain + GainStep);
-    else if(newDirection = 1 && currentGain > 65535 - GainStep)
-        mixer.SetCrossPointGain(65535);
-	else if(newDirection = 0 && currentGain >= 0 + GainStep)
-		mixer.SetCrossPointGain(currentGain - GainStep);
-    else if(newDirection = 0 && currentGain < 0 + GainStep)
-        mixer.SetCrossPointGain(0);
-
-    wait(GainRepeatTime, vRepeat)
-    {
-        GainRepeat(newDirection);
-    }
+	if(_volRampDirection = 0)
+	{
+		return;
+	}
+	else
+	{
+		if(_volRampDirection = 1)
+		{
+			if(currentGain <= 65535 - GainStep)
+			mixer.SetCrossPointGain(currentGain + GainStep);
+			else if(currentGain > 65535 - GainStep)
+			mixer.SetCrossPointGain(65535);
+		}
+		else if(_volRampDirection = 2)
+		{
+			if(currentGain >= 0 + GainStep)
+			mixer.SetCrossPointGain(currentGain - GainStep);
+			else if(currentGain < 0 + GainStep)
+			mixer.SetCrossPointGain(0);
+		}
+		
+		if(_volRampDirection > 0)
+		{
+			wait(GainRepeatTime, vRepeat)
+			{
+				GainRepeat();
+			}
+		}
+	}
+	
 }
 
 Push GainUp
 {
-    GainRepeat(1);
+    _volRampMutex.WaitForMutex();
+	_volRampDirection = 1;
+	GainRepeat();
+    _volRampMutex.ReleaseMutex();
 }
 
 Release GainUp
 {
-    CancelWait(vRepeat);
+    _volRampMutex.WaitForMutex();
+	_volRampDirection = 0;
+	CancelWait(vRepeat);
+	_volRampMutex.ReleaseMutex();
 }
 
 Push GainDown
 {
-    GainRepeat(0);
+    _volRampMutex.WaitForMutex();
+	_volRampDirection = 2;
+	GainRepeat();
+    _volRampMutex.ReleaseMutex();
 }
 
 Release GainDown
 {
-    CancelWait(vRepeat);
+    _volRampMutex.WaitForMutex();
+	_volRampDirection = 0;
+	CancelWait(vRepeat);
+	_volRampMutex.ReleaseMutex();
 }
 
 Threadsafe Change Gain
 {
-    integer x;
-
-    if(Gain = 0)
-    {
-        mixer.SetCrossPointGain(0);
-    }
-    else 
-    {
-        While(x != Gain)
-        {
-            x = Gain;
-            mixer.SetCrossPointGain(x);
-        }
-    }
+	integer x;
+	
+	if(Gain = 0)
+	{
+		mixer.SetCrossPointGain(0);
+	}
+	else 
+	{
+		While(x != Gain)
+		{
+			x = Gain;
+			mixer.SetCrossPointGain(x);
+		}
+	}
 }
 
 Push MuteOn
 {
-    mixer.SetCrossPointMute(1);
+	mixer.SetCrossPointMute(1);
 }
 
 Push MuteOff
 {
-    mixer.SetCrossPointMute(0);
+	mixer.SetCrossPointMute(0);
 }
 
 Callback Function onCrossPointMuteChange(string cName, integer value)
 {
-    if(value = 1)
-    {
-        MuteIsOff = OFF;
-        MuteIsOn = ON;
-    }
-    else
-    {
-        MuteIsOn = OFF;
-        MuteIsOff = ON;
-    }
+	if(value = 1)
+	{
+		MuteIsOff = OFF;
+		MuteIsOn = ON;
+	}
+	else
+	{
+		MuteIsOn = OFF;
+		MuteIsOff = ON;
+	}
 }
 
 callback function onCrossPointGainChange(string cName, integer value)
 {
-    currentGain = value;
-    GainValue = value;
+	currentGain = value;
+	GainValue = value;
 }
 
 Function Main()
 {      
-    RegisterDelegate(mixer, newCrossPointMuteChange, onCrossPointMuteChange);
-    RegisterDelegate(mixer, newCrossPointGainChange, onCrossPointGainChange);
-    mixer.Initialize(CoreID, ComponentName, Input, Output);            
+	RegisterDelegate(mixer, newCrossPointMuteChange, onCrossPointMuteChange);
+	RegisterDelegate(mixer, newCrossPointGainChange, onCrossPointGainChange);
+	mixer.Initialize(CoreID, ComponentName, Input, Output);            
 }
