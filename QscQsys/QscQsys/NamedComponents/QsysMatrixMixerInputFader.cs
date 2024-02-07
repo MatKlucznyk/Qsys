@@ -8,8 +8,8 @@ namespace QscQsys.NamedComponents
     {
         public delegate void MuteChange(SimplSharpString cName, ushort value);
         public delegate void VolumeChange(SimplSharpString cName, ushort value);
-        public MuteChange newCrossPointMuteChange { get; set; }
-        public VolumeChange newCrossPointGainChange { get; set; }
+        public MuteChange newMuteChange { get; set; }
+        public VolumeChange newVolumeChange { get; set; }
 
         private ushort _input;
         private bool _initialized;
@@ -81,13 +81,13 @@ namespace QscQsys.NamedComponents
             GainControl = component.LazyLoadComponentControl(GainControlName);
         }
 
-        public void SetCrossPointMute(ushort value)
+        public void SetMute(ushort value)
         {
             if (MuteControl != null)
                 MuteControl.SendChangeBoolValue(value.BoolFromSplus());
         }
 
-        public void SetCrossPointGain(ushort value)
+        public void SetGain(ushort value)
         {
             if (GainControl != null)
                 GainControl.SendChangePosition(SimplUtils.ScaleToDouble(value));
@@ -113,7 +113,7 @@ namespace QscQsys.NamedComponents
 
         private void MuteControlOnStateChanged(object sender, QsysInternalEventsArgs args)
         {
-            var callback = newCrossPointMuteChange;
+            var callback = newMuteChange;
             if (callback != null)
                 callback(MuteControlName, args.BoolValue.BoolToSplus());
         }
@@ -140,7 +140,7 @@ namespace QscQsys.NamedComponents
 
         private void GainControlOnStateChanged(object sender, QsysInternalEventsArgs args)
         {
-            var callback = newCrossPointGainChange;
+            var callback = newVolumeChange;
             if (callback != null)
                 callback(GainControlName, SimplUtils.ScaleToUshort(args.Position));
         }
