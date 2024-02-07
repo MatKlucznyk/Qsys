@@ -1,0 +1,150 @@
+﻿using Crestron.SimplSharp;
+using QscQsys.Intermediaries;
+using QscQsys.Utils;
+
+namespace QscQsys.NamedComponents
+{
+    public sealed class QsysMatrixMixerOutputFader : AbstractQsysComponent
+    {
+        public delegate void MuteChange(SimplSharpString cName, ushort value);
+        public delegate void VolumeChange(SimplSharpString cName, ushort value);
+        public MuteChange newMuteChange { get; set; }
+        public VolumeChange newVolumeChange { get; set; }
+
+        private ushort _output;
+        private bool _initialized;
+
+        private NamedComponentControl _muteControl;
+        private NamedComponentControl _gainControl;
+
+        private string MuteControlName
+        {
+            get { return ControlNameUtils.GetMatrixOutputMuteName(_output); }
+        }
+
+        private string GainControlName
+        {
+            get { return ControlNameUtils.GetMatrixOutputGainName(_output); }
+        }
+
+        public NamedComponentControl MuteControl
+        {
+            get { return _muteControl; }
+            private set
+            {
+                if (_muteControl == value)
+                    return;
+
+                UnsubscribeMuteControl(_muteControl);
+                _muteControl = value;
+                SubscribeMuteControl(_muteControl);
+            }
+        }
+
+        public NamedComponentControl GainControl
+        {
+            get { return _gainControl; }
+            private set
+            {
+                if (_gainControl == value)
+                    return;
+
+                UnsubscribeGainControl(_gainControl);
+                _gainControl = value;
+                SubscribeGainControl(_gainControl);
+            }
+        }
+
+        public void Initialize(string coreId, string componentName, ushort output)
+        {
+            if (_initialized)
+                return;
+
+            _initialized = true;
+
+            _output = output;
+            InternalInitialize(coreId, componentName);
+        }
+
+        protected override void HandleComponentUpdated(NamedComponent component)
+        {
+            base.HandleComponentUpdated(component);
+
+            if (component == null)
+            {
+                MuteControl = null;
+                GainControl = null;
+                return;
+            }
+
+            MuteControl = component.LazyLoadComponentControl(MuteControlName);
+            GainControl = component.LazyLoadComponentControl(GainControlName);
+        }
+
+        public void SetMute(ushort value)
+        {
+            if (MuteControl != null)
+                MuteControl.SendChangeBoolValue(value.BoolFromSplus());
+        }
+
+        public void SetGain(ushort value)
+        {
+            if (GainControl != null)
+                GainControl.SendChangePosition(SimplUtils.ScaleToDouble(value));
+        }
+
+        #region Mute Control Callbacks
+
+        private void SubscribeMuteControl(NamedComponentControl muteControl)
+        {
+            if (muteControl == null)
+                return;
+
+            muteControl.OnStateChanged += MuteControlOnStateChanged;
+        }
+
+        private void UnsubscribeMuteControl(NamedComponentControl muteControl)
+        {
+            if (muteControl == null)
+                return;
+
+            muteControl.OnStateChanged -= MuteControlOnStateChanged;
+        }
+
+        private void MuteControlOnStateChanged(object sender, QsysInternalEventsArgs args)
+        {
+            var callback = newMuteChange;
+            if (callback != null)
+                callback(MuteControlName, args.BoolValue.BoolToSplus());
+        }
+
+        #endregion
+
+        #region Gain Control Callbacks
+
+        private void SubscribeGainControl(NamedComponentControl gainControl)
+        {
+            if (gainControl == null)
+                return;
+
+            gainControl.OnStateChanged += GainControlOnStateChanged;
+        }
+
+        private void UnsubscribeGainControl(NamedComponentControl gainControl)
+        {
+            if (gainControl == null)
+                return;
+
+            gainControl.OnStateChanged -= GainControlOnStateChanged;
+        }
+
+        private void GainControlOnStateChanged(object sender, QsysInternalEventsArgs args)
+        {
+            var callback = newVolumeChange;
+            if (callback != null)
+                callback(GainControlName, SimplUtils.ScaleToUshort(args.Position));
+        }
+
+        #endregion
+    }
+}

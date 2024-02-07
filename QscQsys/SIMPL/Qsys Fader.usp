@@ -39,40 +39,65 @@ integer _volRampDirection;
 
 function VolumeRepeat()
 {
-	if(_volRampDirection = 1 && currentVolume <= 65535 - VolumeStep)
-	fader.Volume(currentVolume + VolumeStep);
-	else if(_volRampDirection = 1 && currentVolume > 65535 - VolumeStep)
-	fader.Volume(65535);
-	else if(_volRampDirection = 2 && currentVolume >= 0 + VolumeStep)
-	fader.Volume(currentVolume - VolumeStep);
-	else if(_volRampDirection = 2 && currentVolume < 0 + VolumeStep)
-	fader.Volume(0);
-	
-	if(_volRampDirection > 0)
+	if(_volRampDirection = 0)
 	{
-		wait(VolumeRepeatTime, vRepeat)
+		return;
+	}
+	else{
+		if(_volRampDirection = 1)
 		{
-			VolumeRepeat();
+			if(currentVolume <= 65535 - VolumeStep)
+			fader.Volume(currentVolume + VolumeStep);
+			else if(_volRampDirection = 1 && currentVolume > 65535 - VolumeStep)
+			fader.Volume(65535);
+		}
+		else if(_volRampDirection = 2)
+		{
+			if(currentVolume >= 0 + VolumeStep)
+			fader.Volume(currentVolume - VolumeStep);
+			else if(currentVolume < 0 + VolumeStep)
+			fader.Volume(0);
+		}
+		
+		if(_volRampDirection > 0)
+		{
+			wait(VolumeRepeatTime, vRepeat)
+			{
+				VolumeRepeat();
+			}
 		}
 	}
 }
 
 function VolumeSet()
 {
-	if(_volRampDirection = 1 && currentVolume <= 65535 - VolumeStep)
-	fader.Volume(currentVolume + VolumeStep);
-	else if(_volRampDirection = 1 && currentVolume > 65535 - VolumeStep)
-	fader.Volume(65535);
-	else if(_volRampDirection = 2 && currentVolume >= 0 + VolumeStep)
-	fader.Volume(currentVolume - VolumeStep);
-	else if(_volRampDirection = 2 && currentVolume < 0 + VolumeStep)
-	fader.Volume(0);
-	
-	if(_volRampDirection > 0)
+	if(_volRampDirection = 0)
 	{
-		wait(VolumeHoldTillRepeatTime, vHold)
+		return;
+	}
+	else 
+	{
+		if(_volRampDirection = 1)
 		{
-			VolumeRepeat();
+			if(currentVolume <= 65535 - VolumeStep)
+			fader.Volume(currentVolume + VolumeStep);
+			else if(currentVolume > 65535 - VolumeStep)
+			fader.Volume(65535);
+		}
+		else if(_volRampDirection = 2)
+		{
+			if(currentVolume >= 0 + VolumeStep)
+			fader.Volume(currentVolume - VolumeStep);
+			else if(currentVolume < 0 + VolumeStep)
+			fader.Volume(0);
+		}
+		
+		if(_volRampDirection > 0)
+		{
+			wait(VolumeHoldTillRepeatTime, vHold)
+			{
+				VolumeRepeat();
+			}
 		}
 	}
 }

@@ -85,6 +85,8 @@
     <Compile Include="Intermediaries\NamedComponentControl.cs" />
     <Compile Include="Intermediaries\NamedControl.cs" />
     <Compile Include="Json.cs" />
+    <Compile Include="NamedComponents\QsysMatrixMixerOutputFader.cs" />
+    <Compile Include="NamedComponents\QsysMatrixMixerInputFader.cs" />
     <Compile Include="QsysBackupCore.cs" />
     <Compile Include="NamedComponents\QsysCamera.cs" />
     <Compile Include="NamedComponents\AbstractQsysComponent.cs" />
