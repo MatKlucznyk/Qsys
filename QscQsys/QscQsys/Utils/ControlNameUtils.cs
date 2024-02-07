@@ -14,6 +14,8 @@ namespace QscQsys.Utils
         private const string SIGNAL_PRESENCE = "signal_presence";
 
         private const string MATRIX_MIXER_CONTROL_NAME_FORMAT = "input_{0}_output_{1}_{2}";
+        private const string MATRIX_MIXER_INPUT_NAME_FORMAT = "input_{0}_{1}";
+        private const string MATRIX_MIXER_OUTPUT_NAME_FORMAT = "output_{0}_{1}";
         private const string METER_NAME_FORMAT = "meter_{0}";
         private const string ROUTER_SELECT_NAME_FORMAT = "select_{0}";
         private const string ROUTER_MUTE_NAME_FORMAT = "mute_{0}";
@@ -32,6 +34,26 @@ namespace QscQsys.Utils
         public static string GetMatrixCrosspointGainName(int input, int output)
         {
             return string.Format(MATRIX_MIXER_CONTROL_NAME_FORMAT, input, output, GAIN);
+        }
+
+        public static string GetMatrixInputMuteName(int input)
+        {
+            return string.Format(MATRIX_MIXER_INPUT_NAME_FORMAT, input, MUTE);
+        }
+
+        public static string GetMatrixInputGainName(int input)
+        {
+            return string.Format(MATRIX_MIXER_INPUT_NAME_FORMAT, input, GAIN);
+        }
+
+        public static string GetMatrixOutputMuteName(int output)
+        {
+            return string.Format(MATRIX_MIXER_OUTPUT_NAME_FORMAT, output, MUTE);
+        }
+
+        public static string GetMatrixOutputGainName(int output)
+        {
+            return string.Format(MATRIX_MIXER_OUTPUT_NAME_FORMAT, output, GAIN);
         }
 
         public static string GetMeterName(int index)
