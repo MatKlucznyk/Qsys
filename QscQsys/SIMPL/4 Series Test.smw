@@ -19,8 +19,8 @@ S1Nd=2
 SLNd=3
 PrNm=4 Series Test.smw
 CmVr=3.03
-DbVr=222.05.001.00
-DvcDbVr=200.320.001.00
+DbVr=223.00.001.00
+DvcDbVr=200.325.002.00
 PgmNm=Mat Klucznyk
 DlrNm=Global USS
 CltNm=qsysTest
@@ -750,20 +750,6 @@ Sy1=0
 Mx1=0
 ]
 [
-ObjTp=Bw
-H=1
-Lx=0
-Ly=0
-Rx=1418
-Ry=1027
-Xm=-1
-Ym=-1
-SH=9
-Z=100
-Ht=1
-Hi=1
-]
-[
 ObjTp=Et
 H=1
 DvH=510
@@ -898,11 +884,10 @@ SmVr=1198
 PrH=4
 CF=2
 Cmn1=core initialization
-mC=4
+mC=3
 C1=9
-C2=10
-C3=11
-C4=12
+C2=11
+C3=12
 ]
 [
 ObjTp=Sm
@@ -919,28 +904,9 @@ mI=3
 I1=2
 mO=2
 tO=2
-O1=229
-mP=1
-P1=1t
-]
-[
-ObjTp=Sm
-H=10
-SmC=16
-Nm=Delay
-ObjVer=1
-SmVr=1198
-PrH=8
-CF=2
-n1I=2
-n1O=1
-mI=2
-I1=229
-mO=1
-tO=1
 O1=77
 mP=1
-P1=1s
+P1=1t
 ]
 [
 ObjTp=Sm
@@ -995,7 +961,7 @@ O10=456
 O13=166
 mP=6
 P1=main
-P2=192.168.4.150
+P2=192.168.4.116
 P3=192.168.4.162
 P4=1710d
 P5=""
@@ -4920,11 +4886,6 @@ SgTp=2
 ObjTp=Sg
 H=228
 Nm=core[1].isEmulator
-]
-[
-ObjTp=Sg
-H=229
-Nm=system.status.start
 ]
 [
 ObjTp=Sg

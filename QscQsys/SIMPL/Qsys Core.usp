@@ -12,7 +12,7 @@ string_input PrimaryIpAddress[255], BackupIpAddress[255], Username[100], Passwor
 buffer_input Response[65534];
 
 digital_output IsInitialized, PrimaryIsConnected, BackupIsConnected, PrimaryIsActive, BackupIsActive,
-IsLoggedIn, IsRedundant, IsEmulator;
+				IsLoggedIn, IsRedundant, IsEmulator;
 
 string_output DesignName, Command;
 
@@ -40,13 +40,21 @@ change DebugMode
 
 change PrimaryIpAddress
 {
-	_primaryIpa = PrimaryIpAddress;
+	if(len(PrimaryIpAddress)) 	
+		_primaryIpa = PrimaryIpAddress;
+	else
+		_primaryIpa = Default_PrimaryIpAddress;
+
 	processor.PrimaryHost = _primaryIpa;
 }
 
 change BackupIpAddress
 {
-	_backupIpa = BackupIpAddress;
+	if(len(BackupIpAddress)) 
+		_backupIpa = BackupIpAddress;
+	else
+		_backupIpa = Default_BackupIpAddress;
+		
 	processor.BackupHost = _backupIpa;
 }
 
@@ -64,7 +72,10 @@ change Password
 
 change Port
 {
-	_port = Port;
+	if(Port)
+		_port = Port;
+	else
+		_port = Default_Port;
 	processor.Port = _port;
 }
 
@@ -135,11 +146,31 @@ Function Main()
 {    
 	WaitForInitializationComplete();
 	
-	_port = Default_Port;
-	_primaryIpa = Default_PrimaryIpAddress;
-	_backupIpa = Default_BackupIpAddress;
-	_username = Default_Username;
-	_password = Default_Password;
+	if(Port)
+		_port = Port;
+	else
+		_port = Default_Port;
+
+	if(len(PrimaryIpAddress))
+		_primaryIpa = PrimaryIpAddress;
+	else
+		_primaryIpa = Default_PrimaryIpAddress;
+
+	if(len(BackupIpAddress))
+		_backupIpa = BackupIpAddress;
+	else
+		_backupIpa = Default_BackupIpAddress;
+
+	if(len(Username))
+		_username = Username;
+	else
+		_username = Default_Username;
+
+	if(len(Password))
+		_password = Password;
+	else
+		_password = Default_Password;
+	
 	if(GatherAsync("\x00", Response, RxGatherHandler, 500) = -1)
 	{
 	}
