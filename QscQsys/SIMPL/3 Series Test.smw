@@ -8,7 +8,7 @@ RelVrs=4.28.00
 IntStrVrs=2
 MinSMWVrs=4.14.0
 MinTIOVrs=700
-SavedBy=SMW4.2500.04
+SavedBy=SMW4.2800.00
 ]
 [
 ObjTp=Hd
@@ -19,8 +19,8 @@ S1Nd=2
 SLNd=3
 PrNm=3 Series Test.smw
 CmVr=3.03
-DbVr=222.05.001.00
-DvcDbVr=200.320.001.00
+DbVr=223.00.001.00
+DvcDbVr=200.325.002.00
 PgmNm=Mat Klucznyk
 DlrNm=Global USS
 CltNm=qsysTest
@@ -1150,7 +1150,7 @@ DvC=200
 ObjVer=1
 DvVr=1198
 Ad=03
-SmH=91
+SmH=95
 RelStat=Release
 ProdLine=2-Series,3-Series
 DbH=1
@@ -1208,34 +1208,6 @@ Nm1=\
 Sx1=0
 Sy1=0
 Mx1=0
-]
-[
-ObjTp=Bw
-H=1
-Lx=0
-Ly=657
-Rx=1527
-Ry=1314
-Xm=-1
-Ym=-1
-SH=22
-Z=100
-Ht=4
-Hi=5
-]
-[
-ObjTp=Bw
-H=1
-Lx=0
-Ly=0
-Rx=1527
-Ry=657
-Xm=-1
-Ym=-1
-SH=96
-Z=100
-Ht=1
-Hi=1
 ]
 [
 ObjTp=Et
@@ -1311,20 +1283,20 @@ SmVr=1198
 CF=2
 mC=15
 C1=18
-C2=23
-C3=25
-C4=60
-C5=63
-C6=65
-C7=68
-C8=70
-C9=79
-C10=81
-C11=83
-C12=86
-C13=88
-C14=89
-C15=90
+C2=22
+C3=24
+C4=64
+C5=67
+C6=69
+C7=72
+C8=74
+C9=83
+C10=85
+C11=87
+C12=90
+C13=92
+C14=93
+C15=94
 ]
 [
 ObjTp=Sm
@@ -1366,7 +1338,7 @@ PrH=1
 CF=2
 Cmn1=C2I-RMC3ENET-1
 mC=1
-C1=91
+C1=95
 ]
 [
 ObjTp=Sm
@@ -1540,11 +1512,10 @@ SmVr=1198
 PrH=4
 CF=2
 Cmn1=core initialization
-mC=4
+mC=3
 C1=19
 C2=20
 C3=21
-C4=22
 ]
 [
 ObjTp=Sm
@@ -1561,32 +1532,13 @@ mI=3
 I1=2
 mO=2
 tO=2
-O1=229
+O1=77
 mP=1
 P1=1t
 ]
 [
 ObjTp=Sm
 H=20
-SmC=16
-Nm=Delay
-ObjVer=1
-SmVr=1198
-PrH=18
-CF=2
-n1I=2
-n1O=1
-mI=2
-I1=229
-mO=1
-tO=1
-O1=77
-mP=1
-P1=1s
-]
-[
-ObjTp=Sm
-H=21
 SmC=32
 Nm=Analog Initialize
 ObjVer=1
@@ -1605,7 +1557,7 @@ P1=1d
 ]
 [
 ObjTp=Sm
-H=22
+H=21
 SmC=155
 Nm=Qsys Core.umc
 ObjVer=1
@@ -1675,7 +1627,7 @@ GrpStO14=6
 ]
 [
 ObjTp=Sm
-H=23
+H=22
 SmC=156
 Nm=SUBSYSTEM
 ObjVer=1
@@ -1684,15 +1636,15 @@ PrH=4
 CF=2
 Cmn1=fader
 mC=1
-C1=24
+C1=23
 ]
 [
 ObjTp=Sm
-H=24
+H=23
 SmC=103
 Nm=Qsys Fader.usp
 ObjVer=1
-PrH=23
+PrH=22
 CF=2
 n1I=5
 n2I=2
@@ -1724,11 +1676,11 @@ P9=main
 P10=fader test
 P11=1260d
 P12=.5s
-P13=2.5s
+P13=1s
 ]
 [
 ObjTp=Sm
-H=25
+H=24
 SmC=156
 Nm=SUBSYSTEM
 ObjVer=1
@@ -1737,17 +1689,17 @@ PrH=4
 CF=2
 Cmn1=mixer
 mC=3
-C1=26
-C2=27
-C3=92
+C1=25
+C2=26
+C3=59
 ]
 [
 ObjTp=Sm
-H=26
+H=25
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=25
+PrH=24
 CF=2
 n1I=4
 n2I=1
@@ -1779,52 +1731,52 @@ P12=1s
 ]
 [
 ObjTp=Sm
+H=26
+SmC=156
+Nm=SUBSYSTEM
+ObjVer=1
+SmVr=1198
+PrH=24
+CF=2
+Cmn1=bigMixer
+mC=2
+C1=27
+C2=43
+]
+[
+ObjTp=Sm
 H=27
 SmC=156
 Nm=SUBSYSTEM
 ObjVer=1
 SmVr=1198
-PrH=25
+PrH=26
 CF=2
-Cmn1=bigMixer
-mC=2
+Cmn1=output[1]
+mC=15
 C1=28
-C2=44
+C2=29
+C3=30
+C4=31
+C5=32
+C6=33
+C7=34
+C8=35
+C9=36
+C10=37
+C11=38
+C12=39
+C13=40
+C14=41
+C15=42
 ]
 [
 ObjTp=Sm
 H=28
-SmC=156
-Nm=SUBSYSTEM
-ObjVer=1
-SmVr=1198
-PrH=27
-CF=2
-Cmn1=output[1]
-mC=15
-C1=29
-C2=30
-C3=31
-C4=32
-C5=33
-C6=34
-C7=35
-C8=36
-C9=37
-C10=38
-C11=39
-C12=40
-C13=41
-C14=42
-C15=43
-]
-[
-ObjTp=Sm
-H=29
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=28
+PrH=27
 CF=2
 n1I=4
 n2I=1
@@ -1856,11 +1808,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=30
+H=29
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=28
+PrH=27
 CF=2
 n1I=4
 n2I=1
@@ -1892,11 +1844,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=31
+H=30
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=28
+PrH=27
 CF=2
 n1I=4
 n2I=1
@@ -1928,11 +1880,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=32
+H=31
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=28
+PrH=27
 CF=2
 n1I=4
 n2I=1
@@ -1964,11 +1916,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=33
+H=32
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=28
+PrH=27
 CF=2
 n1I=4
 n2I=1
@@ -2000,11 +1952,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=34
+H=33
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=28
+PrH=27
 CF=2
 n1I=4
 n2I=1
@@ -2036,11 +1988,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=35
+H=34
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=28
+PrH=27
 CF=2
 n1I=4
 n2I=1
@@ -2072,11 +2024,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=36
+H=35
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=28
+PrH=27
 CF=2
 n1I=4
 n2I=1
@@ -2108,11 +2060,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=37
+H=36
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=28
+PrH=27
 CF=2
 n1I=4
 n2I=1
@@ -2144,11 +2096,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=38
+H=37
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=28
+PrH=27
 CF=2
 n1I=4
 n2I=1
@@ -2180,11 +2132,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=39
+H=38
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=28
+PrH=27
 CF=2
 n1I=4
 n2I=1
@@ -2216,11 +2168,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=40
+H=39
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=28
+PrH=27
 CF=2
 n1I=4
 n2I=1
@@ -2252,11 +2204,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=41
+H=40
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=28
+PrH=27
 CF=2
 n1I=4
 n2I=1
@@ -2288,11 +2240,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=42
+H=41
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=28
+PrH=27
 CF=2
 n1I=4
 n2I=1
@@ -2324,11 +2276,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=43
+H=42
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=28
+PrH=27
 CF=2
 n1I=4
 n2I=1
@@ -2360,38 +2312,38 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=44
+H=43
 SmC=156
 Nm=SUBSYSTEM
 ObjVer=1
 SmVr=1198
-PrH=27
+PrH=26
 CF=2
 Cmn1=output[2]
 mC=15
-C1=45
-C2=46
-C3=47
-C4=48
-C5=49
-C6=50
-C7=51
-C8=52
-C9=53
-C10=54
-C11=55
-C12=56
-C13=57
-C14=58
-C15=59
+C1=44
+C2=45
+C3=46
+C4=47
+C5=48
+C6=49
+C7=50
+C8=51
+C9=52
+C10=53
+C11=54
+C12=55
+C13=56
+C14=57
+C15=58
 ]
 [
 ObjTp=Sm
-H=45
+H=44
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=44
+PrH=43
 CF=2
 n1I=4
 n2I=1
@@ -2423,11 +2375,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=46
+H=45
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=44
+PrH=43
 CF=2
 n1I=4
 n2I=1
@@ -2459,11 +2411,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=47
+H=46
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=44
+PrH=43
 CF=2
 n1I=4
 n2I=1
@@ -2495,11 +2447,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=48
+H=47
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=44
+PrH=43
 CF=2
 n1I=4
 n2I=1
@@ -2531,11 +2483,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=49
+H=48
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=44
+PrH=43
 CF=2
 n1I=4
 n2I=1
@@ -2567,11 +2519,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=50
+H=49
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=44
+PrH=43
 CF=2
 n1I=4
 n2I=1
@@ -2603,11 +2555,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=51
+H=50
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=44
+PrH=43
 CF=2
 n1I=4
 n2I=1
@@ -2639,11 +2591,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=52
+H=51
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=44
+PrH=43
 CF=2
 n1I=4
 n2I=1
@@ -2675,11 +2627,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=53
+H=52
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=44
+PrH=43
 CF=2
 n1I=4
 n2I=1
@@ -2711,11 +2663,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=54
+H=53
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=44
+PrH=43
 CF=2
 n1I=4
 n2I=1
@@ -2747,11 +2699,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=55
+H=54
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=44
+PrH=43
 CF=2
 n1I=4
 n2I=1
@@ -2783,11 +2735,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=56
+H=55
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=44
+PrH=43
 CF=2
 n1I=4
 n2I=1
@@ -2819,11 +2771,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=57
+H=56
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=44
+PrH=43
 CF=2
 n1I=4
 n2I=1
@@ -2855,11 +2807,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=58
+H=57
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=44
+PrH=43
 CF=2
 n1I=4
 n2I=1
@@ -2891,11 +2843,11 @@ P12=.2s
 ]
 [
 ObjTp=Sm
-H=59
+H=58
 SmC=103
 Nm=Qsys Matrix Mixer Crosspoint.usp
 ObjVer=1
-PrH=44
+PrH=43
 CF=2
 n1I=4
 n2I=1
@@ -2927,7 +2879,163 @@ P12=.2s
 ]
 [
 ObjTp=Sm
+H=59
+SmC=156
+Nm=SUBSYSTEM
+ObjVer=1
+SmVr=1198
+PrH=24
+CF=2
+Cmn1=input output
+mC=4
+C1=60
+C2=61
+C3=62
+C4=63
+]
+[
+ObjTp=Sm
 H=60
+SmC=103
+Nm=Qsys Matrix Mixer Input Fader.usp
+ObjVer=1
+PrH=59
+CF=2
+n1I=4
+n2I=1
+n1O=2
+mI=5
+I1=400
+I2=431
+I3=444
+I4=445
+I5=447
+mO=5
+tO=5
+O1=448
+O2=449
+O5=446
+mP=11
+P1=
+P2=
+P3=
+P4=
+P5=
+P6=
+P7=main
+P8=mixer test
+P9=1d
+P10=6553d
+P11=1s
+]
+[
+ObjTp=Sm
+H=61
+SmC=103
+Nm=Qsys Matrix Mixer Input Fader.usp
+ObjVer=1
+PrH=59
+CF=2
+n1I=4
+n2I=1
+n1O=2
+mI=5
+I1=450
+I2=459
+I3=460
+I4=461
+I5=462
+mO=5
+tO=5
+O1=463
+O2=464
+O5=465
+mP=11
+P1=
+P2=
+P3=
+P4=
+P5=
+P6=
+P7=main
+P8=mixer test
+P9=10d
+P10=6553d
+P11=1s
+]
+[
+ObjTp=Sm
+H=62
+SmC=103
+Nm=Qsys Matrix Mixer Output Fader.usp
+ObjVer=1
+PrH=59
+CF=2
+n1I=4
+n2I=1
+n1O=2
+mI=5
+I1=466
+I2=467
+I3=468
+I4=469
+I5=470
+mO=5
+tO=5
+O1=471
+O2=472
+O5=473
+mP=11
+P1=
+P2=
+P3=
+P4=
+P5=
+P6=
+P7=main
+P8=mixer test
+P9=1d
+P10=6553d
+P11=1s
+]
+[
+ObjTp=Sm
+H=63
+SmC=103
+Nm=Qsys Matrix Mixer Output Fader.usp
+ObjVer=1
+PrH=59
+CF=2
+n1I=4
+n2I=1
+n1O=2
+mI=5
+I1=474
+I2=475
+I3=476
+I4=477
+I5=478
+mO=5
+tO=5
+O1=479
+O2=480
+O5=481
+mP=11
+P1=
+P2=
+P3=
+P4=
+P5=
+P6=
+P7=main
+P8=mixer test
+P9=10d
+P10=6553d
+P11=1s
+]
+[
+ObjTp=Sm
+H=64
 SmC=156
 Nm=SUBSYSTEM
 ObjVer=1
@@ -2936,16 +3044,16 @@ PrH=4
 CF=2
 Cmn1=router
 mC=2
-C1=61
-C2=62
+C1=65
+C2=66
 ]
 [
 ObjTp=Sm
-H=61
+H=65
 SmC=103
 Nm=Qsys Router.usp
 ObjVer=1
-PrH=60
+PrH=64
 CF=2
 n1I=3
 n2I=2
@@ -2973,11 +3081,11 @@ P9=1d
 ]
 [
 ObjTp=Sm
-H=62
+H=66
 SmC=103
 Nm=Qsys Router.usp
 ObjVer=1
-PrH=60
+PrH=64
 CF=2
 n1I=3
 n2I=2
@@ -3005,7 +3113,7 @@ P9=10d
 ]
 [
 ObjTp=Sm
-H=63
+H=67
 SmC=156
 Nm=SUBSYSTEM
 ObjVer=1
@@ -3014,15 +3122,15 @@ PrH=4
 CF=2
 Cmn1=pots controller
 mC=1
-C1=64
+C1=68
 ]
 [
 ObjTp=Sm
-H=64
+H=68
 SmC=155
 Nm=Qsys Pots Controller.umc
 ObjVer=1
-PrH=63
+PrH=67
 CF=2
 n1I=31
 n1O=31
@@ -3076,7 +3184,7 @@ P2=Pots
 ]
 [
 ObjTp=Sm
-H=65
+H=69
 SmC=156
 Nm=SUBSYSTEM
 ObjVer=1
@@ -3085,16 +3193,16 @@ PrH=4
 CF=2
 Cmn1=softphone
 mC=2
-C1=66
-C2=67
+C1=70
+C2=71
 ]
 [
 ObjTp=Sm
-H=66
+H=70
 SmC=155
 Nm=Qsys Softphone Controller.umc
 ObjVer=1
-PrH=65
+PrH=69
 CF=2
 n1I=31
 n1O=31
@@ -3149,12 +3257,12 @@ P2=Test VOIP
 ]
 [
 ObjTp=Sm
-H=67
+H=71
 SmC=327
 Nm=Intersystem Communications
 ObjVer=1
 SmVr=1198
-PrH=65
+PrH=69
 CF=2
 n1I=2
 n2I=1
@@ -3191,7 +3299,7 @@ P2=2d
 ]
 [
 ObjTp=Sm
-H=68
+H=72
 SmC=156
 Nm=SUBSYSTEM
 ObjVer=1
@@ -3200,15 +3308,15 @@ PrH=4
 CF=2
 Cmn1=nv32h decoder
 mC=1
-C1=69
+C1=73
 ]
 [
 ObjTp=Sm
-H=69
+H=73
 SmC=103
 Nm=Qsys Nv32h Decoder.usp
 ObjVer=1
-PrH=68
+PrH=72
 CF=2
 n2I=1
 mI=1
@@ -3224,7 +3332,7 @@ P4=decoder
 ]
 [
 ObjTp=Sm
-H=70
+H=74
 SmC=156
 Nm=SUBSYSTEM
 ObjVer=1
@@ -3233,22 +3341,22 @@ PrH=4
 CF=2
 Cmn1=generic named controls
 mC=8
-C1=71
-C2=72
-C3=73
-C4=74
-C5=75
-C6=76
-C7=77
-C8=78
+C1=75
+C2=76
+C3=77
+C4=78
+C5=79
+C6=80
+C7=81
+C8=82
 ]
 [
 ObjTp=Sm
-H=71
+H=75
 SmC=103
 Nm=Qsys Generic String Named Control.usp
 ObjVer=1
-PrH=70
+PrH=74
 CF=2
 n2I=1
 mI=1
@@ -3264,11 +3372,11 @@ P4=StringTest
 ]
 [
 ObjTp=Sm
-H=72
+H=76
 SmC=103
 Nm=Qsys Generic Integer Named Control.usp
 ObjVer=1
-PrH=70
+PrH=74
 CF=2
 n2I=2
 mI=2
@@ -3288,11 +3396,11 @@ P6=0d
 ]
 [
 ObjTp=Sm
-H=73
+H=77
 SmC=103
 Nm=Qsys Generic Integer Named Control.usp
 ObjVer=1
-PrH=70
+PrH=74
 CF=2
 n2I=2
 mI=2
@@ -3312,11 +3420,11 @@ P6=1d
 ]
 [
 ObjTp=Sm
-H=74
+H=78
 SmC=103
 Nm=Qsys Generic Boolean Named Control.usp
 ObjVer=1
-PrH=70
+PrH=74
 CF=2
 n1I=3
 n1O=1
@@ -3337,11 +3445,11 @@ P6=BoolTest
 ]
 [
 ObjTp=Sm
-H=75
+H=79
 SmC=103
 Nm=Qsys Generic Boolean Named Control.usp
 ObjVer=1
-PrH=70
+PrH=74
 CF=2
 n1I=3
 n1O=1
@@ -3362,11 +3470,11 @@ P6=BoolTest1
 ]
 [
 ObjTp=Sm
-H=76
+H=80
 SmC=103
 Nm=Qsys Generic ListBox Named Control.usp
 ObjVer=1
-PrH=70
+PrH=74
 CF=2
 n2I=1
 mI=1
@@ -3388,12 +3496,12 @@ P7=ListTest
 ]
 [
 ObjTp=Sm
-H=77
+H=81
 SmC=327
 Nm=Intersystem Communications
 ObjVer=1
 SmVr=1198
-PrH=70
+PrH=74
 CF=2
 n1I=2
 n2I=1
@@ -3413,11 +3521,11 @@ P2=2d
 ]
 [
 ObjTp=Sm
-H=78
+H=82
 SmC=103
 Nm=Qsys Generic Trigger Named Control.usp
 ObjVer=1
-PrH=70
+PrH=74
 CF=2
 n1I=1
 mI=1
@@ -3430,7 +3538,7 @@ P4=TriggerTest
 ]
 [
 ObjTp=Sm
-H=79
+H=83
 SmC=156
 Nm=SUBSYSTEM
 ObjVer=1
@@ -3439,15 +3547,15 @@ PrH=4
 CF=2
 Cmn1=camera
 mC=1
-C1=80
+C1=84
 ]
 [
 ObjTp=Sm
-H=80
+H=84
 SmC=103
 Nm=Qsys Camera.usp
 ObjVer=1
-PrH=79
+PrH=83
 CF=2
 n1I=22
 n2I=16
@@ -3546,7 +3654,7 @@ P41=Camera
 ]
 [
 ObjTp=Sm
-H=81
+H=85
 SmC=156
 Nm=SUBSYSTEM
 ObjVer=1
@@ -3555,15 +3663,15 @@ PrH=4
 CF=2
 Cmn1=room combiner
 mC=1
-C1=82
+C1=86
 ]
 [
 ObjTp=Sm
-H=82
+H=86
 SmC=103
 Nm=Qsys Room Combiner.usp
 ObjVer=1
-PrH=81
+PrH=85
 CF=2
 n1I=5
 n1O=6
@@ -3597,7 +3705,7 @@ P12=3d
 ]
 [
 ObjTp=Sm
-H=83
+H=87
 SmC=156
 Nm=SUBSYSTEM
 ObjVer=1
@@ -3606,16 +3714,16 @@ PrH=4
 CF=2
 Cmn1=meters
 mC=2
-C1=84
-C2=85
+C1=88
+C2=89
 ]
 [
 ObjTp=Sm
-H=84
+H=88
 SmC=103
 Nm=Qsys Signal Presence.usp
 ObjVer=1
-PrH=83
+PrH=87
 CF=2
 n1I=9
 n1O=5
@@ -3651,11 +3759,11 @@ P13=2d
 ]
 [
 ObjTp=Sm
-H=85
+H=89
 SmC=103
 Nm=Qsys Meter.usp
 ObjVer=1
-PrH=83
+PrH=87
 CF=2
 mO=1
 tO=1
@@ -3669,7 +3777,7 @@ P5=1d
 ]
 [
 ObjTp=Sm
-H=86
+H=90
 SmC=156
 Nm=SUBSYSTEM
 ObjVer=1
@@ -3678,15 +3786,15 @@ PrH=4
 CF=2
 Cmn1=snapshot controller
 mC=1
-C1=87
+C1=91
 ]
 [
 ObjTp=Sm
-H=87
+H=91
 SmC=103
 Nm=Qsys Snapshot Controller.usp
 ObjVer=1
-PrH=86
+PrH=90
 CF=2
 n1I=6
 n2I=1
@@ -3714,7 +3822,7 @@ P5=8d
 ]
 [
 ObjTp=Sm
-H=88
+H=92
 SmC=470
 Nm=Serial Force
 ObjVer=1
@@ -3750,7 +3858,7 @@ I24=392
 ]
 [
 ObjTp=Sm
-H=89
+H=93
 SmC=858
 Nm=Make String Permanent
 ObjVer=1
@@ -3769,7 +3877,7 @@ P1=255d
 ]
 [
 ObjTp=Sm
-H=90
+H=94
 SmC=103
 Nm=Qsys Matrix Mixer Output All Crosspoints.usp
 ObjVer=1
@@ -4173,7 +4281,7 @@ P5=4d
 ]
 [
 ObjTp=Sm
-H=91
+H=95
 SmC=3166
 Nm=TCP/IP Client
 ObjVer=1
@@ -4193,162 +4301,6 @@ O1=74
 O3=13
 mP=1
 P1=1710d
-]
-[
-ObjTp=Sm
-H=92
-SmC=156
-Nm=SUBSYSTEM
-ObjVer=1
-SmVr=1198
-PrH=25
-CF=2
-Cmn1=input output
-mC=4
-C1=93
-C2=94
-C3=95
-C4=96
-]
-[
-ObjTp=Sm
-H=93
-SmC=103
-Nm=Qsys Matrix Mixer Input Fader.usp
-ObjVer=1
-PrH=92
-CF=2
-n1I=4
-n2I=1
-n1O=2
-mI=5
-I1=400
-I2=431
-I3=444
-I4=445
-I5=446
-mO=5
-tO=5
-O1=447
-O2=448
-O5=449
-mP=11
-P1=
-P2=
-P3=
-P4=
-P5=
-P6=
-P7=main
-P8=mixer test
-P9=1d
-P10=6553d
-P11=1s
-]
-[
-ObjTp=Sm
-H=94
-SmC=103
-Nm=Qsys Matrix Mixer Input Fader.usp
-ObjVer=1
-PrH=92
-CF=2
-n1I=4
-n2I=1
-n1O=2
-mI=5
-I1=450
-I2=459
-I3=460
-I4=461
-I5=462
-mO=5
-tO=5
-O1=463
-O2=464
-O5=465
-mP=11
-P1=
-P2=
-P3=
-P4=
-P5=
-P6=
-P7=main
-P8=mixer test
-P9=10d
-P10=6553d
-P11=1s
-]
-[
-ObjTp=Sm
-H=95
-SmC=103
-Nm=Qsys Matrix Mixer Output Fader.usp
-ObjVer=1
-PrH=92
-CF=2
-n1I=4
-n2I=1
-n1O=2
-mI=5
-I1=466
-I2=467
-I3=468
-I4=469
-I5=470
-mO=5
-tO=5
-O1=471
-O2=472
-O5=473
-mP=11
-P1=
-P2=
-P3=
-P4=
-P5=
-P6=
-P7=main
-P8=mixer test
-P9=1d
-P10=6553d
-P11=1s
-]
-[
-ObjTp=Sm
-H=96
-SmC=103
-Nm=Qsys Matrix Mixer Output Fader.usp
-ObjVer=1
-PrH=92
-CF=2
-n1I=4
-n2I=1
-n1O=2
-mI=5
-I1=474
-I2=475
-I3=476
-I4=477
-I5=478
-mO=5
-tO=5
-O1=479
-O2=480
-O5=481
-mP=11
-P1=
-P2=
-P3=
-P4=
-P5=
-P6=
-P7=main
-P8=mixer test
-P9=10d
-P10=6553d
-P11=1s
 ]
 [
 ObjTp=Sg
@@ -5565,11 +5517,6 @@ Nm=core[1].isEmulator
 ]
 [
 ObjTp=Sg
-H=229
-Nm=system.status.start
-]
-[
-ObjTp=Sg
 H=230
 Nm=meter.value
 SgTp=2
@@ -6730,24 +6677,24 @@ Nm=mixerInput[1].gainDown
 [
 ObjTp=Sg
 H=446
-Nm=mixerInput[1].gain
+Nm=mixerInput[1].gain.value
 SgTp=2
 ]
 [
 ObjTp=Sg
 H=447
-Nm=mixerInput[1].muteIsOn
+Nm=mixerInput[1].gain
+SgTp=2
 ]
 [
 ObjTp=Sg
 H=448
-Nm=mixerInput[1].muteIsOff
+Nm=mixerInput[1].muteIsOn
 ]
 [
 ObjTp=Sg
 H=449
-Nm=mixerInput[1].gain.value
-SgTp=2
+Nm=mixerInput[1].muteIsOff
 ]
 [
 ObjTp=Sg
