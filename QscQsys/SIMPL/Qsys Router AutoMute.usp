@@ -1,0 +1,75 @@
+#CATEGORY "46" "Qsys" // Custom
+#SYMBOL_NAME "Qsys Router AutoMute"
+
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+#DEFINE_CONSTANT true 1
+#DEFINE_CONSTANT false 0
+
+#HELP_BEGIN
+This module operates in much the same way as the Qsys Router.
+The difference is, instead of having separate control of the
+mute, it uses the mute as an "un-route" option. If the source
+is set to 0, then the mute is set to true. If the source is >0,
+then the source is changed and the mute is set to false.
+The feedback follows similar logic; when muted, the output is
+set to 0. When unmuted, the output is set to the currently selected input
+#HELP_END
+
+
+Analog_Input InputSet;
+
+Analog_Output InputValue;
+
+
+String_Parameter _skip_, CoreID[100], ComponentName[100];
+Integer_Parameter OutputNumber;
+
+#BEGIN_PARAMETER_PROPERTIES CoreID
+   propValidUnits = unitString;
+   propDefaultUnit = unitString;
+   propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
+                                                       
+QsysRouter router;
+
+Threadsafe Change InputSet
+{
+    integer x;
+	x = 65535;
+
+    while(x != InputSet)
+    {
+        x = InputSet;
+        if (x = 0) {
+            router.OutputMute(true);
+        } else {
+            router.InputSelect(x);
+            router.OutputMute(false);
+        }
+    }
+}
+
+Callback Function onRouterInputChange(string cName, integer in)
+{
+    if (router.CurrentMuteSPlus = 0)
+        InputValue = in;
+}
+
+Callback Function onOutputMuteChange(string cName, integer value)
+{
+	if (value = 0) {
+        InputValue = router.CurrentSelectedInput;
+    } else {
+        InputValue = 0;
+    }
+}
+
+Function Main()
+{
+    RegisterDelegate(router, newRouterInputChange, onRouterInputChange);
+    RegisterDelegate(router, newOutputMuteChange, onOutputMuteChange);
+    router.Initialize(CoreID, ComponentName, OutputNumber);
+
+}
