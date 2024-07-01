@@ -93,6 +93,7 @@
     <Compile Include="NamedComponents\GenericComponentControl\TriggerGenericComponentControl.cs" />
     <Compile Include="NamedComponents\QsysMatrixMixerOutputFader.cs" />
     <Compile Include="NamedComponents\QsysMatrixMixerInputFader.cs" />
+    <Compile Include="NamedComponents\QsysMediacastRouter.cs" />
     <Compile Include="QsysBackupCore.cs" />
     <Compile Include="NamedComponents\QsysCamera.cs" />
     <Compile Include="NamedComponents\AbstractQsysComponent.cs" />
