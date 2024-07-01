@@ -1,0 +1,92 @@
+#CATEGORY "46" "Qsys" // Custom
+#SYMBOL_NAME "Qsys Generic Integer Component Control"
+
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+#DEFINE_CONSTANT true 1
+#DEFINE_CONSTANT false 0
+
+analog_input SetUnsignedIntegerValue, SetSignedIntegerValue;
+
+analog_Output IntegerValueScaled, IntegerValueUnscaled;
+
+string_parameter  _skip_, _skip_, CoreID[100], ComponentName[100], ComponentControlName[100];
+integer_parameter ScaleUnsigned;
+
+#BEGIN_PARAMETER_PROPERTIES CoreID
+   propValidUnits = unitString;
+   propDefaultUnit = unitString;
+   propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
+#BEGIN_PARAMETER_PROPERTIES ScaleUnsigned
+   propValidUnits = unitDecimal;
+   propDefaultUnit = unitDecimal;
+   propDefaultValue = 0d;
+   propList = { 0d , "No" } , { 1d , "Yes" };
+
+#END_PARAMETER_PROPERTIES
+
+IntegerGenericComponentControl integerControl;
+signed_long_integer intVal;
+integer changeSemephore;
+
+threadsafe change SetUnsignedIntegerValue
+{
+    integer x;
+	
+	if(SetUnsignedIntegerValue = 0)
+	{
+		integerControl.SetUnsignedInteger(0, ScaleUnsigned);
+	}
+	else 
+	{
+		While(x != SetUnsignedIntegerValue)
+		{
+			x = SetUnsignedIntegerValue;
+			integerControl.SetUnsignedInteger(x, ScaleUnsigned);
+		}
+	}
+}
+
+change SetSignedIntegerValue
+{
+    signed_long_integer x;
+    intVal = SetSignedIntegerValue;
+
+    if(changeSemephore)
+    {
+        changeSemephore = false;
+        if(intVal = 0)
+        {
+            x = intVal;
+            integerControl.SetSignedInteger(x, 0);
+        }
+        while(x != intVal)
+        {
+            x = intVal;
+            integerControl.SetSignedInteger(x, 0);
+        }
+
+        changeSemephore = true;
+    }
+}
+
+callback function UnsignedChanged(string compName, string contName, integer value)
+{
+    IntegerValueScaled = value;
+}
+
+callback function SignedChanged(string compName, string contName, signed_integer value)
+{
+    IntegerValueUnscaled = value;
+}
+
+function Main()
+{
+    RegisterDelegate(integerControl, UnsignedDataChangedCallback, UnsignedChanged);
+    RegisterDelegate(integerControl, SignedDataChangedCallback, SignedChanged);
+    integerControl.Initialize(CoreID, ComponentName, ComponentControlName);
+
+    changeSemephore = true;
+}

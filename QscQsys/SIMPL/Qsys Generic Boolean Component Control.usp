@@ -1,0 +1,49 @@
+#CATEGORY "46" "Qsys" // Custom
+#SYMBOL_NAME "Qsys Generic Boolean Component Control"
+
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+digital_input SetBooleanStateOn;
+digital_input SetBooleanStateOff;
+digital_input ToggleBooleanState;
+
+digital_output BooleanState;
+
+string_parameter  _skip_, _skip_, _skip_, CoreID[100], ComponentName[100], ComponentControlName[100];
+#BEGIN_PARAMETER_PROPERTIES CoreID
+   propValidUnits = unitString;
+   propDefaultUnit = unitString;
+   propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
+
+BoolGenericComponentControl booleanControl;
+
+push SetBooleanStateOn
+{
+    booleanControl.SetBoolean(1);
+}
+
+push SetBooleanStateOff
+{
+    booleanControl.SetBoolean(0);
+}
+
+push ToggleBooleanState
+{
+    if(BooleanState)
+        booleanControl.SetBoolean(0);
+    else
+        booleanControl.SetBoolean(1);
+}
+
+callback function DataChanged(string compName, string contName, integer value)
+{
+    BooleanState = value;
+}
+
+function Main()
+{
+    RegisterDelegate(booleanControl, DataChangedCallback, DataChanged);
+    booleanControl.Initialize(CoreID, ComponentName, ComponentControlName);
+}

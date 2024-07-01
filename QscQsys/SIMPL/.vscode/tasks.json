@@ -1,0 +1,19 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "Crestron S+: Compile 3 & 4 Series",
+			"command": "\"C:\\Program Files (x86)\\Crestron\\SIMPL\\SPlusCC.exe\" \\rebuild \"c:\\Users\\astin\\ICDPF\\Infrastructure\\CSharp\\Qsys\\QscQsys\\SIMPL\\Qsys Camera.usp\" \\target series3 series4",
+			"problemMatcher": [
+				"$splusCC"
+			],
+			"presentation": {
+				"panel": "shared",
+				"focus": true,
+				"clear": true
+			},
+			"group": "build"
+		}
+	]
+}
