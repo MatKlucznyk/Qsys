@@ -22,6 +22,7 @@ namespace QscQsys.NamedComponents
         public int CurrentSelectedInput { get { return _currentSelectedInput; } }
         public int Output { get { return _output; } }
         public bool CurrentMute {get { return _currentMute; } }
+        public ushort CurrentMuteSPlus {get { return (ushort)(CurrentMute ? 1 : 0); }}
 
         public NamedComponentControl InputControl
         {

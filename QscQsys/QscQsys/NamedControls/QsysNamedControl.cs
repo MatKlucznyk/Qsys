@@ -133,7 +133,7 @@ namespace QscQsys.NamedControls
             if (Control == null)
                 return;
 
-            if (index < 0 || index > _listData.Count)
+            if (index < 0 || index >= _listData.Count)
                 return;
 
             Control.SendChangeStringValue(_listData[index]);
