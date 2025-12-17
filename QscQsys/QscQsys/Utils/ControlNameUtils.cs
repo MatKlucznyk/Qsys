@@ -135,8 +135,16 @@ namespace QscQsys.Utils
                     return "tilt_down";
                 case QsysCamera.PtzTypes.Left:
                     return "pan_left";
+                case QsysCamera.PtzTypes.LeftUp:
+                    return "pan_left_tilt_up";
+                case QsysCamera.PtzTypes.LeftDown:
+                    return "pan_left_tilt_down";       
                 case QsysCamera.PtzTypes.Right:
                     return "pan_right";
+                case QsysCamera.PtzTypes.RightUp:
+                    return "pan_right_tilt_up";
+                case QsysCamera.PtzTypes.RightDown:
+                    return "pan_right_tilt_down";      
                 case QsysCamera.PtzTypes.ZoomIn:
                     return "zoom_in";
                 case QsysCamera.PtzTypes.ZoomOut:

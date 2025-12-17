@@ -51,7 +51,7 @@ Auto Wihite Balance Sensitivity Values:
 2 = High
 #HELP_END
 
-Digital_Input TiltUp, TiltDown, PanLeft, PanRight, _skip_, ZoomIn, ZoomOut, _skip_, AutoFocus, FocusNear, FocusFar, _skip_, RecallHome, SaveHome, _skip_, PrivacyOn, PrivacyOff, PrivacyToggle, _skip_, AutoFrameOn, AutoFrameOff, AutoFrameToggle;
+Digital_Input TiltUp, TiltDown, PanLeft, PanRight, PanLeftUp, PanLeftDown, PanRightUp, PanRightDown, _skip_, ZoomIn, ZoomOut, _skip_, AutoFocus, FocusNear, FocusFar, _skip_, RecallHome, SaveHome, _skip_, PrivacyOn, PrivacyOff, PrivacyToggle, _skip_, AutoFrameOn, AutoFrameOff, AutoFrameToggle;
 Analog_Input _skip_, Brightness, Saturation, Sharpness, Contrast, _skip_, ExposureMode, Iris, Shutter;
 analog_input Gain, _skip_, AutoWhiteBalanceMode, AutoWhiteBalanceSensitivity, WhiteBalanceHue, WhiteBalanceRedGain, WhiteBalanceBlueGain;
 Digital_Output _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, AutoFocusIsOn, _skip_, _skip_, _skip_, _skip_, _skip_, _skip_, PrivacyIsOn,_skip_, _skip_, _skip_, AutoFrameIsOn;
@@ -105,6 +105,42 @@ Push PanRight
 Release PanRight
 {
     camera.StopPanRight();
+}
+        
+Push PanLeftUp
+{
+    camera.PanLeftUp();
+}
+Release PanLeftUp
+{
+    camera.StopPanLeftUp();
+}
+
+Push PanLeftDown
+{
+    camera.PanLeftDown();
+}
+Release PanLeftDown
+{
+    camera.StopPanLeftDown();
+}
+
+Push PanRightUp
+{
+    camera.PanRightUp();
+}
+Release PanRightUp
+{
+    camera.StopPanRightUp();
+}
+        
+Push PanRightDown
+{
+    camera.PanRightDown();
+}
+Release PanRightDown
+{
+    camera.StopPanRightDown();
 }
 
 Push ZoomIn
