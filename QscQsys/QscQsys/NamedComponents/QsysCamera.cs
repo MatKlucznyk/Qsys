@@ -506,42 +506,42 @@ namespace QscQsys.NamedComponents
             StopPTZ(PtzTypes.Right);
         }
 
-        public void PanLeftTiltUp()
+        public void PanLeftUp()
         {
             StartPTZ(PtzTypes.LeftUp);
         }
         
-        public void StopPanLeftTiltUp()
+        public void StopPanLeftUp()
         {
             StopPTZ(PtzTypes.LeftUp);
         }
 
-        public void PanLeftTiltDown()
+        public void PanLeftDown()
         {
             StartPTZ(PtzTypes.LeftDown);
         }
         
-        public void StopPanLeftTiltDown()
+        public void StopPanLeftDown()
         {
             StopPTZ(PtzTypes.LeftDown);
         }
         
-        public void PanRightTiltUp()
+        public void PanRightUp()
         {
             StartPTZ(PtzTypes.RightUp);
         }
 
-        public void StopPanRightTiltUp()
+        public void StopPanRightUp()
         {
             StopPTZ(PtzTypes.RightUp);
         }
 
-        public void PanRightTiltDown()
+        public void PanRightDown()
         {
             StartPTZ(PtzTypes.RightDown);
         }
 
-        public void StopPanRightTiltDown()
+        public void StopPanRightDown()
         {
             StopPTZ(PtzTypes.RightDown);
         }
