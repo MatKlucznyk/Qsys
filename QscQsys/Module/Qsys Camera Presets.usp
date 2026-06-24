@@ -1,0 +1,292 @@
+#CATEGORY "46" "Qsys" // Custom
+#SYMBOL_NAME "Qsys Camera Presets"
+
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+#DEFINE_CONSTANT true 1
+#DEFINE_CONSTANT false 0
+#DEFINE_CONSTANT NUM_CAMERAS 6
+#DEFINE_CONSTANT NUM_PRESETS 16
+
+Digital_Input Cam1_Select, Cam2_Select, Cam3_Select, Cam4_Select, Cam5_Select, Cam6_Select;
+Digital_Input Preset_Recall_1, Preset_Recall_2, Preset_Recall_3, Preset_Recall_4;
+Digital_Input Preset_Recall_5, Preset_Recall_6, Preset_Recall_7, Preset_Recall_8;
+Digital_Input Preset_Recall_9, Preset_Recall_10, Preset_Recall_11, Preset_Recall_12;
+Digital_Input Preset_Recall_13, Preset_Recall_14, Preset_Recall_15, Preset_Recall_16;
+Digital_Input Preset_Save_1, Preset_Save_2, Preset_Save_3, Preset_Save_4;
+Digital_Input Preset_Save_5, Preset_Save_6, Preset_Save_7, Preset_Save_8;
+Digital_Input Preset_Save_9, Preset_Save_10, Preset_Save_11, Preset_Save_12;
+Digital_Input Preset_Save_13, Preset_Save_14, Preset_Save_15, Preset_Save_16;
+Digital_Input Tracking_On, Tracking_Off;
+Digital_Input Load_Presets, Save_Presets, Recalibrate, Refresh_Files;
+Digital_Input Router_Output_1, Router_Output_2, Router_Output_3, Router_Output_4;
+Digital_Input Router_Output_5, Router_Output_6, Router_Output_7, Router_Output_8;
+Digital_Input Router_Output_9, Router_Output_10, Router_Output_11;
+
+Digital_Output Cam1_Select_Fb, Cam2_Select_Fb, Cam3_Select_Fb, Cam4_Select_Fb, Cam5_Select_Fb, Cam6_Select_Fb;
+Digital_Output Preset_Button_1_Fb, Preset_Button_2_Fb, Preset_Button_3_Fb, Preset_Button_4_Fb;
+Digital_Output Preset_Button_5_Fb, Preset_Button_6_Fb, Preset_Button_7_Fb, Preset_Button_8_Fb;
+Digital_Output Preset_Button_9_Fb, Preset_Button_10_Fb, Preset_Button_11_Fb, Preset_Button_12_Fb;
+Digital_Output Preset_Button_13_Fb, Preset_Button_14_Fb, Preset_Button_15_Fb, Preset_Button_16_Fb;
+Digital_Output PnH_Progress_1, PnH_Progress_2, PnH_Progress_3, PnH_Progress_4;
+Digital_Output PnH_Progress_5, PnH_Progress_6, PnH_Progress_7, PnH_Progress_8;
+Digital_Output PnH_Progress_9, PnH_Progress_10, PnH_Progress_11, PnH_Progress_12;
+Digital_Output PnH_Progress_13, PnH_Progress_14, PnH_Progress_15, PnH_Progress_16;
+Digital_Output Tracking_Fb;
+Digital_Output Router_Output_1_Fb, Router_Output_2_Fb, Router_Output_3_Fb, Router_Output_4_Fb;
+Digital_Output Router_Output_5_Fb, Router_Output_6_Fb, Router_Output_7_Fb, Router_Output_8_Fb;
+Digital_Output Router_Output_9_Fb, Router_Output_10_Fb, Router_Output_11_Fb;
+
+String_Output Camera1_Name, Camera2_Name, Camera3_Name, Camera4_Name, Camera5_Name, Camera6_Name;
+String_Output Status_Text, Autosave_Status;
+String_Output Preset_Name_1, Preset_Name_2, Preset_Name_3, Preset_Name_4;
+String_Output Preset_Name_5, Preset_Name_6, Preset_Name_7, Preset_Name_8;
+String_Output Preset_Name_9, Preset_Name_10, Preset_Name_11, Preset_Name_12;
+String_Output Preset_Name_13, Preset_Name_14, Preset_Name_15, Preset_Name_16;
+
+string_parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_, CoreID[100], ComponentName[100];
+
+#BEGIN_PARAMETER_PROPERTIES CoreID
+   propValidUnits = unitString;
+   propDefaultUnit = unitString;
+   propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
+integer selectedCamera;
+
+QsysCameraPresets camPresets;
+
+// Camera Select
+Push Cam1_Select { camPresets.SelectCamera(1); }
+Push Cam2_Select { camPresets.SelectCamera(2); }
+Push Cam3_Select { camPresets.SelectCamera(3); }
+Push Cam4_Select { camPresets.SelectCamera(4); }
+Push Cam5_Select { camPresets.SelectCamera(5); }
+Push Cam6_Select { camPresets.SelectCamera(6); }
+
+// Preset Recall (for selected camera)
+Push Preset_Recall_1 { camPresets.RecallPreset(1); }
+Push Preset_Recall_2 { camPresets.RecallPreset(2); }
+Push Preset_Recall_3 { camPresets.RecallPreset(3); }
+Push Preset_Recall_4 { camPresets.RecallPreset(4); }
+Push Preset_Recall_5 { camPresets.RecallPreset(5); }
+Push Preset_Recall_6 { camPresets.RecallPreset(6); }
+Push Preset_Recall_7 { camPresets.RecallPreset(7); }
+Push Preset_Recall_8 { camPresets.RecallPreset(8); }
+Push Preset_Recall_9 { camPresets.RecallPreset(9); }
+Push Preset_Recall_10 { camPresets.RecallPreset(10); }
+Push Preset_Recall_11 { camPresets.RecallPreset(11); }
+Push Preset_Recall_12 { camPresets.RecallPreset(12); }
+Push Preset_Recall_13 { camPresets.RecallPreset(13); }
+Push Preset_Recall_14 { camPresets.RecallPreset(14); }
+Push Preset_Recall_15 { camPresets.RecallPreset(15); }
+Push Preset_Recall_16 { camPresets.RecallPreset(16); }
+
+// Preset Save (for selected camera)
+Push Preset_Save_1 { camPresets.SavePreset(1); }
+Push Preset_Save_2 { camPresets.SavePreset(2); }
+Push Preset_Save_3 { camPresets.SavePreset(3); }
+Push Preset_Save_4 { camPresets.SavePreset(4); }
+Push Preset_Save_5 { camPresets.SavePreset(5); }
+Push Preset_Save_6 { camPresets.SavePreset(6); }
+Push Preset_Save_7 { camPresets.SavePreset(7); }
+Push Preset_Save_8 { camPresets.SavePreset(8); }
+Push Preset_Save_9 { camPresets.SavePreset(9); }
+Push Preset_Save_10 { camPresets.SavePreset(10); }
+Push Preset_Save_11 { camPresets.SavePreset(11); }
+Push Preset_Save_12 { camPresets.SavePreset(12); }
+Push Preset_Save_13 { camPresets.SavePreset(13); }
+Push Preset_Save_14 { camPresets.SavePreset(14); }
+Push Preset_Save_15 { camPresets.SavePreset(15); }
+Push Preset_Save_16 { camPresets.SavePreset(16); }
+
+// Tracking
+Push Tracking_On { camPresets.SetTracking(true); }
+Push Tracking_Off { camPresets.SetTracking(false); }
+
+// File operations
+Push Load_Presets { camPresets.LoadPresetFile(); }
+Push Save_Presets { camPresets.SavePresetFile(); }
+Push Recalibrate { camPresets.RecalibrateCameras(); }
+Push Refresh_Files { camPresets.RefreshPresetFiles(); }
+
+// Router Outputs
+Push Router_Output_1 { camPresets.SetRouterOutput(1); }
+Push Router_Output_2 { camPresets.SetRouterOutput(2); }
+Push Router_Output_3 { camPresets.SetRouterOutput(3); }
+Push Router_Output_4 { camPresets.SetRouterOutput(4); }
+Push Router_Output_5 { camPresets.SetRouterOutput(5); }
+Push Router_Output_6 { camPresets.SetRouterOutput(6); }
+Push Router_Output_7 { camPresets.SetRouterOutput(7); }
+Push Router_Output_8 { camPresets.SetRouterOutput(8); }
+Push Router_Output_9 { camPresets.SetRouterOutput(9); }
+Push Router_Output_10 { camPresets.SetRouterOutput(10); }
+Push Router_Output_11 { camPresets.SetRouterOutput(11); }
+
+// Callbacks
+Callback Function onCamSelectChange(string cName, integer camera, integer value)
+{
+    switch(camera)
+    {
+        case (1): { Cam1_Select_Fb = value; }
+        case (2): { Cam2_Select_Fb = value; }
+        case (3): { Cam3_Select_Fb = value; }
+        case (4): { Cam4_Select_Fb = value; }
+        case (5): { Cam5_Select_Fb = value; }
+        case (6): { Cam6_Select_Fb = value; }
+    }
+    if(value) selectedCamera = camera;
+}
+
+Callback Function onPresetButtonChange(string cName, integer preset, integer value)
+{
+    switch(preset)
+    {
+        case (1): { Preset_Button_1_Fb = value; }
+        case (2): { Preset_Button_2_Fb = value; }
+        case (3): { Preset_Button_3_Fb = value; }
+        case (4): { Preset_Button_4_Fb = value; }
+        case (5): { Preset_Button_5_Fb = value; }
+        case (6): { Preset_Button_6_Fb = value; }
+        case (7): { Preset_Button_7_Fb = value; }
+        case (8): { Preset_Button_8_Fb = value; }
+        case (9): { Preset_Button_9_Fb = value; }
+        case (10): { Preset_Button_10_Fb = value; }
+        case (11): { Preset_Button_11_Fb = value; }
+        case (12): { Preset_Button_12_Fb = value; }
+        case (13): { Preset_Button_13_Fb = value; }
+        case (14): { Preset_Button_14_Fb = value; }
+        case (15): { Preset_Button_15_Fb = value; }
+        case (16): { Preset_Button_16_Fb = value; }
+    }
+}
+
+Callback Function onPnHProgressChange(string cName, integer preset, integer value)
+{
+    switch(preset)
+    {
+        case (1): { PnH_Progress_1 = value; }
+        case (2): { PnH_Progress_2 = value; }
+        case (3): { PnH_Progress_3 = value; }
+        case (4): { PnH_Progress_4 = value; }
+        case (5): { PnH_Progress_5 = value; }
+        case (6): { PnH_Progress_6 = value; }
+        case (7): { PnH_Progress_7 = value; }
+        case (8): { PnH_Progress_8 = value; }
+        case (9): { PnH_Progress_9 = value; }
+        case (10): { PnH_Progress_10 = value; }
+        case (11): { PnH_Progress_11 = value; }
+        case (12): { PnH_Progress_12 = value; }
+        case (13): { PnH_Progress_13 = value; }
+        case (14): { PnH_Progress_14 = value; }
+        case (15): { PnH_Progress_15 = value; }
+        case (16): { PnH_Progress_16 = value; }
+    }
+}
+
+Callback Function onPresetRecallChange(string cName, integer preset, integer value)
+{
+    // PresetRecall feedback - same as PresetButton for the selected camera view
+}
+
+Callback Function onRouterOutputChange(string cName, integer output, integer value)
+{
+    switch(output)
+    {
+        case (1): { Router_Output_1_Fb = value; }
+        case (2): { Router_Output_2_Fb = value; }
+        case (3): { Router_Output_3_Fb = value; }
+        case (4): { Router_Output_4_Fb = value; }
+        case (5): { Router_Output_5_Fb = value; }
+        case (6): { Router_Output_6_Fb = value; }
+        case (7): { Router_Output_7_Fb = value; }
+        case (8): { Router_Output_8_Fb = value; }
+        case (9): { Router_Output_9_Fb = value; }
+        case (10): { Router_Output_10_Fb = value; }
+        case (11): { Router_Output_11_Fb = value; }
+    }
+}
+
+Callback Function onTrackingChange(string cName, integer value)
+{
+    Tracking_Fb = value;
+}
+
+Callback Function onDisableChange(string cName, integer value)
+{
+    // Disable feedback available if needed
+}
+
+Callback Function onStatusTextChange(string cName, string value)
+{
+    Status_Text = value;
+}
+
+Callback Function onAutosaveStatusChange(string cName, string value)
+{
+    Autosave_Status = value;
+}
+
+Callback Function onCameraNameChange(string cName, integer camera, string value)
+{
+    switch(camera)
+    {
+        case (1): { Camera1_Name = value; }
+        case (2): { Camera2_Name = value; }
+        case (3): { Camera3_Name = value; }
+        case (4): { Camera4_Name = value; }
+        case (5): { Camera5_Name = value; }
+        case (6): { Camera6_Name = value; }
+    }
+}
+
+Callback Function onPresetNameChange(string cName, integer camera, integer preset, string value)
+{
+    // Update preset names when they match the currently selected camera
+    if(camera = selectedCamera)
+    {
+        switch(preset)
+        {
+            case (1): { Preset_Name_1 = value; }
+            case (2): { Preset_Name_2 = value; }
+            case (3): { Preset_Name_3 = value; }
+            case (4): { Preset_Name_4 = value; }
+            case (5): { Preset_Name_5 = value; }
+            case (6): { Preset_Name_6 = value; }
+            case (7): { Preset_Name_7 = value; }
+            case (8): { Preset_Name_8 = value; }
+            case (9): { Preset_Name_9 = value; }
+            case (10): { Preset_Name_10 = value; }
+            case (11): { Preset_Name_11 = value; }
+            case (12): { Preset_Name_12 = value; }
+            case (13): { Preset_Name_13 = value; }
+            case (14): { Preset_Name_14 = value; }
+            case (15): { Preset_Name_15 = value; }
+            case (16): { Preset_Name_16 = value; }
+        }
+    }
+}
+
+Callback Function onCameraPositionChange(string cName, integer camera, string value)
+{
+    // Camera position strings available if needed
+}
+
+Function Main()
+{
+    selectedCamera = 1;
+
+    RegisterDelegate(camPresets, newCamSelectChange, onCamSelectChange);
+    RegisterDelegate(camPresets, newPresetButtonChange, onPresetButtonChange);
+    RegisterDelegate(camPresets, newPnHProgressChange, onPnHProgressChange);
+    RegisterDelegate(camPresets, newPresetRecallChange, onPresetRecallChange);
+    RegisterDelegate(camPresets, newRouterOutputChange, onRouterOutputChange);
+    RegisterDelegate(camPresets, newTrackingChange, onTrackingChange);
+    RegisterDelegate(camPresets, newDisableChange, onDisableChange);
+    RegisterDelegate(camPresets, newStatusTextChange, onStatusTextChange);
+    RegisterDelegate(camPresets, newAutosaveStatusChange, onAutosaveStatusChange);
+    RegisterDelegate(camPresets, newCameraNameChange, onCameraNameChange);
+    RegisterDelegate(camPresets, newPresetNameChange, onPresetNameChange);
+    RegisterDelegate(camPresets, newCameraPositionChange, onCameraPositionChange);
+    camPresets.Initialize(CoreID, ComponentName);
+}
