@@ -103,11 +103,14 @@
     <Compile Include="NamedComponents\GenericComponentControl\ListGenericComponentControl.cs" />
     <Compile Include="NamedComponents\GenericComponentControl\StringGenericComponentControl.cs" />
     <Compile Include="NamedComponents\GenericComponentControl\TriggerGenericComponentControl.cs" />
+    <Compile Include="NamedComponents\QsysAes67Rx1.cs" />
+    <Compile Include="NamedComponents\QsysCameraPresets.cs" />
     <Compile Include="NamedComponents\QsysMatrixMixerOutputFader.cs" />
     <Compile Include="NamedComponents\QsysMatrixMixerInputFader.cs" />
     <Compile Include="NamedComponents\QsysMediacastRouter.cs" />
     <Compile Include="NamedComponents\QsysCamera.cs" />
     <Compile Include="NamedComponents\AbstractQsysComponent.cs" />
+    <Compile Include="NamedComponents\QsysNv21hDecoder.cs" />
     <Compile Include="QsysCoreManager.cs" />
     <Compile Include="QsysMatrixMixerApi.cs" />
     <Compile Include="NamedComponents\QsysMatrixMixerCrosspoint.cs" />
