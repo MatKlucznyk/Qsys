@@ -1,0 +1,106 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Crestron S+: Compile All (Series 3 & 4)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}/.vscode/compile-all-usp.ps1",
+        "-Targets", "series3", "series4"
+      ],
+      "group": "build",
+      "presentation": {
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Crestron S+: Compile All (Series 3 Only)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}/.vscode/compile-all-usp.ps1",
+        "-Targets", "series3"
+      ],
+      "group": "build",
+      "presentation": {
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Crestron S+: Compile All (Series 4 Only)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}/.vscode/compile-all-usp.ps1",
+        "-Targets", "series4"
+      ],
+      "group": "build",
+      "presentation": {
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Version: Copy .usp files with new version",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}/.vscode/copy-usp-version.ps1"
+      ],
+      "group": "build",
+      "presentation": {
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Version: Delete files with specific version",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}/.vscode/delete-version-files.ps1"
+      ],
+      "group": "build",
+      "presentation": {
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Version: Rename .docx files with new version",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}/.vscode/rename-docx-version.ps1"
+      ],
+      "group": "build",
+      "presentation": {
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Deploy: Copy compiled program to Module folder",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}/.vscode/deploy-to-module.ps1"
+      ],
+      "group": "build",
+      "presentation": {
+        "panel": "shared",
+        "clear": true
+      }
+    }
+  ]
+}
