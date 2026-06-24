@@ -160,8 +160,13 @@ namespace QscQsys.Communications.Sockets
                 _client = new TCPClient(ipAddress, port, 65535);
                 _client.SocketStatusChange += Client_SocketStatusChange;
                 _disconnectRequested = false;
-                _client.ConnectToServerAsync(ConnectToServerCallback);
+                var error = _client.ConnectToServerAsync(ConnectToServerCallback);
                 ConnectionRequested = true;
+                if (error != SocketErrorCodes.SOCKET_OK)
+                {
+                    Logger.PrintLine("ConnectToServerAsync error: {0}", GetSocketErrorCodeName(error));
+                    WaitAndTryReconnect();
+                }
             }
         }
 
@@ -179,7 +184,13 @@ namespace QscQsys.Communications.Sockets
                     return;
 
                 Logger.PrintLine("Connection was not established, retrying...");
-                _client.ConnectToServerAsync(ConnectToServerCallback);
+                var error = _client.ConnectToServerAsync(ConnectToServerCallback);
+
+                if (error != SocketErrorCodes.SOCKET_OK)
+                {
+                    Logger.PrintLine("ConnectToServerAsync error: {0}", GetSocketErrorCodeName(error));
+                    WaitAndTryReconnect();
+                }
             }
         }
 
