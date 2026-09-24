@@ -202,8 +202,13 @@ namespace QscQsys.NamedComponents
                     _recentCalls.Clear();
                     foreach (var choice in args.Choices)
                     {
+                        // An empty recent calls list comes back as Choices: [""]
+                        if (string.IsNullOrEmpty(choice))
+                            continue;
+
                         var newChoice = JsonConvert.DeserializeObject<ListBoxChoice>(choice);
-                        _recentCalls.Add(newChoice);
+                        if (newChoice != null)
+                            _recentCalls.Add(newChoice);
                     }
 
                     if (onRecentCallsEvent != null)
