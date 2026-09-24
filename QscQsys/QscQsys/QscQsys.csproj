@@ -111,6 +111,7 @@
     <Compile Include="NamedComponents\QsysCamera.cs" />
     <Compile Include="NamedComponents\AbstractQsysComponent.cs" />
     <Compile Include="NamedComponents\QsysNv21hDecoder.cs" />
+    <Compile Include="NamedComponents\QsysAvStreamMediacastRouter.cs" />
     <Compile Include="QsysCoreManager.cs" />
     <Compile Include="QsysMatrixMixerApi.cs" />
     <Compile Include="NamedComponents\QsysMatrixMixerCrosspoint.cs" />
