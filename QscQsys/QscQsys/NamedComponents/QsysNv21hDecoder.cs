@@ -1,12 +1,13 @@
 using System;
 using Crestron.SimplSharp;
 using QscQsys.Intermediaries;
+using QscQsys.Utils;
 
 namespace QscQsys.NamedComponents
 {
     public sealed class QsysNv21hDecoder : AbstractQsysComponent
     {
-        private const string CONTROL_NAME = "hdmi_out_1_select_index";
+        private const int HDMI_OUTPUT = 1;
 
         public delegate void Nv21hDecoderInputChange(SimplSharpString cName, ushort input);
         public Nv21hDecoderInputChange newNv21hDecoderInputChange { get; set; }
@@ -46,7 +47,7 @@ namespace QscQsys.NamedComponents
                 return;
             }
 
-            InputControl = component.LazyLoadComponentControl(CONTROL_NAME);
+            InputControl = component.LazyLoadComponentControl(ControlNameUtils.GetHdmiOutputSelectName(HDMI_OUTPUT));
         }
 
         public void ChangeInput(int source)

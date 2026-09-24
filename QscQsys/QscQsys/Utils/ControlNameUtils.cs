@@ -24,6 +24,7 @@ namespace QscQsys.Utils
         private const string SNAPSHOT_SAVE_CONTROL_NAME_FORMAT = "save_{0}";
         private const string ROOM_COMBINER_WALL_OPEN_NAME_FORMAT = "wall_{0}_open";
         private const string ROOM_COMBINER_OUTPUT_COMBINED_NAME_FORMAT = "output_{0}_combined";
+        private const string HDMI_OUTPUT_SELECT_NAME_FORMAT = "hdmi_out_{0}_select_index";
 
 
         public static string GetMatrixCrosspointMuteName(int input, int output)
@@ -98,6 +99,11 @@ namespace QscQsys.Utils
         public static string GetRoomCombinerOutputCombinedName(int index)
         {
             return string.Format(ROOM_COMBINER_OUTPUT_COMBINED_NAME_FORMAT, index);
+        }
+
+        public static string GetHdmiOutputSelectName(int output)
+        {
+            return string.Format(HDMI_OUTPUT_SELECT_NAME_FORMAT, output);
         }
 
         public static string GetMuteControlName()
