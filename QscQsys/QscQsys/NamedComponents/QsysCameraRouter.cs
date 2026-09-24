@@ -10,7 +10,7 @@ namespace QscQsys.NamedComponents
     /// Router for Q-Sys cameras
     /// </summary>
     [PublicAPI("S+")]
-    public sealed class QsysMediacastRouter : AbstractQsysComponent
+    public sealed class QsysCameraRouter : AbstractQsysComponent
     {
         public delegate void RouterInputChangeDelegate(SimplSharpString cName, ushort input);
 
