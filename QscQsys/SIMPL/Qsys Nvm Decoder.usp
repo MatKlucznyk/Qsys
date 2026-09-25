@@ -1,0 +1,138 @@
+#CATEGORY "46" "Qsys" // Custom
+#SYMBOL_NAME "Qsys Nvm Decoder"
+
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+#DEFINE_CONSTANT true 1
+#DEFINE_CONSTANT false 0
+
+digital_input VideoFreezeOn, VideoFreezeOff, VideoFreezeToggle, _skip_;
+digital_input VideoMuteOn, VideoMuteOff, VideoMuteToggle, _skip_;
+digital_input HdmiEnabledOn, HdmiEnabledOff, HdmiEnabledToggle, _skip_;
+analog_input Source;  
+
+digital_output VideoFreezeIsOn, VideoFreezeIsOff, _skip_, _skip_;
+digital_output VideoMuteIsOn, VideoMuteIsOff, _skip_, _skip_;
+digital_output HdmiEnabledIsOn, HdmiEnabledIsOff, _skip_, _skip_;
+ analog_output CurrentSource;
+
+string_parameter  _skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_, CoreID[100], ComponentName[100];
+
+#BEGIN_PARAMETER_PROPERTIES CoreID
+   propValidUnits = unitString;
+   propDefaultUnit = unitString;
+   propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
+
+QsysNvmDecoder decoder;
+
+push VideoFreezeOn
+{
+    decoder.VideoFreeze(true);
+}
+
+push VideoFreezeOff
+{
+    decoder.VideoFreeze(false);
+}
+
+push VideoFreezeToggle
+{
+    if(VideoFreezeIsOn)
+    {
+        decoder.VideoFreeze(false);
+    }
+    else
+    {
+        decoder.VideoFreeze(true);
+    }
+}
+
+push VideoMuteOn
+{
+    decoder.VideoMute(true);
+}
+
+push VideoMuteOff
+{
+    decoder.VideoMute(false);
+}
+
+push VideoMuteToggle
+{
+    if(VideoMuteIsOn)
+    {
+        decoder.VideoMute(false);
+    }
+    else
+    {
+        decoder.VideoMute(true);
+    }
+}
+
+push HdmiEnabledOn
+{
+    decoder.HdmiEnabled(true);
+}
+
+push HdmiEnabledOff
+{
+    decoder.HdmiEnabled(false);
+}
+
+push HdmiEnabledToggle
+{
+    if(HdmiEnabledIsOn)
+    {
+        decoder.HdmiEnabled(false);
+    }
+    else
+    {
+        decoder.HdmiEnabled(true);
+    }
+}
+
+threadsafe change Source
+{
+    integer x;
+
+    while(x != Source)
+    {
+        x = Source;
+
+        decoder.ChangeInput(x);
+    }
+}
+
+callback function onInputChange(string cName, integer newSource)
+{
+    CurrentSource = newSource;
+}
+
+callback function onVideoFreezeChange(string cName, integer value)
+{
+    VideoFreezeIsOn = value;
+    VideoFreezeIsOff = !value;
+}
+
+callback function onVideoMuteChange(string cName, integer value)
+{
+    VideoMuteIsOn = value;
+    VideoMuteIsOff = !value;
+}
+
+callback function onHdmiEnabledChange(string cName, integer value)
+{
+    HdmiEnabledIsOn = value;
+    HdmiEnabledIsOff = !value;
+}
+
+function Main()
+{
+    RegisterDelegate(decoder, newNvmDecoderInputChange, onInputChange);
+    RegisterDelegate(decoder, newVideoFreezeChange, onVideoFreezeChange);
+    RegisterDelegate(decoder, newVideoMuteChange, onVideoMuteChange);
+    RegisterDelegate(decoder, newHdmiEnabledChange, onHdmiEnabledChange);
+    decoder.Initialize(CoreID, ComponentName);
+}

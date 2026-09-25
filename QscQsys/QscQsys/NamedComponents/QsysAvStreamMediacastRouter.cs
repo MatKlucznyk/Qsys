@@ -1,17 +1,44 @@
 ﻿using System;
 using Crestron.SimplSharp;
+using JetBrains.Annotations;
 using QscQsys.Intermediaries;
+using QscQsys.Utils;
 
 namespace QscQsys.NamedComponents
 {
-    public sealed class QsysNv32hDecoder : AbstractQsysComponent
+    /// <summary>
+    /// Output select for a Q-Sys AV Stream Mediacast Router
+    /// </summary>
+    [PublicAPI("S+")]
+    public sealed class QsysAvStreamMediacastRouter : AbstractQsysComponent
     {
-        private const string CONTROL_NAME = "hdmi_out_0_select_index";
+        public delegate void RouterInputChangeDelegate(SimplSharpString cName, ushort input);
 
-        public delegate void Nv32hDecoderInputChange(SimplSharpString cName, ushort input);
-        public Nv32hDecoderInputChange newNv32hDecoderInputChange { get; set; }
+        [PublicAPI("S+")]
+        public RouterInputChangeDelegate RouterInputChange { get; set; }
 
         private NamedComponentControl _inputControl;
+        private int _currentSelectedInput;
+
+        [PublicAPI]
+        public int CurrentSelectedInput
+        {
+            get { return _currentSelectedInput; }
+            private set
+            {
+                if (_currentSelectedInput == value)
+                    return;
+
+                _currentSelectedInput = value;
+
+                var callback = RouterInputChange;
+                if (callback != null)
+                    callback(ComponentName, (ushort)value);
+            }
+        }
+
+        [PublicAPI]
+        public int Output { get; private set; }
 
         public NamedComponentControl InputControl
         {
@@ -27,12 +54,11 @@ namespace QscQsys.NamedComponents
             }
         }
 
-        private int _currentSource;
-
-        public int CurrentSource { get { return _currentSource; } }
-
-        public void Initialize(string coreId, string componentName)
+        [PublicAPI("S+")]
+        public void Initialize(string coreId, string componentName, int output)
         {
+            Output = output;
+
             InternalInitialize(coreId, componentName);
         }
 
@@ -46,13 +72,14 @@ namespace QscQsys.NamedComponents
                 return;
             }
 
-            InputControl = component.LazyLoadComponentControl(CONTROL_NAME);
+            InputControl = component.LazyLoadComponentControl(ControlNameUtils.GetAvStreamMediacastRouterSelectName(Output));
         }
 
-        public void ChangeInput(int source)
+        [PublicAPI("S+")]
+        public void InputSelect(int input)
         {
             if (InputControl != null)
-                InputControl.SendChangeDoubleValue(source);
+                InputControl.SendChangeDoubleValue(input);
         }
 
         #region Input Control Callbacks
@@ -75,11 +102,7 @@ namespace QscQsys.NamedComponents
 
         private void InputControlOnStateChanged(object sender, QsysInternalEventsArgs args)
         {
-            _currentSource = Convert.ToInt16(args.Value);
-
-            var callback = newNv32hDecoderInputChange;
-            if (callback != null)
-                callback(ComponentName, Convert.ToUInt16(_currentSource));
+            CurrentSelectedInput = Convert.ToInt16(args.Value);
         }
 
         #endregion
