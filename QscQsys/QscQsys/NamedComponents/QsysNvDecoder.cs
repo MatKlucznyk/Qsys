@@ -1,16 +1,14 @@
-using System;
+﻿using System;
 using Crestron.SimplSharp;
 using QscQsys.Intermediaries;
 using QscQsys.Utils;
 
 namespace QscQsys.NamedComponents
 {
-    public sealed class QsysNv21hDecoder : AbstractQsysComponent
+    public sealed class QsysNvDecoder : AbstractQsysComponent
     {
-        private const int HDMI_OUTPUT = 1;
-
-        public delegate void Nv21hDecoderInputChange(SimplSharpString cName, ushort input);
-        public Nv21hDecoderInputChange newNv21hDecoderInputChange { get; set; }
+        public delegate void NvDecoderInputChange(SimplSharpString cName, ushort input);
+        public NvDecoderInputChange newNvDecoderInputChange { get; set; }
 
         private NamedComponentControl _inputControl;
 
@@ -32,8 +30,15 @@ namespace QscQsys.NamedComponents
 
         public int CurrentSource { get { return _currentSource; } }
 
-        public void Initialize(string coreId, string componentName)
+        /// <summary>
+        /// HDMI output to control (0, 1, or 2)
+        /// </summary>
+        public int Output { get; private set; }
+
+        public void Initialize(string coreId, string componentName, int output)
         {
+            Output = output;
+
             InternalInitialize(coreId, componentName);
         }
 
@@ -47,7 +52,7 @@ namespace QscQsys.NamedComponents
                 return;
             }
 
-            InputControl = component.LazyLoadComponentControl(ControlNameUtils.GetHdmiOutputSelectName(HDMI_OUTPUT));
+            InputControl = component.LazyLoadComponentControl(ControlNameUtils.GetNvHdmiOutputSelectName(Output));
         }
 
         public void ChangeInput(int source)
@@ -78,7 +83,7 @@ namespace QscQsys.NamedComponents
         {
             _currentSource = Convert.ToInt16(args.Value);
 
-            var callback = newNv21hDecoderInputChange;
+            var callback = newNvDecoderInputChange;
             if (callback != null)
                 callback(ComponentName, Convert.ToUInt16(_currentSource));
         }

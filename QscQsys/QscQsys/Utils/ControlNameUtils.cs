@@ -26,6 +26,10 @@ namespace QscQsys.Utils
         private const string ROOM_COMBINER_WALL_OPEN_NAME_FORMAT = "wall_{0}_open";
         private const string ROOM_COMBINER_OUTPUT_COMBINED_NAME_FORMAT = "output_{0}_combined";
         private const string HDMI_OUTPUT_SELECT_NAME_FORMAT = "hdmi_out_{0}_select_index";
+        private const string NVM_HDMI_OUTPUT_SELECT_NAME = "hdmi_out_1_select_index_string";
+        private const string NVM_HDMI_VIDEO_FREEZE_NAME = "hdmi_video_freeze_button";
+        private const string NVM_HDMI_VIDEO_MUTE_NAME = "hdmi_video_mute_button";
+        private const string NVM_HDMI_ENABLED_NAME = "hdmi_enabled_button";
 
 
         public static string GetMatrixCrosspointMuteName(int input, int output)
@@ -107,9 +111,29 @@ namespace QscQsys.Utils
             return string.Format(ROOM_COMBINER_OUTPUT_COMBINED_NAME_FORMAT, index);
         }
 
-        public static string GetHdmiOutputSelectName(int output)
+        public static string GetNvHdmiOutputSelectName(int output)
         {
             return string.Format(HDMI_OUTPUT_SELECT_NAME_FORMAT, output);
+        }
+
+        public static string GetNvmHdmiOutputSelectName()
+        {
+            return NVM_HDMI_OUTPUT_SELECT_NAME;
+        }
+
+        public static string GetNvmHdmiVideoFreezeName()
+        {
+            return NVM_HDMI_VIDEO_FREEZE_NAME;
+        }
+
+        public static string GetNvmHdmiVideoMuteName()
+        {
+            return NVM_HDMI_VIDEO_MUTE_NAME;
+        }
+
+        public static string GetNvmHdmiEnabledName()
+        {
+            return NVM_HDMI_ENABLED_NAME;
         }
 
         public static string GetMuteControlName()

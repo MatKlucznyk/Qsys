@@ -110,14 +110,14 @@
     <Compile Include="NamedComponents\QsysCameraRouter.cs" />
     <Compile Include="NamedComponents\QsysCamera.cs" />
     <Compile Include="NamedComponents\AbstractQsysComponent.cs" />
-    <Compile Include="NamedComponents\QsysNv21hDecoder.cs" />
     <Compile Include="NamedComponents\QsysAvStreamMediacastRouter.cs" />
     <Compile Include="QsysCoreManager.cs" />
     <Compile Include="QsysMatrixMixerApi.cs" />
     <Compile Include="NamedComponents\QsysMatrixMixerCrosspoint.cs" />
     <Compile Include="NamedComponents\QsysMatrixMixerOutputAllCrosspoints.cs" />
     <Compile Include="NamedComponents\QsysMeter.cs" />
-    <Compile Include="NamedComponents\QsysNv32hDecoder.cs" />
+    <Compile Include="NamedComponents\QsysNvDecoder.cs" />
+    <Compile Include="NamedComponents\QsysNvmDecoder.cs" />
     <Compile Include="NamedComponents\QsysPotsController.cs" />
     <Compile Include="QsysCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
