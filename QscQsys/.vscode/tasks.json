@@ -7,8 +7,7 @@
       "command": "powershell",
       "args": [
         "-ExecutionPolicy", "Bypass",
-        "-File", "${workspaceFolder}/.vscode/compile-all-usp.ps1",
-        "-Targets", "series3", "series4"
+        "-Command", "& '${workspaceFolder}/.vscode/compile-all-usp.ps1' -Targets 'series3','series4'"
       ],
       "group": "build",
       "presentation": {
@@ -38,6 +37,50 @@
       "args": [
         "-ExecutionPolicy", "Bypass",
         "-File", "${workspaceFolder}/.vscode/compile-all-usp.ps1",
+        "-Targets", "series4"
+      ],
+      "group": "build",
+      "presentation": {
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Crestron S+: Compile Version (Series 3 & 4)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy", "Bypass",
+        "-Command", "& '${workspaceFolder}/.vscode/compile-version-usp.ps1' -Targets 'series3','series4'"
+      ],
+      "group": "build",
+      "presentation": {
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Crestron S+: Compile Version (Series 3 Only)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}/.vscode/compile-version-usp.ps1",
+        "-Targets", "series3"
+      ],
+      "group": "build",
+      "presentation": {
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Crestron S+: Compile Version (Series 4 Only)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}/.vscode/compile-version-usp.ps1",
         "-Targets", "series4"
       ],
       "group": "build",
@@ -95,6 +138,21 @@
       "args": [
         "-ExecutionPolicy", "Bypass",
         "-File", "${workspaceFolder}/.vscode/deploy-to-module.ps1"
+      ],
+      "group": "build",
+      "presentation": {
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "NuGet: Create or Update NuSpec file",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}/.vscode/create-nuspec.ps1",
+        "-OutputPath", "${workspaceFolder}"
       ],
       "group": "build",
       "presentation": {
