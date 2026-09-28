@@ -1,23 +1,24 @@
 param (
+    [string]$SIMPLPath = "${PSScriptRoot}\..\SIMPL",
     [string[]]$Targets = @("series3", "series4")
 )
 
 Write-Host "Looking for .usp files..."
 
-$workspaceFolder = Resolve-Path "$PSScriptRoot\.."
-Write-Host "Workspace folder: $workspaceFolder"
+$simplFolder = Resolve-Path $SIMPLPath
+Write-Host "SIMPL folder: $simplFolder"
 
-$uspFiles = Get-ChildItem -Path $workspaceFolder -Recurse -Filter *.usp -File | Select-Object -ExpandProperty FullName
+$uspFiles = Get-ChildItem -Path $simplFolder -Filter *.usp -File | Select-Object -ExpandProperty FullName
 
 if (-not $uspFiles -or $uspFiles.Count -eq 0) {
-    Write-Host "No .usp files found in workspace."
+    Write-Host "No .usp files found in SIMPL folder."
     exit 1
 }
 
 Write-Host "Found .usp files:"
 $quotedUspFiles = $uspFiles | ForEach-Object { '"{0}"' -f $_ }
-$appArgs = @("\build") + $quotedUspFiles + @("\target") + $Targets
-
+$targetsString = $Targets -join " "
+$appArgs = @("\build") + $quotedUspFiles + "\target $targetsString"
 
 Write-Host "Running SPlusCC.exe with arguments:"
 Write-Host $appArgs
