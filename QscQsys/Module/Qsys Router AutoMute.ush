@@ -28,7 +28,7 @@
   SmplCName=Qsys Router AutoMute.usp
   Code=1
   SysRev5=4.006
-  SMWRev=3.00.00
+  SMWRev=4.04.01
   InputList2Cue1=InputSet
   InputList2SigType1=Analog
   OutputList2Cue1=InputValue

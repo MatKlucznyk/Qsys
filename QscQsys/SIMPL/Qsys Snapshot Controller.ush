@@ -21,7 +21,7 @@
   SmplCName=Qsys Snapshot Controller.usp
   Code=1
   SysRev5=4.006
-  SMWRev=3.00.00
+  SMWRev=4.04.01
   InputCue1=[~UNUSED~]
   InputSigType1=Digital
   InputCue2=[~UNUSED~]

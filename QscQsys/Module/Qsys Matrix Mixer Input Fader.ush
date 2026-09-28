@@ -21,7 +21,7 @@
   SmplCName=Qsys Matrix Mixer Input Fader.usp
   Code=1
   SysRev5=4.006
-  SMWRev=3.00.00
+  SMWRev=4.04.01
   InputCue1=MuteOn
   InputSigType1=Digital
   InputCue2=MuteOff
@@ -164,4 +164,8 @@
   NoS=True
   DNF=16
   VVS=0
+[END]
+[BEGIN]
+ObjTp=Status
+HeaderCompatible=False
 [END]

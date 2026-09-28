@@ -21,7 +21,7 @@
   SmplCName=Qsys Generic Integer Component Control.usp
   Code=1
   SysRev5=4.006
-  SMWRev=3.00.00
+  SMWRev=4.04.01
   InputList2Cue1=SetUnsignedIntegerValue
   InputList2SigType1=Analog
   InputList2Cue2=SetSignedIntegerValue

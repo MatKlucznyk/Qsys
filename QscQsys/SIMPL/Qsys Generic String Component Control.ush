@@ -21,7 +21,7 @@
   SmplCName=Qsys Generic String Component Control.usp
   Code=1
   SysRev5=4.006
-  SMWRev=3.00.00
+  SMWRev=4.04.01
   InputList2Cue1=SetStringValue
   InputList2SigType1=Serial
   OutputList2Cue1=StringValue

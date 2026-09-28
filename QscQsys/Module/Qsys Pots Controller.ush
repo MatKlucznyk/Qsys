@@ -21,7 +21,7 @@
   SmplCName=Qsys Pots Controller.usp
   Code=1
   SysRev5=4.006
-  SMWRev=3.00.00
+  SMWRev=4.04.01
   InputCue1=Dial
   InputSigType1=Digital
   InputCue2=Redial

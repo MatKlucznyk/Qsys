@@ -20,8 +20,8 @@
   Name=Qsys Signal Presence
   SmplCName=Qsys Signal Presence.usp
   Code=1
-  SysRev5=4.000
-  SMWRev=3.00.00
+  SysRev5=4.006
+  SMWRev=4.04.01
   InputCue1=[~UNUSED~]
   InputSigType1=Digital
   InputCue2=[~UNUSED~]

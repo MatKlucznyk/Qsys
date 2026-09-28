@@ -1,0 +1,104 @@
+/*******************************************************************************************
+  SIMPL+ Module Information
+  (Fill in comments below)
+*******************************************************************************************/
+/*
+Dealer Name: 
+System Name:
+System Number:
+Programmer: IPorter
+Comments: Output select control for a Q-SYS AV Stream Router or Mediacast Router (output_x_select).
+*/
+
+/*******************************************************************************************
+  Compiler Directives
+*******************************************************************************************/
+#SYMBOL_NAME "Qsys AV Stream Mediacast Router"
+#CATEGORY "46" "Qsys" // Custom
+#DEFAULT_VOLATILE
+#ENABLE_STACK_CHECKING
+#ENABLE_TRACE
+#HELP_BEGIN
+Controls one output of a Q-SYS AV Stream Router or Mediacast Router component.
+
+Parameters:
+  CoreID        - ID of the Qsys Core module this component lives on.
+  ComponentName - Code Name of the AV Stream Mediacast Router component in the design.
+  OutputNumber  - 1-based output to control (drives output_<OutputNumber>_select).
+
+Signals:
+  Input      - Analog. Sets the source routed to this output (0 = none).
+  InputValue - Analog. Source currently routed to this output, as reported by the Core.
+#HELP_END
+
+/*******************************************************************************************
+  Include Libraries
+*******************************************************************************************/
+#USER_SIMPLSHARP_LIBRARY "QscQsys"
+
+/*******************************************************************************************
+  DIGITAL, ANALOG and SERIAL INPUTS and OUTPUTS
+*******************************************************************************************/
+Analog_Input Input;
+
+Analog_Output InputValue;
+
+/*******************************************************************************************
+  Parameters
+*******************************************************************************************/
+String_Parameter _skip_, CoreID[100], ComponentName[100];
+Integer_Parameter OutputNumber;
+
+/*******************************************************************************************
+  Parameter Properties
+*******************************************************************************************/
+#BEGIN_PARAMETER_PROPERTIES CoreID
+   propValidUnits = unitString;
+   propDefaultUnit = unitString;
+   propDefaultValue = "1";
+#END_PARAMETER_PROPERTIES
+
+#BEGIN_PARAMETER_PROPERTIES OutputNumber
+   propValidUnits = unitDecimal;
+   propDefaultUnit = unitDecimal;
+   propBounds = 1d, 256d;
+   propDefaultValue = 1d;
+#END_PARAMETER_PROPERTIES
+
+/*******************************************************************************************
+  Global Variables
+*******************************************************************************************/
+QsysAvStreamMediacastRouter router;
+
+/*******************************************************************************************
+  Functions
+*******************************************************************************************/
+Callback Function onRouterInputChange(string cName, integer in)
+{
+    InputValue = in;
+}
+
+/*******************************************************************************************
+  Event Handlers
+*******************************************************************************************/
+Threadsafe Change Input
+{
+    integer x;
+
+    while(x != Input)
+    {
+        x = Input;
+        router.InputSelect(x);
+    }
+}
+
+/*******************************************************************************************
+  Main()
+*******************************************************************************************/
+Function Main()
+{
+    WaitForInitializationComplete();
+
+    RegisterDelegate(router, RouterInputChange, onRouterInputChange);
+    router.Initialize(CoreID, ComponentName, OutputNumber);
+}

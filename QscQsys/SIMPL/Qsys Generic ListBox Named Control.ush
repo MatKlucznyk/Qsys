@@ -20,8 +20,8 @@
   Name=Qsys Generic ListBox Named Control
   SmplCName=Qsys Generic ListBox Named Control.usp
   Code=1
-  SysRev5=4.000
-  SMWRev=3.00.00
+  SysRev5=4.006
+  SMWRev=4.04.01
   InputList2Cue1=SelectItem
   InputList2SigType1=Analog
   OutputList2Cue1=SelectedItem

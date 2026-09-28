@@ -20,8 +20,8 @@
   Name=Qsys Meter
   SmplCName=Qsys Meter.usp
   Code=1
-  SysRev5=4.000
-  SMWRev=3.00.00
+  SysRev5=4.006
+  SMWRev=4.04.01
   OutputList2Cue1=MeterValue
   OutputList2SigType1=Analog
   ParamCue1=[Reference Name]

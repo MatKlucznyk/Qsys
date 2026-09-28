@@ -20,8 +20,8 @@
   Name=Qsys Room Combiner
   SmplCName=Qsys Room Combiner.usp
   Code=1
-  SysRev5=4.000
-  SMWRev=3.00.00
+  SysRev5=4.006
+  SMWRev=4.04.01
   InputCue1=WallOpen[1]
   InputSigType1=Digital
   InputCue2=WallOpen[2]
