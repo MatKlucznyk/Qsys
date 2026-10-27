@@ -1,5 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Generic Trigger Named Control"
+#HELP_PDF_FILE "Qsys Generic Trigger Named Control.pdf"
 
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
