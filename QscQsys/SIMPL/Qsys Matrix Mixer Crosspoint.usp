@@ -1,5 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Matrix Mixer Crosspoint"
+#HELP_PDF_FILE "Qsys Matrix Mixer Crosspoint.pdf"
 
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 

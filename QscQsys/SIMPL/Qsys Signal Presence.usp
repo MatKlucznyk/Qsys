@@ -1,5 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Signal Presence"
+#HELP_PDF_FILE "Qsys Signal Presence.pdf"
 
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 

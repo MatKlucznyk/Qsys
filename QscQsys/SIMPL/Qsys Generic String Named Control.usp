@@ -1,5 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Generic String Named Control"
+#HELP_PDF_FILE "Qsys Generic String Named Control.pdf"
 
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 

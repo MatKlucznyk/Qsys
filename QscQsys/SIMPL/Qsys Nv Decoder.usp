@@ -1,5 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Nv Decoder"
+#HELP_PDF_FILE "Qsys Nv Decoder.pdf"
 
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 

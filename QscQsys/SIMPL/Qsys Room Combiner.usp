@@ -1,5 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Room Combiner"
+#HELP_PDF_FILE "Qsys Room Combiner.pdf"
 
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 

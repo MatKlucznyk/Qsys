@@ -1,5 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Fader"
+#HELP_PDF_FILE "Qsys Fader.pdf"
 
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 #ENABLE_TRACE

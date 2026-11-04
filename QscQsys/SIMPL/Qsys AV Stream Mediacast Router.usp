@@ -14,6 +14,7 @@ Comments: Output select control for a Q-SYS AV Stream Router or Mediacast Router
   Compiler Directives
 *******************************************************************************************/
 #SYMBOL_NAME "Qsys AV Stream Mediacast Router"
+#HELP_PDF_FILE "Qsys AV Stream Mediacast Router.pdf"
 #CATEGORY "46" "Qsys" // Custom
 #DEFAULT_VOLATILE
 #ENABLE_STACK_CHECKING

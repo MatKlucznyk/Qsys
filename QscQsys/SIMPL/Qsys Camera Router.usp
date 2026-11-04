@@ -1,5 +1,6 @@
 #CATEGORY "46" "Qsys" // Custom
 #SYMBOL_NAME "Qsys Camera Router"
+#HELP_PDF_FILE "Qsys Camera Router.pdf"
 
 #USER_SIMPLSHARP_LIBRARY "QscQsys"
 
